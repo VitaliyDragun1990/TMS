@@ -1,9 +1,6 @@
 package org.vdragun.tms.core.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -12,26 +9,25 @@ import java.util.Objects;
  * @author Vitaliy Dragun
  *
  */
-public class TimeTable {
+public class Timetable {
 
     private Integer id;
     private LocalDateTime startTime;
     private int durationInMinutes;
     private Course course;
     private ClassRoom classRoom;
-    private List<Student> students;
     private Teacher teacher;
 
-    public TimeTable() {
+    public Timetable() {
         this(null, 0, null, null, null);
     }
 
-    public TimeTable(LocalDateTime startTime, int durationInMinutes, Course course, ClassRoom classRoom,
+    public Timetable(LocalDateTime startTime, int durationInMinutes, Course course, ClassRoom classRoom,
             Teacher teacher) {
         this(null, startTime, durationInMinutes, course, classRoom, teacher);
     }
 
-    public TimeTable(Integer id, LocalDateTime startTime, int durationInMinutes, Course course, ClassRoom classRoom,
+    public Timetable(Integer id, LocalDateTime startTime, int durationInMinutes, Course course, ClassRoom classRoom,
             Teacher teacher) {
         this.id = id;
         this.startTime = startTime;
@@ -39,7 +35,6 @@ public class TimeTable {
         this.course = course;
         this.classRoom = classRoom;
         this.teacher = teacher;
-        students = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -90,14 +85,6 @@ public class TimeTable {
         this.teacher = teacher;
     }
 
-    public List<Student> getStudents() {
-        return Collections.unmodifiableList(students);
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students.addAll(students);
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -114,14 +101,14 @@ public class TimeTable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        TimeTable other = (TimeTable) obj;
+        Timetable other = (Timetable) obj;
         return Objects.equals(id, other.id);
     }
 
     @Override
     public String toString() {
         return "TimeTable [id=" + id + ", startTime=" + startTime + ", durationInMinutes=" + durationInMinutes
-                + ", course=" + course + ", classRoom=" + classRoom + ", numberOfStudents=" + students.size()
+                + ", course=" + course + ", classRoom=" + classRoom
                 + ", teacher=" + teacher.getFirstName() + " " + teacher.getLastName()
                 + "]";
     }
