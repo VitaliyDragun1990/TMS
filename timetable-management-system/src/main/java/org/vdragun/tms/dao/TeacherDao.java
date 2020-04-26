@@ -17,7 +17,7 @@ public interface TeacherDao {
     /**
      * Saves specified teacher instance. Saved object receives unique identifier
      */
-    void save(Teacher teachers);
+    void save(Teacher teacher);
 
     /**
      * Saves all specified teacher instances. Each saved object receives unique

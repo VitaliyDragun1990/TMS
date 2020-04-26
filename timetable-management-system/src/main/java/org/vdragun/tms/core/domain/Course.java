@@ -14,18 +14,25 @@ public class Course {
     private String name;
     private String description;
     private Category category;
+    private Teacher teacher;
 
     public Course() {
     }
 
-    public Course(String name, Category category) {
-        this(null, name, category);
+    public Course(String name, Category category, Teacher teacher) {
+        this(null, name, category, teacher);
     }
 
-    public Course(Integer id, String name, Category category) {
+    public Course(Integer id, String name, Category category, Teacher teacher) {
+        this(id, name, category, null, teacher);
+    }
+
+    public Course(Integer id, String name, Category category, String description, Teacher teacher) {
         this.id = id;
         this.name = name;
         this.category = category;
+        this.description = description;
+        this.teacher = teacher;
     }
 
     public Integer getId() {
@@ -58,6 +65,14 @@ public class Course {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 
     @Override

@@ -25,6 +25,10 @@ public class Teacher extends Person {
         this(null, firstName, lastName, title);
     }
 
+    public Teacher(String firstName, String lastName, Title title, LocalDate dateHired) {
+        this(null, firstName, lastName, title, dateHired);
+    }
+
     public Teacher(Integer id, String firstName, String lastName, Title title) {
         this(id, firstName, lastName, title, LocalDate.now());
     }
@@ -58,6 +62,11 @@ public class Teacher extends Person {
 
     public void setCourses(List<Course> courses) {
         this.courses.addAll(courses);
+    }
+
+    public void addCourse(Course course) {
+        courses.add(course);
+        course.setTeacher(this);
     }
 
     @Override
