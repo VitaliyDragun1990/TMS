@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.core.domain.Classroom;
+import org.vdragun.tms.core.domain.Group;
 
 /**
  * Contains helper methods to facilitate JDBC DAO testing. Provides direct work
@@ -26,11 +27,13 @@ public class JdbcTestHelper {
 
     private ClassroomMapper classroomMapper;
     private CategoryMapper categoryMapper;
+    private GroupMapper groupMapper;
 
     public JdbcTestHelper(DataSource dataSource) {
         this.dataSource = dataSource;
         classroomMapper = new ClassroomMapper();
         categoryMapper = new CategoryMapper();
+        groupMapper = new GroupMapper();
     }
 
     public Classroom saveClassroomToDatabase(int capacity) throws SQLException {
@@ -97,6 +100,40 @@ public class JdbcTestHelper {
             int rowNum = 1;
             while (rs.next()) {
                 result.add(categoryMapper.mapRow(rs, rowNum++));
+            }
+        }
+        return result;
+    }
+
+    public Group saveGroupToDatabase(String name) throws SQLException {
+        String sql = "INSERT INTO groups (group_name) VALUES (?);";
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, name);
+
+                ps.executeUpdate();
+                conn.commit();
+                try (ResultSet keys = ps.getGeneratedKeys()) {
+                    keys.next();
+                    return new Group(keys.getInt("group_id"), name);
+                }
+            }
+        }
+    }
+
+    public List<Group> findAllGroupsInDatabase() throws SQLException {
+        String sql = "SELECT group_id, group_name FROM groups";
+
+        List<Group> result = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+
+            int rowNum = 1;
+            while (rs.next()) {
+                result.add(groupMapper.mapRow(rs, rowNum++));
             }
         }
         return result;
