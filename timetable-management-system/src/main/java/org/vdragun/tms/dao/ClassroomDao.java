@@ -11,7 +11,7 @@ import org.vdragun.tms.core.domain.Classroom;
  * @author Vitaliy Dragun
  *
  */
-public interface CalssroomDao {
+public interface ClassroomDao {
 
     /**
      * Saves specified class room instance. Saved object receives unique identifier.
