@@ -19,12 +19,21 @@ public class Category {
     }
 
     public Category(String code) {
-        this(null, code);
+        this(code, null);
+    }
+
+    public Category(String code, String description) {
+        this(null, code, description);
     }
 
     public Category(Integer id, String code) {
+        this(id, code, null);
+    }
+
+    public Category(Integer id, String code, String description) {
         this.id = id;
         this.code = code;
+        this.description = description;
     }
 
     public Integer getId() {

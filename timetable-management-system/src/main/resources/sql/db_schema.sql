@@ -16,7 +16,7 @@ CREATE TABLE groups (
 
 CREATE TABLE categories (
 	category_id SERIAL,
-	category_name VARCHAR(100) NOT NULL,
+	category_code VARCHAR(100) NOT NULL,
 	category_description VARCHAR(255),
 	PRIMARY KEY (category_id)
 );

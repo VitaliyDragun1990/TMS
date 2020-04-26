@@ -24,7 +24,7 @@ public interface CategoryDao {
      * Saves all specified category instances. Each saved object receives unique
      * identifier.
      */
-    void saveAll(List<Category> groups);
+    void saveAll(List<Category> categories);
 
     /**
      * Returns category with specified identifier if any
