@@ -16,10 +16,10 @@ public interface ClassroomDao {
     /**
      * Saves specified class room instance. Saved object receives unique identifier.
      */
-    void save(Classroom classRoom);
+    void save(Classroom classroom);
 
     /**
      * Returns class room with specified identifier if any.
      */
-    Optional<Classroom> findById(Integer classRoomId);
+    Optional<Classroom> findById(Integer classroomId);
 }
