@@ -8,20 +8,20 @@ import java.util.Objects;
  * @author Vitaliy Dragun
  *
  */
-public class ClassRoom {
+public class Classroom {
 
     private Integer id;
     private int capacity;
 
-    public ClassRoom() {
+    public Classroom() {
         this(0);
     }
 
-    public ClassRoom(int capacity) {
+    public Classroom(int capacity) {
         this(null, capacity);
     }
 
-    public ClassRoom(Integer id, int capacity) {
+    public Classroom(Integer id, int capacity) {
         this.id = id;
         this.capacity = capacity;
     }
@@ -58,7 +58,7 @@ public class ClassRoom {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        ClassRoom other = (ClassRoom) obj;
+        Classroom other = (Classroom) obj;
         return Objects.equals(id, other.id);
     }
 

@@ -15,19 +15,19 @@ public class Timetable {
     private LocalDateTime startTime;
     private int durationInMinutes;
     private Course course;
-    private ClassRoom classRoom;
+    private Classroom classRoom;
     private Teacher teacher;
 
     public Timetable() {
         this(null, 0, null, null, null);
     }
 
-    public Timetable(LocalDateTime startTime, int durationInMinutes, Course course, ClassRoom classRoom,
+    public Timetable(LocalDateTime startTime, int durationInMinutes, Course course, Classroom classRoom,
             Teacher teacher) {
         this(null, startTime, durationInMinutes, course, classRoom, teacher);
     }
 
-    public Timetable(Integer id, LocalDateTime startTime, int durationInMinutes, Course course, ClassRoom classRoom,
+    public Timetable(Integer id, LocalDateTime startTime, int durationInMinutes, Course course, Classroom classRoom,
             Teacher teacher) {
         this.id = id;
         this.startTime = startTime;
@@ -69,11 +69,11 @@ public class Timetable {
         this.course = course;
     }
 
-    public ClassRoom getClassRoom() {
+    public Classroom getClassRoom() {
         return classRoom;
     }
 
-    public void setClassRoom(ClassRoom classRoom) {
+    public void setClassRoom(Classroom classRoom) {
         this.classRoom = classRoom;
     }
 
