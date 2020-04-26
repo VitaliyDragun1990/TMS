@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,6 +15,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @ComponentScan(basePackages = { "org.vdragun.tms.dao" })
 @PropertySource("classpath:db.properties")
+@EnableAspectJAutoProxy
 public class DaoConfig {
 
     @Bean
@@ -34,4 +36,8 @@ public class DaoConfig {
         return new JdbcTemplate(dataSource);
     }
 
+    @Bean
+    public DaoExceptionAspect daoExceptionAspect() {
+        return new DaoExceptionAspect();
+    }
 }
