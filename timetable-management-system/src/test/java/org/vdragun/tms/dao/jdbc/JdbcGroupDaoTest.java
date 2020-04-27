@@ -29,7 +29,7 @@ import org.vdragun.tms.dao.GroupDao;
 @SpringJUnitConfig(classes = { DaoConfig.class, TestDaoConfig.class })
 @Sql(scripts = { "/sql/db_schema.sql" }, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
 @DisplayName("Jdbc Group DAO")
-class JdbcGroupDaoTest {
+public class JdbcGroupDaoTest {
 
     private static final String MH_10 = "mh-10";
     private static final String PS_25 = "ps-25";

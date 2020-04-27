@@ -34,7 +34,7 @@ import org.vdragun.tms.dao.TeacherDao;
 @SpringJUnitConfig(classes = { DaoConfig.class, TestDaoConfig.class })
 @Sql(scripts = { "/sql/db_schema.sql" }, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
 @DisplayName("Jdbc Teacher DAO")
-class JdbcTeacherDaoTest {
+public class JdbcTeacherDaoTest {
 
     private static final String DESC_BIO = "any description";
     private static final String COURSE_BIO_25 = "bio-25";
