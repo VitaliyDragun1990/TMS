@@ -352,4 +352,24 @@ public class JdbcTestHelper {
         }
         return result;
     }
+
+    public List<Course> findAllCoursesInDatabase() throws SQLException {
+        String sql = "SELECT c.course_id, course_name, course_description, ca.category_id, category_code, "
+                + "category_description, t.teacher_id, t_first_name, t_last_name, "
+                + "title, date_hired "
+                + "FROM courses AS c INNER JOIN teachers AS t ON c.teacher_id = t.teacher_id "
+                + "INNER JOIN categories AS ca ON c.category_id = ca.category_id;";
+
+        List<Course> result = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+
+            int rowNum = 1;
+            while (rs.next()) {
+                result.add(courseMapper.mapRow(rs, rowNum++));
+            }
+        }
+        return result;
+    }
 }
