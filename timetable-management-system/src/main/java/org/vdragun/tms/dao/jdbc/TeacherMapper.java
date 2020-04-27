@@ -22,10 +22,10 @@ public class TeacherMapper implements RowMapper<Teacher> {
         return mapTeacher(rs);
     }
 
-    public Teacher mapTeacher(ResultSet rs) throws SQLException {
+    private Teacher mapTeacher(ResultSet rs) throws SQLException {
         int id = rs.getInt("teacher_id");
-        String firstName = rs.getString("first_name");
-        String lastName = rs.getString("last_name");
+        String firstName = rs.getString("t_first_name");
+        String lastName = rs.getString("t_last_name");
         Title title = Title.fromString(rs.getString("title"));
         LocalDate dateHired = rs.getObject("date_hired", LocalDate.class);
 

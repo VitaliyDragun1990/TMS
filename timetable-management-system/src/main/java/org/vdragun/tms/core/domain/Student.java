@@ -25,6 +25,9 @@ public class Student extends Person {
         this(null, firstName, lastName);
     }
 
+    public Student(String firstName, String lastName, LocalDate enrollmentDate) {
+        this(null, firstName, lastName, enrollmentDate);
+    }
 
     public Student(Integer id, String firstName, String lastName) {
         this(id, firstName, lastName, LocalDate.now());
@@ -58,6 +61,10 @@ public class Student extends Person {
 
     public void setCourses(List<Course> courses) {
         this.courses.addAll(courses);
+    }
+
+    public void addCourse(Course course) {
+        this.courses.add(course);
     }
 
     @Override
