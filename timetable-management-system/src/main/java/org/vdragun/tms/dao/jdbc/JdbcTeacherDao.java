@@ -21,10 +21,10 @@ import org.vdragun.tms.dao.TeacherDao;
 @Repository
 public class JdbcTeacherDao implements TeacherDao {
 
-    private static final String INSERT_QUERY = "INSERT INTO teachers (first_name, last_name, title, date_hired) "
+    private static final String INSERT_QUERY = "INSERT INTO teachers (t_first_name, t_last_name, title, date_hired) "
             + "VALUES (?, ?, ?, ?);";
     private static final String FIND_ALL_QUERY =
-            "SELECT t.teacher_id, first_name AS t_first_name, last_name AS t_last_name, title, date_hired, "
+            "SELECT t.teacher_id, t_first_name, t_last_name, title, date_hired, "
             + "cr.course_id, course_name, course_description, "
             + "ca.category_id, category_code, category_description "
             + "FROM teachers AS t LEFT OUTER JOIN courses AS cr ON t.teacher_id = cr.teacher_id "

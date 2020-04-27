@@ -23,11 +23,11 @@ import org.vdragun.tms.dao.StudentDao;
 @Repository
 public class JdbcStudentDao implements StudentDao {
 
-    private static final String INSERT_QUERY = "INSERT INTO students (first_name, last_name, enrollment_date) "
+    private static final String INSERT_QUERY = "INSERT INTO students (s_first_name, s_last_name, enrollment_date) "
             + "VALUES (?, ?, ?);";
     private static final String FIND_ALL_QUERY = 
-            "SELECT s.student_id, s.first_name AS s_first_name, s.last_name AS s_last_name, enrollment_date, "
-            + "t.teacher_id, t.first_name AS t_first_name, t.last_name AS t_last_name, title, date_hired, "
+            "SELECT s.student_id, s_first_name, s_last_name, enrollment_date, "
+            + "t.teacher_id, t_first_name, t_last_name, title, date_hired, "
             + "c.course_id, course_name, course_description, g.group_id, group_name, "
             + "ca.category_id, category_code, category_description "
             + "FROM students AS s LEFT OUTER JOIN groups AS g ON s.group_id = g.group_id "

@@ -152,7 +152,7 @@ public class JdbcTestHelper {
 
     public Teacher saveTeacherToDatabase(String firstName, String lastName, Title title, LocalDate dateHired)
             throws SQLException {
-        String sql = "INSERT INTO teachers (first_name, last_name, title, date_hired) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO teachers (t_first_name, t_last_name, title, date_hired) VALUES (?, ?, ?, ?);";
 
         try (Connection conn = dataSource.getConnection()) {
             conn.setAutoCommit(false);
@@ -173,7 +173,7 @@ public class JdbcTestHelper {
     }
 
     public List<Teacher> findAllTeachersInDatabase() throws SQLException {
-        String sql = "SELECT teacher_id, first_name AS t_first_name, last_name AS t_last_name, title, date_hired "
+        String sql = "SELECT teacher_id, t_first_name, t_last_name, title, date_hired "
                 + "FROM teachers";
 
         List<Teacher> result = new ArrayList<>();
@@ -213,7 +213,7 @@ public class JdbcTestHelper {
 
     public Student saveStudentToDatabase(String firstName, String lastName, LocalDate enrollmentDate, Group group)
             throws SQLException {
-        String sql = "INSERT INTO students (first_name, last_name, enrollment_date, group_id) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO students (s_first_name, s_last_name, enrollment_date, group_id) VALUES (?, ?, ?, ?);";
 
         try (Connection conn = dataSource.getConnection()) {
             conn.setAutoCommit(false);
@@ -242,7 +242,7 @@ public class JdbcTestHelper {
     }
 
     public List<Student> findAllStudentsInDatabase() throws SQLException {
-        String sql = "SELECT student_id, first_name AS s_first_name, last_name AS s_last_name, group_id, enrollment_date "
+        String sql = "SELECT student_id, s_first_name, s_last_name, group_id, enrollment_date "
                 + "FROM students";
 
         List<Student> result = new ArrayList<>();
@@ -311,7 +311,7 @@ public class JdbcTestHelper {
 
     public List<Course> findAllStudentCoursesInDatabase(Student student) throws SQLException {
         String sql = "SELECT c.course_id, course_name, course_description, ca.category_id, category_code, "
-                + "category_description, t.teacher_id, t.first_name AS t_first_name, t.last_name AS t_last_name, "
+                + "category_description, t.teacher_id, t_first_name, t_last_name, "
                 + "title, date_hired "
                 + "FROM courses AS c INNER JOIN teachers AS t ON c.teacher_id = t.teacher_id "
                 + "INNER JOIN categories AS ca ON c.category_id = ca.category_id "
@@ -334,7 +334,7 @@ public class JdbcTestHelper {
     }
 
     public List<Student> findAllGroupStudentsInDatabase(Group group) throws SQLException {
-        String sql = "SELECT s.student_id, first_name AS s_first_name, last_name AS s_last_name, enrollment_date "
+        String sql = "SELECT s.student_id, s_first_name, s_last_name, enrollment_date "
                 + "FROM students AS s INNER JOIN groups AS g ON s.group_id = g.group_id "
                 + "WHERE g.group_id = ?";
 

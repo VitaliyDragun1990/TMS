@@ -29,8 +29,8 @@ CREATE TABLE classrooms (
 
 CREATE TABLE teachers (
 	teacher_id SERIAL,
-	first_name VARCHAR(50) NOT NULL,
-	last_name VARCHAR(50) NOT NULL,
+	t_first_name VARCHAR(50) NOT NULL,
+	t_last_name VARCHAR(50) NOT NULL,
 	title VARCHAR(50) NOT NULL,
 	date_hired DATE,
 	PRIMARY KEY (teacher_id)
@@ -62,8 +62,8 @@ CREATE TABLE timetables (
 
 CREATE TABLE students (
 	student_id SERIAL,
-	first_name VARCHAR(50) NOT NULL,
-	last_name VARCHAR(50) NOT NULL,
+	s_first_name VARCHAR(50) NOT NULL,
+	s_last_name VARCHAR(50) NOT NULL,
 	enrollment_date DATE,
 	group_id INTEGER,
 	PRIMARY KEY (student_id),
