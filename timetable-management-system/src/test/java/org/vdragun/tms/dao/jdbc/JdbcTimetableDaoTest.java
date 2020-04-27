@@ -34,7 +34,7 @@ import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.TimetableDao;
 
-@SpringJUnitConfig(classes = { DaoConfig.class, TestDaoConfig.class })
+@SpringJUnitConfig(classes = { DaoConfig.class, DBTestConfig.class })
 @Sql(scripts = { "/sql/db_schema.sql" }, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
 @DisplayName("Jdbc Timetable DAO")
 public class JdbcTimetableDaoTest {

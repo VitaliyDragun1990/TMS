@@ -15,7 +15,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
  *
  */
 @Configuration
-public class TestDaoConfig {
+public class DBTestConfig {
 
     @Bean
     @Primary

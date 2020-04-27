@@ -32,7 +32,7 @@ import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.dao.StudentDao;
 
-@SpringJUnitConfig(classes = { DaoConfig.class, TestDaoConfig.class })
+@SpringJUnitConfig(classes = { DaoConfig.class, DBTestConfig.class })
 @Sql(scripts = { "/sql/db_schema.sql" }, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
 @DisplayName("Jdbc Student DAO")
 public class JdbcStudentDaoTest {

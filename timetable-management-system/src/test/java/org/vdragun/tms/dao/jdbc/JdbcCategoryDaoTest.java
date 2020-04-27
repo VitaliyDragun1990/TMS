@@ -25,7 +25,7 @@ import org.vdragun.tms.config.DaoConfig;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.dao.CategoryDao;
 
-@SpringJUnitConfig(classes = { DaoConfig.class, TestDaoConfig.class })
+@SpringJUnitConfig(classes = { DaoConfig.class, DBTestConfig.class })
 @Sql(scripts = { "/sql/db_schema.sql" }, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
 @DisplayName("Jdbc Category DAO")
 public class JdbcCategoryDaoTest {
