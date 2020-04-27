@@ -18,17 +18,13 @@ import org.vdragun.tms.core.domain.Title;
 public class TeacherMapper implements RowMapper<Teacher> {
 
     @Override
-    public Teacher mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return mapTeacher(rs);
-    }
-
-    private Teacher mapTeacher(ResultSet rs) throws SQLException {
-        int id = rs.getInt("teacher_id");
-        String firstName = rs.getString("t_first_name");
-        String lastName = rs.getString("t_last_name");
-        Title title = Title.fromString(rs.getString("title"));
-        LocalDate dateHired = rs.getObject("date_hired", LocalDate.class);
-
+    public Teacher mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+        int id = resultSet.getInt("teacher_id");
+        String firstName = resultSet.getString("t_first_name");
+        String lastName = resultSet.getString("t_last_name");
+        Title title = Title.fromString(resultSet.getString("title"));
+        LocalDate dateHired = resultSet.getObject("date_hired", LocalDate.class);
+        
         return new Teacher(id, firstName, lastName, title, dateHired);
     }
 

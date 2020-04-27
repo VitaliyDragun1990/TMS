@@ -38,9 +38,9 @@ public class JdbcClassroomDao implements ClassroomDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT_QUERY, new String[] { "classroom_id" });
-            ps.setInt(1, classroom.getCapacity());
-            return ps;
+            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, new String[] { "classroom_id" });
+            statement.setInt(1, classroom.getCapacity());
+            return statement;
         }, keyHolder);
 
         if (rowsInserted != 1) {

@@ -26,12 +26,12 @@ public class CourseMapper implements RowMapper<Course> {
     }
 
     @Override
-    public Course mapRow(ResultSet rs, int rowNum) throws SQLException {
-        int id = rs.getInt("course_id");
-        String name = rs.getString("course_name");
-        String description = rs.getString("course_description");
-        Category category = categoryMapper.mapRow(rs, rowNum);
-        Teacher teacher = teacherMapper.mapRow(rs, rowNum);
+    public Course mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+        int id = resultSet.getInt("course_id");
+        String name = resultSet.getString("course_name");
+        String description = resultSet.getString("course_description");
+        Category category = categoryMapper.mapRow(resultSet, rowNum);
+        Teacher teacher = teacherMapper.mapRow(resultSet, rowNum);
 
         return new Course(id, name, category, description, teacher);
     }

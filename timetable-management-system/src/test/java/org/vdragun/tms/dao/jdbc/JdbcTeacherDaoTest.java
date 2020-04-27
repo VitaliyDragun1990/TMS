@@ -37,8 +37,8 @@ import org.vdragun.tms.dao.TeacherDao;
 public class JdbcTeacherDaoTest {
 
     private static final String DESC_BIO = "any description";
-    private static final String COURSE_BIO_25 = "bio-25";
-    private static final String COURSE_BIO_10 = "bio-10";
+    private static final String BIO_TWENTY = "bio-20";
+    private static final String BIO_TEN = "bio-10";
     private static final String CAT_DESC = "Biology";
     private static final String CAT_CODE = "BIO";
     private static final String SMITH = "Smith";
@@ -118,7 +118,7 @@ public class JdbcTeacherDaoTest {
     void shouldReturnTeacherForCourseWithGivenId() throws SQLException {
         Category courseCategory = jdbcHelper.saveCategoryToDatabase(CAT_CODE, CAT_DESC);
         Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
-        Course course = jdbcHelper.saveCourseToDatabase(COURSE_BIO_25, DESC_BIO, courseCategory, teacher);
+        Course course = jdbcHelper.saveCourseToDatabase(BIO_TWENTY, DESC_BIO, courseCategory, teacher);
 
         Optional<Teacher> result = dao.findForCourse(course.getId());
 
@@ -130,12 +130,12 @@ public class JdbcTeacherDaoTest {
     void shouldReturnTeacherWithAllRelatedCourses() throws SQLException {
         Category courseCategory = jdbcHelper.saveCategoryToDatabase(CAT_CODE, CAT_DESC);
         Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
-        Course bio25 = jdbcHelper.saveCourseToDatabase(COURSE_BIO_25, DESC_BIO, courseCategory, teacher);
-        Course bio10 = jdbcHelper.saveCourseToDatabase(COURSE_BIO_10, DESC_BIO, courseCategory, teacher);
+        Course bioTwenty = jdbcHelper.saveCourseToDatabase(BIO_TWENTY, DESC_BIO, courseCategory, teacher);
+        Course bioTen = jdbcHelper.saveCourseToDatabase(BIO_TEN, DESC_BIO, courseCategory, teacher);
 
         Optional<Teacher> result = dao.findById(teacher.getId());
 
-        assertTeacherCourses(result.get(), bio25, bio10);
+        assertTeacherCourses(result.get(), bioTwenty, bioTen);
     }
 
     private void assertTeacherCourses(Teacher teacher, Course... expected) {

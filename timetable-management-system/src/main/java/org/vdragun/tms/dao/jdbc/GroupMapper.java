@@ -16,8 +16,8 @@ import org.vdragun.tms.core.domain.Group;
 public class GroupMapper implements RowMapper<Group> {
 
     @Override
-    public Group mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new Group(rs.getInt("group_id"), rs.getString("group_name"));
+    public Group mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+        return new Group(resultSet.getInt("group_id"), resultSet.getString("group_name"));
     }
 
 }

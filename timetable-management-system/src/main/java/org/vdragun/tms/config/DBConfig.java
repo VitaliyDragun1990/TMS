@@ -15,15 +15,15 @@ public class DBConfig {
 
     @Bean
     public DataSource dataSource(Environment env) {
-        HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl(env.getRequiredProperty("db.url"));
-        ds.setPassword(env.getRequiredProperty("db.password"));
-        ds.setUsername(env.getRequiredProperty("db.username"));
-        ds.setMaximumPoolSize(env.getRequiredProperty("db.maxPoolSize", Integer.class));
-        ds.setMinimumIdle(env.getRequiredProperty("db.minIdle", Integer.class));
-        ds.setIdleTimeout(env.getRequiredProperty("db.maxIdleTimeout", Integer.class));
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl(env.getRequiredProperty("db.url"));
+        dataSource.setPassword(env.getRequiredProperty("db.password"));
+        dataSource.setUsername(env.getRequiredProperty("db.username"));
+        dataSource.setMaximumPoolSize(env.getRequiredProperty("db.maxPoolSize", Integer.class));
+        dataSource.setMinimumIdle(env.getRequiredProperty("db.minIdle", Integer.class));
+        dataSource.setIdleTimeout(env.getRequiredProperty("db.maxIdleTimeout", Integer.class));
 
-        return ds;
+        return dataSource;
     }
 
 }

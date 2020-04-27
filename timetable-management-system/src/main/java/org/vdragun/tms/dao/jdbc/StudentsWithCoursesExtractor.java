@@ -32,33 +32,33 @@ public class StudentsWithCoursesExtractor implements ResultSetExtractor<List<Stu
     }
 
     @Override
-    public List<Student> extractData(ResultSet rs) throws SQLException {
+    public List<Student> extractData(ResultSet resultSet) throws SQLException {
         Map<Integer, Student> result = new HashMap<>();
 
         int rowNum = 1;
-        while (rs.next()) {
+        while (resultSet.next()) {
             int currentRow = rowNum++;
-            int studentId = rs.getInt("student_id");
+            int studentId = resultSet.getInt("student_id");
 
-            Student student = result.computeIfAbsent(studentId, id -> mapStudent(rs, currentRow));
+            Student student = result.computeIfAbsent(studentId, id -> mapStudent(resultSet, currentRow));
 
-            Integer groupId = rs.getObject("group_id", Integer.class);
+            Integer groupId = resultSet.getObject("group_id", Integer.class);
             if (groupId != null) {
-                student.setGroup(groupMapper.mapRow(rs, rowNum));
+                student.setGroup(groupMapper.mapRow(resultSet, rowNum));
             }
 
-            Integer courseId = rs.getObject("course_id", Integer.class);
+            Integer courseId = resultSet.getObject("course_id", Integer.class);
             if (courseId != null) {
-                student.addCourse(courseMapper.mapRow(rs, rowNum));
+                student.addCourse(courseMapper.mapRow(resultSet, rowNum));
             }
         }
 
         return new ArrayList<>(result.values());
     }
 
-    private Student mapStudent(ResultSet rs, int rowNum) {
+    private Student mapStudent(ResultSet resultSet, int rowNum) {
         try {
-            return studentMapper.mapRow(rs, rowNum);
+            return studentMapper.mapRow(resultSet, rowNum);
         } catch (SQLException e) {
             throw new DataRetrievalFailureException(e.getMessage(), e);
         }

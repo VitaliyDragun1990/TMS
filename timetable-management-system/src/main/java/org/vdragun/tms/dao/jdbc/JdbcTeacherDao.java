@@ -45,12 +45,12 @@ public class JdbcTeacherDao implements TeacherDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT_QUERY, new String[] { "teacher_id" });
-            ps.setString(1, teacher.getFirstName());
-            ps.setString(2, teacher.getLastName());
-            ps.setString(3, teacher.getTitle().asString());
-            ps.setObject(4, teacher.getDateHired());
-            return ps;
+            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, new String[] { "teacher_id" });
+            statement.setString(1, teacher.getFirstName());
+            statement.setString(2, teacher.getLastName());
+            statement.setString(3, teacher.getTitle().asString());
+            statement.setObject(4, teacher.getDateHired());
+            return statement;
         }, keyHolder);
 
         if (rowsInserted != 1) {

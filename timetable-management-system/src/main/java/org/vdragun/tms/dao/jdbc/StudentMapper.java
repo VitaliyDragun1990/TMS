@@ -17,12 +17,12 @@ import org.vdragun.tms.core.domain.Student;
 public class StudentMapper implements RowMapper<Student> {
 
     @Override
-    public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public Student mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         return new Student(
-                rs.getInt("student_id"),
-                rs.getString("s_first_name"),
-                rs.getString("s_last_name"),
-                rs.getObject("enrollment_date", LocalDate.class));
+                resultSet.getInt("student_id"),
+                resultSet.getString("s_first_name"),
+                resultSet.getString("s_last_name"),
+                resultSet.getObject("enrollment_date", LocalDate.class));
     }
 
 }

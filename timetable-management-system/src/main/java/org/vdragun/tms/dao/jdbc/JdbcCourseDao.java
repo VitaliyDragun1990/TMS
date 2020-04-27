@@ -45,12 +45,12 @@ public class JdbcCourseDao implements CourseDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT_QUERY, new String[] { "course_id" });
-            ps.setString(1, course.getName());
-            ps.setString(2, course.getDescription());
-            ps.setInt(3, course.getCategory().getId());
-            ps.setInt(4, course.getTeacher().getId());
-            return ps;
+            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, new String[] { "course_id" });
+            statement.setString(1, course.getName());
+            statement.setString(2, course.getDescription());
+            statement.setInt(3, course.getCategory().getId());
+            statement.setInt(4, course.getTeacher().getId());
+            return statement;
         }, keyHolder);
 
         if (rowsInserted != 1) {

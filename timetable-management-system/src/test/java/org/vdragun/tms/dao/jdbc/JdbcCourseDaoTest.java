@@ -35,9 +35,9 @@ import org.vdragun.tms.dao.CourseDao;
 @DisplayName("Jdbc Course DAO")
 public class JdbcCourseDaoTest {
 
-    private static final String COURSE_DESCRIPTION = "Course description";
-    private static final String COURSE_BIO_25 = "bio-25";
-    private static final String COURSE_BIO_10 = "bio-10";
+    private static final String COURSE_DESCR = "Course description";
+    private static final String BIO_TWENTY_FIVE = "bio-25";
+    private static final String BIO_TEN = "bio-10";
     private static final String DESC_BIOLOGY = "Biology";
     private static final String DESC_ART = "Art";
     private static final String CODE_BIO = "BIO";
@@ -62,7 +62,7 @@ public class JdbcCourseDaoTest {
     void shouldFindCourseById() throws SQLException {
         Category category = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESC_BIOLOGY);
         Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, LocalDate.now());
-        Course expected = jdbcHelper.saveCourseToDatabase(COURSE_BIO_25, COURSE_DESCRIPTION, category, teacher);
+        Course expected = jdbcHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
 
         Optional<Course> result = dao.findById(expected.getId());
 
@@ -74,7 +74,7 @@ public class JdbcCourseDaoTest {
     void shouldSaveNewCourseToDatabase() throws SQLException {
         Category category = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESC_BIOLOGY);
         Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, LocalDate.now());
-        Course course = new Course(COURSE_BIO_25, category, teacher);
+        Course course = new Course(BIO_TWENTY_FIVE, category, teacher);
 
         dao.save(course);
 
@@ -85,12 +85,12 @@ public class JdbcCourseDaoTest {
     void shouldSaveSeveralNewCoursesToDatabase() throws SQLException {
         Category category = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESC_BIOLOGY);
         Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, LocalDate.now());
-        Course bio25 = new Course(COURSE_BIO_25, category, teacher);
-        Course bio10 = new Course(COURSE_BIO_10, category, teacher);
+        Course bioTwentyFive = new Course(BIO_TWENTY_FIVE, category, teacher);
+        Course bioTen = new Course(BIO_TEN, category, teacher);
 
-        dao.saveAll(asList(bio25, bio10));
+        dao.saveAll(asList(bioTwentyFive, bioTen));
 
-        assertCoursesInDatabase(bio10, bio25);
+        assertCoursesInDatabase(bioTen, bioTwentyFive);
     }
 
     @Test
@@ -104,13 +104,13 @@ public class JdbcCourseDaoTest {
     void shouldFindAllCoursesInDatabase() throws SQLException {
         Category category = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESC_BIOLOGY);
         Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, LocalDate.now());
-        Course bio25 = jdbcHelper.saveCourseToDatabase(COURSE_BIO_25, COURSE_DESCRIPTION, category, teacher);
-        Course bio10 = jdbcHelper.saveCourseToDatabase(COURSE_BIO_10, COURSE_DESCRIPTION, category, teacher);
+        Course bioTwentyFive = jdbcHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
+        Course bioTen = jdbcHelper.saveCourseToDatabase(BIO_TEN, COURSE_DESCR, category, teacher);
 
         List<Course> result = dao.findAll();
 
         assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(bio25, bio10));
+        assertThat(result, containsInAnyOrder(bioTwentyFive, bioTen));
     }
 
     @Test
@@ -118,8 +118,8 @@ public class JdbcCourseDaoTest {
         Category categoryBio = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESC_BIOLOGY);
         Category categoryArt = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
         Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, LocalDate.now());
-        jdbcHelper.saveCourseToDatabase(COURSE_BIO_25, COURSE_DESCRIPTION, categoryBio, teacher);
-        jdbcHelper.saveCourseToDatabase(COURSE_BIO_10, COURSE_DESCRIPTION, categoryBio, teacher);
+        jdbcHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, categoryBio, teacher);
+        jdbcHelper.saveCourseToDatabase(BIO_TEN, COURSE_DESCR, categoryBio, teacher);
 
         List<Course> result = dao.findByCategory(categoryArt.getId());
 
@@ -130,13 +130,13 @@ public class JdbcCourseDaoTest {
     void shouldFindAllCoursesForSpecifiedCategory() throws SQLException {
         Category categoryBio = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESC_BIOLOGY);
         Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, LocalDate.now());
-        Course bio25 = jdbcHelper.saveCourseToDatabase(COURSE_BIO_25, COURSE_DESCRIPTION, categoryBio, teacher);
-        Course bio10 = jdbcHelper.saveCourseToDatabase(COURSE_BIO_10, COURSE_DESCRIPTION, categoryBio, teacher);
+        Course bioTwentyFive = jdbcHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, categoryBio, teacher);
+        Course bioTen = jdbcHelper.saveCourseToDatabase(BIO_TEN, COURSE_DESCR, categoryBio, teacher);
 
         List<Course> result = dao.findByCategory(categoryBio.getId());
 
         assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(bio25, bio10));
+        assertThat(result, containsInAnyOrder(bioTwentyFive, bioTen));
     }
 
     private void assertCoursesInDatabase(Course... expected) throws SQLException {

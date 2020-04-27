@@ -31,8 +31,8 @@ import org.vdragun.tms.dao.GroupDao;
 @DisplayName("Jdbc Group DAO")
 public class JdbcGroupDaoTest {
 
-    private static final String MH_10 = "mh-10";
-    private static final String PS_25 = "ps-25";
+    private static final String MH_TEN = "mh-10";
+    private static final String PS_TWENTY_FIVE = "ps-25";
 
     @Autowired
     private GroupDao dao;
@@ -49,7 +49,7 @@ public class JdbcGroupDaoTest {
 
     @Test
     void shouldFindExistingGroupById() throws SQLException {
-        Group expected = jdbcHelper.saveGroupToDatabase(PS_25);
+        Group expected = jdbcHelper.saveGroupToDatabase(PS_TWENTY_FIVE);
 
         Optional<Group> result = dao.findById(expected.getId());
 
@@ -59,21 +59,21 @@ public class JdbcGroupDaoTest {
 
     @Test
     void shouldSaveNewGroupToDatabase() throws SQLException {
-        Group ps25 = new Group(PS_25);
+        Group psTwentyFive = new Group(PS_TWENTY_FIVE);
 
-        dao.save(ps25);
+        dao.save(psTwentyFive);
 
-        assertGroupsInDatabase(ps25);
+        assertGroupsInDatabase(psTwentyFive);
     }
 
     @Test
     void shouldSaveSeveralNewGroupToDatabase() throws SQLException {
-        Group ps25 = new Group(PS_25);
-        Group mh10 = new Group(MH_10);
+        Group psTwentyFive = new Group(PS_TWENTY_FIVE);
+        Group mhTen = new Group(MH_TEN);
 
-        dao.saveAll(asList(ps25, mh10));
+        dao.saveAll(asList(psTwentyFive, mhTen));
 
-        assertGroupsInDatabase(ps25, mh10);
+        assertGroupsInDatabase(psTwentyFive, mhTen);
     }
 
     @Test
@@ -85,13 +85,13 @@ public class JdbcGroupDaoTest {
 
     @Test
     void shouldFindAllGroupInstancesInDatabase() throws SQLException {
-        Group ps25 = jdbcHelper.saveGroupToDatabase(PS_25);
-        Group mh10 = jdbcHelper.saveGroupToDatabase(MH_10);
+        Group psTwentyFive = jdbcHelper.saveGroupToDatabase(PS_TWENTY_FIVE);
+        Group mhTen = jdbcHelper.saveGroupToDatabase(MH_TEN);
 
         List<Group> result = dao.findAll();
 
         assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(ps25, mh10));
+        assertThat(result, containsInAnyOrder(psTwentyFive, mhTen));
     }
 
     private void assertGroupsInDatabase(Group... expected) throws SQLException {

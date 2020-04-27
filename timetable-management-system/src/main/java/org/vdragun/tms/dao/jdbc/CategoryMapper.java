@@ -16,11 +16,11 @@ import org.vdragun.tms.core.domain.Category;
 public class CategoryMapper implements RowMapper<Category> {
 
     @Override
-    public Category mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public Category mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         return new Category(
-                rs.getInt("category_id"),
-                rs.getString("category_code"),
-                rs.getString("category_description"));
+                resultSet.getInt("category_id"),
+                resultSet.getString("category_code"),
+                resultSet.getString("category_description"));
     }
 
 }

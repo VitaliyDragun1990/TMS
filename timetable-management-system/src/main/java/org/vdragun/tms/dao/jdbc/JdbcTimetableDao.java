@@ -62,13 +62,13 @@ public class JdbcTimetableDao implements TimetableDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT_QUERY, new String[] { "timetable_id" });
-            ps.setObject(1, timetable.getStartTime());
-            ps.setInt(2, timetable.getDurationInMinutes());
-            ps.setInt(3, timetable.getClassroom().getId());
-            ps.setInt(4, timetable.getCourse().getId());
-            ps.setInt(5, timetable.getTeacher().getId());
-            return ps;
+            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, new String[] { "timetable_id" });
+            statement.setObject(1, timetable.getStartTime());
+            statement.setInt(2, timetable.getDurationInMinutes());
+            statement.setInt(3, timetable.getClassroom().getId());
+            statement.setInt(4, timetable.getCourse().getId());
+            statement.setInt(5, timetable.getTeacher().getId());
+            return statement;
         }, keyHolder);
 
         if (rowsInserted != 1) {

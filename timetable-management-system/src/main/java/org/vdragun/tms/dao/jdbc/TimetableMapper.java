@@ -30,13 +30,13 @@ public class TimetableMapper implements RowMapper<Timetable> {
     }
 
     @Override
-    public Timetable mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Integer id = rs.getInt("timetable_id");
-        LocalDateTime startTime = rs.getObject("start_date_time", LocalDateTime.class);
-        int duration = rs.getInt("duration");
-        Course course = courseMapper.mapRow(rs, rowNum);
-        Teacher teacher = teacherMapper.mapRow(rs, rowNum);
-        Classroom classroom = classroomMapper.mapRow(rs, rowNum);
+    public Timetable mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+        Integer id = resultSet.getInt("timetable_id");
+        LocalDateTime startTime = resultSet.getObject("start_date_time", LocalDateTime.class);
+        int duration = resultSet.getInt("duration");
+        Course course = courseMapper.mapRow(resultSet, rowNum);
+        Teacher teacher = teacherMapper.mapRow(resultSet, rowNum);
+        Classroom classroom = classroomMapper.mapRow(resultSet, rowNum);
 
         return new Timetable(id, startTime, duration, course, classroom, teacher);
     }

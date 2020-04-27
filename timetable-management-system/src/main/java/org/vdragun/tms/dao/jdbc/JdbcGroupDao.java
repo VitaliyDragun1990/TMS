@@ -38,9 +38,9 @@ public class JdbcGroupDao implements GroupDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT_QUERY, new String[] { "group_id" });
-            ps.setString(1, group.getName());
-            return ps;
+            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, new String[] { "group_id" });
+            statement.setString(1, group.getName());
+            return statement;
         }, keyHolder);
 
         if (rowsInserted != 1) {

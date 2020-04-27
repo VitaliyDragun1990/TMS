@@ -16,8 +16,8 @@ import org.vdragun.tms.core.domain.Classroom;
 public class ClassroomMapper implements RowMapper<Classroom> {
 
     @Override
-    public Classroom mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new Classroom(rs.getInt("classroom_id"), rs.getInt("capacity"));
+    public Classroom mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+        return new Classroom(resultSet.getInt("classroom_id"), resultSet.getInt("capacity"));
     }
 
 }

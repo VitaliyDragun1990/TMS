@@ -54,14 +54,14 @@ public class JdbcTestHelper {
     public Classroom saveClassroomToDatabase(int capacity) throws SQLException {
         String sql = "INSERT INTO classrooms (capacity) VALUES (?);";
 
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setInt(1, capacity);
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setInt(1, capacity);
 
-                ps.executeUpdate();
-                conn.commit();
-                try (ResultSet keys = ps.getGeneratedKeys()) {
+                statement.executeUpdate();
+                connection.commit();
+                try (ResultSet keys = statement.getGeneratedKeys()) {
                     keys.next();
                     return new Classroom(keys.getInt("classroom_id"), capacity);
                 }
@@ -73,13 +73,13 @@ public class JdbcTestHelper {
         String sql = "SELECT classroom_id, capacity FROM classrooms;";
         
         List<Classroom> result = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
 
             int rowNum = 1;
-            while (rs.next()) {
-                result.add(classroomMapper.mapRow(rs, rowNum++));
+            while (resultSet.next()) {
+                result.add(classroomMapper.mapRow(resultSet, rowNum++));
             }
         }
         return result;
@@ -88,15 +88,15 @@ public class JdbcTestHelper {
     public Category saveCategoryToDatabase(String code, String description) throws SQLException {
         String sql = "INSERT INTO categories (category_code, category_description) VALUES (?, ?);";
 
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setString(1, code);
-                ps.setString(2, description);
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setString(1, code);
+                statement.setString(2, description);
 
-                ps.executeUpdate();
-                conn.commit();
-                try (ResultSet keys = ps.getGeneratedKeys()) {
+                statement.executeUpdate();
+                connection.commit();
+                try (ResultSet keys = statement.getGeneratedKeys()) {
                     keys.next();
                     return new Category(keys.getInt("category_id"), code, description);
                 }
@@ -108,13 +108,13 @@ public class JdbcTestHelper {
         String sql = "SELECT category_id, category_code, category_description FROM categories;";
 
         List<Category> result = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
 
             int rowNum = 1;
-            while (rs.next()) {
-                result.add(categoryMapper.mapRow(rs, rowNum++));
+            while (resultSet.next()) {
+                result.add(categoryMapper.mapRow(resultSet, rowNum++));
             }
         }
         return result;
@@ -123,14 +123,14 @@ public class JdbcTestHelper {
     public Group saveGroupToDatabase(String name) throws SQLException {
         String sql = "INSERT INTO groups (group_name) VALUES (?);";
 
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setString(1, name);
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setString(1, name);
 
-                ps.executeUpdate();
-                conn.commit();
-                try (ResultSet keys = ps.getGeneratedKeys()) {
+                statement.executeUpdate();
+                connection.commit();
+                try (ResultSet keys = statement.getGeneratedKeys()) {
                     keys.next();
                     return new Group(keys.getInt("group_id"), name);
                 }
@@ -142,13 +142,13 @@ public class JdbcTestHelper {
         String sql = "SELECT group_id, group_name FROM groups";
 
         List<Group> result = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
 
             int rowNum = 1;
-            while (rs.next()) {
-                result.add(groupMapper.mapRow(rs, rowNum++));
+            while (resultSet.next()) {
+                result.add(groupMapper.mapRow(resultSet, rowNum++));
             }
         }
         return result;
@@ -158,17 +158,17 @@ public class JdbcTestHelper {
             throws SQLException {
         String sql = "INSERT INTO teachers (t_first_name, t_last_name, title, date_hired) VALUES (?, ?, ?, ?);";
 
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setString(1, firstName);
-                ps.setString(2, lastName);
-                ps.setString(3, title.asString());
-                ps.setObject(4, dateHired);
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setString(1, firstName);
+                statement.setString(2, lastName);
+                statement.setString(3, title.asString());
+                statement.setObject(4, dateHired);
 
-                ps.executeUpdate();
-                conn.commit();
-                try (ResultSet keys = ps.getGeneratedKeys()) {
+                statement.executeUpdate();
+                connection.commit();
+                try (ResultSet keys = statement.getGeneratedKeys()) {
                     keys.next();
                     return new Teacher(keys.getInt("teacher_id"), firstName, lastName, title, dateHired);
                 }
@@ -181,13 +181,13 @@ public class JdbcTestHelper {
                 + "FROM teachers";
 
         List<Teacher> result = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
 
             int rowNum = 1;
-            while (rs.next()) {
-                result.add(teacherMapper.mapRow(rs, rowNum++));
+            while (resultSet.next()) {
+                result.add(teacherMapper.mapRow(resultSet, rowNum++));
             }
         }
         return result;
@@ -197,17 +197,17 @@ public class JdbcTestHelper {
             throws SQLException {
         String sql = "INSERT INTO courses (course_name, course_description, category_id, teacher_id) VALUES (?, ?, ?, ?);";
 
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setString(1, name);
-                ps.setString(2, desc);
-                ps.setInt(3, category.getId());
-                ps.setInt(4, teacher.getId());
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setString(1, name);
+                statement.setString(2, desc);
+                statement.setInt(3, category.getId());
+                statement.setInt(4, teacher.getId());
 
-                ps.executeUpdate();
-                conn.commit();
-                try (ResultSet keys = ps.getGeneratedKeys()) {
+                statement.executeUpdate();
+                connection.commit();
+                try (ResultSet keys = statement.getGeneratedKeys()) {
                     keys.next();
                     return new Course(keys.getInt("course_id"), name, category, desc, teacher);
                 }
@@ -219,18 +219,18 @@ public class JdbcTestHelper {
             throws SQLException {
         String sql = "INSERT INTO students (s_first_name, s_last_name, enrollment_date, group_id) VALUES (?, ?, ?, ?);";
 
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setString(1, firstName);
-                ps.setString(2, lastName);
-                ps.setObject(3, enrollmentDate);
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setString(1, firstName);
+                statement.setString(2, lastName);
+                statement.setObject(3, enrollmentDate);
                 Integer groupId = group != null ? group.getId() : null;
-                ps.setObject(4, groupId);
+                statement.setObject(4, groupId);
 
-                ps.executeUpdate();
-                conn.commit();
-                try (ResultSet keys = ps.getGeneratedKeys()) {
+                statement.executeUpdate();
+                connection.commit();
+                try (ResultSet keys = statement.getGeneratedKeys()) {
                     keys.next();
                     Student s = new Student(keys.getInt("student_id"), firstName, lastName, enrollmentDate);
                     s.setGroup(group);
@@ -250,13 +250,13 @@ public class JdbcTestHelper {
                 + "FROM students";
 
         List<Student> result = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
 
             int rowNum = 1;
-            while (rs.next()) {
-                result.add(studentMapper.mapRow(rs, rowNum++));
+            while (resultSet.next()) {
+                result.add(studentMapper.mapRow(resultSet, rowNum++));
             }
         }
         return result;
@@ -265,51 +265,51 @@ public class JdbcTestHelper {
     public void addStudentsToCourseInDatabase(Course course, Student... students) throws SQLException {
         String sql = "INSERT INTO student_courses (student_id, course_id) VALUES (?, ?);";
 
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 for (Student student : students) {
-                    ps.setInt(1, student.getId());
-                    ps.setInt(2, course.getId());
-                    ps.addBatch();
+                    statement.setInt(1, student.getId());
+                    statement.setInt(2, course.getId());
+                    statement.addBatch();
                 }
-                ps.executeBatch();
+                statement.executeBatch();
             }
-            conn.commit();
+            connection.commit();
         }
     }
 
     public void addStudentToCoursesInDatabase(Student student, Course... courses) throws SQLException {
         String sql = "INSERT INTO student_courses (student_id, course_id) VALUES (?, ?);";
 
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 for (Course course : courses) {
-                    ps.setInt(1, student.getId());
-                    ps.setInt(2, course.getId());
-                    ps.addBatch();
+                    statement.setInt(1, student.getId());
+                    statement.setInt(2, course.getId());
+                    statement.addBatch();
                 }
-                ps.executeBatch();
+                statement.executeBatch();
             }
-            conn.commit();
+            connection.commit();
         }
     }
 
     public void addStudentsToGroupInDatabase(Group group, Student... students) throws SQLException {
         String sql = "UPDATE students SET group_id = ? WHERE student_id = ?;";
 
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 for (Student student : students) {
-                    ps.setInt(1, group.getId());
-                    ps.setInt(2, student.getId());
-                    ps.addBatch();
+                    statement.setInt(1, group.getId());
+                    statement.setInt(2, student.getId());
+                    statement.addBatch();
                 }
-                ps.executeBatch();
+                statement.executeBatch();
             }
-            conn.commit();
+            connection.commit();
         }
     }
 
@@ -323,14 +323,14 @@ public class JdbcTestHelper {
                 + "WHERE sc.student_id = ?";
 
         List<Course> result = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, student.getId());
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, student.getId());
 
             int rowNum = 1;
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    result.add(courseMapper.mapRow(rs, rowNum++));
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    result.add(courseMapper.mapRow(resultSet, rowNum++));
                 }
             }
         }
@@ -343,14 +343,14 @@ public class JdbcTestHelper {
                 + "WHERE g.group_id = ?";
 
         List<Student> result = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, group.getId());
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, group.getId());
 
             int rowNum = 1;
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    result.add(studentMapper.mapRow(rs, rowNum++));
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    result.add(studentMapper.mapRow(resultSet, rowNum++));
                 }
             }
         }
@@ -365,13 +365,13 @@ public class JdbcTestHelper {
                 + "INNER JOIN categories AS ca ON c.category_id = ca.category_id;";
 
         List<Course> result = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
 
             int rowNum = 1;
-            while (rs.next()) {
-                result.add(courseMapper.mapRow(rs, rowNum++));
+            while (resultSet.next()) {
+                result.add(courseMapper.mapRow(resultSet, rowNum++));
             }
         }
         return result;
@@ -382,18 +382,18 @@ public class JdbcTestHelper {
         String sql = "INSERT INTO timetables (start_date_time, duration, classroom_id, course_id, teacher_id) "
                 + "VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                ps.setObject(1, startTime);
-                ps.setInt(2, duration);
-                ps.setInt(3, classroom.getId());
-                ps.setInt(4, course.getId());
-                ps.setInt(5, teacher.getId());
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setObject(1, startTime);
+                statement.setInt(2, duration);
+                statement.setInt(3, classroom.getId());
+                statement.setInt(4, course.getId());
+                statement.setInt(5, teacher.getId());
 
-                ps.executeUpdate();
-                conn.commit();
-                try (ResultSet keys = ps.getGeneratedKeys()) {
+                statement.executeUpdate();
+                connection.commit();
+                try (ResultSet keys = statement.getGeneratedKeys()) {
                     keys.next();
                     return new Timetable(keys.getInt("timetable_id"), startTime, duration, course, classroom,
                             teacher);
@@ -413,13 +413,13 @@ public class JdbcTestHelper {
                 + "INNER JOIN categories AS ca ON c.category_id = ca.category_id ";
 
         List<Timetable> result = new ArrayList<>();
-        try (Connection conn = dataSource.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
 
             int rowNum = 1;
-            while (rs.next()) {
-                result.add(timetableMapper.mapRow(rs, rowNum++));
+            while (resultSet.next()) {
+                result.add(timetableMapper.mapRow(resultSet, rowNum++));
             }
         }
         return result;

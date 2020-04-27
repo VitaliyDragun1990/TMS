@@ -41,10 +41,10 @@ public class JdbcCategoryDao implements CategoryDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT_QUERY, new String[] { "category_id" });
-            ps.setString(1, category.getCode());
-            ps.setString(2, category.getDescription());
-            return ps;
+            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, new String[] { "category_id" });
+            statement.setString(1, category.getCode());
+            statement.setString(2, category.getDescription());
+            return statement;
         }, keyHolder);
 
         if (rowsInserted != 1) {

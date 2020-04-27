@@ -30,28 +30,28 @@ public class TeachersWithCoursesExtractor implements ResultSetExtractor<List<Tea
     }
 
     @Override
-    public List<Teacher> extractData(ResultSet rs) throws SQLException {
+    public List<Teacher> extractData(ResultSet resultSet) throws SQLException {
         Map<Integer, Teacher> result = new HashMap<>();
 
         int rowNum = 1;
-        while (rs.next()) {
+        while (resultSet.next()) {
             int currentRow = rowNum++;
-            int teacherId = rs.getInt("teacher_id");
+            int teacherId = resultSet.getInt("teacher_id");
 
-            Teacher teacher = result.computeIfAbsent(teacherId, id -> mapTeacher(rs, currentRow));
+            Teacher teacher = result.computeIfAbsent(teacherId, id -> mapTeacher(resultSet, currentRow));
 
-            Integer courseId = rs.getObject("course_id", Integer.class);
+            Integer courseId = resultSet.getObject("course_id", Integer.class);
             if (courseId != null) {
-                teacher.addCourse(courseMapper.mapRow(rs, currentRow));
+                teacher.addCourse(courseMapper.mapRow(resultSet, currentRow));
             }
         }
 
         return new ArrayList<>(result.values());
     }
 
-    private Teacher mapTeacher(ResultSet rs, int rowNum) {
+    private Teacher mapTeacher(ResultSet resultSet, int rowNum) {
         try {
-            return teacherMapper.mapRow(rs, rowNum);
+            return teacherMapper.mapRow(resultSet, rowNum);
         } catch (SQLException e) {
             throw new DataRetrievalFailureException(e.getMessage(), e);
         }

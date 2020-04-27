@@ -66,11 +66,11 @@ public class JdbcStudentDao implements StudentDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT_QUERY, new String[] { "student_id" });
-            ps.setString(1, student.getFirstName());
-            ps.setString(2, student.getLastName());
-            ps.setObject(3, student.getEnrollmentDate());
-            return ps;
+            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, new String[] { "student_id" });
+            statement.setString(1, student.getFirstName());
+            statement.setString(2, student.getLastName());
+            statement.setObject(3, student.getEnrollmentDate());
+            return statement;
         }, keyHolder);
 
         if (rowsInserted != 1) {
