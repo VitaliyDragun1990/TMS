@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -21,16 +22,17 @@ import org.vdragun.tms.dao.TeacherDao;
 @Repository
 public class JdbcTeacherDao implements TeacherDao {
 
-    private static final String INSERT_QUERY = "INSERT INTO teachers (t_first_name, t_last_name, title, date_hired) "
-            + "VALUES (?, ?, ?, ?);";
-    private static final String FIND_ALL_QUERY =
-            "SELECT t.teacher_id, t_first_name, t_last_name, title, date_hired, "
-            + "cr.course_id, course_name, course_description, "
-            + "ca.category_id, category_code, category_description "
-            + "FROM teachers AS t LEFT OUTER JOIN courses AS cr ON t.teacher_id = cr.teacher_id "
-            + "LEFT OUTER JOIN categories AS ca ON ca.category_id = cr.category_id";
-    private static final String FIND_BY_ID_QUERY = FIND_ALL_QUERY + " WHERE t.teacher_id = ?;";
-    private static final String FIND_FOR_COURSE_QUERY = FIND_ALL_QUERY + " WHERE cr.course_id = ?;";
+    @Value("${teacher.insert}")
+    private String insertQuery;
+
+    @Value("${teacher.findAll}")
+    private String findAllQuery;
+
+    @Value("${teacher.findById}")
+    private String findByIdQuery;
+
+    @Value("${teacher.findForCourse}")
+    private String findForCourseQuery;
 
     private JdbcTemplate jdbc;
     private TeachersWithCoursesExtractor teachersExtractor;
@@ -45,7 +47,7 @@ public class JdbcTeacherDao implements TeacherDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, new String[] { "teacher_id" });
+            PreparedStatement statement = connection.prepareStatement(insertQuery, new String[] { "teacher_id" });
             statement.setString(1, teacher.getFirstName());
             statement.setString(2, teacher.getLastName());
             statement.setString(3, teacher.getTitle().asString());
@@ -70,7 +72,7 @@ public class JdbcTeacherDao implements TeacherDao {
 
     @Override
     public Optional<Teacher> findById(Integer teacherId) {
-        List<Teacher> result = jdbc.query(FIND_BY_ID_QUERY, new Object[] { teacherId }, teachersExtractor);
+        List<Teacher> result = jdbc.query(findByIdQuery, new Object[] { teacherId }, teachersExtractor);
         if (result.isEmpty()) {
             return Optional.empty();
         }
@@ -79,12 +81,12 @@ public class JdbcTeacherDao implements TeacherDao {
 
     @Override
     public List<Teacher> findAll() {
-        return jdbc.query(FIND_ALL_QUERY, teachersExtractor);
+        return jdbc.query(findAllQuery, teachersExtractor);
     }
 
     @Override
     public Optional<Teacher> findForCourse(Integer courseId) {
-        List<Teacher> result = jdbc.query(FIND_FOR_COURSE_QUERY, new Object[] { courseId }, teachersExtractor);
+        List<Teacher> result = jdbc.query(findForCourseQuery, new Object[] { courseId }, teachersExtractor);
         if (result.isEmpty()) {
             return Optional.empty();
         }

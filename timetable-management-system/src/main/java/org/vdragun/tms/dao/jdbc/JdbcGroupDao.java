@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -21,9 +22,14 @@ import org.vdragun.tms.dao.GroupDao;
 @Repository
 public class JdbcGroupDao implements GroupDao {
 
-    private static final String INSERT_QUERY = "INSERT INTO groups (group_name) VALUES (?);";
-    private static final String FIND_BY_ID_QUERY = "SELECT group_id, group_name FROM groups WHERE group_id = ?";
-    private static final String FIND_ALL_QUERY = "SELECT group_id, group_name FROM groups";
+    @Value("${group.insert}")
+    private String insertQuery;
+
+    @Value("${group.findById}")
+    private String findByIdQuery;
+
+    @Value("${group.findAll}")
+    private String findAllQuery;
 
     private JdbcTemplate jdbc;
     private GroupMapper mapper;
@@ -38,7 +44,7 @@ public class JdbcGroupDao implements GroupDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, new String[] { "group_id" });
+            PreparedStatement statement = connection.prepareStatement(insertQuery, new String[] { "group_id" });
             statement.setString(1, group.getName());
             return statement;
         }, keyHolder);
@@ -60,7 +66,7 @@ public class JdbcGroupDao implements GroupDao {
 
     @Override
     public Optional<Group> findById(int groupId) {
-        List<Group> result = jdbc.query(FIND_BY_ID_QUERY, new Object[] { groupId }, mapper);
+        List<Group> result = jdbc.query(findByIdQuery, new Object[] { groupId }, mapper);
         if (result.isEmpty()) {
             return Optional.empty();
         }
@@ -69,7 +75,7 @@ public class JdbcGroupDao implements GroupDao {
 
     @Override
     public List<Group> findAll() {
-        return jdbc.query(FIND_ALL_QUERY, mapper);
+        return jdbc.query(findAllQuery, mapper);
     }
 
 }

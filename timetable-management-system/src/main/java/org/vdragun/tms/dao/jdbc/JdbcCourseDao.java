@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -21,16 +22,17 @@ import org.vdragun.tms.dao.DaoException;
 @Repository
 public class JdbcCourseDao implements CourseDao {
     
-    private static final String INSERT_QUERY = 
-            "INSERT INTO courses (course_name, course_description, category_id, teacher_id) "
-            + "VALUES (?, ?, ?, ?);";
-    private static final String FIND_ALL_QUERY = "SELECT course_id, course_name, course_description, "
-            + "c.teacher_id, t_first_name, t_last_name, title, date_hired, c.category_id, "
-            + "category_code, category_description "
-            + "FROM courses AS c INNER JOIN teachers AS t ON c.teacher_id = t.teacher_id "
-            + "INNER JOIN categories AS ca ON c.category_id = ca.category_id";
-    private static final String FIND_BY_ID_QUERY = FIND_ALL_QUERY + " WHERE course_id = ?";
-    private static final String FIND_BY_CATEGORY_QUERY = FIND_ALL_QUERY + " WHERE c.category_id = ?";
+    @Value("${course.insert}")
+    private String insertQuery;
+
+    @Value("${course.findAll}")
+    private String findAllQuery;
+
+    @Value("${course.findById}")
+    private String findByIdQuery;
+
+    @Value("${course.findByCategory}")
+    private String findByCategoryQuery;
 
     private JdbcTemplate jdbc;
     private CourseMapper courseMapper;
@@ -45,7 +47,7 @@ public class JdbcCourseDao implements CourseDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, new String[] { "course_id" });
+            PreparedStatement statement = connection.prepareStatement(insertQuery, new String[] { "course_id" });
             statement.setString(1, course.getName());
             statement.setString(2, course.getDescription());
             statement.setInt(3, course.getCategory().getId());
@@ -70,7 +72,7 @@ public class JdbcCourseDao implements CourseDao {
 
     @Override
     public Optional<Course> findById(Integer courseId) {
-        List<Course> result = jdbc.query(FIND_BY_ID_QUERY, new Object[] { courseId }, courseMapper);
+        List<Course> result = jdbc.query(findByIdQuery, new Object[] { courseId }, courseMapper);
         if (result.isEmpty()) {
             return Optional.empty();
         }
@@ -79,12 +81,12 @@ public class JdbcCourseDao implements CourseDao {
 
     @Override
     public List<Course> findAll() {
-        return jdbc.query(FIND_ALL_QUERY, courseMapper);
+        return jdbc.query(findAllQuery, courseMapper);
     }
 
     @Override
     public List<Course> findByCategory(Integer categoryId) {
-        return jdbc.query(FIND_BY_CATEGORY_QUERY, new Object[] { categoryId }, courseMapper);
+        return jdbc.query(findByCategoryQuery, new Object[] { categoryId }, courseMapper);
     }
 
 }
