@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
+import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.core.domain.Title;
 
 /**
@@ -36,6 +38,7 @@ public class JdbcTestHelper {
     private TeacherMapper teacherMapper;
     private StudentMapper studentMapper;
     private CourseMapper courseMapper;
+    private TimetableMapper timetableMapper;
 
     public JdbcTestHelper(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -45,6 +48,7 @@ public class JdbcTestHelper {
         teacherMapper = new TeacherMapper();
         studentMapper = new StudentMapper();
         courseMapper = new CourseMapper();
+        timetableMapper = new TimetableMapper();
     }
 
     public Classroom saveClassroomToDatabase(int capacity) throws SQLException {
@@ -368,6 +372,54 @@ public class JdbcTestHelper {
             int rowNum = 1;
             while (rs.next()) {
                 result.add(courseMapper.mapRow(rs, rowNum++));
+            }
+        }
+        return result;
+    }
+
+    public Timetable saveTimetableToDatabase(LocalDateTime startTime, int duration, Course course,
+            Teacher teacher, Classroom classroom) throws SQLException {
+        String sql = "INSERT INTO timetables (start_date_time, duration, classroom_id, course_id, teacher_id) "
+                + "VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setObject(1, startTime);
+                ps.setInt(2, duration);
+                ps.setInt(3, classroom.getId());
+                ps.setInt(4, course.getId());
+                ps.setInt(5, teacher.getId());
+
+                ps.executeUpdate();
+                conn.commit();
+                try (ResultSet keys = ps.getGeneratedKeys()) {
+                    keys.next();
+                    return new Timetable(keys.getInt("timetable_id"), startTime, duration, course, classroom,
+                            teacher);
+                }
+            }
+        }
+    }
+
+    public List<Timetable> findAllTimetablesInDatabase() throws SQLException {
+        String sql = "SELECT timetable_id, start_date_time, duration, tm.classroom_id, tm.course_id, tm.teacher_id, "
+                + "t_first_name, t_last_name, title, date_hired, capacity, course_name, course_description, "
+                + "ca.category_id, category_code, category_description "
+                + "FROM timetables AS tm "
+                + "INNER JOIN classrooms AS cr ON tm.classroom_id = cr.classroom_id "
+                + "INNER JOIN teachers AS t ON tm.teacher_id = t.teacher_id "
+                + "INNER JOIN courses AS c ON tm.course_id = c.course_id "
+                + "INNER JOIN categories AS ca ON c.category_id = ca.category_id ";
+
+        List<Timetable> result = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+
+            int rowNum = 1;
+            while (rs.next()) {
+                result.add(timetableMapper.mapRow(rs, rowNum++));
             }
         }
         return result;

@@ -19,18 +19,23 @@ public interface TimetableDao {
     /**
      * Saves specified timetable instance. Saved object receives unique identifier.
      */
-    void save(Timetable timeTable);
+    void save(Timetable timetable);
 
     /**
      * Saves all specified timetable instances. Each saved object receives unique
      * identifier.
      */
-    void saveAll(List<Timetable> timeTables);
+    void saveAll(List<Timetable> timetables);
 
     /**
      * Returns timetable with given identifier if any
      */
-    Optional<Timetable> findById(Integer timeTableId);
+    Optional<Timetable> findById(Integer timetableId);
+
+    /**
+     * Returns all timetables
+     */
+    List<Timetable> findAll();
 
     /**
      * Finds all timetables available for a student with specified identifier for
@@ -54,5 +59,5 @@ public interface TimetableDao {
      * Finds all timetables available for a teacher with specified identifier for
      * specified month.
      */
-    List<Timetable> findMonthlyForTeacher(Integer studentId, Month month);
+    List<Timetable> findMonthlyForTeacher(Integer teacherId, Month month);
 }
