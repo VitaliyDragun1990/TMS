@@ -6,7 +6,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -91,7 +91,7 @@ public class JdbcGroupDaoTest {
         List<Group> result = dao.findAll();
 
         assertThat(result, hasSize(2));
-        assertThat(result, contains(ps25, mh10));
+        assertThat(result, containsInAnyOrder(ps25, mh10));
     }
 
     private void assertGroupsInDatabase(Group... expected) throws SQLException {
@@ -100,7 +100,7 @@ public class JdbcGroupDaoTest {
 
         List<Group> result = jdbcHelper.findAllGroupsInDatabase();
         assertThat(result, hasSize(expected.length));
-        assertThat(result, contains(expected));
+        assertThat(result, containsInAnyOrder(expected));
     }
 
 }

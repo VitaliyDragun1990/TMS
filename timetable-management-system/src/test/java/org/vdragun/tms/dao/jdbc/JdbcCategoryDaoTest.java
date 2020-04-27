@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -92,7 +92,7 @@ public class JdbcCategoryDaoTest {
         List<Category> result = dao.findAll();
 
         assertThat(result, hasSize(2));
-        assertThat(result, contains(art, bio));
+        assertThat(result, containsInAnyOrder(art, bio));
     }
 
     private void assertCategoriesInDatabase(Category... expected) throws SQLException {
@@ -101,7 +101,7 @@ public class JdbcCategoryDaoTest {
 
         List<Category> result = jdbcHelper.findAllCategoriesInDatabase();
         assertThat(result, hasSize(expected.length));
-        assertThat(result, contains(expected));
+        assertThat(result, containsInAnyOrder(expected));
     }
 
 }

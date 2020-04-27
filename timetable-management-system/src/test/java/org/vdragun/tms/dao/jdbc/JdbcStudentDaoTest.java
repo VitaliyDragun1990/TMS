@@ -6,7 +6,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -107,7 +107,7 @@ public class JdbcStudentDaoTest {
         List<Student> result = dao.findAll();
 
         assertThat(result, hasSize(2));
-        assertThat(result, contains(jack, anna));
+        assertThat(result, containsInAnyOrder(jack, anna));
     }
 
     @Test
@@ -136,7 +136,7 @@ public class JdbcStudentDaoTest {
         List<Student> result = dao.findForCourse(art25Course.getId());
 
         assertThat(result, hasSize(2));
-        assertThat(result, contains(jack, anna));
+        assertThat(result, containsInAnyOrder(jack, anna));
     }
 
     @Test
@@ -161,7 +161,7 @@ public class JdbcStudentDaoTest {
         List<Student> result = dao.findForGroup(ph25.getId());
 
         assertThat(result, hasSize(2));
-        assertThat(result, contains(jack, anna));
+        assertThat(result, containsInAnyOrder(jack, anna));
     }
 
     @Test
@@ -239,7 +239,7 @@ public class JdbcStudentDaoTest {
     private void assertGroupStudentsInDatabase(Group group, Student... expected) throws SQLException {
         List<Student> result = jdbcHelper.findAllGroupStudentsInDatabase(group);
         assertThat(result, hasSize(expected.length));
-        assertThat(result, contains(expected));
+        assertThat(result, containsInAnyOrder(expected));
     }
 
     private void assertNoCoursesForStudentInDatabase(Student student) throws SQLException {
@@ -250,7 +250,7 @@ public class JdbcStudentDaoTest {
     private void assertStudentCoursesInDatabase(Student student, Course... expected) throws SQLException {
         List<Course> result = jdbcHelper.findAllStudentCoursesInDatabase(student);
         assertThat(result, hasSize(expected.length));
-        assertThat(result, contains(expected));
+        assertThat(result, containsInAnyOrder(expected));
     }
 
     private void assertStudentsInDatabase(Student... expected) throws SQLException {
@@ -259,7 +259,7 @@ public class JdbcStudentDaoTest {
 
         List<Student> result = jdbcHelper.findAllStudentsInDatabase();
         assertThat(result, hasSize(expected.length));
-        assertThat(result, contains(expected));
+        assertThat(result, containsInAnyOrder(expected));
     }
 
 }

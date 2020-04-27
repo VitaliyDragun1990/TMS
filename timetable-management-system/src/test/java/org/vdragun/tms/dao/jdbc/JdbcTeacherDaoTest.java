@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -104,7 +104,7 @@ public class JdbcTeacherDaoTest {
         List<Teacher> result = dao.findAll();
 
         assertThat(result, hasSize(2));
-        assertThat(result, contains(jack, anna));
+        assertThat(result, containsInAnyOrder(jack, anna));
     }
 
     @Test
@@ -140,7 +140,7 @@ public class JdbcTeacherDaoTest {
 
     private void assertTeacherCourses(Teacher teacher, Course... expected) {
         assertThat(teacher.getCourses(), hasSize(expected.length));
-        assertThat(teacher.getCourses(), contains(expected));
+        assertThat(teacher.getCourses(), containsInAnyOrder(expected));
     }
 
     private void assertTeachersInDatabase(Teacher... expected) throws SQLException {
@@ -149,7 +149,7 @@ public class JdbcTeacherDaoTest {
 
         List<Teacher> result = jdbcHelper.findAllTeachersInDatabase();
         assertThat(result, hasSize(expected.length));
-        assertThat(result, contains(expected));
+        assertThat(result, containsInAnyOrder(expected));
     }
 
 }

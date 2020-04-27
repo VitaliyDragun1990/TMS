@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -68,7 +68,7 @@ public class JdbcClassroomDaoTest {
 
         List<Classroom> result = jdbcHelper.findAllClassroomsInDatabase();
         assertThat(result, hasSize(1));
-        assertThat(result, contains(classroom));
+        assertThat(result, containsInAnyOrder(classroom));
     }
 
 }
