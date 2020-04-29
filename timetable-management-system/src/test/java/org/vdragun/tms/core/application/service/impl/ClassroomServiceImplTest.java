@@ -2,6 +2,8 @@ package org.vdragun.tms.core.application.service.impl;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -9,6 +11,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -65,6 +69,18 @@ class ClassroomServiceImplTest {
         Classroom result = service.findClassroomById(1);
 
         assertThat(result, equalTo(expected));
+    }
+
+    @Test
+    void shouldFindAllClassrooms() {
+        Classroom classroomA = new Classroom(ID, CAPACITY);
+        Classroom classroomB = new Classroom(ID + 1, CAPACITY);
+        when(daoMock.findAll()).thenReturn(Arrays.asList(classroomA, classroomB));
+
+        List<Classroom> result = service.findAllClassrooms();
+
+        assertThat(result, hasSize(2));
+        assertThat(result, containsInAnyOrder(classroomA, classroomB));
     }
 
 }

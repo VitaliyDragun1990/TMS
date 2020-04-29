@@ -1,5 +1,6 @@
 package org.vdragun.tms.core.application.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -35,6 +36,11 @@ public class ClassroomServiceImpl implements ClassroomService {
         Optional<Classroom> result = dao.findById(classroomId);
         return result
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom with id=%d not found", classroomId));
+    }
+
+    @Override
+    public List<Classroom> findAllClassrooms() {
+        return dao.findAll();
     }
 
 }

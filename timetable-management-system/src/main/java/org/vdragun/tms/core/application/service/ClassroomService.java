@@ -1,5 +1,7 @@
 package org.vdragun.tms.core.application.service;
 
+import java.util.List;
+
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.domain.Classroom;
 
@@ -29,4 +31,10 @@ public interface ClassroomService {
      */
     Classroom findClassroomById(Integer classroomId);
 
+    /**
+     * Finds all classroom available
+     * 
+     * @return list of all available classrooms
+     */
+    List<Classroom> findAllClassrooms();
 }
