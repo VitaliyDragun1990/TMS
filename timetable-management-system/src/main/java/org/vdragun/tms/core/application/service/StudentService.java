@@ -79,7 +79,7 @@ public interface StudentService {
      * @param studentId existing student identifier
      * @param courseIds list of existing course identifiers
      */
-    void addStudentToCourses(Integer studentId, List<Integer> courseIds);
+    void setStudentCourses(Integer studentId, List<Integer> courseIds);
 
     /**
      * Removes student from any courses, if any.
