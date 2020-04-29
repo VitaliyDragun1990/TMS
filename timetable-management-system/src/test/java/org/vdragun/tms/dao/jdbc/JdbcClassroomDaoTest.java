@@ -63,6 +63,24 @@ public class JdbcClassroomDaoTest {
         assertClassroomInDatabase(classroom);
     }
 
+    @Test
+    void shouldReturnEmptyListIfNoClassroomAvailable() {
+        List<Classroom> result = dao.findAll();
+
+        assertThat(result, hasSize(0));
+    }
+
+    @Test
+    void sholdFindAllAvailableClassrooms() throws SQLException {
+        Classroom classroomA = jdbcHelper.saveClassroomToDatabase(CAPACITY);
+        Classroom classroomB = jdbcHelper.saveClassroomToDatabase(CAPACITY);
+
+        List<Classroom> result = dao.findAll();
+
+        assertThat(result, hasSize(2));
+        assertThat(result, containsInAnyOrder(classroomA, classroomB));
+    }
+
     private void assertClassroomInDatabase(Classroom classroom) throws SQLException {
         assertThat("classroom should have id", classroom.getId(), is(not(nullValue())));
 

@@ -31,7 +31,7 @@ public interface GroupDao {
     Optional<Group> findById(int groupId);
 
     /**
-     * Fins all available groups.
+     * Finds all available groups.
      */
     List<Group> findAll();
 }

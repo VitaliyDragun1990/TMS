@@ -24,11 +24,11 @@ public interface GroupService {
     /**
      * Returns group with given identifier
      * 
-     * @param groiupId existing group identifier
+     * @param groupId existing group identifier
      * @return group with given identifier
      * @throws ResourceNotFoundException if no group with given identifier
      */
-    Group findGroupById(Integer groiupId);
+    Group findGroupById(Integer groupId);
 
     /**
      * Finds all groups available

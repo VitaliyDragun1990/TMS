@@ -1,5 +1,6 @@
 package org.vdragun.tms.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.vdragun.tms.core.domain.Classroom;
@@ -22,4 +23,9 @@ public interface ClassroomDao {
      * Returns class room with specified identifier if any.
      */
     Optional<Classroom> findById(Integer classroomId);
+
+    /**
+     * Finds all classroom available
+     */
+    List<Classroom> findAll();
 }
