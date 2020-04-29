@@ -28,7 +28,7 @@ public interface TeacherService {
      * @return teacher with specified identifier
      * @throws ResourceNotFoundException if no teacher with specified identifier
      */
-    Teacher findTeacherById(Integer teacherdId);
+    Teacher findTeacherById(Integer teacherId);
 
     /**
      * Finds all teachers available
