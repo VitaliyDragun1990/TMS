@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -162,6 +163,8 @@ class StudentServiceImplTest {
         when(studentDaoMock.existsById(any(Integer.class))).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class, () -> service.addStudentToGroup(STUDENT_ID, GROUP_ID));
+
+        verify(studentDaoMock, never()).addToGroup(any(Integer.class), any(Integer.class));
     }
 
     @Test
@@ -179,6 +182,8 @@ class StudentServiceImplTest {
         when(studentDaoMock.existsById(any(Integer.class))).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class, () -> service.removeStudentFromGroup(STUDENT_ID));
+
+        verify(studentDaoMock, never()).removeFromGroup(any(Integer.class));
     }
 
     @Test
@@ -197,6 +202,9 @@ class StudentServiceImplTest {
 
         assertThrows(ResourceNotFoundException.class,
                 () -> service.setStudentCourses(STUDENT_ID, asList(COURSE_ID, COURSE_ID + 1)));
+
+        verify(studentDaoMock, never()).removeFromAllCourses(any(Integer.class));
+        verify(studentDaoMock, never()).addToCourse(any(Integer.class), any(Integer.class));
     }
 
     @Test
@@ -206,6 +214,9 @@ class StudentServiceImplTest {
 
         assertThrows(ResourceNotFoundException.class,
                 () -> service.setStudentCourses(STUDENT_ID, asList(COURSE_ID, COURSE_ID + 1)));
+
+        verify(studentDaoMock, never()).removeFromAllCourses(any(Integer.class));
+        verify(studentDaoMock, never()).addToCourse(any(Integer.class), any(Integer.class));
     }
 
     @Test
@@ -226,6 +237,8 @@ class StudentServiceImplTest {
         when(studentDaoMock.existsById(any(Integer.class))).thenReturn(false);
 
         assertThrows(ResourceNotFoundException.class, () -> service.removeStudentFromAllCourses(STUDENT_ID));
+
+        verify(studentDaoMock, never()).removeFromAllCourses(any(Integer.class));
     }
 
     @Test

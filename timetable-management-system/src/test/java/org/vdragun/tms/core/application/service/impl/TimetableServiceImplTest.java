@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -90,7 +91,7 @@ class TimetableServiceImplTest {
 
         assertThrows(ResourceNotFoundException.class, () -> service.registerNewTimetable(data));
         
-        verify(timetableDaoMock, times(0)).save(any(Timetable.class));
+        verify(timetableDaoMock, never()).save(any(Timetable.class));
     }
 
     @Test
@@ -103,7 +104,7 @@ class TimetableServiceImplTest {
 
         assertThrows(ResourceNotFoundException.class, () -> service.registerNewTimetable(data));
 
-        verify(timetableDaoMock, times(0)).save(any(Timetable.class));
+        verify(timetableDaoMock, never()).save(any(Timetable.class));
     }
 
     @Test
@@ -116,7 +117,7 @@ class TimetableServiceImplTest {
 
         assertThrows(ResourceNotFoundException.class, () -> service.registerNewTimetable(data));
 
-        verify(timetableDaoMock, times(0)).save(any(Timetable.class));
+        verify(timetableDaoMock, never()).save(any(Timetable.class));
     }
 
     @Test
