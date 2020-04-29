@@ -9,8 +9,8 @@ package org.vdragun.tms.core.application.exception;
 public class ResourceNotFoundException extends ApplicationException {
     private static final long serialVersionUID = 4930025280469096688L;
 
-    public ResourceNotFoundException(String message) {
-        super(message);
+    public ResourceNotFoundException(String message, Object... args) {
+        super(String.format(message, args));
     }
 
 }
