@@ -7,7 +7,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 
 @Configuration
-@Import({ DaoConfig.class, DBConfig.class })
+@Import({ ServiceConfig.class, DaoConfig.class, DBConfig.class })
 public class AppConfig {
 
     @Bean
