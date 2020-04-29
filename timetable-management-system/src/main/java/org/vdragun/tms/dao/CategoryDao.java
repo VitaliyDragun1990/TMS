@@ -35,4 +35,12 @@ public interface CategoryDao {
      * Finds all available categories
      */
     List<Category> findAll();
+
+    /**
+     * Checks whether category with provided identifier exists
+     * 
+     * @return {@code true} if category with such identifier exists, {@code false}
+     *         otherwise
+     */
+    boolean existsById(Integer categoryId);
 }

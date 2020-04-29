@@ -31,6 +31,9 @@ public class JdbcCategoryDao implements CategoryDao {
     @Value("${category.findAll}")
     private String findAllQuery;
 
+    @Value("${category.exists}")
+    private String existsQuery;
+
     private JdbcTemplate jdbc;
     private CategoryMapper mapper;
 
@@ -78,6 +81,11 @@ public class JdbcCategoryDao implements CategoryDao {
     @Override
     public List<Category> findAll() {
         return jdbc.query(findAllQuery, mapper);
+    }
+
+    @Override
+    public boolean existsById(Integer categoryId) {
+        return jdbc.queryForObject(existsQuery, new Object[] { categoryId }, Boolean.class);
     }
 
 }

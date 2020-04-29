@@ -40,4 +40,11 @@ public interface TeacherDao {
      */
     Optional<Teacher> findForCourse(Integer courseId);
 
+    /**
+     * Checks whether teacher with specified identifier exists
+     * 
+     * @return {@code true} if such teacher exists, {@code false} otherwise
+     */
+    boolean existsById(Integer teacherId);
+
 }
