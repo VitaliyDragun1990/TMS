@@ -20,11 +20,15 @@ public class Course {
     }
 
     public Course(String name, Category category, Teacher teacher) {
-        this(null, name, category, teacher);
+        this(name, null, category, teacher);
     }
 
     public Course(Integer id, String name, Category category, Teacher teacher) {
         this(id, name, category, null, teacher);
+    }
+
+    public Course(String name, String description, Category category, Teacher teacher) {
+        this(null, name, category, description, teacher);
     }
 
     public Course(Integer id, String name, Category category, String description, Teacher teacher) {

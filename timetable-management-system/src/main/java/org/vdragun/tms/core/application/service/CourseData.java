@@ -10,14 +10,19 @@ public class CourseData {
 
     private String name;
     private String description;
+    private Integer categoryId;
+    private Integer teacherId;
 
     public CourseData() {
     }
 
-    public CourseData(String name, String description) {
+    public CourseData(String name, String description, Integer categoryId, Integer teacherId) {
         this.name = name;
         this.description = description;
+        this.categoryId = categoryId;
+        this.teacherId = teacherId;
     }
+
 
     public String getName() {
         return name;
@@ -35,9 +40,26 @@ public class CourseData {
         this.description = description;
     }
 
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Integer getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(Integer teacherId) {
+        this.teacherId = teacherId;
+    }
+
     @Override
     public String toString() {
-        return "CourseData [name=" + name + ", description=" + description + "]";
+        return "CourseData [name=" + name + ", description=" + description + ", categoryId=" + categoryId
+                + ", teacherId=" + teacherId + "]";
     }
 
 }
