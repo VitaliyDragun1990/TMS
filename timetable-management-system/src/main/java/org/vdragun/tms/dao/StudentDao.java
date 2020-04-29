@@ -71,4 +71,11 @@ public interface StudentDao {
      */
     void removeFromAllCourses(Integer studentId);
 
+    /**
+     * Checks whether student with provided identifier exists
+     * 
+     * @return {@code true} if such student exists, {@code false} otherwise
+     */
+    boolean existsById(Integer studentId);
+
 }

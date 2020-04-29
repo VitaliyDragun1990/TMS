@@ -54,6 +54,9 @@ public class JdbcStudentDao implements StudentDao {
     @Value("${student.removeFromAllCourses}")
     private String removeFromAllCoursesQuery;
 
+    @Value("${student.exists}")
+    private String existsQuery;
+
     private JdbcTemplate jdbc;
     private StudentsWithCoursesExtractor studentsExtractor;
 
@@ -134,6 +137,11 @@ public class JdbcStudentDao implements StudentDao {
             throw new DaoException(
                     format("Fail to add student with id=%d to group with id=%d", studentId, groupId));
         }
+    }
+
+    @Override
+    public boolean existsById(Integer studentId) {
+        return jdbc.queryForObject(existsQuery, Boolean.class, studentId);
     }
 
     @Override

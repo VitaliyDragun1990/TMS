@@ -139,6 +139,24 @@ public class JdbcCourseDaoTest {
         assertThat(result, containsInAnyOrder(bioTwentyFive, bioTen));
     }
 
+    @Test
+    void shouldReturnTrueIfCourseWithProvidedIdentifierExists() throws SQLException {
+        Category category = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESC_BIOLOGY);
+        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, LocalDate.now());
+        Course course = jdbcHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
+
+        boolean result = dao.existsById(course.getId());
+
+        assertTrue(result);
+    }
+
+    @Test
+    void shouldReturnFalseIfCourseWithProvidedIdentifierNotExist() {
+        boolean result = dao.existsById(1);
+
+        assertFalse(result);
+    }
+
     private void assertCoursesInDatabase(Course... expected) throws SQLException {
         Arrays.stream(expected)
                 .forEach(course -> assertThat("course should have id", course.getId(), is(not(nullValue()))));

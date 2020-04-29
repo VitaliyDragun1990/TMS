@@ -233,6 +233,22 @@ public class JdbcStudentDaoTest {
         assertNoStudentsForGroupInDatabase(group);
     }
 
+    @Test
+    void shouldReturnTrueIfStudentWithGivenIdentifierExists() throws SQLException {
+        Student student = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+
+        boolean result = dao.existsById(student.getId());
+
+        assertTrue(result);
+    }
+
+    @Test
+    void shouldReturnFalseIfStudentWithGivenIdentifierNotExist() {
+        boolean result = dao.existsById(1);
+
+        assertFalse(result);
+    }
+
     private void assertNoStudentsForGroupInDatabase(Group group) throws SQLException {
         List<Student> result = jdbcHelper.findAllGroupStudentsInDatabase(group);
         assertThat(result, hasSize(0));

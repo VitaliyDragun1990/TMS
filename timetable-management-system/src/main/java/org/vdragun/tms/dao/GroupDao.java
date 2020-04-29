@@ -34,4 +34,11 @@ public interface GroupDao {
      * Finds all available groups.
      */
     List<Group> findAll();
+
+    /**
+     * Checks whether group with specified identifier exists
+     * 
+     * @return {@code true} if such group exists, {@code false} otherwise
+     */
+    boolean existsById(Integer groupId);
 }

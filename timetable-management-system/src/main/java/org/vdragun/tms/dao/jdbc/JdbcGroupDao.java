@@ -31,6 +31,9 @@ public class JdbcGroupDao implements GroupDao {
     @Value("${group.findAll}")
     private String findAllQuery;
 
+    @Value("${group.exists}")
+    private String existsQuery;
+
     private JdbcTemplate jdbc;
     private GroupMapper mapper;
 
@@ -76,6 +79,11 @@ public class JdbcGroupDao implements GroupDao {
     @Override
     public List<Group> findAll() {
         return jdbc.query(findAllQuery, mapper);
+    }
+
+    @Override
+    public boolean existsById(Integer groupId) {
+        return jdbc.queryForObject(existsQuery, Boolean.class, groupId);
     }
 
 }
