@@ -249,6 +249,20 @@ public class JdbcStudentDaoTest {
         assertFalse(result);
     }
 
+    @Test
+    void shouldReturnStudentWithAllAssignedCourses() throws SQLException {
+        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
+        Category categroy = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+        Course courseA = jdbcHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, categroy, teacher);
+        Course courseB = jdbcHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, categroy, teacher);
+        Student student = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        jdbcHelper.addStudentToCoursesInDatabase(student, courseB, courseA);
+
+        Optional<Student> result = dao.findById(student.getId());
+
+        assertThat(result.get().getCourses(), containsInAnyOrder(courseA, courseB));
+    }
+
     private void assertNoStudentsForGroupInDatabase(Group group) throws SQLException {
         List<Student> result = jdbcHelper.findAllGroupStudentsInDatabase(group);
         assertThat(result, hasSize(0));
