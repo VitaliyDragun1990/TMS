@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,6 +23,8 @@ import org.vdragun.tms.dao.GroupDao;
  */
 @Repository
 public class JdbcGroupDao implements GroupDao {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JdbcGroupDao.class);
 
     @Value("${group.insert}")
     private String insertQuery;
@@ -44,6 +48,7 @@ public class JdbcGroupDao implements GroupDao {
 
     @Override
     public void save(Group group) {
+        LOG.debug("Saving new group to the database: {}", group);
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
@@ -62,6 +67,7 @@ public class JdbcGroupDao implements GroupDao {
 
     @Override
     public void saveAll(List<Group> groups) {
+        LOG.debug("Saving {} new groups to the database", groups.size());
         // use this approach because there is no way to retrieve auto-generated keys
         // using jdbcTemplate.batchUpdate(..) method
         groups.forEach(this::save);
@@ -69,6 +75,7 @@ public class JdbcGroupDao implements GroupDao {
 
     @Override
     public Optional<Group> findById(int groupId) {
+        LOG.debug("Searching for group with id={} in the database", groupId);
         List<Group> result = jdbc.query(findByIdQuery, new Object[] { groupId }, mapper);
         if (result.isEmpty()) {
             return Optional.empty();
@@ -78,11 +85,13 @@ public class JdbcGroupDao implements GroupDao {
 
     @Override
     public List<Group> findAll() {
+        LOG.debug("Retrieving all groups from the database");
         return jdbc.query(findAllQuery, mapper);
     }
 
     @Override
     public boolean existsById(Integer groupId) {
+        LOG.debug("Checking whether group with id={} exists in the database", groupId);
         return jdbc.queryForObject(existsQuery, Boolean.class, groupId);
     }
 

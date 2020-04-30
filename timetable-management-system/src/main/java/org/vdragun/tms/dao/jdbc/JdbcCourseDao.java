@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -22,6 +24,8 @@ import org.vdragun.tms.dao.DaoException;
 @Repository
 public class JdbcCourseDao implements CourseDao {
     
+    private static final Logger LOG = LoggerFactory.getLogger(JdbcCourseDao.class);
+
     @Value("${course.insert}")
     private String insertQuery;
 
@@ -47,6 +51,7 @@ public class JdbcCourseDao implements CourseDao {
 
     @Override
     public void save(Course course) {
+        LOG.debug("Saving new course to the database: {}", course);
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
@@ -68,6 +73,7 @@ public class JdbcCourseDao implements CourseDao {
 
     @Override
     public void saveAll(List<Course> courses) {
+        LOG.debug("Saving {} new courses to the database", courses.size());
         // use this approach because there is no way to retrieve auto-generated keys
         // using jdbcTemplate.batchUpdate(..) method
         courses.forEach(this::save);
@@ -75,6 +81,7 @@ public class JdbcCourseDao implements CourseDao {
 
     @Override
     public Optional<Course> findById(Integer courseId) {
+        LOG.debug("Searching for course with id={} in the database", courseId);
         List<Course> result = jdbc.query(findByIdQuery, new Object[] { courseId }, courseMapper);
         if (result.isEmpty()) {
             return Optional.empty();
@@ -84,16 +91,19 @@ public class JdbcCourseDao implements CourseDao {
 
     @Override
     public List<Course> findAll() {
+        LOG.debug("Retrieving all courses from the database");
         return jdbc.query(findAllQuery, courseMapper);
     }
 
     @Override
     public List<Course> findByCategory(Integer categoryId) {
+        LOG.debug("Retrieving all courses belonging to category with id={} from the database", categoryId);
         return jdbc.query(findByCategoryQuery, new Object[] { categoryId }, courseMapper);
     }
 
     @Override
     public boolean existsById(Integer courseId) {
+        LOG.debug("Checking whether course with id={} exists in the database", courseId);
         return jdbc.queryForObject(existsQuery, Boolean.class, courseId);
     }
 

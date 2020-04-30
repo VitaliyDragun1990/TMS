@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,6 +23,8 @@ import org.vdragun.tms.dao.TeacherDao;
  */
 @Repository
 public class JdbcTeacherDao implements TeacherDao {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JdbcTeacherDao.class);
 
     @Value("${teacher.insert}")
     private String insertQuery;
@@ -47,6 +51,7 @@ public class JdbcTeacherDao implements TeacherDao {
 
     @Override
     public void save(Teacher teacher) {
+        LOG.debug("Saving new teacher to the database: {}", teacher);
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
@@ -68,6 +73,7 @@ public class JdbcTeacherDao implements TeacherDao {
 
     @Override
     public void saveAll(List<Teacher> teachers) {
+        LOG.debug("Saving {} new teachers to the database", teachers.size());
         // use this approach because there is no way to retrieve auto-generated keys
         // using jdbcTemplate.batchUpdate(..) method
         teachers.forEach(this::save);
@@ -75,6 +81,7 @@ public class JdbcTeacherDao implements TeacherDao {
 
     @Override
     public Optional<Teacher> findById(Integer teacherId) {
+        LOG.debug("Searching for teacher with id={} in the database", teacherId);
         List<Teacher> result = jdbc.query(findByIdQuery, new Object[] { teacherId }, teachersExtractor);
         if (result.isEmpty()) {
             return Optional.empty();
@@ -84,11 +91,13 @@ public class JdbcTeacherDao implements TeacherDao {
 
     @Override
     public List<Teacher> findAll() {
+        LOG.debug("Retrieving all teachers from the database");
         return jdbc.query(findAllQuery, teachersExtractor);
     }
 
     @Override
     public Optional<Teacher> findForCourse(Integer courseId) {
+        LOG.debug("Searching for teacher assigned to course with id={} in the database", courseId);
         List<Teacher> result = jdbc.query(findForCourseQuery, new Object[] { courseId }, teachersExtractor);
         if (result.isEmpty()) {
             return Optional.empty();
@@ -98,6 +107,7 @@ public class JdbcTeacherDao implements TeacherDao {
 
     @Override
     public boolean existsById(Integer teacherId) {
+        LOG.debug("Checking whether teacher with id={} exists in the database", teacherId);
         return jdbc.queryForObject(existsQuery, new Object[] { teacherId }, Boolean.class);
     }
 
