@@ -28,6 +28,9 @@ public class JdbcClassroomDao implements ClassroomDao {
     @Value("${classroom.findById}")
     private String findByIdQuery;
 
+    @Value("${classroom.findAll}")
+    private String findAllQuery;
+
     private JdbcTemplate jdbc;
     private ClassroomMapper mapper;
 
@@ -61,5 +64,10 @@ public class JdbcClassroomDao implements ClassroomDao {
             return Optional.empty();
         }
         return Optional.of(result.get(0));
+    }
+
+    @Override
+    public List<Classroom> findAll() {
+        return jdbc.query(findAllQuery, mapper);
     }
 }

@@ -40,4 +40,11 @@ public interface CourseDao {
      */
     List<Course> findByCategory(Integer categoryId);
 
+    /**
+     * Checks whether course with specified identifier exists
+     * 
+     * @return {@code true} if such course exists, {@code false} otherwise
+     */
+    boolean existsById(Integer courseId);
+
 }

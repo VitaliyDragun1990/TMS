@@ -94,6 +94,22 @@ public class JdbcGroupDaoTest {
         assertThat(result, containsInAnyOrder(psTwentyFive, mhTen));
     }
 
+    @Test
+    void shouldReturnTrueIfGroupWithGivenIdentifierExists() throws SQLException {
+        Group group = jdbcHelper.saveGroupToDatabase(PS_TWENTY_FIVE);
+
+        boolean result = dao.existsById(group.getId());
+
+        assertTrue(result);
+    }
+
+    @Test
+    void shouldReturnFalseIfGroupWithGivenIdentifierNotExist() {
+        boolean result = dao.existsById(1);
+
+        assertFalse(result);
+    }
+
     private void assertGroupsInDatabase(Group... expected) throws SQLException {
         Arrays.stream(expected)
                 .forEach(group -> assertThat("group should have id", group.getId(), is(not(nullValue()))));

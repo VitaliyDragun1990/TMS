@@ -138,6 +138,22 @@ public class JdbcTeacherDaoTest {
         assertTeacherCourses(result.get(), bioTwenty, bioTen);
     }
 
+    @Test
+    void shouldReturnTrueIfTeacherWithGivenIdentifierExists() throws SQLException {
+        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
+
+        boolean result = dao.existsById(teacher.getId());
+
+        assertTrue(result);
+    }
+
+    @Test
+    void shouldReturnFalseIfTeacherWithGivenIdentifierNotExist() {
+        boolean result = dao.existsById(1);
+
+        assertFalse(result);
+    }
+
     private void assertTeacherCourses(Teacher teacher, Course... expected) {
         assertThat(teacher.getCourses(), hasSize(expected.length));
         assertThat(teacher.getCourses(), containsInAnyOrder(expected));

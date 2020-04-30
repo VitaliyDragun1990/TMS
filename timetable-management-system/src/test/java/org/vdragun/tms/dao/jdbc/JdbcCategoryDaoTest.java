@@ -95,6 +95,22 @@ public class JdbcCategoryDaoTest {
         assertThat(result, containsInAnyOrder(art, bio));
     }
 
+    @Test
+    void shouldReturnTrueIfCategoryWithGivenIdentifierExists() throws SQLException {
+        Category category = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+
+        boolean result = dao.existsById(category.getId());
+
+        assertTrue(result);
+    }
+
+    @Test
+    void shouldReturnFalseIfCategoryWithGivenIdentifierNotExist() throws SQLException {
+        boolean result = dao.existsById(1);
+
+        assertFalse(result);
+    }
+
     private void assertCategoriesInDatabase(Category... expected) throws SQLException {
         Arrays.stream(expected)
                 .forEach(category -> assertThat("category should have id", category.getId(), is(not(nullValue()))));

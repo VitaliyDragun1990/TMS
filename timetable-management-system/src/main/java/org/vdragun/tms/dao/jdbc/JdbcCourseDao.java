@@ -34,6 +34,9 @@ public class JdbcCourseDao implements CourseDao {
     @Value("${course.findByCategory}")
     private String findByCategoryQuery;
 
+    @Value("${course.exists}")
+    private String existsQuery;
+
     private JdbcTemplate jdbc;
     private CourseMapper courseMapper;
 
@@ -87,6 +90,11 @@ public class JdbcCourseDao implements CourseDao {
     @Override
     public List<Course> findByCategory(Integer categoryId) {
         return jdbc.query(findByCategoryQuery, new Object[] { categoryId }, courseMapper);
+    }
+
+    @Override
+    public boolean existsById(Integer courseId) {
+        return jdbc.queryForObject(existsQuery, Boolean.class, courseId);
     }
 
 }

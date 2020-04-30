@@ -34,6 +34,9 @@ public class JdbcTeacherDao implements TeacherDao {
     @Value("${teacher.findForCourse}")
     private String findForCourseQuery;
 
+    @Value("${teacher.exists}")
+    private String existsQuery;
+
     private JdbcTemplate jdbc;
     private TeachersWithCoursesExtractor teachersExtractor;
 
@@ -91,6 +94,11 @@ public class JdbcTeacherDao implements TeacherDao {
             return Optional.empty();
         }
         return Optional.of(result.get(0));
+    }
+
+    @Override
+    public boolean existsById(Integer teacherId) {
+        return jdbc.queryForObject(existsQuery, new Object[] { teacherId }, Boolean.class);
     }
 
 }
