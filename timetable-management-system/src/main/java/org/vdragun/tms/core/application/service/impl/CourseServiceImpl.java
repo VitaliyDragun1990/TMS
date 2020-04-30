@@ -3,6 +3,8 @@ package org.vdragun.tms.core.application.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.CourseData;
@@ -23,6 +25,8 @@ import org.vdragun.tms.dao.TeacherDao;
 @Service
 public class CourseServiceImpl implements CourseService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CourseServiceImpl.class);
+
     private CourseDao courseDao;
     private CategoryDao categoryDao;
     private TeacherDao teacherDao;
@@ -35,27 +39,44 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course registerNewCourse(CourseData courseData) {
+        LOG.debug("Registering new course using data: {}", courseData);
+
         Category category = requireExistingCategory(courseData.getCategoryId());
         Teacher teacher = requireExistingTeacher(courseData.getTeacherId());
         Course course = new Course(courseData.getName(), courseData.getDescription(), category, teacher);
         courseDao.save(course);
+
+        LOG.debug("New course has been registered: {}", course);
+
         return course;
     }
 
     @Override
     public Course findCourseById(Integer courseId) {
+        LOG.debug("Searching for course with id={}", courseId);
+
         return courseDao.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Course with id=%d not found", courseId));
     }
 
     @Override
     public List<Course> findAllCourses() {
-        return courseDao.findAll();
+        LOG.debug("Retrieving all courses");
+
+        List<Course> result = courseDao.findAll();
+
+        LOG.debug("Found {} courses", result.size());
+        return result;
     }
 
     @Override
     public List<Course> findCoursesByCategory(Integer categoryId) {
-        return courseDao.findByCategory(categoryId);
+        LOG.debug("Retrieving courses belonging to category with id={}", categoryId);
+
+        List<Course> result = courseDao.findByCategory(categoryId);
+
+        LOG.debug("Found {} courses belonging to category with id={}", result.size(), categoryId);
+        return result;
     }
 
     private Teacher requireExistingTeacher(Integer teacherId) {

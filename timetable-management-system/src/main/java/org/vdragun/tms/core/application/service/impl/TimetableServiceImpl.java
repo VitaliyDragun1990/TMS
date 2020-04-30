@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.TimetableData;
@@ -27,6 +29,8 @@ import org.vdragun.tms.dao.TimetableDao;
 @Service
 public class TimetableServiceImpl implements TimetableService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TimetableServiceImpl.class);
+
     private TimetableDao timetableDao;
     private CourseDao courseDao;
     private TeacherDao teacherDao;
@@ -44,6 +48,8 @@ public class TimetableServiceImpl implements TimetableService {
 
     @Override
     public Timetable registerNewTimetable(TimetableData timetableData) {
+        LOG.debug("Registering new timetable using data: {}", timetableData);
+
         Classroom classroom = requireExistingClassroom(timetableData.getClassroomId());
         Course course = requireExistingCourse(timetableData.getCourseId());
         Teacher teacher = requireExistingTeacher(timetableData.getTeacherId());
@@ -56,46 +62,69 @@ public class TimetableServiceImpl implements TimetableService {
                 teacher);
         timetableDao.save(timetable);
 
+        LOG.debug("New timetable has been registered: {}", timetable);
         return timetable;
     }
 
     @Override
     public Timetable findTimetableById(Integer timetableId) {
+        LOG.debug("Searching for timetable with id={}", timetableId);
+
         return timetableDao.findById(timetableId)
                 .orElseThrow(() -> new ResourceNotFoundException("Timetable with id=%d not found", timetableId));
     }
 
     @Override
     public List<Timetable> findAllTimetables() {
-        return timetableDao.findAll();
+        LOG.debug("Retrieving all timetables");
+
+        List<Timetable> result = timetableDao.findAll();
+        LOG.debug("Found {} timetables", result.size());
+        return result;
     }
 
     @Override
     public List<Timetable> findDailyTimetablesForStudent(Integer studentId, LocalDate date) {
+        LOG.debug("Retrieving all timetables for student with id={} for date={}", studentId, date);
         assertStudentExists(studentId, "Fail to find daily timetables for student");
 
-        return timetableDao.findDailyForStudent(studentId, date);
+        List<Timetable> result = timetableDao.findDailyForStudent(studentId, date);
+
+        LOG.debug("Found {} timetables for student with id={} for date={}", result.size(), studentId, date);
+        return result;
     }
 
     @Override
     public List<Timetable> findMonthlyTimetablesForStudent(Integer studentId, Month month) {
+        LOG.debug("Retrieving all timetables for student with id={} for month={}", studentId, month);
         assertStudentExists(studentId, "Fail to find monthly timetables for student");
 
-        return timetableDao.findMonthlyForStudent(studentId, month);
+        List<Timetable> result = timetableDao.findMonthlyForStudent(studentId, month);
+
+        LOG.debug("Found {} timetables for student with id={} for month={}", result.size(), studentId, month);
+        return result;
     }
 
     @Override
     public List<Timetable> findDailyTimetablesForTeacher(Integer teacherId, LocalDate date) {
+        LOG.debug("Retrieving all timetables for teacher with id={} for date={}", teacherId, date);
         assertTeacherExists(teacherId, "Fail to find daily timetables for teacher");
 
-        return timetableDao.findDailyForTeacher(teacherId, date);
+        List<Timetable> result = timetableDao.findDailyForTeacher(teacherId, date);
+
+        LOG.debug("Found {} timetables for teacher with id={} for date={}", result.size(), teacherId, date);
+        return result;
     }
 
     @Override
     public List<Timetable> findMonthlyTimetablesForTeacher(Integer teacherId, Month month) {
+        LOG.debug("Retrieving all timetables for teacher with id={} for month={}", teacherId, month);
         assertTeacherExists(teacherId, "Fail to find monthly timetables for teacher");
 
-        return timetableDao.findMonthlyForTeacher(teacherId, month);
+        List<Timetable> result = timetableDao.findMonthlyForTeacher(teacherId, month);
+
+        LOG.debug("Found {} timetables for teacher with id={} for month={}", result.size(), teacherId, month);
+        return result;
     }
 
     private void assertTeacherExists(Integer teacherId, String msg) {
