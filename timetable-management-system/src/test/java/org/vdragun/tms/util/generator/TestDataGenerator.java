@@ -6,8 +6,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import org.vdragun.tms.core.domain.Category;
+import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.core.domain.Teacher;
+import org.vdragun.tms.core.domain.Title;
 
 /**
  * Convenient class for generating data for tests
@@ -37,6 +41,25 @@ public class TestDataGenerator {
         return IntStream.rangeClosed(1, number)
                 .mapToObj(id -> new Group(id, "name-" + id))
                 .collect(toList());
+    }
+
+    /**
+     * Generates fake {@link Course} instances
+     * 
+     * @param number number of courses to generate
+     */
+    public static List<Course> generateCourses(int number) {
+        return IntStream.rangeClosed(1, number)
+                .mapToObj(id -> {
+                    return new Course(
+                            id,
+                            "course-" + id,
+                            new Category(id, "CAT"),
+                            "course-" + id,
+                            new Teacher("fname-" + id, "lname-" + id, Title.PROFESSOR, LocalDate.now()));
+                })
+                .collect(toList());
+
     }
 
 }

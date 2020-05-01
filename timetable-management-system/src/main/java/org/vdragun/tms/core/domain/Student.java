@@ -60,6 +60,7 @@ public class Student extends Person {
     }
 
     public void setCourses(List<Course> courses) {
+        this.courses.clear();
         this.courses.addAll(courses);
     }
 
