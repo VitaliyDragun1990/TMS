@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
  * @author Vitaliy Dragun
  *
  */
-abstract class PersonGenerator<T> {
+public abstract class PersonGenerator<T> {
 
     /**
      * Generates students using initial data
