@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -85,8 +86,9 @@ public class TimetableGenerator {
         return result;
     }
 
-    private ClassroomReservation findAvailableClassroom(List<ClassroomReservation> r) {
-        return r.stream()
+    private ClassroomReservation findAvailableClassroom(List<ClassroomReservation> reservations) {
+        Collections.shuffle(reservations);
+        return reservations.stream()
                 .filter(reservation -> reservation.isAvailableFor(
                         classDurationMinutes))
                 .findAny()
