@@ -33,7 +33,7 @@ import org.vdragun.tms.dao.TeacherDao;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Teacher service")
-class TeacherServiceImplTest {
+public class TeacherServiceImplTest {
 
     private static final int ID = 1;
     private static final int COURSE_ID = 5;

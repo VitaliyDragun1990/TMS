@@ -21,7 +21,7 @@ import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.util.generator.PersonGenerator.PersonGeneratorData;
 
 @DisplayName("Student Generator")
-class StudentGeneratorTest {
+public class StudentGeneratorTest {
 
     private static final List<String> FIRST_NAMES = Arrays.asList("Jack", "Maggy", "Mary");
     private static final List<String> LAST_NAMES = Arrays.asList("Porter", "Smith", "Harris");

@@ -28,7 +28,7 @@ import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.util.generator.CourseGenerator.CourseGeneratorData;
 
 @DisplayName("Course Generator")
-class CourseGeneratorTest {
+public class CourseGeneratorTest {
 
     private static final int NUMBER_OF_COURSES = 10;
     private static final List<String> PREFIXES = asList("Beginner", "Intermediate", "Basic", "Advanced");

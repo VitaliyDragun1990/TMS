@@ -31,7 +31,7 @@ import org.vdragun.tms.dao.CategoryDao;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Category service")
-class CategoryServiceImplTest {
+public class CategoryServiceImplTest {
 
     private static final Integer ID = 1;
     private static final String CODE_BIO = "BIO";

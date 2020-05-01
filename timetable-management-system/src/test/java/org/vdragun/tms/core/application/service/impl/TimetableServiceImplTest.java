@@ -47,7 +47,7 @@ import org.vdragun.tms.dao.TimetableDao;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @DisplayName("Timetable servce")
-class TimetableServiceImplTest {
+public class TimetableServiceImplTest {
 
     private static final int NINETY_MINUTES = 90;
     private static final Integer TIMETABLE_ID = 1;

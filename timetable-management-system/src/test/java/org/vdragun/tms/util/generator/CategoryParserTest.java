@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.vdragun.tms.core.domain.Category;
 
 @DisplayName("Category Parser")
-class CategoryParserTest {
+public class CategoryParserTest {
     private static final List<String> CATEGORY_DATA = asList("ART=Art", "BIO=Biology", "ENG=English");
 
     private CategoryParser parser;
