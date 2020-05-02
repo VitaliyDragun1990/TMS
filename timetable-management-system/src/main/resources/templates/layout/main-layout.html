@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="context-path" th:content="@{/}">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+   <!-- Bootstrap 4.4.1 -->
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+  
+  <!-- Font Awesome JS -->
+  <script th:src="@{/js/solid.js}"></script>
+  <script th:src="@{/js/fontawesome.js}"></script>
+
+  <title th:text="#{title.main}" layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Timetable Management Application</title>
+</head>
+<body>
+
+  <div class="wrapper">
+    
+    <!-- Sidebar -->
+    <div th:replace="fragments/sidebar :: sidebar">
+        Sidebar content goes here
+    </div>
+    
+    <!-- Main Content -->
+    <div id="content">
+        <div th:replace="fragments/navbar :: navbar">
+            Navbar content goes here
+        </div>
+        <div layout:fragment="content">
+          Main content goes here
+        </div>
+    </div>
+    
+  </div>
+
+  <!-- Save application context root -->
+  <script th:inline="javascript">var ctx = /*[[@{/}]]*/''</script>
+  <!-- JQuery -->
+  <script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+  <!-- Popper JS -->
+  <script th:src="@{/js/popper.min.js}"></script>
+  <!-- Bootstrap JS -->
+  <script th:src="@{/js/bootstrap.min.js}"></script>
+  <!-- Custom JS -->
+  <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

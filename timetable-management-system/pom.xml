@@ -20,6 +20,7 @@
         <slf4j-version>1.7.25</slf4j-version>
         <log4j.version>2.12.1</log4j.version>
         <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
+        <thymeleaf-layout.version>2.4.1</thymeleaf-layout.version>
         <servlet.version>3.1.0</servlet.version>
         <jsp.version>2.3.1</jsp.version>
         <jstl.version>1.2.5</jstl.version>
@@ -44,6 +45,11 @@
                 <groupId>org.thymeleaf</groupId>
                 <artifactId>thymeleaf-spring5</artifactId>
                 <version>${thymeleaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>nz.net.ultraq.thymeleaf</groupId>
+                <artifactId>thymeleaf-layout-dialect</artifactId>
+                <version>${thymeleaf-layout.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -135,6 +141,11 @@
             <artifactId>thymeleaf-spring5</artifactId>
         </dependency>
         <dependency>
+            <groupId>nz.net.ultraq.thymeleaf</groupId>
+            <artifactId>thymeleaf-layout-dialect</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
@@ -183,7 +194,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-<!--             <scope>test</scope> -->
+            <!-- <scope>test</scope> -->
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

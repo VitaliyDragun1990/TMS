@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <title>Application Sidebar Fragment</title>
+  <nav id="sidebar" class="h-100" th:fragment="sidebar">
+            <div class="sidebar-header">
+                <h3>Operation Menu</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <p>Operation Groups</p>
+                <li class="active">
+                    <a href="#studentSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Students</a>
+                    <ul class="collapse list-unstyled" id="studentSubmenu">
+                        <li>
+                            <a href="#" th:href="@{/students}">Show All</a>
+                        </li>
+                        <li>
+                            <a href="#">Operation 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Operation 3</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#teacherSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Teachers</a>
+                    <ul class="collapse list-unstyled" id="teacherSubmenu">
+                        <li>
+                            <a href="#">Operation 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Operation 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Operation 3</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#timetableSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Timetables</a>
+                    <ul class="collapse list-unstyled" id="timetableSubmenu">
+                        <li>
+                            <a href="#">Operation 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Operation 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Operation 3</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Other</a>
+                </li>
+            </ul>
+  </nav>
+</body>
+</html>
