@@ -4,12 +4,14 @@
     layout:decorate="~{layout/main-layout}">
 <head>
 	<meta charset="UTF-8" />
-	<title>Index Page</title>
+	<title th:text="#{title.home}">Home Page</title>
 </head>
 <body>
     <div layout:fragment="content" id="mainContent">
-  	  <h1 class="text-center" th:text="#{welcome.message}">Welcome message</h1>
-      <h3 class="text-muted text-center mt-5">Select operation from operation menu</h3>
+  	  <h1 class="text-center" th:text="#{msg.welcome}">Welcome message</h1>
+      <h3 class="text-muted text-center mt-5" th:text="#{msg.select.operation}">
+        Select operation from operation menu
+      </h3>
     </div>
 </body>
 </html>

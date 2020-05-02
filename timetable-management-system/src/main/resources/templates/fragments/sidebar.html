@@ -7,16 +7,19 @@
   <title>Application Sidebar Fragment</title>
   <nav id="sidebar" class="h-100" th:fragment="sidebar">
             <div class="sidebar-header">
-                <h3>Operation Menu</h3>
+                <h3 th:text="#{sb.header.main}">Operation Menu</h3>
             </div>
 
             <ul class="list-unstyled components">
-                <p>Operation Groups</p>
+                <p th:text="#{sb.header.sec}">Operation Groups</p>
                 <li class="active">
-                    <a href="#studentSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Students</a>
+                    <a href="#studentSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                       th:text="#{sb.students.title}">
+                      Students
+                    </a>
                     <ul class="collapse list-unstyled" id="studentSubmenu">
                         <li>
-                            <a href="#" th:href="@{/students}">Show All</a>
+                            <a href="#" th:href="@{/students}" th:text="#{sb.students.all}">Show All</a>
                         </li>
                         <li>
                             <a href="#">Operation 2</a>
@@ -27,7 +30,10 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#teacherSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Teachers</a>
+                    <a href="#teacherSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                       th:text="#{sb.teachers.title}">
+                      Teachers
+                    </a>
                     <ul class="collapse list-unstyled" id="teacherSubmenu">
                         <li>
                             <a href="#">Operation 1</a>
@@ -41,7 +47,10 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#timetableSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Timetables</a>
+                    <a href="#timetableSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                       th:text="#{sb.tmtables.title}">
+                      Timetables
+                    </a>
                     <ul class="collapse list-unstyled" id="timetableSubmenu">
                         <li>
                             <a href="#">Operation 1</a>

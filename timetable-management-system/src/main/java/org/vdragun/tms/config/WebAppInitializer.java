@@ -14,7 +14,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
                 DBConfig.class,
                 DaoConfig.class,
                 ServiceConfig.class,
-//                StartupDataConfig.class
+                StartupDataConfig.class
         };
     }
 
