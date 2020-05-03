@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/main-layout}">
+  <head>
+  <meta charset="UTF-8" />
+  <title th:text="#{title.courses}">Courses</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <h4 th:text="#{title.courses}">Courses</h4>
+    <table class="table table-striped">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" th:text="#{label.name}">Name</th>
+          <th scope="col" th:text="#{label.description}">Description</th>
+          <th scope="col" th:text="#{label.category}">Category</th>
+          <th scope="col" th:text="#{label.teacher}">Teacher</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="course,iterStat : ${courses}" th:object="${course}">
+          <th scope="row" th:text="${iterStat.count}">1</th>
+          <td th:text="*{name}">Basic English</td>
+          <td th:text="*{description}">Totally awesome course</td>
+          <td th:text="*{category.code}">ENG</td>
+          <td th:text="|*{teacher.firstName} *{teacher.lastName}|">Jack Smith</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

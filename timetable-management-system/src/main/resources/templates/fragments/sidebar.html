@@ -64,6 +64,23 @@
                     </ul>
                 </li>
                 <li>
+                    <a href="#courseSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                       th:text="#{label.courses}">
+                      Courses
+                    </a>
+                    <ul class="collapse list-unstyled" id="courseSubmenu">
+                        <li>
+                            <a href="#" th:href="@{/courses}" th:text="#{label.showAll}">Show All</a>
+                        </li>
+                        <li>
+                            <a href="#">Operation 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Operation 3</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
                     <a href="#">Other</a>
                 </li>
             </ul>
