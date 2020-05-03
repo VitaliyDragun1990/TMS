@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/main-layout}">
+  <head>
+  <meta charset="UTF-8" />
+  <title th:text="#{teachers.p_title}">Teachers</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <h4 th:text="#{teachers.p_title}">Teachers</h4>
+    <table class="table table-striped">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" th:text="#{teachers.fname}">First Name</th>
+          <th scope="col" th:text="#{teachers.lname}">Last Name</th>
+          <th scope="col" th:text="#{teachers.hdate}">Date Hired</th>
+          <th scope="col" th:text="#{teachers.title}">Title</th>
+          <th scope="col" th:text="#{teachers.courses}">Courses</th>
+        </tr>
+      </thead>
+      <tbody th:with="df=#{format.date}">
+        <tr th:each="teacher,iterStat : ${teachers}" th:object="${teacher}">
+          <th scope="row" th:text="${iterStat.count}">1</th>
+          <td th:text="*{firstName}">Mark</td>
+          <td th:text="*{lastName}">Otto</td>
+          <td th:text="${#temporals.format(teacher.dateHired, df)}">25/10/2017</td>
+          <td th:text="*{{title}}">Instructor</td>
+          <td>
+            <p th:each="course : ${teacher.courses}" th:text="${course.name}" class="text-dark">
+                History
+            </p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
