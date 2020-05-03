@@ -18,6 +18,8 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+import org.vdragun.tms.ui.web.converter.StringToTitleConverter;
+import org.vdragun.tms.ui.web.converter.TitleToStringConverter;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import nz.net.ultraq.thymeleaf.decorators.strategies.GroupingRespectLayoutTitleStrategy;
@@ -79,6 +81,8 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
         DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
         registrar.setUseIsoFormat(true);
         registrar.registerFormatters(registry);
+        registry.addConverter(new TitleToStringConverter());
+        registry.addConverter(new StringToTitleConverter());
     }
 
     @Override
@@ -88,4 +92,5 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
                 .addResourceLocations("classpath:/static/css/", "classpath:/static/js/")
                 .setCachePeriod(0);
     }
+
 }
