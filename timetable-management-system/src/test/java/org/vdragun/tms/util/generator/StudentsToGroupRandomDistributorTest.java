@@ -22,7 +22,7 @@ public class StudentsToGroupRandomDistributorTest {
 
     private static final int MAX_STUDENTS_PER_GROUP = 30;
     private static final int MIN_STUDENTS_PER_GROUP = 10;
-    private static final int NUMBER_OF_STUDENTS = 200;
+    private static final int NUMBER_OF_STUDENTS = 300;
     private static final int NUMBER_OF_GROUPS = 10;
 
     private StudentsToGroupRandomDistributor distributor;
