@@ -3,20 +3,20 @@
   layout:decorate="~{layout/main-layout}">
   <head>
   <meta charset="UTF-8" />
-  <title th:text="#{tmtables.title}">Timetables</title>
+  <title th:text="#{title.timetables}">Timetables</title>
 </head>
 <body>
   <div layout:fragment="content">
-    <h4 th:text="#{tmtables.title}">Timetables</h4>
+    <h4 th:text="#{title.timetables}">Timetables</h4>
     <table class="table table-striped">
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>
-          <th scope="col" th:text="#{tmtables.date}">Date</th>
-          <th scope="col" th:text="#{tmtables.duration}">Duration (mins)</th>
-          <th scope="col" th:text="#{tmtables.course}">Course</th>
-          <th scope="col" th:text="#{tmtables.classroom}">Classroom</th>
-          <th scope="col" th:text="#{tmtables.teacher}">Teacher</th>
+          <th scope="col" th:text="#{label.date}">Date</th>
+          <th scope="col" th:text="#{label.duration}">Duration (mins)</th>
+          <th scope="col" th:text="#{label.course}">Course</th>
+          <th scope="col" th:text="#{label.classroom}">Classroom</th>
+          <th scope="col" th:text="#{label.teacher}">Teacher</th>
         </tr>
       </thead>
       <tbody th:with="dtf=#{format.datetime}">

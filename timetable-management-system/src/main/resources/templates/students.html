@@ -3,20 +3,20 @@
   layout:decorate="~{layout/main-layout}">
   <head>
   <meta charset="UTF-8" />
-  <title th:text="#{students.title}">Students</title>
+  <title th:text="#{title.students}">Students</title>
 </head>
 <body>
   <div layout:fragment="content">
-    <h4 th:text="#{students.title}">Students</h4>
+    <h4 th:text="#{title.students}">Students</h4>
     <table class="table table-striped">
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>
-          <th scope="col" th:text="#{students.fname}">First Name</th>
-          <th scope="col" th:text="#{students.lname}">Last Name</th>
-          <th scope="col" th:text="#{students.edate}">Enrollment Date</th>
-          <th scope="col" th:text="#{students.group}">Group</th>
-          <th scope="col" th:text="#{students.courses}">Courses</th>
+          <th scope="col" th:text="#{label.fname}">First Name</th>
+          <th scope="col" th:text="#{label.lname}">Last Name</th>
+          <th scope="col" th:text="#{label.edate}">Enrollment Date</th>
+          <th scope="col" th:text="#{label.group}">Group</th>
+          <th scope="col" th:text="#{label.courses}">Courses</th>
         </tr>
       </thead>
       <tbody th:with="df=#{format.date}">
