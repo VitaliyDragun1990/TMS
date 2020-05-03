@@ -22,8 +22,8 @@
       <tbody th:with="df=#{format.date}">
         <tr th:each="student,iterStat : ${students}" th:object="${student}">
           <th scope="row" th:text="${iterStat.count}">1</th>
-          <td th:text="*{firstName}">Mark</td>
-          <td th:text="*{lastName}">Otto</td>
+          <td><a th:href="@{/students/{studentId}(studentId=*{id})}" th:text="*{firstName}">Mark</a></td>
+          <td><a th:href="@{/students/{studentId}(studentId=*{id})}" th:text="*{lastName}">Otto</a></td>
           <td th:text="${#temporals.format(student.enrollmentDate, df)}">25/10/2017</td>
           <td th:text="*{group ne null} ? *{group.name} : '-'">ph-25</td>
           <td>

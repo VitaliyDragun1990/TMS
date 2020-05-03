@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/main-layout}"
+>
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{title.studentInfo}">Student Info</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <div class="w-75 p-3">
+      <h3 class="mb-5" th:text="#{title.studentInfo}">Student Info</h3>
+
+      <form data-student-id="${student.id}" id="studentForm">
+
+        <div class="form-group row">
+          <label for="firstName" class="col-sm-2 col-form-label" th:text="#{label.fname}">First name</label>
+          <div class="col-sm-10">
+            <input type="text" name="firstName" class="form-control" id="firstName" th:value="${student.firstName}" disabled>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="lastName" class="col-sm-2 col-form-label" th:text="#{label.lname}">Last name</label>
+          <div class="col-sm-10">
+            <input type="text" name="lastName" class="form-control" id="lastName" th:value="${student.lastName}" disabled>
+          </div>
+        </div>
+        
+         <div class="form-group row" th:with="df=#{format.date}">
+          <label for="edate" class="col-sm-2 col-form-label" th:text="#{label.edate}">Enrollment Date</label>
+          <div class="col-sm-10">
+            <input type="text" name="enrollmentDate" class="form-control" id="edate"
+                   th:value="${#temporals.format(student.enrollmentDate, df)}" disabled>
+          </div>
+        </div>
+
+        <div class="form-group row" th:with="hasGroup=${student.group ne null}">
+          <label for="groupSelect" class="col-sm-2 col-form-label" th:text="#{label.group}">Group</label>
+          <div class="col-sm-10 form-row">
+            <select class="form-control w-25" name="group" id="groupSelect" data-current-group="${student.groupId}" disabled>
+              <option value="-1" th:value="${hasGroup} ? ${student.group.id} : -1" th:text="${hasGroup} ? ${student.group.name} : '-'">-</option>
+            </select>
+          </div>
+        </div>
+
+        <fieldset class="form-group">
+          <div class="row">
+            <legend class="col-form-label col-sm-2 pt-0" th:text="#{label.courses}">Courses</legend>
+            <div class="col-sm-4" id="allCourses">
+                <div class="form-check" th:each="course : ${student.courses}" th:object="${course}">
+                  <input class="form-check-input" type="checkbox" th:name="|course-*{id}|" th:id="*{name}" th:value="*{id}" 
+                         checked disabled>
+                  <label class="form-check-label" th:for="*{name}" th:text="*{name}">History</label>
+                </div>
+            </div>
+          </div>
+        </fieldset>
+
+      </form>
+    </div>
+  </div>
+</body>
+</html>
