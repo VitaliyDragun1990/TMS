@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/main-layout}">
+<head>
+	<meta charset="UTF-8" />
+	<title th:text="#{title.serverError}">Internal Server Error</title>
+</head>
+<body>
+    <div layout:fragment="content" id="mainContent">
+     
+     <div class="alert alert-danger" role="alert">
+       <h4 class="alert-heading text-center" th:text="#{label.serverError}">An error occurred in the application!</h4>
+       <p th:text="#{msg.internalError}">
+         Your request can not be served at the moment because of internal application error. Please try again later.
+       </p>
+       <hr>
+       <p class="mb-0" th:text="${msg}">Requested resource: /tms/students/10</p>
+    </div>
+    
+    </div>
+</body>
+</html>

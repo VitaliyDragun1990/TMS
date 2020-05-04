@@ -20,6 +20,7 @@ public final class Constants {
         public static final String TIMETABLES_FOR_TEACHER = "msg.timetablesForTeacher";
         public static final String TIMETABLES_FOR_STUDENT = "msg.timetablesForStudent";
         public static final String DATE_FORMAT = "format.date";
+        public static final String REQUESTED_RESOURCE = "msg.requestedResource";
 
         private Message() {
         }
