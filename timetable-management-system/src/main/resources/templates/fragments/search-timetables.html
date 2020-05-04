@@ -7,34 +7,34 @@
   <title>Timetables search fragment</title>
   <div th:fragment="search (url)">
   
-    <h4 class="mb-5">Timetables search</h4>
+    <h4 class="mb-5" th:text="#{title.timetablesSearch}">Timetables search</h4>
 
     <div class="form-group row">
-      <label for="rangePicker" class="col-sm-2 col-form-label">Period</label>
+      <label for="rangePicker" class="col-sm-2 col-form-label" th:text="#{label.period}">Period</label>
       <div class="col-sm-8" id="rangePicker">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="dailySearch" value="daily" checked> <label
-            class="form-check-label" for="dailySearch"
-          >Daily</label>
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="dailySearch" value="daily" checked>
+          <label class="form-check-label" for="dailySearch" th:text="#{label.daily}">Daily</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="monthlySearch" value="monthly"> <label
-            class="form-check-label" for="monthlySearch"
-          >Monthly</label>
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="monthlySearch" value="monthly">
+          <label class="form-check-label" for="monthlySearch" th:text="#{label.monthly}">Monthly</label>
         </div>
       </div>
     </div>
 
     <div class="form-group row">
-      <label for="dateTimePicker" class="col-sm-2 col-form-label">Date</label>
+      <label for="dateTimePicker" class="col-sm-2 col-form-label" th:text="#{label.date}">Date</label>
       <div class="col-sm-8">
         <input type="text" name="targetDate" class="form-control" id="dateTimePicker">
-        <div id="invalidDateInput" class="text-danger d-none">
+        <div id="invalidDateInput" class="text-danger d-none" th:text="#{error.targetDateRequired}">
           Please provide target date.
         </div>
       </div>
       <div class="col-sm-2">
-        <button type="button" class="btn btn-outline-info" th:attr="data-base-url=${url}" id="searchTmBtn">Search</button>
+        <button type="button" class="btn btn-outline-info" th:attr="data-base-url=${url}" id="searchTmBtn" th:text="#{label.search}">
+          Search
+        </button>
       </div>
     </div>
   </div>

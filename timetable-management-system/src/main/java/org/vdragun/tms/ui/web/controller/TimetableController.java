@@ -30,6 +30,8 @@ import org.vdragun.tms.ui.web.converter.StringToLocalDateCustomFormatter;
 @RequestMapping("/timetables")
 public class TimetableController extends AbstractController {
 
+    private static final String TIMETABLES = "timetables";
+
     @Autowired
     private TimetableService timetableService;
 
@@ -51,7 +53,7 @@ public class TimetableController extends AbstractController {
         model.addAttribute("timetables", result);
         model.addAttribute("msg", getMessage("msg.timetablesAll", result.size()));
 
-        return "timetables";
+        return TIMETABLES;
     }
 
     @PostMapping("/teacher/{teacherId}/day")
@@ -68,7 +70,7 @@ public class TimetableController extends AbstractController {
         model.addAttribute("timetables", result);
         model.addAttribute("msg", msg);
 
-        return "timetables";
+        return TIMETABLES;
     }
 
     @PostMapping("/teacher/{teacherId}/month")
@@ -85,7 +87,7 @@ public class TimetableController extends AbstractController {
         model.addAttribute("timetables", result);
         model.addAttribute("msg", msg);
 
-        return "timetables";
+        return TIMETABLES;
     }
 
 }

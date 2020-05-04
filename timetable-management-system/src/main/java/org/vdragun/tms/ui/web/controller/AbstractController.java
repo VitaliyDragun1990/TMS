@@ -35,7 +35,9 @@ abstract class AbstractController {
     }
 
     protected String formatMonth(Month month) {
-        return month.getDisplayName(TextStyle.FULL, Locale.US);
+        String monthName = month.getDisplayName(TextStyle.FULL, Locale.US);
+        log.info("Month name {}", monthName);
+        return monthName;
     }
 
     protected Locale getLocale() {
