@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import org.springframework.context.MessageSource;
 import org.springframework.format.Formatter;
+import org.vdragun.tms.ui.web.util.Constants.Message;
 
 /**
  * Responsible for converting string values into {@link LocalDate} instances and
@@ -16,7 +17,6 @@ import org.springframework.format.Formatter;
  *
  */
 public class StringToLocalDateCustomFormatter implements Formatter<LocalDate> {
-    private static final String DATE_PATTERN = "format.date";
 
     private MessageSource messageSource;
 
@@ -26,14 +26,14 @@ public class StringToLocalDateCustomFormatter implements Formatter<LocalDate> {
 
     @Override
     public String print(LocalDate object, Locale locale) {
-        String pattern = messageSource.getMessage(DATE_PATTERN, null, locale);
+        String pattern = messageSource.getMessage(Message.DATE_FORMAT, null, locale);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return formatter.format(object);
     }
 
     @Override
     public LocalDate parse(String text, Locale locale) throws ParseException {
-        String pattern = messageSource.getMessage(DATE_PATTERN, null, locale);
+        String pattern = messageSource.getMessage(Message.DATE_FORMAT, null, locale);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return LocalDate.parse(text, formatter);
     }
