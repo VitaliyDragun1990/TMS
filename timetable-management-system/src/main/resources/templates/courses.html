@@ -25,7 +25,12 @@
           <td th:text="*{name}">Basic English</td>
           <td th:text="*{description}">Totally awesome course</td>
           <td th:text="*{category.code}">ENG</td>
-          <td th:text="|*{teacher.firstName} *{teacher.lastName}|">Jack Smith</td>
+          <td>
+            <a class="btn btn-link" href="#" th:href="@{/teachers/{teacherId}(teacherId=*{teacher.id})}"
+               th:text="|*{teacher.firstName} *{teacher.lastName}|">
+               Jack Smith
+           </a>
+          </td>
         </tr>
       </tbody>
     </table>
