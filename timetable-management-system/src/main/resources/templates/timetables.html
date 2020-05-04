@@ -7,8 +7,8 @@
 </head>
 <body>
   <div layout:fragment="content">
-    <h4 th:text="#{title.timetables}">Timetables</h4>
-    <table class="table table-striped">
+    <h4 th:text="${msg}" class="mb-3">Timetables</h4>
+    <table class="table table-striped" th:unless="${#lists.isEmpty(timetables)}">
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>
@@ -26,7 +26,12 @@
           <td th:text="*{durationInMinutes}">60</td>
           <td th:text="*{course.name}">History</td>
           <td th:text="*{classroom.id}">1</td>
-          <td th:text="|*{teacher.firstName} *{teacher.lastName}|">Jack Smith</td>
+          <td>
+            <a th:href="@{/teachers/{teacherId}(teacherId=*{teacher.id})}"
+               th:text="|*{teacher.firstName} *{teacher.lastName}|">
+               Jack Smith
+           </a>
+          </td>
         </tr>
       </tbody>
     </table>

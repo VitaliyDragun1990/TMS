@@ -54,6 +54,9 @@
             </div>
           </div>
         </fieldset>
+        
+        <div th:replace="fragments/search-timetables :: search (@{'/timetables/teacher/'+${teacherId}+'/'})">
+        </div>
 
       </form>
     </div>
