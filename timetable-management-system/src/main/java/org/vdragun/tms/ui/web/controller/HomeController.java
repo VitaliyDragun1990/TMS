@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping({ "/home", "/" })
-public class HomeController {
+public class HomeController extends AbstractController {
 
     @GetMapping
     public String showIndexPage() {
+        log.trace("Received GET request to show home page, URI={}", getRequestUri());
+
         return "index";
     }
 }

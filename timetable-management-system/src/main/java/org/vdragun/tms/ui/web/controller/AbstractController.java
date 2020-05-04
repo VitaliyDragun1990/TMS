@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.vdragun.tms.ui.web.util.Constants.Message;
 
 /**
@@ -21,7 +22,7 @@ import org.vdragun.tms.ui.web.util.Constants.Message;
  */
 abstract class AbstractController {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    protected Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private MessageSource messageSource;
@@ -41,6 +42,11 @@ abstract class AbstractController {
 
     protected Locale getLocale() {
         return LocaleContextHolder.getLocale();
+    }
+
+    protected String getRequestUri() {
+        ServletUriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromCurrentRequest();
+        return uriBuilder.toUriString();
     }
 
 }

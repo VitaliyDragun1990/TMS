@@ -26,7 +26,9 @@ public class TeacherController extends AbstractController {
     private TeacherService teacherService;
 
     @GetMapping
-    public String showAllStudents(Model model) {
+    public String showAllTeachers(Model model) {
+        log.trace("Received GET request to show all teachers, URI={}", getRequestUri());
+
         List<Teacher> result = teacherService.findAllTeachers();
 
         model.addAttribute("teachers", result);
@@ -37,6 +39,8 @@ public class TeacherController extends AbstractController {
 
     @GetMapping("/{teacherId}")
     public String showTeacherInfo(@PathVariable("teacherId") Integer teacherId, Model model) {
+        log.trace("Received GET request to show data for teacher with id={}, URI={}", teacherId, getRequestUri());
+
         model.addAttribute("teacher", teacherService.findTeacherById(teacherId));
         return "teacher";
     }

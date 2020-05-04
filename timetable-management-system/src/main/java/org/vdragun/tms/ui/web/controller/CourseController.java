@@ -26,6 +26,8 @@ public class CourseController extends AbstractController {
 
     @GetMapping
     public String showAllCourses(Model model) {
+        log.trace("Received GET request to show all courses, URI={}", getRequestUri());
+
         List<Course> result = courseService.findAllCourses();
         
         model.addAttribute("courses", result);

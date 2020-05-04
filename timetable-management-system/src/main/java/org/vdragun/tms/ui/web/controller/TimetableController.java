@@ -11,7 +11,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.vdragun.tms.core.application.service.StudentService;
@@ -54,6 +53,8 @@ public class TimetableController extends AbstractController {
 
     @GetMapping
     public String showAllTimetables(Model model) {
+        log.trace("Received GET request to show all timetables, URI={}", getRequestUri());
+        
         List<Timetable> result = timetableService.findAllTimetables();
 
         model.addAttribute("timetables", result);
@@ -62,11 +63,14 @@ public class TimetableController extends AbstractController {
         return TIMETABLES_PAGE;
     }
 
-    @PostMapping("/teacher/{teacherId}/day")
+    @GetMapping("/teacher/{teacherId}/day")
     public String showlDailyTimetablesForTeacher(
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetDate") LocalDate targetDate,
             Model model) {
+
+        log.trace("Received GET request to show daily timetables for teacher with id={} for date={}, URI={}",
+                teacherId, targetDate, getRequestUri());
 
         List<Timetable> result = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate);
         Teacher teacher = teacherService.findTeacherById(teacherId);
@@ -79,11 +83,14 @@ public class TimetableController extends AbstractController {
         return TIMETABLES_PAGE;
     }
 
-    @PostMapping("/teacher/{teacherId}/month")
+    @GetMapping("/teacher/{teacherId}/month")
     public String showMonthlyTimetablesForTeacher(
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetDate") Month targetDate,
             Model model) {
+
+        log.trace("Received GET request to show monthly timetables for teacher with id={} for month={}, URI={}",
+                teacherId, targetDate, getRequestUri());
 
         List<Timetable> result = timetableService.findMonthlyTimetablesForTeacher(teacherId, targetDate);
         Teacher teacher = teacherService.findTeacherById(teacherId);
@@ -96,11 +103,14 @@ public class TimetableController extends AbstractController {
         return TIMETABLES_PAGE;
     }
 
-    @PostMapping("/student/{studentId}/day")
+    @GetMapping("/student/{studentId}/day")
     public String showlDailyTimetablesForStudent(
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetDate") LocalDate targetDate,
             Model model) {
+
+        log.trace("Received GET request to show daily timetables for student with id={} for date={}, URI={}",
+                studentId, targetDate, getRequestUri());
 
         List<Timetable> result = timetableService.findDailyTimetablesForStudent(studentId, targetDate);
         Student student = studentService.findStudentById(studentId);
@@ -113,11 +123,14 @@ public class TimetableController extends AbstractController {
         return TIMETABLES_PAGE;
     }
 
-    @PostMapping("/student/{studentId}/month")
+    @GetMapping("/student/{studentId}/month")
     public String showMonthlyTimetablesForStudent(
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetDate") Month targetDate,
             Model model) {
+
+        log.trace("Received GET request to show monthly timetables for student with id={} for month={}, URI={}",
+                studentId, targetDate, getRequestUri());
 
         List<Timetable> result = timetableService.findMonthlyTimetablesForStudent(studentId, targetDate);
         Student student = studentService.findStudentById(studentId);

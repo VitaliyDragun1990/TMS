@@ -19,7 +19,7 @@ $(function() {
 			$('#invalidDateInput').removeClass('d-none');
 		} else {
 			$('#invalidDateInput').addClass('d-none');
-			postForm(url, 'targetDate', date);
+			getForm(url, 'targetDate', date);
 		}
 	}
 	
@@ -36,6 +36,22 @@ $(function() {
 			id: 'postForm',	// arbitrary here
 			action: url,
 			method: 'POST'
+		});
+		var input = $('<input>', {
+			name: fieldName,
+			value: fieldValue,
+			type: 'hidden'
+		});
+		form.append(input);
+		$('body').append(form);
+		form.submit();
+	}
+	
+	var getForm  = function(url, fieldName, fieldValue) {
+		var form = $('<form>', {
+			id: 'getForm',	// arbitrary here
+			action: url,
+			method: 'GET'
 		});
 		var input = $('<input>', {
 			name: fieldName,
