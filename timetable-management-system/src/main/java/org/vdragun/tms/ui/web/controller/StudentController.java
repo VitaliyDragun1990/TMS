@@ -1,5 +1,7 @@
 package org.vdragun.tms.ui.web.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.vdragun.tms.core.application.service.StudentService;
+import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.ui.web.util.Constants.Message;
 
 /**
  * Processes student-related requests
@@ -16,14 +20,18 @@ import org.vdragun.tms.core.application.service.StudentService;
  */
 @Controller
 @RequestMapping("/students")
-public class StudentController {
+public class StudentController extends AbstractController {
 
     @Autowired
     private StudentService studentService;
 
     @GetMapping
     public String showAllStudents(Model model) {
-        model.addAttribute("students", studentService.findAllStudents());
+        List<Student> result = studentService.findAllStudents();
+
+        model.addAttribute("students", result);
+        model.addAttribute("msg", getMessage(Message.ALL_STUDENTS, result.size()));
+
         return "students";
     }
 

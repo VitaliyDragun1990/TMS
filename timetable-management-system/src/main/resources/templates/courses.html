@@ -7,8 +7,9 @@
 </head>
 <body>
   <div layout:fragment="content">
-    <h4 th:text="#{title.courses}">Courses</h4>
-    <table class="table table-striped">
+    <h4 class="mb-3" th:text="${msg}">Courses</h4>
+    
+    <table class="table table-striped" th:unless="${#lists.isEmpty(courses)}">
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>
@@ -28,6 +29,7 @@
         </tr>
       </tbody>
     </table>
+    
   </div>
 </body>
 </html>

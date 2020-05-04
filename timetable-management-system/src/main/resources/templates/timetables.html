@@ -8,6 +8,7 @@
 <body>
   <div layout:fragment="content">
     <h4 th:text="${msg}" class="mb-3">Timetables</h4>
+    
     <table class="table table-striped" th:unless="${#lists.isEmpty(timetables)}">
       <thead class="thead-light">
         <tr>
@@ -35,6 +36,7 @@
         </tr>
       </tbody>
     </table>
+    
   </div>
 </body>
 </html>

@@ -1,11 +1,15 @@
 package org.vdragun.tms.ui.web.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.vdragun.tms.core.application.service.CourseService;
+import org.vdragun.tms.core.domain.Course;
+import org.vdragun.tms.ui.web.util.Constants.Message;
 
 /**
  * Processes course-related requests
@@ -15,14 +19,18 @@ import org.vdragun.tms.core.application.service.CourseService;
  */
 @Controller
 @RequestMapping("/courses")
-public class CourseController {
+public class CourseController extends AbstractController {
 
     @Autowired
     private CourseService courseService;
 
     @GetMapping
     public String showAllCourses(Model model) {
-        model.addAttribute("courses", courseService.findAllCourses());
+        List<Course> result = courseService.findAllCourses();
+        
+        model.addAttribute("courses", result);
+        model.addAttribute("msg", getMessage(Message.ALL_COURSES, result.size()));
+        
         return "courses";
     }
 }
