@@ -13,8 +13,7 @@
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>
-          <th scope="col" th:text="#{label.fname}">First Name</th>
-          <th scope="col" th:text="#{label.lname}">Last Name</th>
+          <th scope="col" th:text="#{label.fullName}">First Name</th>
           <th scope="col" th:text="#{label.hdate}">Date Hired</th>
           <th scope="col" th:text="#{label.title}">Title</th>
           <th scope="col" th:text="#{label.courses}">Courses</th>
@@ -23,8 +22,12 @@
       <tbody th:with="df=#{format.date}">
         <tr th:each="teacher,iterStat : ${teachers}" th:object="${teacher}">
           <th scope="row" th:text="${iterStat.count}">1</th>
-          <td><a th:href="@{/teachers/{teacherId}(teacherId=*{id})}" th:text="*{firstName}">Mark</a></td>
-          <td><a th:href="@{/teachers/{teacherId}(teacherId=*{id})}" th:text="*{lastName}">Otto</a></td>
+          <td>
+            <a class="btn btn-link" href="#" th:href="@{/teachers/{teacherId}(teacherId=*{id})}"
+               th:text="|*{firstName} *{lastName}|">
+              Mark Otto
+            </a>
+          </td>
           <td th:text="${#temporals.format(teacher.dateHired, df)}">25/10/2017</td>
           <td th:text="*{{title}}">Instructor</td>
           <td>

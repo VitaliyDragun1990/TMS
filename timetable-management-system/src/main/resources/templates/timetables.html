@@ -28,7 +28,7 @@
           <td th:text="*{course.name}">History</td>
           <td th:text="*{classroom.id}">1</td>
           <td>
-            <a th:href="@{/teachers/{teacherId}(teacherId=*{teacher.id})}"
+            <a class="btn btn-link" href="#" th:href="@{/teachers/{teacherId}(teacherId=*{teacher.id})}"
                th:text="|*{teacher.firstName} *{teacher.lastName}|">
                Jack Smith
            </a>
