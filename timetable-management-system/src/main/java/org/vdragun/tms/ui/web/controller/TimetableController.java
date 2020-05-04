@@ -20,7 +20,9 @@ import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.web.converter.StringToLocalDateCustomFormatter;
+import org.vdragun.tms.ui.web.util.Constants.Attribute;
 import org.vdragun.tms.ui.web.util.Constants.Message;
+import org.vdragun.tms.ui.web.util.Constants.Page;
 
 /**
  * Processes teacher-related requests
@@ -31,8 +33,6 @@ import org.vdragun.tms.ui.web.util.Constants.Message;
 @Controller
 @RequestMapping("/timetables")
 public class TimetableController extends AbstractController {
-
-    private static final String TIMETABLES_PAGE = "timetables";
 
     @Autowired
     private TimetableService timetableService;
@@ -54,13 +54,12 @@ public class TimetableController extends AbstractController {
     @GetMapping
     public String showAllTimetables(Model model) {
         log.trace("Received GET request to show all timetables, URI={}", getRequestUri());
-        
         List<Timetable> result = timetableService.findAllTimetables();
 
-        model.addAttribute("timetables", result);
-        model.addAttribute("msg", getMessage(Message.ALL_TIMETABLES, result.size()));
+        model.addAttribute(Attribute.TIMETABLES, result);
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_TIMETABLES, result.size()));
 
-        return TIMETABLES_PAGE;
+        return Page.TIMETABLES;
     }
 
     @GetMapping("/teacher/{teacherId}/day")
@@ -68,19 +67,22 @@ public class TimetableController extends AbstractController {
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetDate") LocalDate targetDate,
             Model model) {
-
         log.trace("Received GET request to show daily timetables for teacher with id={} for date={}, URI={}",
                 teacherId, targetDate, getRequestUri());
 
         List<Timetable> result = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate);
         Teacher teacher = teacherService.findTeacherById(teacherId);
-        String msg = getMessage(Message.TIMETABLES_FOR_TEACHER, result.size(), teacher.getFirstName(),
-                teacher.getLastName(), formatDate(targetDate));
+        String msg = getMessage(
+                Message.TIMETABLES_FOR_TEACHER,
+                result.size(),
+                teacher.getFirstName(),
+                teacher.getLastName(),
+                formatDate(targetDate));
 
-        model.addAttribute("timetables", result);
-        model.addAttribute("msg", msg);
+        model.addAttribute(Attribute.TIMETABLES, result);
+        model.addAttribute(Attribute.MESSAGE, msg);
 
-        return TIMETABLES_PAGE;
+        return Page.TIMETABLES;
     }
 
     @GetMapping("/teacher/{teacherId}/month")
@@ -88,19 +90,22 @@ public class TimetableController extends AbstractController {
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetDate") Month targetDate,
             Model model) {
-
         log.trace("Received GET request to show monthly timetables for teacher with id={} for month={}, URI={}",
                 teacherId, targetDate, getRequestUri());
 
         List<Timetable> result = timetableService.findMonthlyTimetablesForTeacher(teacherId, targetDate);
         Teacher teacher = teacherService.findTeacherById(teacherId);
-        String msg = getMessage(Message.TIMETABLES_FOR_TEACHER, result.size(), teacher.getFirstName(),
-                teacher.getLastName(), formatMonth(targetDate));
+        String msg = getMessage(
+                Message.TIMETABLES_FOR_TEACHER,
+                result.size(),
+                teacher.getFirstName(),
+                teacher.getLastName(),
+                formatMonth(targetDate));
 
-        model.addAttribute("timetables", result);
-        model.addAttribute("msg", msg);
+        model.addAttribute(Attribute.TIMETABLES, result);
+        model.addAttribute(Attribute.MESSAGE, msg);
 
-        return TIMETABLES_PAGE;
+        return Page.TIMETABLES;
     }
 
     @GetMapping("/student/{studentId}/day")
@@ -108,19 +113,22 @@ public class TimetableController extends AbstractController {
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetDate") LocalDate targetDate,
             Model model) {
-
         log.trace("Received GET request to show daily timetables for student with id={} for date={}, URI={}",
                 studentId, targetDate, getRequestUri());
 
         List<Timetable> result = timetableService.findDailyTimetablesForStudent(studentId, targetDate);
         Student student = studentService.findStudentById(studentId);
-        String msg = getMessage(Message.TIMETABLES_FOR_STUDENT, result.size(), student
-                .getFirstName(), student.getLastName(), formatDate(targetDate));
+        String msg = getMessage(
+                Message.TIMETABLES_FOR_STUDENT,
+                result.size(),
+                student.getFirstName(),
+                student.getLastName(),
+                formatDate(targetDate));
 
-        model.addAttribute("timetables", result);
-        model.addAttribute("msg", msg);
+        model.addAttribute(Attribute.TIMETABLES, result);
+        model.addAttribute(Attribute.MESSAGE, msg);
 
-        return TIMETABLES_PAGE;
+        return Page.TIMETABLES;
     }
 
     @GetMapping("/student/{studentId}/month")
@@ -128,19 +136,22 @@ public class TimetableController extends AbstractController {
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetDate") Month targetDate,
             Model model) {
-
         log.trace("Received GET request to show monthly timetables for student with id={} for month={}, URI={}",
                 studentId, targetDate, getRequestUri());
 
         List<Timetable> result = timetableService.findMonthlyTimetablesForStudent(studentId, targetDate);
         Student student = studentService.findStudentById(studentId);
-        String msg = getMessage(Message.TIMETABLES_FOR_STUDENT, result.size(), student.getFirstName(),
-                student.getLastName(), formatMonth(targetDate));
+        String msg = getMessage(
+                Message.TIMETABLES_FOR_STUDENT,
+                result.size(),
+                student.getFirstName(),
+                student.getLastName(),
+                formatMonth(targetDate));
 
-        model.addAttribute("timetables", result);
-        model.addAttribute("msg", msg);
+        model.addAttribute(Attribute.TIMETABLES, result);
+        model.addAttribute(Attribute.MESSAGE, msg);
 
-        return TIMETABLES_PAGE;
+        return Page.TIMETABLES;
     }
 
 }

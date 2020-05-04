@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
+import org.vdragun.tms.ui.web.util.Constants.Attribute;
 import org.vdragun.tms.ui.web.util.Constants.Message;
+import org.vdragun.tms.ui.web.util.Constants.Page;
 
 /**
  * Responsible for handling application exceptions by forwarding to respectful
@@ -40,20 +42,19 @@ public class ApplicationExceptionHandler {
             ResourceNotFoundException exception,
             Model model,
             HttpServletRequest request) {
-
         LOG.warn("Handling resource not found exception", exception);
-        model.addAttribute("msg", getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
 
-        return "404";
+        return Page.NOT_FOUND;
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({ NoHandlerFoundException.class })
     public String handleNoHandlerFoundException(NoHandlerFoundException exception, Model model) {
         LOG.warn("Handling handler not found exception", exception);
-        model.addAttribute("msg", getMessage(Message.REQUESTED_RESOURCE, exception.getRequestURL()));
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, exception.getRequestURL()));
 
-        return "404";
+        return Page.NOT_FOUND;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -62,27 +63,25 @@ public class ApplicationExceptionHandler {
             MethodArgumentTypeMismatchException exception,
             Model model,
             HttpServletRequest request) {
+        LOG.warn("Handling method argument type mismatch exception", exception.getRootCause());
 
+        String errMsg = "";
         if (exception.getRootCause() instanceof NumberFormatException) {
-            Exception rootException = (Exception) exception.getRootCause();
-            LOG.warn("Handling number format exception", rootException);
-            String errMsg = rootException.getMessage().split(":")[1].trim();
-            model.addAttribute("error", errMsg);
-            model.addAttribute("msg", getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
-
-            return "400";
-        } else {
-            return handleException(exception, model, request);
+            errMsg = extractMessage((Exception) exception.getRootCause());
         }
+        model.addAttribute(Attribute.ERROR, errMsg);
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+
+        return Page.BAD_REQUEST;
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({ Exception.class })
     public String handleException(Exception exception, Model model, HttpServletRequest request) {
         LOG.error("Handling application exception", exception);
-        model.addAttribute("msg", getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
 
-        return "500";
+        return Page.SERVER_ERROR;
     }
 
     private String getRequestUrl(HttpServletRequest req) {
@@ -94,5 +93,9 @@ public class ApplicationExceptionHandler {
     private String getMessage(String code, Object... args) {
         Locale locale = LocaleContextHolder.getLocale();
         return messageSource.getMessage(code, args, locale);
+    }
+
+    private String extractMessage(Exception rootException) {
+        return rootException.getMessage().split(":")[1].trim();
     }
 }
