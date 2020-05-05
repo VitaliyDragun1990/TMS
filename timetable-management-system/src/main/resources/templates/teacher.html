@@ -38,7 +38,8 @@
         <div class="form-group row">
           <label for="title" class="col-sm-2 col-form-label" th:text="#{label.title}">Professor</label>
           <div class="col-sm-10">
-            <input type="text" name="title" class="form-control" id="title" th:value="${{teacher.title}}" disabled>
+            <input type="text" name="title" class="form-control" id="title" 
+                   th:value="#{|label.title.${teacher.title}|}" disabled>
           </div>
         </div>
 

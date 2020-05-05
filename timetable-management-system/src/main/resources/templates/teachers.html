@@ -29,7 +29,7 @@
             </a>
           </td>
           <td th:text="${#temporals.format(teacher.dateHired, df)}">25/10/2017</td>
-          <td th:text="*{{title}}">Instructor</td>
+          <td th:text="#{|label.title.${teacher.title}|}">Instructor</td>
           <td>
             <p th:each="course : ${teacher.courses}" th:text="${course.name}" class="text-dark">
                 History
