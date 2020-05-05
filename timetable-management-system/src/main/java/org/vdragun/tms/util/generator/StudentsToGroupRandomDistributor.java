@@ -1,5 +1,7 @@
 package org.vdragun.tms.util.generator;
 
+import static java.lang.String.format;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -14,6 +16,8 @@ import org.vdragun.tms.core.domain.Student;
  *
  */
 public class StudentsToGroupRandomDistributor {
+
+    private static final float CHANCE_TO_SKIP_PERCENTAGE = 10f;
 
     /**
      * Randomly assigns specified students among given groups. Each group could
@@ -30,10 +34,12 @@ public class StudentsToGroupRandomDistributor {
      */
     public void assignStudentsToGroups(List<Student> students, List<Group> groups, int minStudentsPerGroup,
             int maxStudentsPerGroup) {
+        assertTotalGroupCapacity(students, groups, maxStudentsPerGroup);
+        
         List<Student> studentsToAssign = new ArrayList<>(students);
 
         for (Group group : groups) {
-            if (randomlySkipGroup()) {
+            if (randomlySkipGroup(CHANCE_TO_SKIP_PERCENTAGE)) {
                 continue;
             }
 
@@ -43,6 +49,17 @@ public class StudentsToGroupRandomDistributor {
                 Student student = getRandomStudent(studentsToAssign);
                 student.setGroup(group);
             }
+        }
+    }
+
+    private void assertTotalGroupCapacity(List<Student> students, List<Group> groups, int maxStudentsPerGroup) {
+        int totalGroupsCapacity = groups.size() * maxStudentsPerGroup;
+        int totalNumberOfStudents = students.size();
+        if (totalGroupsCapacity < totalNumberOfStudents) {
+            throw new IllegalArgumentException(format(
+                    "Total groups capacity [%d] is not enough to for all students [%d]",
+                    totalGroupsCapacity,
+                    totalNumberOfStudents));
         }
     }
 
@@ -63,7 +80,12 @@ public class StudentsToGroupRandomDistributor {
         return ThreadLocalRandom.current().nextInt(origin, bound);
     }
 
-    private boolean randomlySkipGroup() {
-        return ThreadLocalRandom.current().nextBoolean() && !ThreadLocalRandom.current().nextBoolean();
+    private boolean randomlySkipGroup(float chanceToSkipGroup) {
+        return randomChance() <= chanceToSkipGroup;
     }
+
+    private float randomChance() {
+        return ThreadLocalRandom.current().nextFloat() * 100;
+    }
+
 }
