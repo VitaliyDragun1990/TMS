@@ -77,7 +77,7 @@ $(function() {
 			// clear date picker field
 			$('#dateTimePicker').data("DateTimePicker").clear();
 			// set month format
-			$('#dateTimePicker').data("DateTimePicker").format('MMM');
+			$('#dateTimePicker').data("DateTimePicker").format('MMMM');
 		}
 	}
 
