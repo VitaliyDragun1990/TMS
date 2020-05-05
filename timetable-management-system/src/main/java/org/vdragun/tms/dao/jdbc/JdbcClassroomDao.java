@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,6 +23,8 @@ import org.vdragun.tms.dao.DaoException;
  */
 @Repository
 public class JdbcClassroomDao implements ClassroomDao {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JdbcClassroomDao.class);
 
     @Value("${classroom.insert}")
     private String insertQuery;
@@ -41,6 +45,7 @@ public class JdbcClassroomDao implements ClassroomDao {
 
     @Override
     public void save(Classroom classroom) {
+        LOG.debug("Saving new classroom to the database: {}", classroom);
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rowsInserted = jdbc.update(connection -> {
@@ -59,6 +64,7 @@ public class JdbcClassroomDao implements ClassroomDao {
 
     @Override
     public Optional<Classroom> findById(Integer classroomId) {
+        LOG.debug("Searching for classroom with id={} in the database", classroomId);
         List<Classroom> result = jdbc.query(findByIdQuery, new Object[] { classroomId }, mapper);
         if (result.isEmpty()) {
             return Optional.empty();
@@ -68,6 +74,7 @@ public class JdbcClassroomDao implements ClassroomDao {
 
     @Override
     public List<Classroom> findAll() {
+        LOG.debug("Retrieving all classrooms from the database");
         return jdbc.query(findAllQuery, mapper);
     }
 }

@@ -2,6 +2,8 @@ package org.vdragun.tms.core.application.service.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.TeacherData;
@@ -18,6 +20,8 @@ import org.vdragun.tms.dao.TeacherDao;
 @Service
 public class TeacherServiceImpl implements TeacherService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TeacherServiceImpl.class);
+
     private TeacherDao dao;
 
     public TeacherServiceImpl(TeacherDao dao) {
@@ -26,28 +30,41 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Teacher registerNewTeacher(TeacherData teacherData) {
+        LOG.debug("Registering new teacher using data: {}", teacherData);
+
         Teacher teacher = new Teacher(
                 teacherData.getFirstName(),
                 teacherData.getLastName(),
                 teacherData.getTitle(),
                 teacherData.getDateHired());
         dao.save(teacher);
+
+        LOG.debug("New teacher has been registered: {}", teacher);
         return teacher;
     }
 
     @Override
     public Teacher findTeacherById(Integer teacherId) {
+        LOG.debug("Searching for teacher with id={}", teacherId);
+
         return dao.findById(teacherId)
                 .orElseThrow(() -> new ResourceNotFoundException("Teacher with id=%d not found", teacherId));
     }
 
     @Override
     public List<Teacher> findAllTeachers() {
-        return dao.findAll();
+        LOG.debug("Retrieving all teachers");
+
+        List<Teacher> result = dao.findAll();
+
+        LOG.debug("Found {} teachers", result.size());
+        return result;
     }
 
     @Override
     public Teacher findTeacherForCourse(Integer courseId) {
+        LOG.debug("Searching for teacher assigned to course with id={}", courseId);
+
         return dao.findForCourse(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Teacher for course with id=%d not found: No course with such id", courseId));

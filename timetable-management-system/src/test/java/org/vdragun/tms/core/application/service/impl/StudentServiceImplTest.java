@@ -40,7 +40,7 @@ import org.vdragun.tms.dao.StudentDao;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @DisplayName("Student service")
-class StudentServiceImplTest {
+public class StudentServiceImplTest {
 
     private static final LocalDate ENROLLMENT_DATE = LocalDate.now();
     private static final String JACK = "Jack";

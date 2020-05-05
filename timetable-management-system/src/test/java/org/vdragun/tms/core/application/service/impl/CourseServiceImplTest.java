@@ -40,7 +40,7 @@ import org.vdragun.tms.dao.TeacherDao;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @DisplayName("Course service")
-class CourseServiceImplTest {
+public class CourseServiceImplTest {
 
     private static final String DESC_BIOLOGY = "Awesome biology course";
     private static final String NAME_CORE_BIOLOGY = "Core Biology";

@@ -2,6 +2,8 @@ package org.vdragun.tms.core.application.service.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.GroupService;
@@ -17,6 +19,8 @@ import org.vdragun.tms.dao.GroupDao;
 @Service
 public class GroupServiceImpl implements GroupService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(GroupServiceImpl.class);
+
     private GroupDao dao;
 
     public GroupServiceImpl(GroupDao dao) {
@@ -25,20 +29,31 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group registerNewGroup(String name) {
+        LOG.debug("Registering new group with name={}", name);
+
         Group group = new Group(name);
         dao.save(group);
+
+        LOG.debug("New group has been registered: {}", group);
         return group;
     }
 
     @Override
     public Group findGroupById(Integer groupId) {
+        LOG.debug("Searching for group with id={}", groupId);
+
         return dao.findById(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException("Group with id=%d not found", groupId));
     }
 
     @Override
     public List<Group> findAllGroups() {
-        return dao.findAll();
+        LOG.debug("Retrieving all groups");
+
+        List<Group> result = dao.findAll();
+
+        LOG.debug("Found {} groups", result.size());
+        return result;
     }
 
 }

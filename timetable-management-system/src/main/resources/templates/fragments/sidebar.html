@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <title>Application Sidebar Fragment</title>
+  <nav id="sidebar" class="h-auto" th:fragment="sidebar" th:with="ctx=@{/}">
+            <div class="sidebar-header">
+                <h3 th:text="#{label.operationMenu}">Operation Menu</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <p th:text="#{label.operationGroups}">Operation Groups</p>
+                <li class="active" th:class="${#strings.contains(#request.requestURI,'/students') ? 'active': ''}">
+                    <a href="#studentSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                       th:text="#{label.students}">
+                      Students
+                    </a>
+                    <ul class="collapse list-unstyled" id="studentSubmenu">
+                        <li>
+                            <a href="#" th:href="@{/students}" th:text="#{label.showAll}">
+                              Show All
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li th:class="${#strings.contains(#request.requestURI,'/teachers') ? 'active': ''}">
+                    <a href="#teacherSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                       th:text="#{label.teachers}">
+                      Teachers
+                    </a>
+                    <ul class="collapse list-unstyled" id="teacherSubmenu">
+                        <li>
+                            <a href="#" th:href="@{/teachers}" th:text="#{label.showAll}">Show All</a>
+                        </li>
+                    </ul>
+                </li>
+                <li th:class="${#strings.contains(#request.requestURI,'/timetables') ? 'active': ''}">
+                    <a href="#timetableSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                       th:text="#{label.tmtables}">
+                      Timetables
+                    </a>
+                    <ul class="collapse list-unstyled" id="timetableSubmenu">
+                        <li>
+                            <a href="#" th:href="@{/timetables}" th:text="#{label.showAll}">Show All</a>
+                        </li>
+                    </ul>
+                </li>
+                <li th:class="${#strings.contains(#request.requestURI,'/courses') ? 'active': ''}">
+                    <a href="#courseSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+                       th:text="#{label.courses}">
+                      Courses
+                    </a>
+                    <ul class="collapse list-unstyled" id="courseSubmenu">
+                        <li>
+                            <a href="#" th:href="@{/courses}" th:text="#{label.showAll}">Show All</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+  </nav>
+</body>
+</html>

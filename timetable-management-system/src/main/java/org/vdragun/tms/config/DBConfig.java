@@ -17,6 +17,7 @@ public class DBConfig {
     public DataSource dataSource(Environment env) {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(env.getRequiredProperty("db.url"));
+        dataSource.setDriverClassName(env.getRequiredProperty("db.driverClassName"));
         dataSource.setPassword(env.getRequiredProperty("db.password"));
         dataSource.setUsername(env.getRequiredProperty("db.username"));
         dataSource.setMaximumPoolSize(env.getRequiredProperty("db.maxPoolSize", Integer.class));
