@@ -39,8 +39,9 @@ public final class Constants {
         public static final String TEACHERS = "teachers";
         public static final String TEACHER_INFO = "teacher";
         public static final String TEACHER_FORM = "teacher-form";
-        public static final String TIMETABLE = "timetable";
+        public static final String TIMETABLE_INFO = "timetable";
         public static final String TIMETABLES = "timetables";
+        public static final String TIMETABLE_FORM = "timetable-form";
         public static final String NOT_FOUND = "404";
         public static final String BAD_REQUEST = "400";
         public static final String SERVER_ERROR = "500";
@@ -61,6 +62,7 @@ public final class Constants {
         public static final String TIMETABLE = "timetable";
         public static final String TIMETABLES = "timetables";
         public static final String CATEGORIES = "categories";
+        public static final String CLASSROOMS = "classrooms";
         public static final String ERROR = "error";
 
         private Attribute() {

@@ -26,7 +26,8 @@
     <div class="form-group row">
       <label for="dateTimePicker" class="col-sm-2 col-form-label" th:text="#{label.date}">Date</label>
       <div class="col-sm-8">
-        <input type="text" name="targetDate" class="form-control" id="dateTimePicker">
+        <input type="text" name="targetDate" class="form-control datetimepicker-input" id="dateTimePicker"
+               data-toggle="datetimepicker" data-target="#dateTimePicker">
         <div id="invalidDateInput" class="text-danger d-none" th:text="#{error.targetDateRequired}">
           Please provide target date.
         </div>

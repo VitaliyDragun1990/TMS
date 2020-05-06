@@ -53,6 +53,9 @@
                         <li>
                             <a href="#" th:href="@{/timetables}" th:text="#{label.showAll}">Show All</a>
                         </li>
+                        <li>
+                            <a href="#" th:href="@{/timetables/register}" th:text="#{label.register}">Register</a>
+                        </li>
                     </ul>
                 </li>
                 <li th:class="${#strings.contains(#request.requestURI,'/courses') ? 'active': ''}">

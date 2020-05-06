@@ -23,6 +23,13 @@
         <thymeleaf-layout.version>2.4.1</thymeleaf-layout.version>
         <thymeleaf-extras.version>3.0.4.RELEASE</thymeleaf-extras.version>
         <servlet.version>3.1.0</servlet.version>
+        <webjars-locator.version>0.40</webjars-locator.version>
+        <webjars-momentjs.version>2.24.0</webjars-momentjs.version>
+        <webjars-bootstrap.version>4.4.1-1</webjars-bootstrap.version>
+        <webjars-jquery.version>3.5.1</webjars-jquery.version>
+        <webjars-popperjs.version>2.0.2</webjars-popperjs.version>
+        <webjars-fontawesome.version>5.13.0</webjars-fontawesome.version>
+        <webjars-tempus.version>5.1.2</webjars-tempus.version>
 
         <junit.version>5.5.1</junit.version>
         <hamcrest.version>2.1</hamcrest.version>
@@ -59,6 +66,42 @@
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${servlet.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>webjars-locator</artifactId>
+                <version>${webjars-locator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>momentjs</artifactId>
+                <version>${webjars-momentjs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>bootstrap</artifactId>
+                <version>${webjars-bootstrap.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>jquery</artifactId>
+                <version>${webjars-jquery.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>popper.js</artifactId>
+                <version>${webjars-popperjs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>font-awesome</artifactId>
+                <version>${webjars-fontawesome.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>tempusdominus-bootstrap-4</artifactId>
+                <version>${webjars-tempus.version}</version>
             </dependency>
 
             <dependency>
@@ -141,6 +184,35 @@
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-java8time</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>webjars-locator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>momentjs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>popper.js</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>tempusdominus-bootstrap-4</artifactId>
         </dependency>
 
         <dependency>

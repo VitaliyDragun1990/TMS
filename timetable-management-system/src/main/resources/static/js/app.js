@@ -14,6 +14,16 @@ $(function() {
 			viewMode : 'days',
 			format : datePattern
 		});
+		$('#startTime').datetimepicker({
+			viewMode : 'days',
+			format : dateTimePattern,
+            icons: {
+                time: "fas fa-clock",
+                date: "fas fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down"
+            }
+		});
 		$('#dailySearch').on('click', dailySearchPicker);
 		$('#monthlySearch').on('click', monthlySearchPicker);
 		$('#searchTmBtn').on('click', searchTimetables);
@@ -74,18 +84,18 @@ $(function() {
 	var dailySearchPicker = function() {
 		if ($(this).is(':checked')) {
 			// clear date picker
-			$('#dateTimePicker').data("DateTimePicker").clear();
+			$('#dateTimePicker').datetimepicker('clear');
 			// set day format
-			$('#dateTimePicker').data("DateTimePicker").format(datePattern);
+			$('#dateTimePicker').datetimepicker('format', datePattern);
 		}
 	}
 	
 	var monthlySearchPicker = function() {
 		if ($(this).is(':checked')) {
 			// clear date picker field
-			$('#dateTimePicker').data("DateTimePicker").clear();
+			$('#dateTimePicker').datetimepicker('clear');
 			// set month format
-			$('#dateTimePicker').data("DateTimePicker").format('MMMM');
+			$('#dateTimePicker').datetimepicker('format', 'MMMM');
 		}
 	}
 

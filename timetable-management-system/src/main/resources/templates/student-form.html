@@ -30,7 +30,8 @@
         <div class="form-group row">
           <label for="enrollmentDate" class="col-sm-2 col-form-label" th:text="#{label.edate}">Enrollment Date</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" th:field="*{enrollmentDate}">
+            <input type="text" class="form-control datetimepicker-input" th:field="*{enrollmentDate}"
+                   data-toggle="datetimepicker" data-target="#enrollmentDate">
           </div>
         </div>
     
