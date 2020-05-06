@@ -11,7 +11,7 @@
     <div class="w-75 p-3">
       <h3 class="mb-5" th:text="#{title.courseInfo}">Course Info</h3>
 
-      <form data-student-id="${course.id}" id="courseForm" th:object="${course}">
+      <form data-course-id="${course.id}" id="courseForm" th:object="${course}">
 
         <div class="form-group row">
           <label for="name" class="col-sm-2 col-form-label" th:text="#{label.name}">Name</label>

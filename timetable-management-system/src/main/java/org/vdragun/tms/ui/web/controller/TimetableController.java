@@ -51,6 +51,14 @@ public class TimetableController extends AbstractController {
         return Page.TIMETABLES;
     }
 
+    @GetMapping("/{timetableId}")
+    public String showTimetableInfo(@PathVariable("timetableId") Integer timetableId, Model model) {
+        log.trace("Received GET request to show data for timetable with id={}, URI={}", timetableId, getRequestUri());
+        model.addAttribute(Attribute.TIMETABLE, timetableService.findTimetableById(timetableId));
+        
+        return Page.TIMETABLE;
+    }
+
     @GetMapping("/teacher/{teacherId}/day")
     public String showlDailyTimetablesForTeacher(
             @PathVariable("teacherId") Integer teacherId,

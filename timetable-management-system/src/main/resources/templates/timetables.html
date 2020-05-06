@@ -23,7 +23,12 @@
       <tbody>
         <tr th:each="tmtable,iterStat : ${timetables}" th:object="${tmtable}">
           <th scope="row" th:text="${iterStat.count}">1</th>
-          <td th:text="*{{startTime}}">25/10/2017 12:30</td>
+          <td>
+            <a class="btn btn-link" href="#" th:href="@{/timetables/{timetableId}(timetableId=*{id})}"
+               th:text="*{{startTime}}">
+              25/10/2017 12:30
+            </a>
+          </td>
           <td th:text="*{durationInMinutes}">60</td>
           <td th:text="*{course.name}">History</td>
           <td th:text="*{classroom.id}">1</td>
