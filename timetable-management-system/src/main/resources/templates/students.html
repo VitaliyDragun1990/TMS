@@ -19,7 +19,7 @@
           <th scope="col" th:text="#{label.courses}">Courses</th>
         </tr>
       </thead>
-      <tbody th:with="df=#{format.date}">
+      <tbody>
         <tr th:each="student,iterStat : ${students}" th:object="${student}">
           <th scope="row" th:text="${iterStat.count}">1</th>
           <td>
@@ -28,7 +28,7 @@
               Mark Otto
             </a>
           </td>
-          <td th:text="${#temporals.format(student.enrollmentDate, df)}">25/10/2017</td>
+          <td th:text="*{{enrollmentDate}}">25/10/2017</td>
           <td th:text="*{group ne null} ? *{group.name} : '-'">ph-25</td>
           <td>
             <p th:each="course : ${student.courses}" th:text="${course.name}" class="text-dark">

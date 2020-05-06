@@ -27,11 +27,11 @@
           </div>
         </div>
         
-         <div class="form-group row" th:with="df=#{format.date}">
+         <div class="form-group row">
           <label for="edate" class="col-sm-2 col-form-label" th:text="#{label.edate}">Enrollment Date</label>
           <div class="col-sm-10">
             <input type="text" name="enrollmentDate" class="form-control" id="edate"
-                   th:value="${#temporals.format(student.enrollmentDate, df)}" disabled>
+                   th:value="${{student.enrollmentDate}}" disabled>
           </div>
         </div>
 

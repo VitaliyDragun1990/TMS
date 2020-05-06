@@ -11,7 +11,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -26,6 +25,7 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.vdragun.tms.ui.web.converter.StringToLocalDateCustomFormatter;
+import org.vdragun.tms.ui.web.converter.StringToLocalDateTimeCustomFormatter;
 import org.vdragun.tms.ui.web.converter.StringToTitleConverter;
 import org.vdragun.tms.ui.web.converter.TitleToStringConverter;
 
@@ -99,6 +99,11 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
         return new StringToLocalDateCustomFormatter(messageSource);
     }
 
+    @Bean
+    public StringToLocalDateTimeCustomFormatter stringToLocalDateTimeCustomFormatter(MessageSource messageSource) {
+        return new StringToLocalDateTimeCustomFormatter(messageSource);
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
@@ -115,11 +120,10 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
-        registrar.setUseIsoFormat(true);
-        registrar.registerFormatters(registry);
         registry.addConverter(new TitleToStringConverter());
         registry.addConverter(new StringToTitleConverter());
+        registry.addFormatter(stringToLocalDateCustomFormatter(messageSource()));
+        registry.addFormatter(stringToLocalDateTimeCustomFormatter(messageSource()));
     }
 
     @Override

@@ -7,9 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +17,6 @@ import org.vdragun.tms.core.application.service.TimetableService;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.ui.web.converter.StringToLocalDateCustomFormatter;
 import org.vdragun.tms.ui.web.util.Constants.Attribute;
 import org.vdragun.tms.ui.web.util.Constants.Message;
 import org.vdragun.tms.ui.web.util.Constants.Page;
@@ -42,14 +39,6 @@ public class TimetableController extends AbstractController {
 
     @Autowired
     private StudentService studentService;
-
-    @Autowired
-    private StringToLocalDateCustomFormatter stringToLocalDateCustomFormatter;
-
-    @InitBinder("targetDate")
-    public void setupBinder(WebDataBinder binder) {
-        binder.addCustomFormatter(stringToLocalDateCustomFormatter);
-    }
 
     @GetMapping
     public String showAllTimetables(Model model) {
