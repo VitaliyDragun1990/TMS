@@ -30,6 +30,7 @@ public final class Constants {
     public static final class Page {
 
         public static final String COURSES = "courses";
+        public static final String COURSE_INFO = "course";
         public static final String HOME = "index";
         public static final String STUDENTS = "students";
         public static final String STUDENT_INFO = "student";
@@ -50,6 +51,7 @@ public final class Constants {
 
         public static final String MESSAGE = "msg";
         public static final String COURSES = "courses";
+        public static final String COURSE = "course";
         public static final String STUDENTS = "students";
         public static final String STUDENT = "student";
         public static final String TEACHERS = "teachers";
