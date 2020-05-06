@@ -23,6 +23,11 @@
                               Show All
                             </a>
                         </li>
+                        <li>
+                            <a href="#" th:href="@{/students/register}" th:text="#{label.register}">
+                              Show All
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li th:class="${#strings.contains(#request.requestURI,'/teachers') ? 'active': ''}">
