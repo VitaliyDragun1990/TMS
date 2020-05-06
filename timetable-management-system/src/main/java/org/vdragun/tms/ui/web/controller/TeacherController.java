@@ -60,7 +60,7 @@ public class TeacherController extends AbstractController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         log.trace("Received GET request to show steacher registration form, URI={}", getRequestUri());
-        model.addAttribute("teacher", new TeacherData());
+        model.addAttribute(Attribute.TEACHER, new TeacherData());
         
         return Page.TEACHER_FORM;
     }
@@ -69,7 +69,7 @@ public class TeacherController extends AbstractController {
     public String registerNewTeacher(@ModelAttribute TeacherData teacherData, Model model) {
         log.trace("Received POST request to register new teacher, data={}, URI={}", teacherData, getRequestUri());
         Teacher teacher = teacherService.registerNewTeacher(teacherData);
-        model.addAttribute("teacher", teacher);
+        model.addAttribute(Attribute.TEACHER, teacher);
 
         return Page.TEACHER_INFO;
     }
