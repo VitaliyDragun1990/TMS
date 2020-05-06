@@ -36,6 +36,7 @@ public final class Constants {
         public static final String STUDENT_FORM = "student-form";
         public static final String TEACHERS = "teachers";
         public static final String TEACHER_INFO = "teacher";
+        public static final String TEACHER_FORM = "teacher-form";
         public static final String TIMETABLES = "timetables";
         public static final String NOT_FOUND = "404";
         public static final String BAD_REQUEST = "400";

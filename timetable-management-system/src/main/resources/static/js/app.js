@@ -10,6 +10,10 @@ $(function() {
 			viewMode : 'days',
 			format : datePattern
 		});
+		$('#dateHired').datetimepicker({
+			viewMode : 'days',
+			format : datePattern
+		});
 		$('#dailySearch').on('click', dailySearchPicker);
 		$('#monthlySearch').on('click', monthlySearchPicker);
 		$('#searchTmBtn').on('click', searchTimetables);
