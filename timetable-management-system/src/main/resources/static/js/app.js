@@ -18,8 +18,8 @@ $(function() {
 			viewMode : 'days',
 			format : dateTimePattern,
             icons: {
-                time: "fas fa-clock",
-                date: "fas fa-calendar-alt",
+                time: "far fa-clock",
+                date: "far fa-calendar-alt",
                 up: "fas fa-arrow-up",
                 down: "fas fa-arrow-down"
             }
@@ -84,18 +84,18 @@ $(function() {
 	var dailySearchPicker = function() {
 		if ($(this).is(':checked')) {
 			// clear date picker
-			$('#dateTimePicker').datetimepicker('clear');
+			$('#dateTimePicker').data("DateTimePicker").clear();
 			// set day format
-			$('#dateTimePicker').datetimepicker('format', datePattern);
+			$('#dateTimePicker').data("DateTimePicker").format(datePattern);
 		}
 	}
 	
 	var monthlySearchPicker = function() {
 		if ($(this).is(':checked')) {
 			// clear date picker field
-			$('#dateTimePicker').datetimepicker('clear');
+			$('#dateTimePicker').data("DateTimePicker").clear();
 			// set month format
-			$('#dateTimePicker').datetimepicker('format', 'MMMM');
+			$('#dateTimePicker').data("DateTimePicker").format('MMMM');
 		}
 	}
 
