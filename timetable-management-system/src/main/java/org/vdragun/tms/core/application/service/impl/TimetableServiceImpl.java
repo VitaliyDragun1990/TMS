@@ -134,7 +134,8 @@ public class TimetableServiceImpl implements TimetableService {
         if (timetableDao.existsById(timetableId)) {
             timetableDao.deleteById(timetableId);
         } else {
-            throw new ResourceNotFoundException("Timetable with id=%d not found", timetableId);
+            throw new ResourceNotFoundException("Fail to delete timetable: timetable with id=%d does not exist",
+                    timetableId);
         }
     }
 

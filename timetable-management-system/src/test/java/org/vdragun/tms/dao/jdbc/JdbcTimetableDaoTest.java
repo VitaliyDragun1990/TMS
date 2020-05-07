@@ -301,7 +301,7 @@ public class JdbcTimetableDaoTest {
 
         dao.deleteById(expected.getId());
 
-        assertNoTimetablesInDatabase(expected);
+        assertNoGivenTimetablesInDatabase(expected);
     }
 
     @Test
@@ -325,7 +325,7 @@ public class JdbcTimetableDaoTest {
         assertTrue(result);
     }
 
-    private void assertNoTimetablesInDatabase(Timetable... expected) throws SQLException {
+    private void assertNoGivenTimetablesInDatabase(Timetable... expected) throws SQLException {
         List<Timetable> result = jdbcHelper.findAllTimetablesInDatabase();
         assertThat(result, not(containsInAnyOrder(expected)));
     }
