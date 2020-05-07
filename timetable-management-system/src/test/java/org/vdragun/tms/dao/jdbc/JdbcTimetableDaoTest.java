@@ -290,6 +290,46 @@ public class JdbcTimetableDaoTest {
         assertThat(result, containsInAnyOrder(timetableA, timetableB));
     }
 
+    @Test
+    void shouldDeleteTimetableById() throws SQLException {
+        Classroom classroom = jdbcHelper.saveClassroomToDatabase(CAPACITY);
+        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
+        Category category = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
+        Course course = jdbcHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
+        Timetable expected = jdbcHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course, teacher,
+                classroom);
+
+        dao.deleteById(expected.getId());
+
+        assertNoTimetablesInDatabase(expected);
+    }
+
+    @Test
+    void shouldReturnFalseIfNoTimetableWithGivenIdentifier() {
+        boolean result = dao.existsById(1);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void shouldReturnTrueIfTimetableWithGivenIdentifierExists() throws SQLException {
+        Classroom classroom = jdbcHelper.saveClassroomToDatabase(CAPACITY);
+        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
+        Category category = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
+        Course course = jdbcHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
+        Timetable expected = jdbcHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course, teacher,
+                classroom);
+
+        boolean result = dao.existsById(expected.getId());
+
+        assertTrue(result);
+    }
+
+    private void assertNoTimetablesInDatabase(Timetable... expected) throws SQLException {
+        List<Timetable> result = jdbcHelper.findAllTimetablesInDatabase();
+        assertThat(result, not(containsInAnyOrder(expected)));
+    }
+
     private void assertTimetablesInDatabase(Timetable... expected) throws SQLException {
         Arrays.stream(expected)
                 .forEach(timetable -> assertThat("timetable should have id", timetable.getId(), is(not(nullValue()))));

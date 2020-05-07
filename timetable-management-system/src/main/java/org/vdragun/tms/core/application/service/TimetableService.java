@@ -75,4 +75,12 @@ public interface TimetableService {
      */
     List<Timetable> findMonthlyTimetablesForTeacher(Integer teacherId, Month month);
 
+    /**
+     * Deletes timetable with specified identifier
+     * 
+     * @param timetableId timetable identifier
+     * @throws ResourceNotFoundException if no timetable with specified identifier
+     */
+    void deleteTimetableById(Integer timetableId);
+
 }

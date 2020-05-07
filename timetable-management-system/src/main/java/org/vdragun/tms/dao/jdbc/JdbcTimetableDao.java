@@ -49,6 +49,12 @@ public class JdbcTimetableDao implements TimetableDao {
     @Value("${timetable.findForTeacherMonthly}")
     private String findForTeacherMonthlyQuery;
 
+    @Value("${timetable.deleteById}")
+    private String deleteByIdQuery;
+
+    @Value("${timetable.exists}")
+    private String existsQuery;
+
     private JdbcTemplate jdbc;
     private TimetableMapper timetableMapper;
 
@@ -142,6 +148,18 @@ public class JdbcTimetableDao implements TimetableDao {
                 findForTeacherMonthlyQuery,
                 new Object[] { teacherId, month.getValue() },
                 timetableMapper);
+    }
+
+    @Override
+    public void deleteById(Integer timetableId) {
+        LOG.debug("Deleting timetable with id={} from the database", timetableId);
+        jdbc.update(deleteByIdQuery, timetableId);
+    }
+
+    @Override
+    public boolean existsById(Integer timetableId) {
+        LOG.debug("Checking whether timetable with id={} exists in the database", timetableId);
+        return jdbc.queryForObject(existsQuery, Boolean.class, timetableId);
     }
 
 }

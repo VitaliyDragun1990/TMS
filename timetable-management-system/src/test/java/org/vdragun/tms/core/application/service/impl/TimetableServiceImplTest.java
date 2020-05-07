@@ -252,6 +252,22 @@ public class TimetableServiceImplTest {
         assertThat(result, containsInAnyOrder(timetableA, timetableB));
     }
 
+    @Test
+    void shouldThrowExceptionWhenDeletingNonExistingTimetable() {
+        when(timetableDaoMock.existsById(any(Integer.class))).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> service.deleteTimetableById(TIMETABLE_ID));
+    }
+
+    @Test
+    void shouldDeletExistingTimetableById() {
+        when(timetableDaoMock.existsById(eq(TIMETABLE_ID))).thenReturn(true);
+
+        service.deleteTimetableById(TIMETABLE_ID);
+
+        verify(timetableDaoMock).deleteById(eq(TIMETABLE_ID));
+    }
+
     private Timetable buildTimetable(Integer timetableId, LocalDateTime startTime, int duration) {
         return new Timetable(timetableId, startTime, duration, provideCourse(), provideClassroom(), provideTeacher());
     }

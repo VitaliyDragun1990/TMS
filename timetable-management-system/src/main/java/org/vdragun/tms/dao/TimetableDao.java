@@ -60,4 +60,16 @@ public interface TimetableDao {
      * specified month.
      */
     List<Timetable> findMonthlyForTeacher(Integer teacherId, Month month);
+
+    /**
+     * Deletes timetable with given identifier, if any
+     */
+    void deleteById(Integer timetableId);
+
+    /**
+     * Checks whether timetable with provided identifier exists
+     * 
+     * @return {@code true} if such timetable exists, {@code false} otherwise
+     */
+    boolean existsById(Integer timetableId);
 }

@@ -127,6 +127,17 @@ public class TimetableServiceImpl implements TimetableService {
         return result;
     }
 
+    @Override
+    public void deleteTimetableById(Integer timetableId) {
+        LOG.debug("Deleting timetable with id={}", timetableId);
+        
+        if (timetableDao.existsById(timetableId)) {
+            timetableDao.deleteById(timetableId);
+        } else {
+            throw new ResourceNotFoundException("Timetable with id=%d not found", timetableId);
+        }
+    }
+
     private void assertTeacherExists(Integer teacherId, String msg) {
         if (!teacherDao.existsById(teacherId)) {
             throw new ResourceNotFoundException("%s: teacher with id=%d does not exist", msg, teacherId);
