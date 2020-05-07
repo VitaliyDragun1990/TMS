@@ -22,6 +22,7 @@ public final class Constants {
         public static final String DATE_FORMAT = "format.date";
         public static final String DATE_TIME_FORMAT = "format.datetime";
         public static final String REQUESTED_RESOURCE = "msg.requestedResource";
+        public static final String TIMETABLE_DELETE_SUCCESS = "msg.timetableDeleteSuccess";
 
         private Message() {
         }
@@ -53,6 +54,7 @@ public final class Constants {
     public static final class Attribute {
 
         public static final String MESSAGE = "msg";
+        public static final String INFO_MESSAGE = "infoMsg";
         public static final String COURSES = "courses";
         public static final String COURSE = "course";
         public static final String STUDENTS = "students";

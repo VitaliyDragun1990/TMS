@@ -11,7 +11,7 @@
     <div class="w-75 p-3">
       <h3 class="mb-5" th:text="#{title.timetableInfo}">Timetable Info</h3>
 
-      <form data-timetable-id="${timetable.id}" id="timetableForm" th:object="${timetable}">
+      <form id="timetableForm" th:object="${timetable}">
 
         <div class="form-group row">
           <label for="startTime" class="col-sm-2 col-form-label" th:text="#{label.date}">Date</label>
@@ -48,8 +48,16 @@
                    th:value="|*{teacher.firstName} *{teacher.lastName}|" disabled>
           </div>
         </div>
+        
+        <button type="button" id="deleteDialogBtn" class="btn btn-danger" th:text="#{label.deleteTimetable}">
+          Delete Timetable
+        </button>
 
       </form>
+      
+      <div th:replace="fragments/delete-dialog :: dialog (@{/timetables/delete},${timetable.id},#{title.timetableDelete},#{msg.confirmTimetableDelete})">
+      </div>
+      
     </div>
   </div>
 </body>

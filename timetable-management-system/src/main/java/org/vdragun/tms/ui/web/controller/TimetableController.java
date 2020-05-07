@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.vdragun.tms.core.application.service.ClassroomService;
 import org.vdragun.tms.core.application.service.CourseService;
 import org.vdragun.tms.core.application.service.StudentService;
@@ -88,6 +89,18 @@ public class TimetableController extends AbstractController {
         model.addAttribute(Attribute.TIMETABLE, timetable);
 
         return Page.TIMETABLE_INFO;
+    }
+
+    @PostMapping("/delete")
+    public String deleteTimetable(@RequestParam("id") Integer timetableId, RedirectAttributes redirectAttributes) {
+        log.trace("Received POST reuqest to delete timetable with id={}, URI={}", timetableId, getRequestUri());
+        timetableService.deleteTimetableById(timetableId);
+
+        redirectAttributes.addFlashAttribute(
+                Attribute.INFO_MESSAGE,
+                getMessage(Message.TIMETABLE_DELETE_SUCCESS, timetableId));
+
+        return redirectTo(Page.TIMETABLES);
     }
 
     @GetMapping("/teacher/{teacherId}/day")

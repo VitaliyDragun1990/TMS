@@ -7,6 +7,10 @@
 </head>
 <body>
   <div layout:fragment="content">
+  
+    <div th:replace="fragments/info-message :: message (${infoMsg})">
+    </div>
+    
     <h4 th:text="${msg}" class="mb-3">Timetables</h4>
     
     <table class="table table-striped" th:unless="${#lists.isEmpty(timetables)}">

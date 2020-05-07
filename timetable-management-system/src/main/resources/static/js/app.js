@@ -27,7 +27,21 @@ $(function() {
 		$('#dailySearch').on('click', dailySearchPicker);
 		$('#monthlySearch').on('click', monthlySearchPicker);
 		$('#searchTmBtn').on('click', searchTimetables);
+		
+		$('#deleteDialogBtn').on('click', showDeleteDialog);
+		$('#confirmDeleteBtn').on('click', hideDeleteDialog);
 	};
+	
+	var hideDeleteDialog = function() {
+		var targetUrl = $('#deleteDialog').attr('data-target-url');
+		var targetId = $('#deleteDialog').attr('data-target-id');
+		$('#deleteDialog').modal('hide');
+		postForm(targetUrl, 'id', targetId);
+	}
+	
+	var showDeleteDialog = function() {
+		$('#deleteDialog').modal();
+	}
 	
 	var searchTimetables = function() {
 		var date = $('#dateTimePicker').val();
