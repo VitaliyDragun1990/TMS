@@ -55,7 +55,7 @@
 
       </form>
       
-      <div th:replace="fragments/delete-dialog :: dialog (@{/timetables/delete},${timetable.id},#{title.timetableDelete},#{msg.confirmTimetableDelete})">
+      <div th:replace="fragments/dialogs :: delete (@{/timetables/delete},${timetable.id},#{title.timetableDelete},#{msg.confirmTimetableDelete})">
       </div>
       
     </div>

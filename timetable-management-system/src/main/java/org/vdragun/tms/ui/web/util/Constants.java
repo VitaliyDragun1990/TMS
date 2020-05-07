@@ -24,6 +24,7 @@ public final class Constants {
         public static final String REQUESTED_RESOURCE = "msg.requestedResource";
         public static final String TIMETABLE_DELETE_SUCCESS = "msg.timetableDeleteSuccess";
         public static final String STUDENT_DELETE_SUCCESS = "msg.studentDeleteSuccess";
+        public static final String STUDENT_UPDATE_SUCCESS = "msg.studentUpdateSuccess";
 
         private Message() {
         }
@@ -66,6 +67,7 @@ public final class Constants {
         public static final String TIMETABLES = "timetables";
         public static final String CATEGORIES = "categories";
         public static final String CLASSROOMS = "classrooms";
+        public static final String GROUPS = "groups";
         public static final String ERROR = "error";
 
         private Attribute() {

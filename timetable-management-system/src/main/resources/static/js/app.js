@@ -30,6 +30,9 @@ $(function() {
 		
 		$('#deleteDialogBtn').on('click', showDeleteDialog);
 		$('#confirmDeleteBtn').on('click', hideDeleteDialog);
+		
+		$('#updateDialogBtn').on('click', showUpdateDialog);
+		$('#confirmUpdateBtn').on('click', hideUpdateDialog);
 	};
 	
 	var hideDeleteDialog = function() {
@@ -39,8 +42,18 @@ $(function() {
 		postForm(targetUrl, 'id', targetId);
 	}
 	
+	var hideUpdateDialog = function() {
+		var targetFormId = $('#updateDialog').attr('data-form-id');
+		$('#updateDialog').modal('hide');
+		$('#' + targetFormId).submit();
+	}
+	
 	var showDeleteDialog = function() {
 		$('#deleteDialog').modal();
+	}
+	
+	var showUpdateDialog = function() {
+		$('#updateDialog').modal();
 	}
 	
 	var searchTimetables = function() {
