@@ -8,9 +8,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -23,15 +23,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
-import org.vdragun.tms.core.application.service.StudentData;
-import org.vdragun.tms.core.application.service.StudentService;
+import org.vdragun.tms.core.application.service.CreateStudentData;
+import org.vdragun.tms.core.application.service.UpdateStudentData;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.dao.CourseDao;
 import org.vdragun.tms.dao.GroupDao;
@@ -60,7 +58,7 @@ public class StudentServiceImplTest {
     @Captor
     private ArgumentCaptor<Student> captor;
 
-    private StudentService service;
+    private StudentServiceImpl service;
 
     @BeforeEach
     void setUp() {
@@ -69,7 +67,7 @@ public class StudentServiceImplTest {
 
     @Test
     void shouldRegisterNewStudent() {
-        StudentData data = new StudentData(JACK, SMITH, ENROLLMENT_DATE);
+        CreateStudentData data = new CreateStudentData(JACK, SMITH, ENROLLMENT_DATE);
 
         service.registerNewStudent(data);
 
@@ -117,7 +115,7 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    void shouldFindStudentsForGroupWithGivenIdentifier() {
+    void shouldFindStudentsForGroup() {
         Student jack = new Student(STUDENT_ID, JACK, SMITH, ENROLLMENT_DATE);
         Student anna = new Student(STUDENT_ID + 1, ANNA, PORTER, ENROLLMENT_DATE);
         when(groupDaoMock.existsById(eq(GROUP_ID))).thenReturn(true);
@@ -137,7 +135,7 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    void shouldFindStudentsForCourseWithGivenIdentifier() {
+    void shouldFindStudentsForCourse() {
         Student jack = new Student(STUDENT_ID, JACK, SMITH, ENROLLMENT_DATE);
         Student anna = new Student(STUDENT_ID + 1, ANNA, PORTER, ENROLLMENT_DATE);
         when(courseDaoMock.existsById(eq(COURSE_ID))).thenReturn(true);
@@ -147,107 +145,6 @@ public class StudentServiceImplTest {
 
         assertThat(result, hasSize(2));
         assertThat(result, containsInAnyOrder(jack, anna));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenAddStudentToNonExistingGroup() {
-        when(groupDaoMock.existsById(any(Integer.class))).thenReturn(false);
-        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
-
-        assertThrows(ResourceNotFoundException.class, () -> service.addStudentToGroup(STUDENT_ID, GROUP_ID));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenAddNonExistingStudentToGroup() {
-        when(groupDaoMock.existsById(eq(GROUP_ID))).thenReturn(true);
-        when(studentDaoMock.existsById(any(Integer.class))).thenReturn(false);
-
-        assertThrows(ResourceNotFoundException.class, () -> service.addStudentToGroup(STUDENT_ID, GROUP_ID));
-
-        verify(studentDaoMock, never()).addToGroup(any(Integer.class), any(Integer.class));
-    }
-
-    @Test
-    void shouldAddStudentToGroup() {
-        when(groupDaoMock.existsById(eq(GROUP_ID))).thenReturn(true);
-        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
-
-        service.addStudentToGroup(STUDENT_ID, GROUP_ID);
-
-        verify(studentDaoMock, times(1)).addToGroup(eq(STUDENT_ID), eq(GROUP_ID));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenRemoveNonExistingStudentFromGroup() {
-        when(studentDaoMock.existsById(any(Integer.class))).thenReturn(false);
-
-        assertThrows(ResourceNotFoundException.class, () -> service.removeStudentFromGroup(STUDENT_ID));
-
-        verify(studentDaoMock, never()).removeFromGroup(any(Integer.class));
-    }
-
-    @Test
-    void shouldRemoveStudentFromCurrentGroup() {
-        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
-
-        service.removeStudentFromGroup(STUDENT_ID);
-
-        verify(studentDaoMock, times(1)).removeFromGroup(eq(STUDENT_ID));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenAddStudentToNonExistingCourses() {
-        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
-        when(courseDaoMock.existsById(eq(COURSE_ID))).thenReturn(false);
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> service.setStudentCourses(STUDENT_ID, asList(COURSE_ID, COURSE_ID + 1)));
-
-        verify(studentDaoMock, never()).removeFromAllCourses(any(Integer.class));
-        verify(studentDaoMock, never()).addToCourse(any(Integer.class), any(Integer.class));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenSetCoursesToNonExistingStudent() {
-        when(studentDaoMock.existsById(any(Integer.class))).thenReturn(false);
-        when(courseDaoMock.existsById(any(Integer.class))).thenReturn(true);
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> service.setStudentCourses(STUDENT_ID, asList(COURSE_ID, COURSE_ID + 1)));
-
-        verify(studentDaoMock, never()).removeFromAllCourses(any(Integer.class));
-        verify(studentDaoMock, never()).addToCourse(any(Integer.class), any(Integer.class));
-    }
-
-    @Test
-    void shouldSetStudentCourses() {
-        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
-        when(courseDaoMock.existsById(any(Integer.class))).thenReturn(true);
-
-        service.setStudentCourses(STUDENT_ID, asList(COURSE_ID, COURSE_ID + 1));
-
-        InOrder order = Mockito.inOrder(studentDaoMock);
-        order.verify(studentDaoMock).removeFromAllCourses(eq(STUDENT_ID));
-        order.verify(studentDaoMock).addToCourse(eq(STUDENT_ID), eq(COURSE_ID));
-        order.verify(studentDaoMock).addToCourse(eq(STUDENT_ID), eq(COURSE_ID + 1));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenRemoveNonExistingStudentFromCourses() {
-        when(studentDaoMock.existsById(any(Integer.class))).thenReturn(false);
-
-        assertThrows(ResourceNotFoundException.class, () -> service.removeStudentFromAllCourses(STUDENT_ID));
-
-        verify(studentDaoMock, never()).removeFromAllCourses(any(Integer.class));
-    }
-
-    @Test
-    void shouldRemoveStudentFromAllCourses() {
-        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
-
-        service.removeStudentFromAllCourses(STUDENT_ID);
-
-        verify(studentDaoMock).removeFromAllCourses(eq(STUDENT_ID));
     }
 
     @Test
@@ -264,6 +161,101 @@ public class StudentServiceImplTest {
         service.deleteStudentById(STUDENT_ID);
 
         verify(studentDaoMock).deleteById(eq(STUDENT_ID));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdateNonExistingStudent() {
+        when(studentDaoMock.existsById(any(Integer.class))).thenReturn(false);
+        when(groupDaoMock.existsById(eq(GROUP_ID))).thenReturn(true);
+        when(courseDaoMock.existsById(eq(COURSE_ID))).thenReturn(true);
+        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, GROUP_ID, asList(COURSE_ID));
+        
+        assertThrows(ResourceNotFoundException.class, () -> service.updateExistingStudent(studentData));
+
+        verify(studentDaoMock).existsById(eq(STUDENT_ID));
+        verifyNoMoreInteractions(studentDaoMock);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdatingStudentWithNonExistingGroup() {
+        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
+        when(groupDaoMock.existsById(any(Integer.class))).thenReturn(false);
+        when(courseDaoMock.existsById(eq(COURSE_ID))).thenReturn(true);
+        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, GROUP_ID, asList(COURSE_ID));
+
+        assertThrows(ResourceNotFoundException.class, () -> service.updateExistingStudent(studentData));
+
+        verify(studentDaoMock).existsById(eq(STUDENT_ID));
+        verifyNoMoreInteractions(studentDaoMock);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdatingStudentWithNonExistingCourse() {
+        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
+        when(groupDaoMock.existsById(eq(GROUP_ID))).thenReturn(true);
+        when(courseDaoMock.existsById(any(Integer.class))).thenReturn(false);
+        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, GROUP_ID, asList(COURSE_ID));
+
+        assertThrows(ResourceNotFoundException.class, () -> service.updateExistingStudent(studentData));
+
+        verify(studentDaoMock).existsById(eq(STUDENT_ID));
+        verifyNoMoreInteractions(studentDaoMock);
+    }
+
+    @Test
+    void shouldRemoveStudentFroumGroupIfGroupIdentifierIsNull() {
+        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
+        when(studentDaoMock.findById(eq(STUDENT_ID))).thenReturn(Optional.of(studentStub()));
+        when(groupDaoMock.existsById(eq(GROUP_ID))).thenReturn(true);
+        when(courseDaoMock.existsById(eq(COURSE_ID))).thenReturn(true);
+        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, null, asList(COURSE_ID));
+
+        service.updateExistingStudent(studentData);
+
+        verify(studentDaoMock).removeFromGroup(STUDENT_ID);
+    }
+
+    @Test
+    void shouldAddStudentToGroupIfGroupIdentifierPresent() {
+        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
+        when(studentDaoMock.findById(eq(STUDENT_ID))).thenReturn(Optional.of(studentStub()));
+        when(groupDaoMock.existsById(eq(GROUP_ID))).thenReturn(true);
+        when(courseDaoMock.existsById(eq(COURSE_ID))).thenReturn(true);
+        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, GROUP_ID, asList(COURSE_ID));
+
+        service.updateExistingStudent(studentData);
+
+        verify(studentDaoMock).addToGroup(eq(STUDENT_ID), eq(GROUP_ID));
+    }
+
+    @Test
+    void shouldRemoveStudentFromEachCurrentlyAssignedCourseWhenUpdating() {
+        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
+        when(studentDaoMock.findById(eq(STUDENT_ID))).thenReturn(Optional.of(studentStub()));
+        when(groupDaoMock.existsById(eq(GROUP_ID))).thenReturn(true);
+        when(courseDaoMock.existsById(eq(COURSE_ID))).thenReturn(true);
+        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, GROUP_ID, asList(COURSE_ID));
+
+        service.updateExistingStudent(studentData);
+
+        verify(studentDaoMock).removeFromAllCourses(eq(STUDENT_ID));
+    }
+
+    @Test
+    void shouldAddStudentToEachSpecifiedCourseWhenUpdating() {
+        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
+        when(studentDaoMock.findById(eq(STUDENT_ID))).thenReturn(Optional.of(studentStub()));
+        when(groupDaoMock.existsById(eq(GROUP_ID))).thenReturn(true);
+        when(courseDaoMock.existsById(eq(COURSE_ID))).thenReturn(true);
+        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, GROUP_ID, asList(COURSE_ID));
+
+        service.updateExistingStudent(studentData);
+
+        verify(studentDaoMock).addToCourse(eq(STUDENT_ID), eq(COURSE_ID));
+    }
+
+    private Student studentStub() {
+        return new Student(STUDENT_ID, JACK, SMITH, ENROLLMENT_DATE);
     }
 
 }

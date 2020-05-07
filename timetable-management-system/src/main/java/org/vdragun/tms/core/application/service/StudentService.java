@@ -19,7 +19,15 @@ public interface StudentService {
      * @param studentData data to register new student
      * @return newly registered student
      */
-    Student registerNewStudent(StudentData studentData);
+    Student registerNewStudent(CreateStudentData studentData);
+
+    /**
+     * Updates existing student using provided data
+     * 
+     * @param studentData data to update existing student
+     * @return update student
+     */
+    Student updateExistingStudent(UpdateStudentData studentData);
 
     /**
      * Returns existing student instance by its identifier
@@ -52,41 +60,6 @@ public interface StudentService {
      * @return list of all students assigned to group
      */
     List<Student> findStudentsForGroup(Integer groupId);
-
-    /**
-     * Adds student with specified student identifier to group with specified group
-     * identifier. If student is assigned to any other group, such assignment will
-     * be revoked and student will be assigned group with specified id.
-     * 
-     * @param studentId existing student identifier
-     * @param groupId   existing group identifier
-     */
-    void addStudentToGroup(Integer studentId, Integer groupId);
-
-    /**
-     * Removes student with specified identifier from currently assigned group, if
-     * any
-     * 
-     * @param studentId existing student identifier
-     */
-    void removeStudentFromGroup(Integer studentId);
-
-    /**
-     * Adds student with specified student identifier to courses with specified
-     * course identifiers. Before adding student to specified courses any previously
-     * added courses, if any, will be removed from student.
-     * 
-     * @param studentId existing student identifier
-     * @param courseIds list of existing course identifiers
-     */
-    void setStudentCourses(Integer studentId, List<Integer> courseIds);
-
-    /**
-     * Removes student from any courses, if any.
-     * 
-     * @param studentId existing student identifier
-     */
-    void removeStudentFromAllCourses(Integer studentId);
 
     /**
      * Deletes student with specified identifier

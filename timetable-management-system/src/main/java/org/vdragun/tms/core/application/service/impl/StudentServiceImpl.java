@@ -6,8 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
-import org.vdragun.tms.core.application.service.StudentData;
+import org.vdragun.tms.core.application.service.CreateStudentData;
 import org.vdragun.tms.core.application.service.StudentService;
+import org.vdragun.tms.core.application.service.UpdateStudentData;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.dao.CourseDao;
 import org.vdragun.tms.dao.GroupDao;
@@ -35,7 +36,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student registerNewStudent(StudentData studentData) {
+    public Student registerNewStudent(CreateStudentData studentData) {
         LOG.debug("Registering new student using data: {}", studentData);
 
         Student student = new Student(
@@ -46,6 +47,22 @@ public class StudentServiceImpl implements StudentService {
 
         LOG.debug("New student has been registered: {}", student);
         return student;
+    }
+
+    @Override
+    public Student updateExistingStudent(UpdateStudentData studentData) {
+        LOG.debug("Updating existing student using data: {}", studentData);
+        assertStudentExists(studentData.getStudentId(), "Fail to update student");
+        if (studentData.getGroupId() != null) {
+            assertGroupExists(studentData.getGroupId(), "Fail to add student to group");
+        }
+        assertCoursesExists(studentData.getCourseIds(), "Fail to add student to course");
+
+        updateStudentGroup(studentData.getStudentId(), studentData.getGroupId());
+        setStudentCourses(studentData.getStudentId(), studentData.getCourseIds());
+
+        LOG.debug("Student with id={} has been successfully updated", studentData.getStudentId());
+        return studentDao.findById(studentData.getStudentId()).get();
     }
 
     @Override
@@ -85,49 +102,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void addStudentToGroup(Integer studentId, Integer groupId) {
-        LOG.debug("Adding student with id={} to group with id={}", studentId, groupId);
-        assertGroupExists(groupId, "Fail to add student to group");
-        assertStudentExists(studentId, "Fail to add student to group");
-
-        studentDao.addToGroup(studentId, groupId);
-
-        LOG.debug("Student with id={} has been added to group with id={}", studentId, groupId);
-    }
-
-    @Override
-    public void removeStudentFromGroup(Integer studentId) {
-        LOG.debug("Removing student wiht id={} from current group", studentId);
-        assertStudentExists(studentId, "Fail to remove student from group");
-
-        studentDao.removeFromGroup(studentId);
-
-        LOG.debug("Student with id={} has been removed from current group", studentId);
-    }
-
-    @Override
-    public void setStudentCourses(Integer studentId, List<Integer> courseIds) {
-        LOG.debug("Assigning student with id={} to courses with ids={}", studentId, courseIds);
-        assertStudentExists(studentId, "Fail to add student to courses");
-        courseIds.forEach(courseId -> assertCourseExists(courseId, "Fail add student to course"));
-
-        removeStudentFromAllCourses(studentId);
-        courseIds.forEach(courseId -> studentDao.addToCourse(studentId, courseId));
-
-        LOG.debug("Student with id={} has been assign to courses with ids={}", studentId, courseIds);
-    }
-
-    @Override
-    public void removeStudentFromAllCourses(Integer studentId) {
-        LOG.debug("Removing student with id={} from all currently assigned courses", studentId);
-        assertStudentExists(studentId, "Fail to remove student from courses");
-
-        studentDao.removeFromAllCourses(studentId);
-
-        LOG.debug("Student with id={} has been removed from all assigned courses", studentId);
-    }
-
-    @Override
     public void deleteStudentById(Integer studentId) {
         LOG.debug("Deleting student with id={}", studentId);
         assertStudentExists(studentId, "Fail to delete student");
@@ -135,10 +109,55 @@ public class StudentServiceImpl implements StudentService {
         studentDao.deleteById(studentId);
     }
 
+    private void updateStudentGroup(Integer studentId, Integer groupId) {
+        if (groupId == null) {
+            removeStudentFromGroup(studentId);
+        } else {
+            addStudentToGroup(studentId, groupId);
+        }
+    }
+
+    private void addStudentToGroup(Integer studentId, Integer groupId) {
+        LOG.debug("Adding student with id={} to group with id={}", studentId, groupId);
+
+        studentDao.addToGroup(studentId, groupId);
+
+        LOG.debug("Student with id={} has been added to group with id={}", studentId, groupId);
+    }
+
+    private void removeStudentFromGroup(Integer studentId) {
+        LOG.debug("Removing student wiht id={} from current group", studentId);
+
+        studentDao.removeFromGroup(studentId);
+
+        LOG.debug("Student with id={} has been removed from current group", studentId);
+    }
+
+    private void setStudentCourses(Integer studentId, List<Integer> courseIds) {
+        LOG.debug("Assigning student with id={} to courses with ids={}", studentId, courseIds);
+
+        removeStudentFromAllCourses(studentId);
+        courseIds.forEach(courseId -> studentDao.addToCourse(studentId, courseId));
+
+        LOG.debug("Student with id={} has been assign to courses with ids={}", studentId, courseIds);
+    }
+
+    private void removeStudentFromAllCourses(Integer studentId) {
+        LOG.debug("Removing student with id={} from all currently assigned courses", studentId);
+
+        studentDao.removeFromAllCourses(studentId);
+
+        LOG.debug("Student with id={} has been removed from all assigned courses", studentId);
+    }
+
     private void assertCourseExists(Integer courseId, String msg) {
         if (!courseDao.existsById(courseId)) {
             throw new ResourceNotFoundException("%s: course with id=%d does not exist", msg, courseId);
         }
+    }
+
+    private void assertCoursesExists(List<Integer> courseIds, String msg) {
+        courseIds.forEach(id -> assertCourseExists(id, msg));
     }
 
     private void assertGroupExists(Integer groupId, String msg) {

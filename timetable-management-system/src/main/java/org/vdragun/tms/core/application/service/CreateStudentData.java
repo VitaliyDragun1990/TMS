@@ -8,16 +8,16 @@ import java.time.LocalDate;
  * @author Vitaliy Dragun
  *
  */
-public class StudentData {
+public class CreateStudentData {
 
     private String firstName;
     private String lastName;
     private LocalDate enrollmentDate;
 
-    public StudentData() {
+    public CreateStudentData() {
     }
 
-    public StudentData(String firstName, String lastName, LocalDate enrollmentDate) {
+    public CreateStudentData(String firstName, String lastName, LocalDate enrollmentDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.enrollmentDate = enrollmentDate;
