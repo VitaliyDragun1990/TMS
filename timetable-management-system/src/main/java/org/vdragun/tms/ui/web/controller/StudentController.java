@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.vdragun.tms.core.application.service.StudentData;
 import org.vdragun.tms.core.application.service.StudentService;
 import org.vdragun.tms.core.domain.Student;
@@ -55,6 +57,18 @@ public class StudentController extends AbstractController {
         model.addAttribute(Attribute.STUDENT, new StudentData());
 
         return Page.STUDENT_FORM;
+    }
+
+    @PostMapping("/delete")
+    public String deleteStudent(@RequestParam("id") Integer studentId, RedirectAttributes redirectAttributes) {
+        log.trace("Received POST request to delete student with id={}, URI={}", studentId, getRequestUri());
+        studentService.deleteStudentById(studentId);
+
+        redirectAttributes.addFlashAttribute(
+                Attribute.INFO_MESSAGE,
+                getMessage(Message.STUDENT_DELETE_SUCCESS, studentId));
+
+        return redirectTo(Page.STUDENTS);
     }
 
     @PostMapping

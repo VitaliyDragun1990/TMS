@@ -57,10 +57,19 @@
           </div>
         </fieldset>
         
+        <button type="button" id="deleteDialogBtn" class="btn btn-danger mb-3" th:text="#{label.deleteStudent}">
+          Delete Student
+        </button>
+        
+        <hr />
+        
         <div th:replace="fragments/search-timetables :: search (@{'/timetables/student/'+${student.id}+'/'})">
         </div>
 
       </form>
+      
+      <div th:replace="fragments/delete-dialog :: dialog (@{/students/delete},${student.id},#{title.studentDelete},#{msg.confirmStudentDelete})">
+      </div>
     </div>
   </div>
 </body>

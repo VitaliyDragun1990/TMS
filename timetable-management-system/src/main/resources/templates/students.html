@@ -7,6 +7,10 @@
 </head>
 <body>
   <div layout:fragment="content">
+  
+    <div th:replace="fragments/info-message :: message (${infoMsg})">
+    </div>
+  
     <h4 class="mb-3" th:text="${msg}">Students</h4>
     
     <table class="table table-striped" th:unless="${#lists.isEmpty(students)}">

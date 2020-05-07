@@ -23,6 +23,7 @@ public final class Constants {
         public static final String DATE_TIME_FORMAT = "format.datetime";
         public static final String REQUESTED_RESOURCE = "msg.requestedResource";
         public static final String TIMETABLE_DELETE_SUCCESS = "msg.timetableDeleteSuccess";
+        public static final String STUDENT_DELETE_SUCCESS = "msg.studentDeleteSuccess";
 
         private Message() {
         }
