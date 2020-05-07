@@ -87,4 +87,12 @@ public interface StudentService {
      * @param studentId existing student identifier
      */
     void removeStudentFromAllCourses(Integer studentId);
+
+    /**
+     * Deletes student with specified identifier
+     * 
+     * @param studentId student identifier
+     * @throws ResourceNotFoundException if no student with specified identifier
+     */
+    void deleteStudentById(Integer studentId);
 }

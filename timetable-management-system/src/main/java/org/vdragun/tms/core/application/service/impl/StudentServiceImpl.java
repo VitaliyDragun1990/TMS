@@ -127,6 +127,14 @@ public class StudentServiceImpl implements StudentService {
         LOG.debug("Student with id={} has been removed from all assigned courses", studentId);
     }
 
+    @Override
+    public void deleteStudentById(Integer studentId) {
+        LOG.debug("Deleting student with id={}", studentId);
+        assertStudentExists(studentId, "Fail to delete student");
+
+        studentDao.deleteById(studentId);
+    }
+
     private void assertCourseExists(Integer courseId, String msg) {
         if (!courseDao.existsById(courseId)) {
             throw new ResourceNotFoundException("%s: course with id=%d does not exist", msg, courseId);

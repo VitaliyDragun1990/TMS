@@ -250,4 +250,20 @@ public class StudentServiceImplTest {
         verify(studentDaoMock).removeFromAllCourses(eq(STUDENT_ID));
     }
 
+    @Test
+    void shouldThrowExceptionWhenDeletingNonExistingStudent() {
+        when(studentDaoMock.existsById(any(Integer.class))).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> service.deleteStudentById(STUDENT_ID));
+    }
+
+    @Test
+    void shouldDeleteStudentById() {
+        when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
+
+        service.deleteStudentById(STUDENT_ID);
+
+        verify(studentDaoMock).deleteById(eq(STUDENT_ID));
+    }
+
 }
