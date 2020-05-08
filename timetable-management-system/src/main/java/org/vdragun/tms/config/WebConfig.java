@@ -2,7 +2,6 @@ package org.vdragun.tms.config;
 
 import java.util.Locale;
 
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
@@ -15,6 +14,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
@@ -28,6 +28,7 @@ import org.vdragun.tms.ui.web.converter.StringToLocalDateCustomFormatter;
 import org.vdragun.tms.ui.web.converter.StringToLocalDateTimeCustomFormatter;
 import org.vdragun.tms.ui.web.converter.StringToTitleConverter;
 import org.vdragun.tms.ui.web.converter.TitleToStringConverter;
+import org.vdragun.tms.ui.web.util.Constants.Page;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import nz.net.ultraq.thymeleaf.decorators.strategies.GroupingRespectLayoutTitleStrategy;
@@ -40,7 +41,7 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
     private ApplicationContext applicationContext;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
@@ -132,6 +133,13 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
                 .addResourceHandler("/css/**", "/js/**", "/webjars/**")
                 .addResourceLocations("classpath:/static/css/", "classpath:/static/js/", "/webjars/")
                 .resourceChain(false);
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        WebMvcConfigurer.super.addViewControllers(registry);
+        registry.addViewController("/").setViewName(Page.HOME);
+        registry.addRedirectViewController("/home", "/");
     }
 
 }

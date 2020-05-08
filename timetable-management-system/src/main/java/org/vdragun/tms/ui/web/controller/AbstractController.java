@@ -20,7 +20,7 @@ import org.vdragun.tms.ui.web.util.Constants.Message;
  * @author Vitaliy Dragun
  *
  */
-abstract class AbstractController {
+public abstract class AbstractController {
 
     protected Logger log = LoggerFactory.getLogger(getClass());
 
