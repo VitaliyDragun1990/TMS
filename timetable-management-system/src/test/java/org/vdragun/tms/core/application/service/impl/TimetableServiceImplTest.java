@@ -31,8 +31,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
-import org.vdragun.tms.core.application.service.TimetableData;
+import org.vdragun.tms.core.application.service.CreateTimetableData;
 import org.vdragun.tms.core.application.service.TimetableService;
+import org.vdragun.tms.core.application.service.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Course;
@@ -86,7 +87,7 @@ public class TimetableServiceImplTest {
         when(classroomDaoMock.findById(any(Integer.class))).thenReturn(Optional.empty());
         when(courseDaoMock.findById(eq(COURSE_ID))).thenReturn(Optional.of(provideCourse()));
         when(teacherDaoMock.findById(eq(TEACHER_ID))).thenReturn(Optional.of(provideTeacher()));
-        TimetableData data = new TimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID, CLASSROOM_ID,
+        CreateTimetableData data = new CreateTimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID, CLASSROOM_ID,
                 TEACHER_ID);
 
         assertThrows(ResourceNotFoundException.class, () -> service.registerNewTimetable(data));
@@ -99,7 +100,7 @@ public class TimetableServiceImplTest {
         when(classroomDaoMock.findById(eq(CLASSROOM_ID))).thenReturn(Optional.of(provideClassroom()));
         when(courseDaoMock.findById(any(Integer.class))).thenReturn(Optional.empty());
         when(teacherDaoMock.findById(eq(TEACHER_ID))).thenReturn(Optional.of(provideTeacher()));
-        TimetableData data = new TimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID, CLASSROOM_ID,
+        CreateTimetableData data = new CreateTimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID, CLASSROOM_ID,
                 TEACHER_ID);
 
         assertThrows(ResourceNotFoundException.class, () -> service.registerNewTimetable(data));
@@ -112,7 +113,7 @@ public class TimetableServiceImplTest {
         when(classroomDaoMock.findById(eq(CLASSROOM_ID))).thenReturn(Optional.of(provideClassroom()));
         when(courseDaoMock.findById(eq(COURSE_ID))).thenReturn(Optional.of(provideCourse()));
         when(teacherDaoMock.findById(any(Integer.class))).thenReturn(Optional.empty());
-        TimetableData data = new TimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID, CLASSROOM_ID,
+        CreateTimetableData data = new CreateTimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID, CLASSROOM_ID,
                 TEACHER_ID);
 
         assertThrows(ResourceNotFoundException.class, () -> service.registerNewTimetable(data));
@@ -125,7 +126,7 @@ public class TimetableServiceImplTest {
         when(classroomDaoMock.findById(eq(CLASSROOM_ID))).thenReturn(Optional.of(provideClassroom()));
         when(courseDaoMock.findById(eq(COURSE_ID))).thenReturn(Optional.of(provideCourse()));
         when(teacherDaoMock.findById(eq(TEACHER_ID))).thenReturn(Optional.of(provideTeacher()));
-        TimetableData data = new TimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID, CLASSROOM_ID,
+        CreateTimetableData data = new CreateTimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID, CLASSROOM_ID,
                 TEACHER_ID);
 
         service.registerNewTimetable(data);
@@ -148,7 +149,7 @@ public class TimetableServiceImplTest {
 
     @Test
     void shouldFindTimetableWithGivenIdentifier() {
-        Timetable expected = buildTimetable(TIMETABLE_ID, MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES);
+        Timetable expected = timetable(TIMETABLE_ID, MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES);
         when(timetableDaoMock.findById(eq(TIMETABLE_ID))).thenReturn(Optional.of(expected));
 
         Timetable result = service.findTimetableById(TIMETABLE_ID);
@@ -158,8 +159,8 @@ public class TimetableServiceImplTest {
 
     @Test
     void shouldFindAllTimetables() {
-        Timetable timetableA = buildTimetable(TIMETABLE_ID, MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES);
-        Timetable timetableB = buildTimetable(TIMETABLE_ID + 1, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES);
+        Timetable timetableA = timetable(TIMETABLE_ID, MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES);
+        Timetable timetableB = timetable(TIMETABLE_ID + 1, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES);
         when(timetableDaoMock.findAll()).thenReturn(asList(timetableA, timetableB));
 
         List<Timetable> result = service.findAllTimetables();
@@ -178,7 +179,7 @@ public class TimetableServiceImplTest {
 
     @Test
     void shouldFindDailyTimetablesForStudent() {
-        Timetable timetable = buildTimetable(TIMETABLE_ID, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES);
+        Timetable timetable = timetable(TIMETABLE_ID, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES);
         when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
         when(timetableDaoMock.findDailyForStudent(eq(STUDENT_ID), eq(MARCH_TEN))).thenReturn(asList(timetable));
 
@@ -198,8 +199,8 @@ public class TimetableServiceImplTest {
     
     @Test
     void shouldFindMonthlyTimetablesForStudent() {
-        Timetable timetableA = buildTimetable(TIMETABLE_ID, MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES);
-        Timetable timetableB = buildTimetable(TIMETABLE_ID + 1, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES);
+        Timetable timetableA = timetable(TIMETABLE_ID, MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES);
+        Timetable timetableB = timetable(TIMETABLE_ID + 1, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES);
         when(studentDaoMock.existsById(eq(STUDENT_ID))).thenReturn(true);
         when(timetableDaoMock.findMonthlyForStudent(eq(STUDENT_ID), eq(Month.MARCH)))
                 .thenReturn(asList(timetableA, timetableB));
@@ -220,7 +221,7 @@ public class TimetableServiceImplTest {
 
     @Test
     void shouldFindDailyTimetablesForTeacher() {
-        Timetable timetable = buildTimetable(TIMETABLE_ID, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES);
+        Timetable timetable = timetable(TIMETABLE_ID, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES);
         when(teacherDaoMock.existsById(eq(TEACHER_ID))).thenReturn(true);
         when(timetableDaoMock.findDailyForTeacher(eq(TEACHER_ID), eq(MARCH_TEN))).thenReturn(asList(timetable));
 
@@ -240,8 +241,8 @@ public class TimetableServiceImplTest {
 
     @Test
     void shouldFindMonthlyTimetablesForTeacher() {
-        Timetable timetableA = buildTimetable(TIMETABLE_ID, MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES);
-        Timetable timetableB = buildTimetable(TIMETABLE_ID + 1, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES);
+        Timetable timetableA = timetable(TIMETABLE_ID, MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES);
+        Timetable timetableB = timetable(TIMETABLE_ID + 1, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES);
         when(teacherDaoMock.existsById(eq(TEACHER_ID))).thenReturn(true);
         when(timetableDaoMock.findMonthlyForTeacher(eq(TEACHER_ID), eq(Month.MARCH)))
                 .thenReturn(asList(timetableA, timetableB));
@@ -268,7 +269,49 @@ public class TimetableServiceImplTest {
         verify(timetableDaoMock).deleteById(eq(TIMETABLE_ID));
     }
 
-    private Timetable buildTimetable(Integer timetableId, LocalDateTime startTime, int duration) {
+    @Test
+    void shouldThrowExceptionWhenUpdatingNonExistingTimetable() {
+        when(timetableDaoMock.findById(any(Integer.class)))
+                .thenReturn(Optional.empty());
+        when(classroomDaoMock.findById(eq(CLASSROOM_ID))).thenReturn(Optional.of(provideClassroom()));
+        UpdateTimetableData updateData = updateData(TIMETABLE_ID, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES, CLASSROOM_ID);
+
+        assertThrows(ResourceNotFoundException.class, () -> service.updateExistingTimetable(updateData));
+
+        verify(timetableDaoMock, never()).update(any(Timetable.class));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdatingTimetableWithNonExistingClassroom() {
+        when(timetableDaoMock.findById(eq(TIMETABLE_ID)))
+                .thenReturn(Optional.of(timetable(TIMETABLE_ID, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES)));
+        when(classroomDaoMock.findById(any(Integer.class))).thenReturn(Optional.empty());
+        UpdateTimetableData updateData = updateData(TIMETABLE_ID, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES, CLASSROOM_ID);
+
+        assertThrows(ResourceNotFoundException.class, () -> service.updateExistingTimetable(updateData));
+
+        verify(timetableDaoMock, never()).update(any(Timetable.class));
+    }
+
+    @Test
+    void shouldUpdateExistingTimetable() {
+        Timetable expected = timetable(TIMETABLE_ID, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES);
+        when(timetableDaoMock.findById(eq(TIMETABLE_ID)))
+                .thenReturn(Optional.of(expected));
+        when(classroomDaoMock.findById(eq(CLASSROOM_ID))).thenReturn(Optional.of(provideClassroom()));
+        UpdateTimetableData updateData = updateData(TIMETABLE_ID, MARCH_TEN_NINE_THIRTY, NINETY_MINUTES, CLASSROOM_ID);
+
+        service.updateExistingTimetable(updateData);
+
+        verify(timetableDaoMock).update(eq(expected));
+    }
+
+    private UpdateTimetableData updateData(Integer timetableId, LocalDateTime startTime, int duration,
+            Integer classroomId) {
+        return new UpdateTimetableData(timetableId, startTime, duration, classroomId);
+    }
+
+    private Timetable timetable(Integer timetableId, LocalDateTime startTime, int duration) {
         return new Timetable(timetableId, startTime, duration, provideCourse(), provideClassroom(), provideTeacher());
     }
 

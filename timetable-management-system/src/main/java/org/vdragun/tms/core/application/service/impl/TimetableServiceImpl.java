@@ -8,8 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
-import org.vdragun.tms.core.application.service.TimetableData;
+import org.vdragun.tms.core.application.service.CreateTimetableData;
 import org.vdragun.tms.core.application.service.TimetableService;
+import org.vdragun.tms.core.application.service.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
@@ -47,10 +48,11 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
     @Override
-    public Timetable registerNewTimetable(TimetableData timetableData) {
+    public Timetable registerNewTimetable(CreateTimetableData timetableData) {
         LOG.debug("Registering new timetable using data: {}", timetableData);
 
-        Classroom classroom = requireExistingClassroom(timetableData.getClassroomId());
+        Classroom classroom = requireExistingClassroom(timetableData.getClassroomId(),
+                "Fail to register new timetable");
         Course course = requireExistingCourse(timetableData.getCourseId());
         Teacher teacher = requireExistingTeacher(timetableData.getTeacherId());
 
@@ -63,6 +65,22 @@ public class TimetableServiceImpl implements TimetableService {
         timetableDao.save(timetable);
 
         LOG.debug("New timetable has been registered: {}", timetable);
+        return timetable;
+    }
+
+    @Override
+    public Timetable updateExistingTimetable(UpdateTimetableData timetableData) {
+        LOG.debug("Updating existing timetable suing data: {}", timetableData);
+
+        Timetable timetable = requireExistingTimetable(timetableData.getTimetableId(), "Fail to update timetable");
+        Classroom classroom = requireExistingClassroom(timetableData.getClassroomId(),
+                "Fail to change timetable classroom");
+
+        timetable.setClassroom(classroom);
+        timetable.setDurationInMinutes(timetableData.getDurationInMinutes());
+        timetable.setStartTime(timetableData.getStartTime());
+        timetableDao.update(timetable);
+
         return timetable;
     }
 
@@ -151,12 +169,20 @@ public class TimetableServiceImpl implements TimetableService {
         }
     }
 
-    private Classroom requireExistingClassroom(Integer classroomId) {
+    private Timetable requireExistingTimetable(Integer timetableId, String msg) {
+        return timetableDao.findById(timetableId)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(
+                                "%s: classroom with id=%d does not exist",
+                                msg, timetableId));
+    }
+
+    private Classroom requireExistingClassroom(Integer classroomId, String msg) {
         return classroomDao.findById(classroomId)
                 .orElseThrow(
                         () -> new ResourceNotFoundException(
-                                "Fail to register new timetable: classroom with id=%d does not exist",
-                                classroomId));
+                                "%s: classroom with id=%d does not exist",
+                                msg, classroomId));
     }
     
     private Course requireExistingCourse(Integer courseId) {

@@ -21,7 +21,17 @@ public interface TimetableService {
      * @param timetableData data to register new timetable
      * @return newly registered timetable
      */
-    Timetable registerNewTimetable(TimetableData timetableData);
+    Timetable registerNewTimetable(CreateTimetableData timetableData);
+
+    /**
+     * Update existing timetable using provided data
+     * 
+     * @param timetableData data to update existing timetable
+     * @return updated timetable
+     * @throws ResourceNotFoundException if timetable and/or any specified resource
+     *                                   intended for update is not found
+     */
+    Timetable updateExistingTimetable(UpdateTimetableData timetableData);
 
     /**
      * Returns existing timetable using provided identifier
