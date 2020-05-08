@@ -39,7 +39,8 @@ public final class Constants {
         public static final String HOME = "index";
         public static final String STUDENTS = "students";
         public static final String STUDENT_INFO = "student";
-        public static final String STUDENT_FORM = "student-form";
+        public static final String STUDENT_REG_FORM = "student-req-form";
+        public static final String STUDENT_UPDATE_FORM = "student-update-form";
         public static final String TEACHERS = "teachers";
         public static final String TEACHER_INFO = "teacher";
         public static final String TEACHER_FORM = "teacher-form";

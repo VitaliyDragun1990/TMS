@@ -32,7 +32,7 @@ public class RegisterStudentController extends AbstractController {
         log.trace("Received GET request to show student registration form, URI={}", getRequestUri());
         model.addAttribute(Attribute.STUDENT, new CreateStudentData());
 
-        return Page.STUDENT_FORM;
+        return Page.STUDENT_REG_FORM;
     }
 
     @PostMapping
