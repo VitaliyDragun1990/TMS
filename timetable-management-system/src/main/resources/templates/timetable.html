@@ -9,21 +9,25 @@
 <body>
   <div layout:fragment="content">
     <div class="w-75 p-3">
+    
+      <div th:replace="fragments/info-message :: message (${infoMsg})">
+      </div>
+    
       <h3 class="mb-5" th:text="#{title.timetableInfo}">Timetable Info</h3>
 
-      <form id="timetableForm" th:object="${timetable}">
+      <form id="timetableForm" th:object="${timetable}" th:action="@{'/timetables/' + ${timetable.id}}" method="post">
 
         <div class="form-group row">
           <label for="startTime" class="col-sm-2 col-form-label" th:text="#{label.date}">Date</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" th:field="*{startTime}" disabled>
+            <input type="text" class="form-control" th:field="*{startTime}">
           </div>
         </div>
         
         <div class="form-group row">
           <label for="durationInMinutes" class="col-sm-2 col-form-label" th:text="#{label.duration}">Duration (mins)</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" th:field="*{durationInMinutes}" disabled>
+            <input type="number" class="form-control" th:field="*{durationInMinutes}">
           </div>
         </div>
         
@@ -33,11 +37,18 @@
             <input type="text" class="form-control" th:field="*{course.name}" disabled>
           </div>
         </div>
-
+        
         <div class="form-group row">
-          <label for="classroom" class="col-sm-2 col-form-label" th:text="#{label.classroom}">Classroom</label>
+          <label for="classroomId" class="col-sm-2 col-form-label" th:text="#{label.classroom}">Classroom</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" th:field="*{classroom.id}" disabled>
+            <select class="form-control w-50" name="classroomId" id="classroomId">
+              <option th:each="classroom : ${classrooms}"
+                      th:value="${classroom.id}"
+                      th:text="${classroom.id}"
+                      th:selected="${classroom.equals(timetable.classroom)}">
+                10
+              </option>
+            </select>
           </div>
         </div>
         
@@ -49,13 +60,20 @@
           </div>
         </div>
         
-        <button type="button" id="deleteDialogBtn" class="btn btn-danger" th:text="#{label.deleteTimetable}">
-          Delete Timetable
-        </button>
+        <div class="row">
+          <button type="button" id="updateDialogBtn" class="btn btn-info mb-3 mr-3" th:text="#{label.updateTimetable}">
+            Update Timetable
+          </button>
+          <button type="button" id="deleteDialogBtn" class="btn btn-danger mb-3" th:text="#{label.deleteTimetable}">
+            Delete Timetable
+          </button>
+        </div>
 
       </form>
       
       <div th:replace="fragments/dialogs :: delete (@{/timetables/delete},${timetable.id},#{title.timetableDelete},#{msg.confirmTimetableDelete})">
+      </div>
+      <div th:replace="fragments/dialogs :: update ('timetableForm',#{title.timetableUpdate},#{msg.confirmTimetableUpdate})">
       </div>
       
     </div>

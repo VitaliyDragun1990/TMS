@@ -81,6 +81,7 @@ public class TimetableServiceImpl implements TimetableService {
         timetable.setStartTime(timetableData.getStartTime());
         timetableDao.update(timetable);
 
+        LOG.debug("Timetable with id={} has been successfully updated", timetable.getId());
         return timetable;
     }
 

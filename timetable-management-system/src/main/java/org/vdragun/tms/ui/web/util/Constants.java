@@ -25,6 +25,7 @@ public final class Constants {
         public static final String TIMETABLE_DELETE_SUCCESS = "msg.timetableDeleteSuccess";
         public static final String STUDENT_DELETE_SUCCESS = "msg.studentDeleteSuccess";
         public static final String STUDENT_UPDATE_SUCCESS = "msg.studentUpdateSuccess";
+        public static final String TIMETABLE_UPDATE_SUCCESS = "msg.timetableUpdateSuccess";
 
         private Message() {
         }

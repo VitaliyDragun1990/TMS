@@ -18,8 +18,9 @@ import org.vdragun.tms.core.application.service.ClassroomService;
 import org.vdragun.tms.core.application.service.CourseService;
 import org.vdragun.tms.core.application.service.StudentService;
 import org.vdragun.tms.core.application.service.TeacherService;
-import org.vdragun.tms.core.application.service.TimetableData;
+import org.vdragun.tms.core.application.service.CreateTimetableData;
 import org.vdragun.tms.core.application.service.TimetableService;
+import org.vdragun.tms.core.application.service.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
@@ -67,6 +68,7 @@ public class TimetableController extends AbstractController {
     public String showTimetableInfo(@PathVariable("timetableId") Integer timetableId, Model model) {
         log.trace("Received GET request to show data for timetable with id={}, URI={}", timetableId, getRequestUri());
         model.addAttribute(Attribute.TIMETABLE, timetableService.findTimetableById(timetableId));
+        model.addAttribute(Attribute.CLASSROOMS, classroomService.findAllClassrooms());
         
         return Page.TIMETABLE_INFO;
     }
@@ -74,7 +76,7 @@ public class TimetableController extends AbstractController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         log.trace("Received GET request to show timetable registration form, URI={}", getRequestUri());
-        model.addAttribute(Attribute.TIMETABLE, new TimetableData());
+        model.addAttribute(Attribute.TIMETABLE, new CreateTimetableData());
         model.addAttribute(Attribute.COURSES, courseService.findAllCourses());
         model.addAttribute(Attribute.TEACHERS, teacherService.findAllTeachers());
         model.addAttribute(Attribute.CLASSROOMS, classroomService.findAllClassrooms());
@@ -82,8 +84,25 @@ public class TimetableController extends AbstractController {
         return Page.TIMETABLE_FORM;
     }
 
+    @PostMapping("/{timetableId}")
+    public String updateTimetable(
+            @PathVariable Integer timetableId,
+            @ModelAttribute UpdateTimetableData timetableData,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        log.trace("Received POST request to update timetable with id={}, data={}, URI={}",
+                timetableId, timetableData, getRequestUri());
+        timetableService.updateExistingTimetable(timetableData);
+
+        redirectAttributes.addFlashAttribute(
+                Attribute.INFO_MESSAGE,
+                getMessage(Message.TIMETABLE_UPDATE_SUCCESS));
+
+        return redirectTo("timetables/" + timetableId);
+    }
+
     @PostMapping
-    public String registerNewTimetable(@ModelAttribute TimetableData timetableData, Model model) {
+    public String registerNewTimetable(@ModelAttribute CreateTimetableData timetableData, Model model) {
         log.trace("Received POST request to register new timetable, data={}, URI={}", timetableData, getRequestUri());
         Timetable timetable = timetableService.registerNewTimetable(timetableData);
         model.addAttribute(Attribute.TIMETABLE, timetable);
