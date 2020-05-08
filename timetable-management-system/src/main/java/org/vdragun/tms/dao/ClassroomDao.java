@@ -28,4 +28,11 @@ public interface ClassroomDao {
      * Finds all classroom available
      */
     List<Classroom> findAll();
+
+    /**
+     * Checks whether classroom with provided identifier exists
+     * 
+     * @return {@code true} if such classroom exists, {@code false} otherwise
+     */
+    boolean existsById(Integer classroomId);
 }
