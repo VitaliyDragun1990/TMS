@@ -46,7 +46,8 @@ public final class Constants {
         public static final String TEACHER_FORM = "teacher-form";
         public static final String TIMETABLE_INFO = "timetable";
         public static final String TIMETABLES = "timetables";
-        public static final String TIMETABLE_FORM = "timetable-form";
+        public static final String TIMETABLE_REG_FORM = "timetable-reg-form";
+        public static final String TIMETABLE_UPDATE_FORM = "timetable-update-form";
         public static final String NOT_FOUND = "404";
         public static final String BAD_REQUEST = "400";
         public static final String SERVER_ERROR = "500";

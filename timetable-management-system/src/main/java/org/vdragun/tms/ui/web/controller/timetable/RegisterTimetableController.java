@@ -47,7 +47,7 @@ public class RegisterTimetableController extends AbstractController {
         model.addAttribute(Attribute.TEACHERS, teacherService.findAllTeachers());
         model.addAttribute(Attribute.CLASSROOMS, classroomService.findAllClassrooms());
 
-        return Page.TIMETABLE_FORM;
+        return Page.TIMETABLE_REG_FORM;
     }
 
     @PostMapping

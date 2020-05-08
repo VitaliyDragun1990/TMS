@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.vdragun.tms.core.application.service.ClassroomService;
 import org.vdragun.tms.core.application.service.StudentService;
 import org.vdragun.tms.core.application.service.TeacherService;
 import org.vdragun.tms.core.application.service.TimetableService;
@@ -42,9 +41,6 @@ public class SearchTimetableController extends AbstractController {
     @Autowired
     private StudentService studentService;
 
-    @Autowired
-    private ClassroomService classroomService;
-
     @GetMapping
     public String showAllTimetables(Model model) {
         log.trace("Received GET request to show all timetables, URI={}", getRequestUri());
@@ -60,7 +56,6 @@ public class SearchTimetableController extends AbstractController {
     public String showTimetableInfo(@PathVariable("timetableId") Integer timetableId, Model model) {
         log.trace("Received GET request to show data for timetable with id={}, URI={}", timetableId, getRequestUri());
         model.addAttribute(Attribute.TIMETABLE, timetableService.findTimetableById(timetableId));
-        model.addAttribute(Attribute.CLASSROOMS, classroomService.findAllClassrooms());
 
         return Page.TIMETABLE_INFO;
     }
