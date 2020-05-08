@@ -1,5 +1,7 @@
 package org.vdragun.tms.dao.jdbc;
 
+import static java.lang.String.format;
+
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.time.Month;
@@ -30,6 +32,9 @@ public class JdbcTimetableDao implements TimetableDao {
 
     @Value("${timetable.insert}")
     private String insertQuery;
+
+    @Value("${timetable.update}")
+    private String updateQuery;
 
     @Value("${timetable.findAll}")
     private String findAllQuery;
@@ -84,6 +89,20 @@ public class JdbcTimetableDao implements TimetableDao {
 
         int timetableId = keyHolder.getKey().intValue();
         timetable.setId(timetableId);
+    }
+
+    @Override
+    public void update(Timetable timetable) {
+        LOG.debug("Updating timetable with id={} with data={} in the database", timetable.getId(), timetable);
+        int rowsUpdated = jdbc.update(
+                updateQuery,
+                timetable.getStartTime(),
+                timetable.getDurationInMinutes(),
+                timetable.getClassroom().getId(),
+                timetable.getId());
+        if (rowsUpdated != 1) {
+            throw new DaoException(format("Fail to update timetable with id=%d", timetable.getId()));
+        }
     }
 
     @Override

@@ -22,6 +22,11 @@ public interface TimetableDao {
     void save(Timetable timetable);
 
     /**
+     * Updates specified timetable instance.
+     */
+    void update(Timetable timetable);
+
+    /**
      * Saves all specified timetable instances. Each saved object receives unique
      * identifier.
      */
