@@ -56,6 +56,6 @@ public class RegisterTimetableController extends AbstractController {
         Timetable timetable = timetableService.registerNewTimetable(timetableData);
         model.addAttribute(Attribute.TIMETABLE, timetable);
 
-        return redirectTo("timetables/" + timetable.getId());
+        return redirectTo("/timetables/" + timetable.getId());
     }
 }

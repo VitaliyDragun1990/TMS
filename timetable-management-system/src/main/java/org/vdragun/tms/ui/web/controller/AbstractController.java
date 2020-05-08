@@ -49,8 +49,8 @@ public abstract class AbstractController {
         return uriBuilder.toUriString();
     }
 
-    protected String redirectTo(String targetPage) {
-        return "redirect:/" + targetPage;
+    protected String redirectTo(String targetURI) {
+        return "redirect:" + targetURI;
     }
 
 }

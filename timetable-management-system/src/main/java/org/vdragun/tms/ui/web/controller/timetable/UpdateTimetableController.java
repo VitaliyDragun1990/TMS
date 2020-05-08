@@ -57,6 +57,6 @@ public class UpdateTimetableController extends AbstractController {
                 Attribute.INFO_MESSAGE,
                 getMessage(Message.TIMETABLE_UPDATE_SUCCESS));
 
-        return redirectTo("timetables/" + timetableId);
+        return redirectTo("/timetables/" + timetableId);
     }
 }

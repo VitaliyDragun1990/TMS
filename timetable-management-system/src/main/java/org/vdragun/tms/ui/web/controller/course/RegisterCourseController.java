@@ -51,6 +51,6 @@ public class RegisterCourseController extends AbstractController {
         Course course = courseService.registerNewCourse(courseData);
         model.addAttribute(Attribute.COURSE, course);
 
-        return redirectTo("courses/" + course.getId());
+        return redirectTo("/courses/" + course.getId());
     }
 }

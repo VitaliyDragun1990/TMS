@@ -51,6 +51,6 @@ public class RegisterTeacherController extends AbstractController {
         Teacher teacher = teacherService.registerNewTeacher(teacherData);
         model.addAttribute(Attribute.TEACHER, teacher);
 
-        return redirectTo("teachers/" + teacher.getId());
+        return redirectTo("/teachers/" + teacher.getId());
     }
 }

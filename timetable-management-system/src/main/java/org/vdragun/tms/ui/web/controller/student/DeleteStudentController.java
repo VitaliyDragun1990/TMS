@@ -33,6 +33,6 @@ public class DeleteStudentController extends AbstractController {
                 Attribute.INFO_MESSAGE,
                 getMessage(Message.STUDENT_DELETE_SUCCESS, studentId));
 
-        return redirectTo("students");
+        return redirectTo("/students");
     }
 }

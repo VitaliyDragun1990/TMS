@@ -41,6 +41,6 @@ public class RegisterStudentController extends AbstractController {
         Student student = studentService.registerNewStudent(studentData);
         model.addAttribute(Attribute.STUDENT, student);
 
-        return redirectTo("students/" + student.getId());
+        return redirectTo("/students/" + student.getId());
     }
 }

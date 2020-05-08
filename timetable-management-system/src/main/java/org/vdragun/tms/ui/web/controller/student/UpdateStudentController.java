@@ -62,7 +62,7 @@ public class UpdateStudentController extends AbstractController {
                 Attribute.INFO_MESSAGE,
                 getMessage(Message.STUDENT_UPDATE_SUCCESS));
 
-        return redirectTo("students/" + studentId);
+        return redirectTo("/students/" + studentId);
     }
 
 }

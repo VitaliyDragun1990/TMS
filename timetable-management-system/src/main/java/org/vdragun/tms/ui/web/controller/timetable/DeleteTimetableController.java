@@ -33,6 +33,6 @@ public class DeleteTimetableController extends AbstractController {
                 Attribute.INFO_MESSAGE,
                 getMessage(Message.TIMETABLE_DELETE_SUCCESS, timetableId));
 
-        return redirectTo("timetables");
+        return redirectTo("/timetables");
     }
 }
