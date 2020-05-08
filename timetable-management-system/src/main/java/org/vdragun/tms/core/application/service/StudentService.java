@@ -26,6 +26,8 @@ public interface StudentService {
      * 
      * @param studentData data to update existing student
      * @return update student
+     * @throws ResourceNotFoundException if student and/or any specified resource
+     *                                   intended for update is not found
      */
     Student updateExistingStudent(UpdateStudentData studentData);
 

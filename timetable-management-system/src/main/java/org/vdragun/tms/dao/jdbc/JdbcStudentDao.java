@@ -176,7 +176,7 @@ public class JdbcStudentDao implements StudentDao {
     @Override
     public void deleteById(Integer studentId) {
         removeFromAllCourses(studentId);
-        LOG.debug("Deleting student with ud={} from the database", studentId);
+        LOG.debug("Deleting student with id={} from the database", studentId);
         jdbc.update(deleteByIdQuery, studentId);
     }
 

@@ -76,12 +76,13 @@ public class StudentController extends AbstractController {
             @ModelAttribute UpdateStudentData studentData,
             Model model,
             RedirectAttributes redirectAttriutes) {
-        log.trace("Received POST request to update student with id={}, URI={}", studentId, getRequestUri());
+        log.trace("Received POST request to update student with id={}, data={} URI={}",
+                studentId, studentData, getRequestUri());
         studentService.updateExistingStudent(studentData);
 
         redirectAttriutes.addFlashAttribute(
                 Attribute.INFO_MESSAGE,
-                getMessage(Message.STUDENT_UPDATE_SUCCESS, studentId));
+                getMessage(Message.STUDENT_UPDATE_SUCCESS));
 
         return redirectTo("students/" + studentId);
     }

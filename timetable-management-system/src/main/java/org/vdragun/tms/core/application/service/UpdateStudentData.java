@@ -23,7 +23,6 @@ public class UpdateStudentData {
         this.studentId = studentId;
         this.groupId = groupId;
         this.courseIds = courseIds;
-        this.courseIds = courseIds;
     }
 
     public Integer getStudentId() {
