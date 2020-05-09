@@ -60,7 +60,7 @@ public class HibernateCategoryDao extends BaseHibernateDao implements CategoryDa
     @Override
     public boolean existsById(Integer categoryId) {
         log.debug("Checking whether category with id={} exists in the database", categoryId);
-        return findById(categoryId).isPresent();
+        return query(session -> Optional.ofNullable(session.get(Category.class, categoryId)).isPresent());
     }
 
 }

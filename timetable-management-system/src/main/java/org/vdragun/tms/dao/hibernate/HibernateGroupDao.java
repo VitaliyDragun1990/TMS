@@ -60,7 +60,7 @@ public class HibernateGroupDao extends BaseHibernateDao implements GroupDao {
     @Override
     public boolean existsById(Integer groupId) {
         log.debug("Checking whether group with id={} exists in the database", groupId);
-        return findById(groupId).isPresent();
+        return query(session -> Optional.ofNullable(session.get(Group.class, groupId)).isPresent());
     }
 
 }

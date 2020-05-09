@@ -42,7 +42,7 @@ public class HibernateClassroomDao extends BaseHibernateDao implements Classroom
     @Override
     public boolean existsById(Integer classroomId) {
         log.debug("Checking whether classroom with id={} exists in the database", classroomId);
-        return findById(classroomId).isPresent();
+        return query(session -> Optional.ofNullable(session.get(Classroom.class, classroomId)).isPresent());
     }
 
 }
