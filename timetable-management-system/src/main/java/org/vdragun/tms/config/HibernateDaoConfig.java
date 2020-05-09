@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,7 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
+import org.vdragun.tms.dao.hibernate.TitleConverter;
 
 /**
  * Contains configuration related to DAO layer implementation using Hibernate
@@ -29,13 +31,13 @@ public class HibernateDaoConfig {
     private Environment environment;
 
     @Bean
-    public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
-        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-        sessionFactoryBean.setDataSource(dataSource);
-        sessionFactoryBean.setPackagesToScan("org.vdragun.tms.core.domain");
-        sessionFactoryBean.setHibernateProperties(hibernateProperties());
+    public SessionFactory sessionFactory(DataSource dataSource) {
+        LocalSessionFactoryBuilder builder = new LocalSessionFactoryBuilder(dataSource);
+        builder.scanPackages("org.vdragun.tms.core.domain");
+        builder.addProperties(hibernateProperties());
+        builder.addAttributeConverter(TitleConverter.class, true);
 
-        return sessionFactoryBean;
+        return builder.buildSessionFactory();
     }
 
     private Properties hibernateProperties() {
