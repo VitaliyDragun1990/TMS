@@ -2,18 +2,34 @@ package org.vdragun.tms.core.domain;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 /**
  * Represents classroom where university course is held in
  * 
  * @author Vitaliy Dragun
  *
  */
+@Entity
+@Table(name = "classrooms")
 public class Classroom {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "classroomGen")
+    @SequenceGenerator(name = "classroomGen", sequenceName = "classrooms_classroom_id_seq", allocationSize = 1)
+    @Column(name = "classroom_id")
     private Integer id;
+
+    @Column(name = "capacity")
     private int capacity;
 
-    public Classroom() {
+    protected Classroom() {
         this(0);
     }
 
@@ -64,7 +80,7 @@ public class Classroom {
 
     @Override
     public String toString() {
-        return "ClassRoom [id=" + id + ", capacity=" + capacity + "]";
+        return "Classroom [id=" + id + ", capacity=" + capacity + "]";
     }
 
 }
