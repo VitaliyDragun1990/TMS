@@ -1,4 +1,4 @@
-package org.vdragun.tms.dao.jdbc;
+package org.vdragun.tms.dao.hibernate;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -21,14 +21,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.vdragun.tms.config.JdbcDaoConfig;
+import org.vdragun.tms.config.HibernateDaoConfig;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.dao.CategoryDao;
+import org.vdragun.tms.dao.jdbc.DBTestConfig;
+import org.vdragun.tms.dao.jdbc.JdbcTestHelper;
 
-@SpringJUnitConfig(classes = { JdbcDaoConfig.class, DBTestConfig.class })
+@SpringJUnitConfig(classes = { HibernateDaoConfig.class, DBTestConfig.class })
 @Sql(scripts = { "/sql/db_schema_seq.sql" }, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
-@DisplayName("Jdbc Category DAO")
-public class JdbcCategoryDaoTest {
+@DisplayName("Hibernate Category DAO")
+public class HibernateCategoryDaoTest {
 
     private static final String CODE_ART = "ART";
     private static final String CODE_BIO = "BIO";

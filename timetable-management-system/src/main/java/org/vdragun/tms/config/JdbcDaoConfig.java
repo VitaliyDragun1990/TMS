@@ -9,11 +9,17 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+/**
+ * Contains configuration related to DAO layer implementation using Spring JDBC
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 @Configuration
-@ComponentScan(basePackages = { "org.vdragun.tms.dao" })
+@ComponentScan(basePackages = { "org.vdragun.tms.dao.jdbc" })
 @PropertySource({ "classpath:query.properties" })
 @EnableAspectJAutoProxy
-public class DaoConfig {
+public class JdbcDaoConfig {
 
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {

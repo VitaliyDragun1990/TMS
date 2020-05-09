@@ -11,13 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.vdragun.tms.config.DaoConfig;
+import org.vdragun.tms.config.JdbcDaoConfig;
 import org.vdragun.tms.config.StartupDataConfig;
 import org.vdragun.tms.dao.jdbc.DBTestConfig;
 import org.vdragun.tms.dao.jdbc.JdbcTestHelper;
 
 @DisplayName("Startup Data Initializer")
-@SpringJUnitConfig({ DBTestConfig.class, DaoConfig.class, StartupDataConfig.class })
+@SpringJUnitConfig({ DBTestConfig.class, JdbcDaoConfig.class, StartupDataConfig.class })
 class StartupDataInitializerTest {
 
     @Value("#{'${generator.category}'.split(',\\s*').length}")

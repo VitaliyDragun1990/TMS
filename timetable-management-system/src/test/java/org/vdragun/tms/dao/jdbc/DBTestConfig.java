@@ -25,7 +25,7 @@ public class DBTestConfig {
                 .setType(EmbeddedDatabaseType.H2)
                 .setScriptEncoding("UTF-8")
                 .ignoreFailedDrops(true)
-                .addScript("sql/db_schema.sql")
+                .addScript("sql/db_schema_seq.sql")
                 .build();
     }
 
