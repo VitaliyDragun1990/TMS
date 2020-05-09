@@ -30,7 +30,11 @@ public class Group {
     private String name;
 
     protected Group() {
-        this(null);
+        this((Integer) null);
+    }
+
+    public Group(Integer id) {
+        this(id, null);
     }
 
     public Group(String name) {

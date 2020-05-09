@@ -104,12 +104,19 @@ public class Student extends Person {
     }
 
     public void setCourses(Set<Course> courses) {
-        this.courses.clear();
-        this.courses.addAll(courses);
+        this.courses = courses;
     }
 
     public void addCourse(Course course) {
         this.courses.add(course);
+    }
+
+    public void removeCourse(Course course) {
+        this.courses.remove(course);
+    }
+
+    public void removeAllCourses() {
+        this.courses.clear();
     }
 
     @Override

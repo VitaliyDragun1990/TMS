@@ -46,6 +46,10 @@ public class Course {
     protected Course() {
     }
 
+    public Course(Integer id) {
+        this(id, null, null, null);
+    }
+
     public Course(String name, Category category, Teacher teacher) {
         this(name, null, category, teacher);
     }
