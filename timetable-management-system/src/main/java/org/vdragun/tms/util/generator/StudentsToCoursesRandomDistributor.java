@@ -1,6 +1,5 @@
 package org.vdragun.tms.util.generator;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,13 +31,13 @@ public class StudentsToCoursesRandomDistributor {
         }
     }
 
-    private List<Course> getStudentCourses(int numberOfCourses, List<Course> courses) {
+    private Set<Course> getStudentCourses(int numberOfCourses, List<Course> courses) {
         Set<Course> result = new HashSet<>();
 
         while (result.size() != numberOfCourses) {
             result.add(getRandomCourse(courses));
         }
-        return new ArrayList<>(result);
+        return new HashSet<>(result);
     }
 
     private Course getRandomCourse(List<Course> courses) {

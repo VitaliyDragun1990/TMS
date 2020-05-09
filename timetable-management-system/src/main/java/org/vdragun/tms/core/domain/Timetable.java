@@ -3,22 +3,52 @@ package org.vdragun.tms.core.domain;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 /**
  * Represents university timetable instance
  * 
  * @author Vitaliy Dragun
  *
  */
+@Entity
+@Table(name = "timetables")
 public class Timetable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "timetableGen")
+    @SequenceGenerator(name = "timetableGen", sequenceName = "timetables_timetable_id_seq", allocationSize = 1)
+    @Column(name = "timetable_id")
     private Integer id;
+
+    @Column(name = "start_date_time")
     private LocalDateTime startTime;
+
+    @Column(name = "duration")
     private int durationInMinutes;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "course_id")
     private Course course;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "classroom_id")
     private Classroom classroom;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    public Timetable() {
+    protected Timetable() {
         this(null, 0, null, null, null);
     }
 
