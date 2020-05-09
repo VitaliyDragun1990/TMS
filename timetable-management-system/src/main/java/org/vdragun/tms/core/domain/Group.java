@@ -2,18 +2,34 @@ package org.vdragun.tms.core.domain;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 /**
  * Represents group at university
  * 
  * @author Vitaliy Dragun
  *
  */
+@Entity
+@Table(name = "groups")
 public class Group {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "groupGen")
+    @SequenceGenerator(name = "groupGen", sequenceName = "groups_group_id_seq", allocationSize = 1)
+    @Column(name = "group_id")
     private Integer id;
+
+    @Column(name = "group_name")
     private String name;
 
-    public Group() {
+    protected Group() {
         this(null);
     }
 
