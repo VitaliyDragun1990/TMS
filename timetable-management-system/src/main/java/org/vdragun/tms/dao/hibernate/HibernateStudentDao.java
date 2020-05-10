@@ -65,7 +65,7 @@ public class HibernateStudentDao extends BaseHibernateDao implements StudentDao 
         log.debug("Retrieving all students from the database");
         return query(session -> {
             Query<Student> query = session.createQuery(
-                    "SELECT s FROM Student s LEFT JOIN FETCH s.courses",
+                    "SELECT DISTINCT s FROM Student s LEFT JOIN FETCH s.courses",
                     Student.class);
             return query.list();
         });
@@ -89,7 +89,7 @@ public class HibernateStudentDao extends BaseHibernateDao implements StudentDao 
         log.debug("Retrieving all students assigned to group with id={} from the database", groupId);
         return query(session -> {
             Query<Student> query = session.createQuery(
-                    "SELECT s FROM Student s LEFT JOIN FETCH s.courses c WHERE s.group.id = ?1",
+                    "SELECT DISTINCT s FROM Student s LEFT JOIN FETCH s.courses c WHERE s.group.id = ?1",
                     Student.class);
             query.setParameter(1, groupId);
             return query.list();

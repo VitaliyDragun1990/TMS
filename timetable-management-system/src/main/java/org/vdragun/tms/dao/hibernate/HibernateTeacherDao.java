@@ -66,7 +66,8 @@ public class HibernateTeacherDao extends BaseHibernateDao implements TeacherDao 
         return query(session -> {
             // Select all teachers with or without any courses and eagerly loads all appropriate
             // courses for each such teacher in one select
-            Query<Teacher> query = session.createQuery("SELECT t FROM Teacher t LEFT JOIN FETCH t.courses",
+            Query<Teacher> query = session.createQuery(
+                    "SELECT DISTINCT t FROM Teacher t LEFT JOIN FETCH t.courses",
                     Teacher.class);
             return query.list();
         });
