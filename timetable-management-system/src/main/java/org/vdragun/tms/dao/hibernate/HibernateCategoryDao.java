@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.dao.CategoryDao;
@@ -60,7 +61,13 @@ public class HibernateCategoryDao extends BaseHibernateDao implements CategoryDa
     @Override
     public boolean existsById(Integer categoryId) {
         log.debug("Checking whether category with id={} exists in the database", categoryId);
-        return query(session -> Optional.ofNullable(session.get(Category.class, categoryId)).isPresent());
+        return query(session -> {
+            Query<Integer> query = session.createQuery(
+                    "SELECT c.id FROM Category c WHERE c.id = ?1",
+                    Integer.class);
+            query.setParameter(1, categoryId);
+            return !query.list().isEmpty();
+        });
     }
 
 }

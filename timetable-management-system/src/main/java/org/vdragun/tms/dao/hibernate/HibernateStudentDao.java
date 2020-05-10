@@ -144,7 +144,13 @@ public class HibernateStudentDao extends BaseHibernateDao implements StudentDao 
     @Override
     public boolean existsById(Integer studentId) {
         log.debug("Checking whether student with id={} exists in the database", studentId);
-        return query(session -> Optional.ofNullable(session.get(Student.class, studentId)).isPresent());
+        return query(session -> {
+            Query<Integer> query = session.createQuery(
+                    "SELECT s.id FROM Student s WHERE s.id = ?1",
+                    Integer.class);
+            query.setParameter(1, studentId);
+            return !query.list().isEmpty();
+        });
     }
 
     @SuppressWarnings("rawtypes")

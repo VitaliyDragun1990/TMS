@@ -71,7 +71,13 @@ public class HibernateCourseDao extends BaseHibernateDao implements CourseDao {
     @Override
     public boolean existsById(Integer courseId) {
         log.debug("Checking whether course with id={} exists in the database", courseId);
-        return query(session -> Optional.ofNullable(session.get(Course.class, courseId)).isPresent());
+        return query(session -> {
+            Query<Integer> query = session.createQuery(
+                    "SELECT c.id FROM Course c WHERE c.id = ?1",
+                    Integer.class);
+            query.setParameter(1, courseId);
+            return !query.list().isEmpty();
+        });
     }
 
 }

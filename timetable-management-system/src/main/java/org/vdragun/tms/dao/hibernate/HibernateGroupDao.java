@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.dao.GroupDao;
@@ -60,7 +61,13 @@ public class HibernateGroupDao extends BaseHibernateDao implements GroupDao {
     @Override
     public boolean existsById(Integer groupId) {
         log.debug("Checking whether group with id={} exists in the database", groupId);
-        return query(session -> Optional.ofNullable(session.get(Group.class, groupId)).isPresent());
+        return query(session -> {
+            Query<Integer> query = session.createQuery(
+                    "SELECT g.id FROM Group g WHERE g.id = ?1",
+                    Integer.class);
+            query.setParameter(1, groupId);
+            return !query.list().isEmpty();
+        });
     }
 
 }

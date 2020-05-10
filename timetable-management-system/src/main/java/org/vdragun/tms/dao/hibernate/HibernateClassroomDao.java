@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.dao.ClassroomDao;
@@ -42,7 +43,12 @@ public class HibernateClassroomDao extends BaseHibernateDao implements Classroom
     @Override
     public boolean existsById(Integer classroomId) {
         log.debug("Checking whether classroom with id={} exists in the database", classroomId);
-        return query(session -> Optional.ofNullable(session.get(Classroom.class, classroomId)).isPresent());
+        return query(session -> {
+            Query<Integer> query = session.createQuery(
+                    "SELECT c.id FROM Classroom c WHERE c.id = ?1",
+                    Integer.class);
+            query.setParameter(1, classroomId);
+            return !query.list().isEmpty();
+        });
     }
-
 }

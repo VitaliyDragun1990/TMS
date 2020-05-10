@@ -89,7 +89,13 @@ public class HibernateTeacherDao extends BaseHibernateDao implements TeacherDao 
     @Override
     public boolean existsById(Integer teacherId) {
         log.debug("Checking whether teacher with id={} exists in the database", teacherId);
-        return query(session -> Optional.ofNullable(session.get(Teacher.class, teacherId)).isPresent());
+        return query(session -> {
+            Query<Integer> query = session.createQuery(
+                    "SELECT t.id FROM Teacher t WHERE t.id = ?1",
+                    Integer.class);
+            query.setParameter(1, teacherId);
+            return !query.list().isEmpty();
+        });
     }
 
 }
