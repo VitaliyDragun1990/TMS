@@ -18,7 +18,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
     protected Class<?>[] getRootConfigClasses() {
         return new Class<?>[] {
                 DBConfig.class,
-                JdbcDaoConfig.class,
+                HibernateDaoConfig.class,
                 ServiceConfig.class,
                 StartupDataConfig.class
         };

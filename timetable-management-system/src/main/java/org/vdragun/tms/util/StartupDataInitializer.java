@@ -111,6 +111,9 @@ public class StartupDataInitializer {
     @Value("${generator.timetable.maxClassesPerWeek}")
     private Integer maxClassesPerWeek;
 
+    @Value("${generator.initScript}")
+    private String initScript;
+
     private DataSource dataSource;
 
     private ClassroomDao classroomDao;
@@ -155,7 +158,7 @@ public class StartupDataInitializer {
     private void createDatabaseSchema() {
         LOG.info("Creating database schema");
         ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-        databasePopulator.addScript(new ClassPathResource("/sql/db_schema.sql"));
+        databasePopulator.addScript(new ClassPathResource(initScript));
         databasePopulator.execute(dataSource);
     }
 
