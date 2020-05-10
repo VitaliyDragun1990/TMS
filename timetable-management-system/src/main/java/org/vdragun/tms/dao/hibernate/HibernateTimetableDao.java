@@ -63,7 +63,9 @@ public class HibernateTimetableDao extends BaseHibernateDao implements Timetable
     @Override
     public List<Timetable> findAll() {
         log.debug("Retrieving all timetables from the database");
-        return query(session -> session.createQuery("SELECT t FROM Timetable t", Timetable.class).list());
+        return query(session -> session.createQuery(
+                "SELECT t FROM Timetable t ORDER BY t.startTime",
+                Timetable.class).list());
     }
 
     @Override
@@ -74,7 +76,8 @@ public class HibernateTimetableDao extends BaseHibernateDao implements Timetable
             Query<Timetable> query = session.createQuery(
                     "SELECT t FROM Timetable t JOIN t.course tc WHERE tc.id IN "
                     + "(SELECT sc.id FROM Student s JOIN s.courses sc WHERE s.id = ?1) AND "
-                    + "EXTRACT (DAY FROM t.startTime) = EXTRACT(DAY FROM ?2)",
+                    + "EXTRACT (DAY FROM t.startTime) = EXTRACT(DAY FROM ?2) "
+                    + "ORDER BY t.startTime",
                     Timetable.class);
             query.setParameter(1, studentId);
             query.setParameter(2, date);
@@ -89,7 +92,8 @@ public class HibernateTimetableDao extends BaseHibernateDao implements Timetable
         return query(session -> {
             Query<Timetable> query = session.createQuery(
                     "SELECT t FROM Timetable t JOIN t.teacher tt WHERE tt.id = ?1 "
-                    + "AND EXTRACT (DAY FROM t.startTime) = EXTRACT(DAY FROM ?2)",
+                    + "AND EXTRACT (DAY FROM t.startTime) = EXTRACT(DAY FROM ?2) "
+                    + "ORDER BY t.startTime",
                     Timetable.class);
             query.setParameter(1, teacherId);
             query.setParameter(2, date);
@@ -105,7 +109,7 @@ public class HibernateTimetableDao extends BaseHibernateDao implements Timetable
             Query<Timetable> query = session.createQuery(
                     "SELECT t FROM Timetable t JOIN t.course tc WHERE tc.id IN "
                     + "(SELECT sc.id FROM Student s JOIN s.courses sc WHERE s.id = ?1) AND "
-                    + "EXTRACT (MONTH FROM t.startTime) = ?2",
+                    + "EXTRACT (MONTH FROM t.startTime) = ?2 ORDER BY t.startTime",
                     Timetable.class);
             query.setParameter(1, studentId);
             query.setParameter(2, month.getValue());
@@ -120,7 +124,7 @@ public class HibernateTimetableDao extends BaseHibernateDao implements Timetable
         return query(session -> {
             Query<Timetable> query = session.createQuery(
                     "SELECT t FROM Timetable t JOIN t.teacher tt WHERE tt.id = ?1 "
-                    + "AND EXTRACT (MONTH FROM t.startTime) = ?2",
+                    + "AND EXTRACT (MONTH FROM t.startTime) = ?2 ORDER BY t.startTime",
                     Timetable.class);
             query.setParameter(1, teacherId);
             query.setParameter(2, month.getValue());
