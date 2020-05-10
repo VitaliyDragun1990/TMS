@@ -34,7 +34,12 @@
             </a>
           </td>
           <td th:text="*{durationInMinutes}">60</td>
-          <td th:text="*{course.name}">History</td>
+          <td>
+            <a class="btn btn-link" href="#" th:href="@{/courses/{courseId}(courseId=*{course.id})}"
+               th:text="*{course.name}">
+              History
+            </a>
+          </td>
           <td th:text="*{classroom.id}">1</td>
           <td>
             <a class="btn btn-link" href="#" th:href="@{/teachers/{teacherId}(teacherId=*{teacher.id})}"
