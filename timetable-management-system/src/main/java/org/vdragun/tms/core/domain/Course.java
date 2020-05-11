@@ -1,7 +1,5 @@
 package org.vdragun.tms.core.domain;
 
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -112,7 +110,7 @@ public class Course {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return 2021;
     }
 
     @Override
@@ -127,7 +125,7 @@ public class Course {
             return false;
         }
         Course other = (Course) obj;
-        return Objects.equals(id, other.id);
+        return id != null && id.equals(other.getId());
     }
 
     @Override

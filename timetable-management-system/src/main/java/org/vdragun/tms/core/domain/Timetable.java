@@ -1,7 +1,6 @@
 package org.vdragun.tms.core.domain;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -117,7 +116,7 @@ public class Timetable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return 2021;
     }
 
     @Override
@@ -132,7 +131,7 @@ public class Timetable {
             return false;
         }
         Timetable other = (Timetable) obj;
-        return Objects.equals(id, other.id);
+        return id != null && id.equals(other.getId());
     }
 
     @Override

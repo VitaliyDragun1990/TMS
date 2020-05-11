@@ -1,7 +1,5 @@
 package org.vdragun.tms.core.domain;
 
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -80,7 +78,7 @@ public class Category {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return 2021;
     }
 
     @Override
@@ -95,7 +93,7 @@ public class Category {
             return false;
         }
         Category other = (Category) obj;
-        return Objects.equals(id, other.id);
+        return id != null && id.equals(other.getId());
     }
 
     @Override

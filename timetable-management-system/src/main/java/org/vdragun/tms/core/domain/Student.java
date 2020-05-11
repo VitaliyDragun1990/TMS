@@ -93,7 +93,7 @@ public class Student extends Person {
         this.group = group;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "student_courses",
             joinColumns = @JoinColumn(name = "student_id"),
@@ -121,7 +121,7 @@ public class Student extends Person {
     @Override
     public String toString() {
         return "Student [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName +
-                ", enrollmentDate=" + enrollmentDate + ", group=" + group + ", courses=" + courses + "]";
+                ", enrollmentDate=" + enrollmentDate + ", group=" + group + "]";
     }
 
 }

@@ -107,7 +107,7 @@ public class Teacher extends Person {
     @Override
     public String toString() {
         return "Teacher [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName +
-                ", dateHired=" + dateHired + ", title=" + title + ", courses=" + courses + "]";
+                ", dateHired=" + dateHired + ", title=" + title + "]";
     }
 
 }

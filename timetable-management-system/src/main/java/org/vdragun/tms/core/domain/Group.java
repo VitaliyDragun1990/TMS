@@ -1,7 +1,5 @@
 package org.vdragun.tms.core.domain;
 
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -64,7 +62,7 @@ public class Group {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return 2021;
     }
 
     @Override
@@ -79,7 +77,7 @@ public class Group {
             return false;
         }
         Group other = (Group) obj;
-        return Objects.equals(id, other.id);
+        return id != null && id.equals(other.getId());
     }
 
     @Override
