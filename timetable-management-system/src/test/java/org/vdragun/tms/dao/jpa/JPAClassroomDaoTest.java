@@ -17,18 +17,17 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.config.JPADaoConfig;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.dao.ClassroomDao;
-import org.vdragun.tms.dao.jdbc.DBTestConfig;
-import org.vdragun.tms.dao.jdbc.JdbcTestHelper;
+import org.vdragun.tms.dao.DBTestHelper;
+import org.vdragun.tms.dao.DaoTestConfig;
 
-@SpringJUnitConfig(classes = { JPADaoConfig.class, DBTestConfig.class })
-@Sql(scripts = { "/sql/db_schema_seq.sql" }, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
+@SpringJUnitConfig(classes = { JPADaoConfig.class, DaoTestConfig.class })
 @DisplayName("JPA Classroom DAO")
+@Transactional
 public class JPAClassroomDaoTest {
 
     private static final int CAPACITY = 10;
@@ -37,7 +36,7 @@ public class JPAClassroomDaoTest {
     private ClassroomDao dao;
 
     @Autowired
-    private JdbcTestHelper jdbcHelper;
+    private DBTestHelper dbHelper;
 
     @Test
     void shouldReturnEmptyResultIfNoClassroomWithGivenIdInDatabase() {
@@ -48,7 +47,7 @@ public class JPAClassroomDaoTest {
 
     @Test
     void shouldFindClassroomById() throws SQLException {
-        Classroom expected = jdbcHelper.saveClassroomToDatabase(CAPACITY);
+        Classroom expected = dbHelper.saveClassroomToDatabase(CAPACITY);
 
         Optional<Classroom> result = dao.findById(expected.getId());
 
@@ -74,8 +73,8 @@ public class JPAClassroomDaoTest {
 
     @Test
     void sholdFindAllAvailableClassrooms() throws SQLException {
-        Classroom classroomA = jdbcHelper.saveClassroomToDatabase(CAPACITY);
-        Classroom classroomB = jdbcHelper.saveClassroomToDatabase(CAPACITY);
+        Classroom classroomA = dbHelper.saveClassroomToDatabase(CAPACITY);
+        Classroom classroomB = dbHelper.saveClassroomToDatabase(CAPACITY);
 
         List<Classroom> result = dao.findAll();
 
@@ -92,7 +91,7 @@ public class JPAClassroomDaoTest {
 
     @Test
     void shouldReturnTrueIfClassroomWithGivenIdentifierExists() throws SQLException {
-        Classroom classroom = jdbcHelper.saveClassroomToDatabase(CAPACITY);
+        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
 
         boolean result = dao.existsById(classroom.getId());
 
@@ -102,7 +101,7 @@ public class JPAClassroomDaoTest {
     private void assertClassroomInDatabase(Classroom classroom) throws SQLException {
         assertThat("classroom should have id", classroom.getId(), is(not(nullValue())));
 
-        List<Classroom> result = jdbcHelper.findAllClassroomsInDatabase();
+        List<Classroom> result = dbHelper.findAllClassroomsInDatabase();
         assertThat(result, hasSize(1));
         assertThat(result, containsInAnyOrder(classroom));
     }

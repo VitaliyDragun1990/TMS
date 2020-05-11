@@ -19,18 +19,17 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.config.JPADaoConfig;
 import org.vdragun.tms.core.domain.Group;
+import org.vdragun.tms.dao.DBTestHelper;
+import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.dao.GroupDao;
-import org.vdragun.tms.dao.jdbc.DBTestConfig;
-import org.vdragun.tms.dao.jdbc.JdbcTestHelper;
 
-@SpringJUnitConfig(classes = { JPADaoConfig.class, DBTestConfig.class })
-@Sql(scripts = { "/sql/db_schema_seq.sql" }, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
+@SpringJUnitConfig(classes = { JPADaoConfig.class, DaoTestConfig.class })
 @DisplayName("JPA Group DAO")
+@Transactional
 public class JPAGroupDaoTest {
     private static final String MH_TEN = "mh-10";
     private static final String PS_TWENTY_FIVE = "ps-25";
@@ -39,7 +38,7 @@ public class JPAGroupDaoTest {
     private GroupDao dao;
 
     @Autowired
-    private JdbcTestHelper jdbcHelper;
+    private DBTestHelper dbHelper;
 
     @Test
     void shouldReturnEmptyResultIfNoGroupWithGivenIdInDatabase() {
@@ -50,7 +49,7 @@ public class JPAGroupDaoTest {
 
     @Test
     void shouldFindExistingGroupById() throws SQLException {
-        Group expected = jdbcHelper.saveGroupToDatabase(PS_TWENTY_FIVE);
+        Group expected = dbHelper.saveGroupToDatabase(PS_TWENTY_FIVE);
 
         Optional<Group> result = dao.findById(expected.getId());
 
@@ -86,8 +85,8 @@ public class JPAGroupDaoTest {
 
     @Test
     void shouldFindAllGroupInstancesInDatabase() throws SQLException {
-        Group psTwentyFive = jdbcHelper.saveGroupToDatabase(PS_TWENTY_FIVE);
-        Group mhTen = jdbcHelper.saveGroupToDatabase(MH_TEN);
+        Group psTwentyFive = dbHelper.saveGroupToDatabase(PS_TWENTY_FIVE);
+        Group mhTen = dbHelper.saveGroupToDatabase(MH_TEN);
 
         List<Group> result = dao.findAll();
 
@@ -97,7 +96,7 @@ public class JPAGroupDaoTest {
 
     @Test
     void shouldReturnTrueIfGroupWithGivenIdentifierExists() throws SQLException {
-        Group group = jdbcHelper.saveGroupToDatabase(PS_TWENTY_FIVE);
+        Group group = dbHelper.saveGroupToDatabase(PS_TWENTY_FIVE);
 
         boolean result = dao.existsById(group.getId());
 
@@ -115,7 +114,7 @@ public class JPAGroupDaoTest {
         Arrays.stream(expected)
                 .forEach(group -> assertThat("group should have id", group.getId(), is(not(nullValue()))));
 
-        List<Group> result = jdbcHelper.findAllGroupsInDatabase();
+        List<Group> result = dbHelper.findAllGroupsInDatabase();
         assertThat(result, hasSize(expected.length));
         assertThat(result, containsInAnyOrder(expected));
     }

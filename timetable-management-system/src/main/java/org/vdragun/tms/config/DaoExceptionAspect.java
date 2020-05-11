@@ -2,6 +2,7 @@ package org.vdragun.tms.config;
 
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.dao.DataAccessException;
 import org.vdragun.tms.dao.DaoException;
 
@@ -15,7 +16,11 @@ import org.vdragun.tms.dao.DaoException;
 @Aspect
 public class DaoExceptionAspect {
 
-    @AfterThrowing(pointcut = "execution(* org.vdragun.tms.dao.jdbc.*.*(..))", throwing = "ex")
+    @Pointcut("within(@org.springframework.stereotype.Repository *)")
+    public void repositoryClassMethods() {
+    }
+
+    @AfterThrowing(pointcut = "repositoryClassMethods()", throwing = "ex")
     public void wrapDataAccessException(DataAccessException ex) {
         throw new DaoException(ex);
     }

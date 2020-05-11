@@ -21,20 +21,19 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.config.JPADaoConfig;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
+import org.vdragun.tms.dao.DBTestHelper;
+import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.dao.TeacherDao;
-import org.vdragun.tms.dao.jdbc.DBTestConfig;
-import org.vdragun.tms.dao.jdbc.JdbcTestHelper;
 
-@SpringJUnitConfig(classes = { JPADaoConfig.class, DBTestConfig.class })
-@Sql(scripts = { "/sql/db_schema_seq.sql" }, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
+@SpringJUnitConfig(classes = { JPADaoConfig.class, DaoTestConfig.class })
 @DisplayName("JPA Teacher DAO")
+@Transactional
 public class JPATeacherDaoTest {
     private static final String DESC_BIO = "any description";
     private static final String BIO_TWENTY = "bio-20";
@@ -51,7 +50,7 @@ public class JPATeacherDaoTest {
     private TeacherDao dao;
 
     @Autowired
-    private JdbcTestHelper jdbcHelper;
+    private DBTestHelper dbHelper;
 
     @Test
     void shouldReturnEmptyResultIfNoTeacherWithGivenIdInDatabase() {
@@ -62,7 +61,7 @@ public class JPATeacherDaoTest {
 
     @Test
     void shouldFindTeacherById() throws SQLException {
-        Teacher expected = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
+        Teacher expected = dbHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
 
         Optional<Teacher> result = dao.findById(expected.getId());
 
@@ -98,8 +97,8 @@ public class JPATeacherDaoTest {
 
     @Test
     void shouldFilnAllTeachersInDatabase() throws SQLException {
-        Teacher jack = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
-        Teacher anna = jdbcHelper.saveTeacherToDatabase(ANNA, SNOW, INSTRUCTOR, DATE_HIRED);
+        Teacher jack = dbHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
+        Teacher anna = dbHelper.saveTeacherToDatabase(ANNA, SNOW, INSTRUCTOR, DATE_HIRED);
 
         List<Teacher> result = dao.findAll();
 
@@ -116,10 +115,10 @@ public class JPATeacherDaoTest {
 
     @Test
     void shouldReturnTeacherForCourseWithGivenId() throws SQLException {
-        Category courseCategory = jdbcHelper.saveCategoryToDatabase(CAT_CODE, CAT_DESC);
-        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
-        Course bioTwenty = jdbcHelper.saveCourseToDatabase(BIO_TWENTY, DESC_BIO, courseCategory, teacher);
-        Course bioTen = jdbcHelper.saveCourseToDatabase(BIO_TEN, DESC_BIO, courseCategory, teacher);
+        Category courseCategory = dbHelper.saveCategoryToDatabase(CAT_CODE, CAT_DESC);
+        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
+        Course bioTwenty = dbHelper.saveCourseToDatabase(BIO_TWENTY, DESC_BIO, courseCategory, teacher);
+        Course bioTen = dbHelper.saveCourseToDatabase(BIO_TEN, DESC_BIO, courseCategory, teacher);
 
         Optional<Teacher> result = dao.findForCourse(bioTwenty.getId());
 
@@ -130,10 +129,10 @@ public class JPATeacherDaoTest {
 
     @Test
     void shouldReturnTeacherWithAllRelatedCourses() throws SQLException {
-        Category courseCategory = jdbcHelper.saveCategoryToDatabase(CAT_CODE, CAT_DESC);
-        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
-        Course bioTwenty = jdbcHelper.saveCourseToDatabase(BIO_TWENTY, DESC_BIO, courseCategory, teacher);
-        Course bioTen = jdbcHelper.saveCourseToDatabase(BIO_TEN, DESC_BIO, courseCategory, teacher);
+        Category courseCategory = dbHelper.saveCategoryToDatabase(CAT_CODE, CAT_DESC);
+        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
+        Course bioTwenty = dbHelper.saveCourseToDatabase(BIO_TWENTY, DESC_BIO, courseCategory, teacher);
+        Course bioTen = dbHelper.saveCourseToDatabase(BIO_TEN, DESC_BIO, courseCategory, teacher);
 
         Optional<Teacher> result = dao.findById(teacher.getId());
 
@@ -142,7 +141,7 @@ public class JPATeacherDaoTest {
 
     @Test
     void shouldReturnTrueIfTeacherWithGivenIdentifierExists() throws SQLException {
-        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
+        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, SMITH, PROFESSOR, DATE_HIRED);
 
         boolean result = dao.existsById(teacher.getId());
 
@@ -165,7 +164,7 @@ public class JPATeacherDaoTest {
         Arrays.stream(expected)
                 .forEach(teacher -> assertThat("teacher should have id", teacher.getId(), is(not(nullValue()))));
 
-        List<Teacher> result = jdbcHelper.findAllTeachersInDatabase();
+        List<Teacher> result = dbHelper.findAllTeachersInDatabase();
         assertThat(result, hasSize(expected.length));
         assertThat(result, containsInAnyOrder(expected));
     }

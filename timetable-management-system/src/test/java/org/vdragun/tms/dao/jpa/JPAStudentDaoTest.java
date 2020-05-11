@@ -21,22 +21,21 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.config.JPADaoConfig;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
+import org.vdragun.tms.dao.DBTestHelper;
+import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.dao.StudentDao;
-import org.vdragun.tms.dao.jdbc.DBTestConfig;
-import org.vdragun.tms.dao.jdbc.JdbcTestHelper;
 
-@SpringJUnitConfig(classes = { JPADaoConfig.class, DBTestConfig.class })
-@Sql(scripts = { "/sql/db_schema_seq.sql" }, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
+@SpringJUnitConfig(classes = { JPADaoConfig.class, DaoTestConfig.class })
 @DisplayName("JPA Student DAO")
+@Transactional
 public class JPAStudentDaoTest {
 
     private static final String MA_TWELVE = "ma-12";
@@ -58,7 +57,7 @@ public class JPAStudentDaoTest {
     private StudentDao dao;
 
     @Autowired
-    private JdbcTestHelper jdbcHelper;
+    private DBTestHelper dbHelper;
 
     @Test
     void shouldReturnEmptyResultIfNoStudentWithGivenIdInDatabase() {
@@ -69,7 +68,7 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldFindStudentById() throws SQLException {
-        Student expected = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        Student expected = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
 
         Optional<Student> result = dao.findById(expected.getId());
 
@@ -105,8 +104,8 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldFindAllStudentsInDatabase() throws SQLException {
-        Student jack = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        Student anna = jdbcHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
+        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        Student anna = dbHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
 
         List<Student> result = dao.findAll();
 
@@ -116,12 +115,12 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldReturnEmptyListIfNoStudentsForGivenCourse() throws SQLException {
-        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category artCategory = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course artTwentyFive = jdbcHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
-        Course artTen = jdbcHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
-        Student jack = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        jdbcHelper.addStudentsToCourseInDatabase(artTwentyFive, jack);
+        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
+        Category artCategory = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+        Course artTwentyFive = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
+        Course artTen = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
+        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        dbHelper.addStudentsToCourseInDatabase(artTwentyFive, jack);
 
         List<Student> result = dao.findForCourse(artTen.getId());
 
@@ -130,14 +129,14 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldFindAllStudentsAssignedToCourseWithGivenId() throws SQLException {
-        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category artCategory = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course artTwentyFive = jdbcHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
-        Course artTen = jdbcHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
-        Student jack = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        Student anna = jdbcHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
-        jdbcHelper.addStudentsToCourseInDatabase(artTwentyFive, jack, anna);
-        jdbcHelper.addStudentsToCourseInDatabase(artTen, jack);
+        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
+        Category artCategory = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+        Course artTwentyFive = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
+        Course artTen = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
+        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        Student anna = dbHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
+        dbHelper.addStudentsToCourseInDatabase(artTwentyFive, jack, anna);
+        dbHelper.addStudentsToCourseInDatabase(artTen, jack);
 
         List<Student> result = dao.findForCourse(artTwentyFive.getId());
 
@@ -147,13 +146,13 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldFindAllStudentsWithAllCoursesAssignedToCourseWithGivenId() throws SQLException {
-        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category artCategory = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course artTwentyFive = jdbcHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
-        Course artTen = jdbcHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
-        Student jack = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        jdbcHelper.addStudentsToCourseInDatabase(artTwentyFive, jack);
-        jdbcHelper.addStudentsToCourseInDatabase(artTen, jack);
+        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
+        Category artCategory = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+        Course artTwentyFive = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
+        Course artTen = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
+        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        dbHelper.addStudentsToCourseInDatabase(artTwentyFive, jack);
+        dbHelper.addStudentsToCourseInDatabase(artTen, jack);
 
         List<Student> result = dao.findForCourse(artTen.getId());
 
@@ -164,10 +163,10 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldReturnEmptyListIfNoStudentsForGivenGroupInDatabase() throws SQLException {
-        Group phTwentyFive = jdbcHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
-        Group maTwelve = jdbcHelper.saveGroupToDatabase(MA_TWELVE);
-        Student jack = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        jdbcHelper.addStudentsToGroupInDatabase(phTwentyFive, jack);
+        Group phTwentyFive = dbHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
+        Group maTwelve = dbHelper.saveGroupToDatabase(MA_TWELVE);
+        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        dbHelper.addStudentsToGroupInDatabase(phTwentyFive, jack);
 
         List<Student> result = dao.findForGroup(maTwelve.getId());
 
@@ -176,10 +175,10 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldFindAllStudentsAssignedToGroupWithGivenIdInDatabase() throws SQLException {
-        Group phTwentyFive = jdbcHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
-        Student jack = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        Student anna = jdbcHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
-        jdbcHelper.addStudentsToGroupInDatabase(phTwentyFive, jack, anna);
+        Group phTwentyFive = dbHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
+        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        Student anna = dbHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
+        dbHelper.addStudentsToGroupInDatabase(phTwentyFive, jack, anna);
 
         List<Student> result = dao.findForGroup(phTwentyFive.getId());
 
@@ -189,11 +188,11 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldAddStudentToSpecifiedCourse() throws SQLException {
-        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category artCategory = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course artTwentyFive = jdbcHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
-        Course artTen = jdbcHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
-        Student jack = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
+        Category artCategory = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+        Course artTwentyFive = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
+        Course artTen = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
+        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
 
         dao.addToCourse(jack.getId(), artTwentyFive.getId());
         dao.addToCourse(jack.getId(), artTen.getId());
@@ -203,12 +202,12 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldRemoveStudentFromSpecificCourse() throws SQLException {
-        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category artCategory = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course artTwentyFive = jdbcHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
-        Course artTen = jdbcHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
-        Student jack = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        jdbcHelper.addStudentToCoursesInDatabase(jack, artTen, artTwentyFive);
+        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
+        Category artCategory = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+        Course artTwentyFive = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
+        Course artTen = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
+        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        dbHelper.addStudentToCoursesInDatabase(jack, artTen, artTwentyFive);
 
         dao.removeFromCourse(jack.getId(), artTwentyFive.getId());
 
@@ -217,12 +216,12 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldRemoveStudentFromAllAssignedCourse() throws SQLException {
-        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category artCategory = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course artTwentyFive = jdbcHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
-        Course artTen = jdbcHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
-        Student jack = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        jdbcHelper.addStudentToCoursesInDatabase(jack, artTen, artTwentyFive);
+        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
+        Category artCategory = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+        Course artTwentyFive = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
+        Course artTen = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
+        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        dbHelper.addStudentToCoursesInDatabase(jack, artTen, artTwentyFive);
 
         dao.removeFromAllCourses(jack.getId());
 
@@ -231,9 +230,9 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldAddStudentToGroupWithSpecifiedId() throws SQLException {
-        Group group = jdbcHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
-        Student jack = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        Student anna = jdbcHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
+        Group group = dbHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
+        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        Student anna = dbHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
 
         dao.addToGroup(jack.getId(), group.getId());
         dao.addToGroup(anna.getId(), group.getId());
@@ -243,10 +242,10 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldRemoveStudentFromCurrentlyAssignedGroup() throws SQLException {
-        Group group = jdbcHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
-        Student jack = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        Student anna = jdbcHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
-        jdbcHelper.addStudentsToGroupInDatabase(group, jack, anna);
+        Group group = dbHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
+        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        Student anna = dbHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
+        dbHelper.addStudentsToGroupInDatabase(group, jack, anna);
 
         dao.removeFromGroup(jack.getId());
         dao.removeFromGroup(anna.getId());
@@ -256,7 +255,7 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldReturnTrueIfStudentWithGivenIdentifierExists() throws SQLException {
-        Student student = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        Student student = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
 
         boolean result = dao.existsById(student.getId());
 
@@ -272,12 +271,12 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldReturnStudentWithAllAssignedCourses() throws SQLException {
-        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category categroy = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course courseA = jdbcHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, categroy, teacher);
-        Course courseB = jdbcHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, categroy, teacher);
-        Student student = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        jdbcHelper.addStudentToCoursesInDatabase(student, courseB, courseA);
+        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
+        Category categroy = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+        Course courseA = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, categroy, teacher);
+        Course courseB = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, categroy, teacher);
+        Student student = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        dbHelper.addStudentToCoursesInDatabase(student, courseB, courseA);
 
         Optional<Student> result = dao.findById(student.getId());
 
@@ -286,12 +285,12 @@ public class JPAStudentDaoTest {
 
     @Test
     void shouldDeleteStudentByGivenIdentifier() throws SQLException {
-        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category categroy = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course courseA = jdbcHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, categroy, teacher);
-        Course courseB = jdbcHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, categroy, teacher);
-        Student student = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        jdbcHelper.addStudentToCoursesInDatabase(student, courseB, courseA);
+        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
+        Category categroy = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+        Course courseA = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, categroy, teacher);
+        Course courseB = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, categroy, teacher);
+        Student student = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+        dbHelper.addStudentToCoursesInDatabase(student, courseB, courseA);
 
         dao.deleteById(student.getId());
 
@@ -299,28 +298,28 @@ public class JPAStudentDaoTest {
     }
 
     private void assertNoGivenStudentsInDatabase(Student... expected) throws SQLException {
-        List<Student> result = jdbcHelper.findAllStudentsInDatabase();
+        List<Student> result = dbHelper.findAllStudentsInDatabase();
         assertThat(result, not(containsInAnyOrder(expected)));
     }
 
     private void assertNoStudentsForGroupInDatabase(Group group) throws SQLException {
-        List<Student> result = jdbcHelper.findAllGroupStudentsInDatabase(group);
+        List<Student> result = dbHelper.findAllGroupStudentsInDatabase(group);
         assertThat(result, hasSize(0));
     }
 
     private void assertGroupStudentsInDatabase(Group group, Student... expected) throws SQLException {
-        List<Student> result = jdbcHelper.findAllGroupStudentsInDatabase(group);
+        List<Student> result = dbHelper.findAllGroupStudentsInDatabase(group);
         assertThat(result, hasSize(expected.length));
         assertThat(result, containsInAnyOrder(expected));
     }
 
     private void assertNoCoursesForStudentInDatabase(Student student) throws SQLException {
-        List<Course> result = jdbcHelper.findAllStudentCoursesInDatabase(student);
+        List<Course> result = dbHelper.findAllStudentCoursesInDatabase(student);
         assertThat(result, hasSize(0));
     }
 
     private void assertStudentCoursesInDatabase(Student student, Course... expected) throws SQLException {
-        List<Course> result = jdbcHelper.findAllStudentCoursesInDatabase(student);
+        List<Course> result = dbHelper.findAllStudentCoursesInDatabase(student);
         assertThat(result, hasSize(expected.length));
         assertThat(result, containsInAnyOrder(expected));
     }
@@ -329,7 +328,7 @@ public class JPAStudentDaoTest {
         Arrays.stream(expected)
                 .forEach(student -> assertThat("student should have id", student.getId(), is(not(nullValue()))));
 
-        List<Student> result = jdbcHelper.findAllStudentsInDatabase();
+        List<Student> result = dbHelper.findAllStudentsInDatabase();
         assertThat(result, hasSize(expected.length));
         assertThat(result, containsInAnyOrder(expected));
     }

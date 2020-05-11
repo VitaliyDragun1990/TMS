@@ -1,4 +1,4 @@
-package org.vdragun.tms.dao.jdbc;
+package org.vdragun.tms.dao;
 
 import javax.sql.DataSource;
 
@@ -15,7 +15,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
  *
  */
 @Configuration
-public class DBTestConfig {
+public class DaoTestConfig {
 
     @Bean
     @Primary
@@ -30,8 +30,8 @@ public class DBTestConfig {
     }
 
     @Bean
-    public JdbcTestHelper jdbcTestHelper(DataSource dataSource) {
-        return new JdbcTestHelper(dataSource);
+    public DBTestHelper dbTestHelper() {
+        return new DBTestHelper();
     }
 
 }

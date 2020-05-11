@@ -18,18 +18,17 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.config.JPADaoConfig;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.dao.CategoryDao;
-import org.vdragun.tms.dao.jdbc.DBTestConfig;
-import org.vdragun.tms.dao.jdbc.JdbcTestHelper;
+import org.vdragun.tms.dao.DBTestHelper;
+import org.vdragun.tms.dao.DaoTestConfig;
 
-@SpringJUnitConfig(classes = { JPADaoConfig.class, DBTestConfig.class })
-@Sql(scripts = { "/sql/db_schema_seq.sql" }, executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
+@SpringJUnitConfig(classes = { JPADaoConfig.class, DaoTestConfig.class })
 @DisplayName("JPA Category DAO")
+@Transactional
 public class JPACategoryDaoTest {
 
     private static final String CODE_ART = "ART";
@@ -41,7 +40,7 @@ public class JPACategoryDaoTest {
     private CategoryDao dao;
 
     @Autowired
-    private JdbcTestHelper jdbcHelper;
+    private DBTestHelper dbHelper;
 
     @Test
     void shouldReturnEmptyResultIfNoCategoryWithGivenIdInDatabase() {
@@ -52,7 +51,7 @@ public class JPACategoryDaoTest {
 
     @Test
     void shouldFindCategoryById() throws SQLException {
-        Category expected = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+        Category expected = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
 
         Optional<Category> result = dao.findById(expected.getId());
 
@@ -88,8 +87,8 @@ public class JPACategoryDaoTest {
 
     @Test
     void shouldFildAllCategoryInstancesInDatabase() throws SQLException {
-        Category art = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Category bio = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESC_BIO);
+        Category art = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+        Category bio = dbHelper.saveCategoryToDatabase(CODE_BIO, DESC_BIO);
 
         List<Category> result = dao.findAll();
 
@@ -99,7 +98,7 @@ public class JPACategoryDaoTest {
 
     @Test
     void shouldReturnTrueIfCategoryWithGivenIdentifierExists() throws SQLException {
-        Category category = jdbcHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+        Category category = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
 
         boolean result = dao.existsById(category.getId());
 
@@ -117,7 +116,7 @@ public class JPACategoryDaoTest {
         Arrays.stream(expected)
                 .forEach(category -> assertThat("category should have id", category.getId(), is(not(nullValue()))));
 
-        List<Category> result = jdbcHelper.findAllCategoriesInDatabase();
+        List<Category> result = dbHelper.findAllCategoriesInDatabase();
         assertThat(result, hasSize(expected.length));
         assertThat(result, containsInAnyOrder(expected));
     }

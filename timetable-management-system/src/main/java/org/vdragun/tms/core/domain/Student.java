@@ -1,7 +1,6 @@
 package org.vdragun.tms.core.domain;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -100,7 +99,7 @@ public class Student extends Person {
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     public Set<Course> getCourses() {
-        return Collections.unmodifiableSet(courses);
+        return courses;
     }
 
     public void setCourses(Set<Course> courses) {

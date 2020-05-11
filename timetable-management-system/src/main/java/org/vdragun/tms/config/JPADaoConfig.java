@@ -12,7 +12,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.orm.hibernate5.HibernateExceptionTranslator;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.vdragun.tms.dao.hibernate.TitleConverter;
 
 /**
@@ -25,6 +30,7 @@ import org.vdragun.tms.dao.hibernate.TitleConverter;
 @ComponentScan(basePackages = { "org.vdragun.tms.dao.jpa" })
 @PropertySource({ "classpath:hibernate.properties" })
 @EnableAspectJAutoProxy
+@EnableTransactionManagement
 public class JPADaoConfig {
 
     @Autowired
@@ -40,6 +46,26 @@ public class JPADaoConfig {
         return builder.buildSessionFactory();
     }
 
+    @Bean
+    public DaoExceptionAspect daoExceptionAspect() {
+        return new DaoExceptionAspect();
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(SessionFactory sessionFactory) {
+        return new HibernateTransactionManager(sessionFactory);
+    }
+
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor persistenceExceptionTranslationPostProcessor() {
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    @Bean
+    public HibernateExceptionTranslator hibernateExceptionTranslator() {
+        return new HibernateExceptionTranslator();
+    }
+
     private Properties hibernateProperties() {
         Properties props = new Properties();
         props.setProperty("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
@@ -49,10 +75,4 @@ public class JPADaoConfig {
 
         return props;
     }
-
-    @Bean
-    public DaoExceptionAspect daoExceptionAspect() {
-        return new DaoExceptionAspect();
-    }
-
 }

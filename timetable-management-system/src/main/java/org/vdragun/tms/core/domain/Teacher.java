@@ -2,9 +2,9 @@ package org.vdragun.tms.core.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -90,9 +90,9 @@ public class Teacher extends Person {
         this.title = title;
     }
 
-    @OneToMany(mappedBy = "teacher")
+    @OneToMany(mappedBy = "teacher", cascade = { CascadeType.PERSIST })
     public List<Course> getCourses() {
-        return Collections.unmodifiableList(courses);
+        return courses;
     }
 
     public void setCourses(List<Course> courses) {
