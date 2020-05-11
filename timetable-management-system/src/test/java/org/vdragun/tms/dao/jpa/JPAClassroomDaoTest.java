@@ -1,22 +1,22 @@
 package org.vdragun.tms.dao.jpa;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.config.JPADaoConfig;
@@ -30,7 +30,7 @@ import org.vdragun.tms.dao.DaoTestConfig;
 @Transactional
 public class JPAClassroomDaoTest {
 
-    private static final int CAPACITY = 10;
+    private static final int CAPACITY_TEN = 10;
 
     @Autowired
     private ClassroomDao dao;
@@ -39,6 +39,7 @@ public class JPAClassroomDaoTest {
     private DBTestHelper dbHelper;
 
     @Test
+    @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnEmptyResultIfNoClassroomWithGivenIdInDatabase() {
         Optional<Classroom> result = dao.findById(1);
 
@@ -46,8 +47,9 @@ public class JPAClassroomDaoTest {
     }
 
     @Test
-    void shouldFindClassroomById() throws SQLException {
-        Classroom expected = dbHelper.saveClassroomToDatabase(CAPACITY);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/classroom_data.sql" })
+    void shouldFindClassroomById() {
+        Classroom expected = dbHelper.findRandomClassroomInDatabase();
 
         Optional<Classroom> result = dao.findById(expected.getId());
 
@@ -56,8 +58,9 @@ public class JPAClassroomDaoTest {
     }
 
     @Test
-    void shouldSaveClassroomToDatabase() throws SQLException {
-        Classroom classroom = new Classroom(10);
+    @Sql(scripts = "/sql/clear_database.sql")
+    void shouldSaveClassroomToDatabase() {
+        Classroom classroom = new Classroom(CAPACITY_TEN);
 
         dao.save(classroom);
 
@@ -65,6 +68,7 @@ public class JPAClassroomDaoTest {
     }
 
     @Test
+    @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnEmptyListIfNoClassroomAvailable() {
         List<Classroom> result = dao.findAll();
 
@@ -72,17 +76,15 @@ public class JPAClassroomDaoTest {
     }
 
     @Test
-    void sholdFindAllAvailableClassrooms() throws SQLException {
-        Classroom classroomA = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Classroom classroomB = dbHelper.saveClassroomToDatabase(CAPACITY);
-
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/classroom_data.sql" })
+    void sholdFindAllAvailableClassrooms() {
         List<Classroom> result = dao.findAll();
 
         assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(classroomA, classroomB));
     }
 
     @Test
+    @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnFalseIfClassroomWithGivenIdentifierDoesNotExist() {
         boolean result = dao.existsById(1);
 
@@ -90,20 +92,20 @@ public class JPAClassroomDaoTest {
     }
 
     @Test
-    void shouldReturnTrueIfClassroomWithGivenIdentifierExists() throws SQLException {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/classroom_data.sql" })
+    void shouldReturnTrueIfClassroomWithGivenIdentifierExists() {
+        Classroom classroom = dbHelper.findRandomClassroomInDatabase();
 
         boolean result = dao.existsById(classroom.getId());
 
         assertTrue(result);
     }
 
-    private void assertClassroomInDatabase(Classroom classroom) throws SQLException {
+    private void assertClassroomInDatabase(Classroom classroom) {
         assertThat("classroom should have id", classroom.getId(), is(not(nullValue())));
 
         List<Classroom> result = dbHelper.findAllClassroomsInDatabase();
-        assertThat(result, hasSize(1));
-        assertThat(result, containsInAnyOrder(classroom));
+        assertThat(result, hasItems(classroom));
     }
 
 }

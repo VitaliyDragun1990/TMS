@@ -100,7 +100,7 @@ public class JPAStudentDao implements StudentDao {
     public void addToCourse(Integer studentId, Integer courseId) {
         LOG.debug("Adding student with id={} to course with id={} in the database", studentId, courseId);
         Student student = entityManager.find(Student.class, studentId);
-        student.addCourse(new Course(courseId));
+        student.addCourse(entityManager.find(Course.class, courseId));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class JPAStudentDao implements StudentDao {
     public void addToGroup(Integer studentId, Integer groupId) {
         LOG.debug("Adding student with id={} to group with id={} in the database", studentId, groupId);
         Student student = entityManager.find(Student.class, studentId);
-        student.setGroup(new Group(groupId));
+        student.setGroup(entityManager.find(Group.class, groupId));
     }
 
     @Override

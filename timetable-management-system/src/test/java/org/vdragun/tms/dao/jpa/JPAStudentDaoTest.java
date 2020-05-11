@@ -1,18 +1,20 @@
 package org.vdragun.tms.dao.jpa;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.vdragun.tms.core.domain.Title.ASSOCIATE_PROFESSOR;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -21,14 +23,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.config.JPADaoConfig;
-import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.core.domain.Student;
-import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.dao.DBTestHelper;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.dao.StudentDao;
@@ -38,20 +39,19 @@ import org.vdragun.tms.dao.StudentDao;
 @Transactional
 public class JPAStudentDaoTest {
 
-    private static final String MA_TWELVE = "ma-12";
-    private static final String PH_TWENTY_FIVE = "ph-25";
-    private static final String COURSE_DESCR = "course description";
-    private static final String ART_TEN = "art-10";
-    private static final String ART_TWENTY_FIVE = "art-25";
-    private static final String DESC_ART = "Art";
-    private static final String CODE_ART = "ART";
-    private static final String THOMPSON = "Thompson";
-    private static final String JOHN = "John";
-    private static final String SMITH = "Smith";
-    private static final String SNOW = "Snow";
-    private static final String JACK = "Jack";
-    private static final String ANNA = "Anna";
     private static final LocalDate ENROLLMENT_DATE = LocalDate.now();
+
+    private static final String MARY = "Mary";
+    private static final String AMANDA = "Amanda";
+    private static final String WILLIAM = "William";
+    private static final String BIRKIN = "Birkin";
+
+    private static final String CORE_HISORY = "Core History";
+    private static final String CORE_BIOLOGY = "Core Biology";
+    private static final String ADVANCED_BIOLOGY = "Advanced Biology";
+
+    private static final String PS_TWENTY = "ps-20";
+    private static final String MH_TEN = "mh-10";
 
     @Autowired
     private StudentDao dao;
@@ -60,6 +60,7 @@ public class JPAStudentDaoTest {
     private DBTestHelper dbHelper;
 
     @Test
+    @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnEmptyResultIfNoStudentWithGivenIdInDatabase() {
         Optional<Student> result = dao.findById(1);
 
@@ -67,8 +68,9 @@ public class JPAStudentDaoTest {
     }
 
     @Test
-    void shouldFindStudentById() throws SQLException {
-        Student expected = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldFindStudentById() {
+        Student expected = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
         Optional<Student> result = dao.findById(expected.getId());
 
@@ -77,8 +79,9 @@ public class JPAStudentDaoTest {
     }
 
     @Test
-    void shouldSaveNewStudentToDatabase() throws SQLException {
-        Student student = new Student(JACK, SMITH, ENROLLMENT_DATE);
+    @Sql(scripts = "/sql/clear_database.sql")
+    void shouldSaveNewStudentToDatabase() {
+        Student student = new Student(MARY, BIRKIN, ENROLLMENT_DATE);
 
         dao.save(student);
 
@@ -86,16 +89,19 @@ public class JPAStudentDaoTest {
     }
 
     @Test
-    void shouldSaveSeveralNewStudentToDatabase() throws SQLException {
-        Student jack = new Student(JACK, SMITH, ENROLLMENT_DATE);
-        Student anna = new Student(ANNA, SNOW, ENROLLMENT_DATE);
+    @Sql(scripts = "/sql/clear_database.sql")
+    void shouldSaveSeveralNewStudentToDatabase() {
+        Student mary = new Student(MARY, BIRKIN, ENROLLMENT_DATE);
+        Student amanda = new Student(AMANDA, BIRKIN, ENROLLMENT_DATE);
+        Student william = new Student(WILLIAM, BIRKIN, ENROLLMENT_DATE);
 
-        dao.saveAll(asList(jack, anna));
+        dao.saveAll(asList(mary, amanda, william));
 
-        assertStudentsInDatabase(jack, anna);
+        assertStudentsInDatabase(mary, amanda, william);
     }
 
     @Test
+    @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnEmptyListIfNoStudentsInDatabase() {
         List<Student> result = dao.findAll();
 
@@ -103,159 +109,129 @@ public class JPAStudentDaoTest {
     }
 
     @Test
-    void shouldFindAllStudentsInDatabase() throws SQLException {
-        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        Student anna = dbHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
-
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldFindAllStudentsInDatabase() {
         List<Student> result = dao.findAll();
 
-        assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(jack, anna));
+        assertStudentsWithNames(
+                result,
+                FullName.from(MARY, BIRKIN), FullName.from(AMANDA, BIRKIN), FullName.from(WILLIAM, BIRKIN));
     }
 
     @Test
-    void shouldReturnEmptyListIfNoStudentsForGivenCourse() throws SQLException {
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category artCategory = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course artTwentyFive = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
-        Course artTen = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
-        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        dbHelper.addStudentsToCourseInDatabase(artTwentyFive, jack);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldReturnEmptyListIfNoStudentsForGivenCourse() {
+        Course coreHistory = dbHelper.findCourseByNameInDatabase(CORE_HISORY);
 
-        List<Student> result = dao.findForCourse(artTen.getId());
+        List<Student> result = dao.findForCourse(coreHistory.getId());
 
         assertThat(result, hasSize(0));
     }
 
     @Test
-    void shouldFindAllStudentsAssignedToCourseWithGivenId() throws SQLException {
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category artCategory = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course artTwentyFive = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
-        Course artTen = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
-        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        Student anna = dbHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
-        dbHelper.addStudentsToCourseInDatabase(artTwentyFive, jack, anna);
-        dbHelper.addStudentsToCourseInDatabase(artTen, jack);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldFindAllStudentsAssignedToCourseWithGivenId() {
+        Course advancedBilogy = dbHelper.findCourseByNameInDatabase(ADVANCED_BIOLOGY);
 
-        List<Student> result = dao.findForCourse(artTwentyFive.getId());
+        List<Student> result = dao.findForCourse(advancedBilogy.getId());
 
-        assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(jack, anna));
+        assertStudentsWithNames(
+                result,
+                FullName.from(MARY, BIRKIN), FullName.from(AMANDA, BIRKIN), FullName.from(WILLIAM, BIRKIN));
     }
 
     @Test
-    void shouldFindAllStudentsWithAllCoursesAssignedToCourseWithGivenId() throws SQLException {
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category artCategory = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course artTwentyFive = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
-        Course artTen = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
-        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        dbHelper.addStudentsToCourseInDatabase(artTwentyFive, jack);
-        dbHelper.addStudentsToCourseInDatabase(artTen, jack);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldFindAllStudentsWithAllCoursesAssignedToCourseWithGivenId() {
+        Course coreBilogy = dbHelper.findCourseByNameInDatabase(CORE_BIOLOGY);
 
-        List<Student> result = dao.findForCourse(artTen.getId());
+        List<Student> result = dao.findForCourse(coreBilogy.getId());
 
-        assertThat(result, hasSize(1));
-        assertThat(result, containsInAnyOrder(jack));
-        assertThat(result.get(0).getCourses(), containsInAnyOrder(artTen, artTwentyFive));
+        assertStudentsWithNames(
+                result,
+                FullName.from(MARY, BIRKIN));
+        assertStudentCourses(result.get(0), CORE_BIOLOGY, ADVANCED_BIOLOGY);
     }
 
     @Test
-    void shouldReturnEmptyListIfNoStudentsForGivenGroupInDatabase() throws SQLException {
-        Group phTwentyFive = dbHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
-        Group maTwelve = dbHelper.saveGroupToDatabase(MA_TWELVE);
-        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        dbHelper.addStudentsToGroupInDatabase(phTwentyFive, jack);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldReturnEmptyListIfNoStudentsForGivenGroupInDatabase() {
+        Group psTwenty = dbHelper.findGroupByNameInDatabase(PS_TWENTY);
 
-        List<Student> result = dao.findForGroup(maTwelve.getId());
+        List<Student> result = dao.findForGroup(psTwenty.getId());
 
         assertThat(result, hasSize(0));
     }
 
     @Test
-    void shouldFindAllStudentsAssignedToGroupWithGivenIdInDatabase() throws SQLException {
-        Group phTwentyFive = dbHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
-        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        Student anna = dbHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
-        dbHelper.addStudentsToGroupInDatabase(phTwentyFive, jack, anna);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldFindAllStudentsAssignedToGroupWithGivenIdInDatabase() {
+        Group mhTen = dbHelper.findGroupByNameInDatabase(MH_TEN);
 
-        List<Student> result = dao.findForGroup(phTwentyFive.getId());
+        List<Student> result = dao.findForGroup(mhTen.getId());
 
-        assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(jack, anna));
+        assertStudentsWithNames(
+                result,
+                FullName.from(MARY, BIRKIN), FullName.from(AMANDA, BIRKIN), FullName.from(WILLIAM, BIRKIN));
     }
 
     @Test
-    void shouldAddStudentToSpecifiedCourse() throws SQLException {
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category artCategory = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course artTwentyFive = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
-        Course artTen = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
-        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldAddStudentToSpecifiedCourse() {
+        Student mary = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
+        Course coreHistory = dbHelper.findCourseByNameInDatabase(CORE_HISORY);
 
-        dao.addToCourse(jack.getId(), artTwentyFive.getId());
-        dao.addToCourse(jack.getId(), artTen.getId());
+        dao.addToCourse(mary.getId(), coreHistory.getId());
 
-        assertStudentCoursesInDatabase(jack, artTwentyFive, artTen);
+        assertStudentCoursesInDatabase(mary, CORE_BIOLOGY, ADVANCED_BIOLOGY, CORE_HISORY);
     }
 
     @Test
-    void shouldRemoveStudentFromSpecificCourse() throws SQLException {
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category artCategory = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course artTwentyFive = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
-        Course artTen = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
-        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        dbHelper.addStudentToCoursesInDatabase(jack, artTen, artTwentyFive);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldRemoveStudentFromSpecificCourse() {
+        Student mary = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
+        Course coreBiology = dbHelper.findCourseByNameInDatabase(CORE_BIOLOGY);
 
-        dao.removeFromCourse(jack.getId(), artTwentyFive.getId());
+        dao.removeFromCourse(mary.getId(), coreBiology.getId());
 
-        assertStudentCoursesInDatabase(jack, artTen);
+        assertStudentCoursesInDatabase(mary, ADVANCED_BIOLOGY);
     }
 
     @Test
-    void shouldRemoveStudentFromAllAssignedCourse() throws SQLException {
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category artCategory = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course artTwentyFive = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, artCategory, teacher);
-        Course artTen = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, artCategory, teacher);
-        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        dbHelper.addStudentToCoursesInDatabase(jack, artTen, artTwentyFive);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldRemoveStudentFromAllAssignedCourse() {
+        Student mary = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
-        dao.removeFromAllCourses(jack.getId());
+        dao.removeFromAllCourses(mary.getId());
 
-        assertNoCoursesForStudentInDatabase(jack);
+        assertNoCoursesForStudentInDatabase(mary);
     }
 
     @Test
-    void shouldAddStudentToGroupWithSpecifiedId() throws SQLException {
-        Group group = dbHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
-        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        Student anna = dbHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldAddStudentToGroupWithSpecifiedId() {
+        Group group = dbHelper.findGroupByNameInDatabase(PS_TWENTY);
+        Student mary = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
-        dao.addToGroup(jack.getId(), group.getId());
-        dao.addToGroup(anna.getId(), group.getId());
+        dao.addToGroup(mary.getId(), group.getId());
 
-        assertGroupStudentsInDatabase(group, jack, anna);
+        assertGroupStudentsInDatabase(group, mary);
     }
 
     @Test
-    void shouldRemoveStudentFromCurrentlyAssignedGroup() throws SQLException {
-        Group group = dbHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
-        Student jack = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        Student anna = dbHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
-        dbHelper.addStudentsToGroupInDatabase(group, jack, anna);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldRemoveStudentFromCurrentlyAssignedGroup() {
+        Student mary = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
-        dao.removeFromGroup(jack.getId());
-        dao.removeFromGroup(anna.getId());
+        dao.removeFromGroup(mary.getId());
 
-        assertNoStudentsForGroupInDatabase(group);
+        assertStudentWithoutGroupInDatabase(mary);
     }
 
     @Test
-    void shouldReturnTrueIfStudentWithGivenIdentifierExists() throws SQLException {
-        Student student = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldReturnTrueIfStudentWithGivenIdentifierExists() {
+        Student student = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
         boolean result = dao.existsById(student.getId());
 
@@ -263,6 +239,7 @@ public class JPAStudentDaoTest {
     }
 
     @Test
+    @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnFalseIfStudentWithGivenIdentifierNotExist() {
         boolean result = dao.existsById(1);
 
@@ -270,66 +247,76 @@ public class JPAStudentDaoTest {
     }
 
     @Test
-    void shouldReturnStudentWithAllAssignedCourses() throws SQLException {
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category categroy = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course courseA = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, categroy, teacher);
-        Course courseB = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, categroy, teacher);
-        Student student = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        dbHelper.addStudentToCoursesInDatabase(student, courseB, courseA);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldReturnStudentWithAllAssignedCourses() {
+        Student student = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
         Optional<Student> result = dao.findById(student.getId());
 
-        assertThat(result.get().getCourses(), containsInAnyOrder(courseA, courseB));
+        assertTrue(result.isPresent());
+        assertStudentCourses(result.get(), CORE_BIOLOGY, ADVANCED_BIOLOGY);
     }
 
     @Test
-    void shouldDeleteStudentByGivenIdentifier() throws SQLException {
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JOHN, THOMPSON, ASSOCIATE_PROFESSOR, ENROLLMENT_DATE);
-        Category categroy = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Course courseA = dbHelper.saveCourseToDatabase(ART_TWENTY_FIVE, COURSE_DESCR, categroy, teacher);
-        Course courseB = dbHelper.saveCourseToDatabase(ART_TEN, COURSE_DESCR, categroy, teacher);
-        Student student = dbHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
-        dbHelper.addStudentToCoursesInDatabase(student, courseB, courseA);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldDeleteStudentByGivenIdentifier() {
+        Student student = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
         dao.deleteById(student.getId());
 
         assertNoGivenStudentsInDatabase(student);
     }
+    
+    private void assertStudentWithoutGroupInDatabase(Student student) {
+        Student result = dbHelper.findStudentByNameInDatabase(student.getFirstName(), student.getLastName());
+        assertThat(result.getGroup(), is(nullValue()));
+    }
 
-    private void assertNoGivenStudentsInDatabase(Student... expected) throws SQLException {
+    private void assertStudentCourses(Student student, String... expectedNames) {
+        assertThat(student.getCourses(), hasSize(expectedNames.length));
+        for (String expectedName : expectedNames) {
+            assertThat(student.getCourses(), hasItem(hasProperty("name", equalTo(expectedName))));
+        }
+    }
+
+    private void assertStudentsWithNames(List<Student> result, FullName... expectedNames) {
+        assertThat(result, hasSize(expectedNames.length));
+        for (FullName expectedName : expectedNames) {
+            assertThat(result, hasItem(allOf(
+                    hasProperty("firstName", equalTo(expectedName.getFirstName())),
+                    hasProperty("lastName", equalTo(expectedName.getLastName())))));
+        }
+    }
+
+    private void assertNoGivenStudentsInDatabase(Student... expected) {
         List<Student> result = dbHelper.findAllStudentsInDatabase();
-        assertThat(result, not(containsInAnyOrder(expected)));
+        assertThat(result, not(hasItems(expected)));
     }
 
-    private void assertNoStudentsForGroupInDatabase(Group group) throws SQLException {
-        List<Student> result = dbHelper.findAllGroupStudentsInDatabase(group);
-        assertThat(result, hasSize(0));
-    }
-
-    private void assertGroupStudentsInDatabase(Group group, Student... expected) throws SQLException {
+    private void assertGroupStudentsInDatabase(Group group, Student... expected) {
         List<Student> result = dbHelper.findAllGroupStudentsInDatabase(group);
         assertThat(result, hasSize(expected.length));
         assertThat(result, containsInAnyOrder(expected));
     }
 
-    private void assertNoCoursesForStudentInDatabase(Student student) throws SQLException {
+    private void assertNoCoursesForStudentInDatabase(Student student) {
         List<Course> result = dbHelper.findAllStudentCoursesInDatabase(student);
         assertThat(result, hasSize(0));
     }
 
-    private void assertStudentCoursesInDatabase(Student student, Course... expected) throws SQLException {
+    private void assertStudentCoursesInDatabase(Student student, String... expectedNames) {
         List<Course> result = dbHelper.findAllStudentCoursesInDatabase(student);
-        assertThat(result, hasSize(expected.length));
-        assertThat(result, containsInAnyOrder(expected));
+        assertThat(result, hasSize(expectedNames.length));
+        for (String expectedName : expectedNames) {
+            assertThat(student.getCourses(), hasItem(hasProperty("name", equalTo(expectedName))));
+        }
     }
 
-    private void assertStudentsInDatabase(Student... expected) throws SQLException {
+    private void assertStudentsInDatabase(Student... expected) {
         Arrays.stream(expected)
                 .forEach(student -> assertThat("student should have id", student.getId(), is(not(nullValue()))));
 
         List<Student> result = dbHelper.findAllStudentsInDatabase();
-        assertThat(result, hasSize(expected.length));
-        assertThat(result, containsInAnyOrder(expected));
+        assertThat(result, hasItems(expected));
     }
 }

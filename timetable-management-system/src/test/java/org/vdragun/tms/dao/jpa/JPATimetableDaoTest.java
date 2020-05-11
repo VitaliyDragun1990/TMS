@@ -1,16 +1,18 @@
 package org.vdragun.tms.dao.jpa;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.vdragun.tms.core.domain.Title.PROFESSOR;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,10 +24,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.config.JPADaoConfig;
-import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Student;
@@ -41,27 +43,28 @@ import org.vdragun.tms.dao.TimetableDao;
 @Transactional
 public class JPATimetableDaoTest {
 
-    private static final LocalDate ENROLLMENT_DATE = LocalDate.now();
-    private static final String ANNA = "Anna";
-    private static final String SMITH = "Smith";
-    private static final LocalDateTime MARCH_TEN_NINE_THIRTY = LocalDateTime.of(2020, 3, 10, 9, 30);
     private static final LocalDate MARCH_TEN = LocalDate.of(2020, 3, 10);
     private static final LocalDate MARCH_TWENTY_FIFTH = LocalDate.of(2020, 3, 25);
+
+    private static final LocalDateTime MARCH_TEN_NINE_THIRTY = LocalDateTime.of(2020, 3, 10, 9, 30);
     private static final LocalDateTime MARCH_TEN_TWELVE_THIRTY = LocalDateTime.of(2020, 3, 10, 12, 30);
     private static final LocalDateTime MARCH_TWENTY_FIFTH_NINE_THIRTY = LocalDateTime.of(2020, 3, 25, 9, 30);
+
     private static final LocalDateTime APRIL_FIFTH_NINE_THIRTY = LocalDateTime.of(2020, 4, 5, 9, 30);
-    private static final int DURATION = 90;
-    private static final String COURSE_DESCR = "Course description";
-    private static final String BIO_TWENTY_FIVE = "bio-25";
-    private static final String BIO_TEN = "bio-10";
-    private static final String DESCR_BIO = "Biology";
-    private static final String CODE_BIO = "BIO";
-    private static final int CAPACITY = 30;
-    private static final LocalDate DATE_HIRED = ENROLLMENT_DATE;
-    private static final String THOMPSON = "Thompson";
+    private static final LocalDateTime APRIL_TEN_NINE_THIRTY = LocalDateTime.of(2020, 4, 10, 9, 30);
+
+    private static final int DURATION_NINETY = 90;
+    private static final int CAPACITY_SIXTY = 60;
+
+    private static final String MARY = "Mary";
+    private static final String AMANDA = "Amanda";
+    private static final String BIRKIN = "Birkin";
     private static final String JACK = "Jack";
-    private static final String HARRY = "Harry";
-    private static final String SNOW = "Snow";
+    private static final String JOHN = "John";
+    private static final String SMITH = "Smith";
+    private static final String PORTER = "Porter";
+
+    private static final String ADVANCED_BIOLOGY = "Advanced Biology";
 
     @Autowired
     private TimetableDao dao;
@@ -70,6 +73,7 @@ public class JPATimetableDaoTest {
     private DBTestHelper dbHelper;
 
     @Test
+    @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnEmptyResultIfNoTimetableWithGivenIdInDatabase() {
         Optional<Timetable> result = dao.findById(1);
 
@@ -77,14 +81,9 @@ public class JPATimetableDaoTest {
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldFindTimetableById() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
-        Timetable expected = dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course,
-                teacher,
-                classroom);
+        Timetable expected = dbHelper.findRandomTimetableInDatabase();
 
         Optional<Timetable> result = dao.findById(expected.getId());
 
@@ -93,12 +92,12 @@ public class JPATimetableDaoTest {
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldSaveNewTimetableToDatabase() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
-        Timetable timetable = new Timetable(MARCH_TEN_NINE_THIRTY, DURATION, course, classroom, teacher);
+        Classroom classroom = dbHelper.findRandomClassroomInDatabase();
+        Teacher teacher = dbHelper.findTeacherByNameInDatabase(JACK, SMITH);
+        Course course = dbHelper.findCourseByNameInDatabase(ADVANCED_BIOLOGY);
+        Timetable timetable = new Timetable(APRIL_FIFTH_NINE_THIRTY, DURATION_NINETY, course, classroom, teacher);
 
         dao.save(timetable);
 
@@ -106,20 +105,21 @@ public class JPATimetableDaoTest {
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldSaveSeveralNewTimetablesToDatabase() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
-        Timetable timetableA = new Timetable(MARCH_TEN_NINE_THIRTY, DURATION, course, classroom, teacher);
-        Timetable timetableB = new Timetable(MARCH_TWENTY_FIFTH_NINE_THIRTY, DURATION, course, classroom, teacher);
+        Classroom classroom = dbHelper.findRandomClassroomInDatabase();
+        Teacher teacher = dbHelper.findTeacherByNameInDatabase(JACK, SMITH);
+        Course course = dbHelper.findCourseByNameInDatabase(ADVANCED_BIOLOGY);
+        Timetable timetableA = new Timetable(APRIL_FIFTH_NINE_THIRTY, DURATION_NINETY, course, classroom, teacher);
+        Timetable timetableB = new Timetable(APRIL_TEN_NINE_THIRTY, DURATION_NINETY, course, classroom, teacher);
 
-        dao.saveAll(Arrays.asList(timetableA, timetableB));
+        dao.saveAll(asList(timetableA, timetableB));
 
         assertTimetablesInDatabase(timetableA, timetableB);
     }
 
     @Test
+    @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnEmptyListIfNoTimetablesInDatabase() {
         List<Timetable> result = dao.findAll();
 
@@ -127,198 +127,107 @@ public class JPATimetableDaoTest {
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldFindAllTimetablesInDatabase() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
-        Timetable timetableA = dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course,
-                teacher,
-                classroom);
-        Timetable timetableB = dbHelper.saveTimetableToDatabase(MARCH_TWENTY_FIFTH_NINE_THIRTY, DURATION,
-                course,
-                teacher,
-                classroom);
-
         List<Timetable> result = dao.findAll();
 
-        assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(timetableA, timetableB));
+        assertTimetablesForDates(
+                result,
+                MARCH_TEN_NINE_THIRTY, MARCH_TEN_TWELVE_THIRTY, MARCH_TWENTY_FIFTH_NINE_THIRTY);
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldReturnEmptyListIfNoTimetablesForStudentForGivenDay() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
-        Student student = dbHelper.saveStudentToDatabase(ANNA, SMITH, ENROLLMENT_DATE);
+        Student amanda = dbHelper.findStudentByNameInDatabase(AMANDA, BIRKIN);
 
-        dbHelper.addStudentToCoursesInDatabase(student, course);
-
-        dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course, teacher, classroom);
-        dbHelper.saveTimetableToDatabase(MARCH_TEN_TWELVE_THIRTY, DURATION, course, teacher, classroom);
-
-        List<Timetable> result = dao.findDailyForStudent(student.getId(), MARCH_TWENTY_FIFTH);
+        List<Timetable> result = dao.findDailyForStudent(amanda.getId(), MARCH_TWENTY_FIFTH);
 
         assertThat(result, hasSize(0));
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldFindAllTimetablesForStudentForGivenDay() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
-        Student student = dbHelper.saveStudentToDatabase(ANNA, SMITH, ENROLLMENT_DATE);
+        Student mary = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
-        dbHelper.addStudentToCoursesInDatabase(student, course);
+        List<Timetable> result = dao.findDailyForStudent(mary.getId(), MARCH_TEN);
 
-        Timetable timetableA = dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course,
-                teacher,
-                classroom);
-        Timetable timetableB = dbHelper.saveTimetableToDatabase(MARCH_TEN_TWELVE_THIRTY, DURATION, course,
-                teacher,
-                classroom);
-        Timetable timetableC = dbHelper.saveTimetableToDatabase(MARCH_TWENTY_FIFTH_NINE_THIRTY, DURATION,
-                course,
-                teacher,
-                classroom);
-
-        List<Timetable> result = dao.findDailyForStudent(student.getId(), MARCH_TEN);
-
-        assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(timetableA, timetableB));
-        assertThat(result, not(containsInAnyOrder(timetableC)));
+        assertTimetablesForDates(
+                result,
+                MARCH_TEN_NINE_THIRTY, MARCH_TEN_TWELVE_THIRTY);
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldReturnEmptyListIfNoTimetablesForTeacherForGivenDay() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher jack = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Teacher harry = dbHelper.saveTeacherToDatabase(HARRY, SNOW, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course bio25 = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, jack);
-        Course bio10 = dbHelper.saveCourseToDatabase(BIO_TEN, COURSE_DESCR, category, harry);
+        Teacher john = dbHelper.findTeacherByNameInDatabase(JOHN, PORTER);
 
-        dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, bio25, jack, classroom);
-        dbHelper.saveTimetableToDatabase(MARCH_TWENTY_FIFTH_NINE_THIRTY, DURATION, bio10, harry, classroom);
-
-        List<Timetable> result = dao.findDailyForTeacher(jack.getId(), MARCH_TWENTY_FIFTH);
+        List<Timetable> result = dao.findDailyForTeacher(john.getId(), MARCH_TWENTY_FIFTH);
 
         assertThat(result, hasSize(0));
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldFindAllTimetablesForTeacherForGivenDay() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher harry = dbHelper.saveTeacherToDatabase(HARRY, SNOW, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course bio25 = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, harry);
-        Course bio10 = dbHelper.saveCourseToDatabase(BIO_TEN, COURSE_DESCR, category, harry);
+        Teacher jack = dbHelper.findTeacherByNameInDatabase(JACK, SMITH);
 
-        Timetable timetableA = dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, bio25,
-                harry,
-                classroom);
-        Timetable timetableB = dbHelper.saveTimetableToDatabase(MARCH_TEN_TWELVE_THIRTY, DURATION, bio10,
-                harry,
-                classroom);
+        List<Timetable> result = dao.findDailyForTeacher(jack.getId(), MARCH_TEN);
 
-        List<Timetable> result = dao.findDailyForTeacher(harry.getId(), MARCH_TEN);
-
-        assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(timetableA, timetableB));
+        assertTimetablesForDates(
+                result,
+                MARCH_TEN_NINE_THIRTY);
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldReturnEmptyListIfNoTimetablesForStudentForGivenMonth() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
-        Student student = dbHelper.saveStudentToDatabase(ANNA, SMITH, ENROLLMENT_DATE);
+        Student mary = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
-        dbHelper.addStudentToCoursesInDatabase(student, course);
-
-        dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course, teacher, classroom);
-        dbHelper.saveTimetableToDatabase(MARCH_TWENTY_FIFTH_NINE_THIRTY, DURATION, course, teacher, classroom);
-
-        List<Timetable> result = dao.findMonthlyForStudent(student.getId(), Month.APRIL);
+        List<Timetable> result = dao.findMonthlyForStudent(mary.getId(), Month.APRIL);
 
         assertThat(result, hasSize(0));
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldFindAllTimetablesForStudentForGivenMonth() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
-        Student student = dbHelper.saveStudentToDatabase(ANNA, SMITH, ENROLLMENT_DATE);
+        Student mary = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
-        dbHelper.addStudentToCoursesInDatabase(student, course);
+        List<Timetable> result = dao.findMonthlyForStudent(mary.getId(), Month.MARCH);
 
-        Timetable timetableA = dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course,
-                teacher,
-                classroom);
-        Timetable timetableB = dbHelper.saveTimetableToDatabase(MARCH_TWENTY_FIFTH_NINE_THIRTY, DURATION,
-                course,
-                teacher,
-                classroom);
-        dbHelper.saveTimetableToDatabase(APRIL_FIFTH_NINE_THIRTY, DURATION, course, teacher, classroom);
-
-        List<Timetable> result = dao.findMonthlyForStudent(student.getId(), Month.MARCH);
-
-        assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(timetableA, timetableB));
+        assertTimetablesForDates(
+                result,
+                MARCH_TEN_NINE_THIRTY, MARCH_TEN_TWELVE_THIRTY, MARCH_TWENTY_FIFTH_NINE_THIRTY);
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldReturnEmptyListIfNoTimetablesForTeacherForGivenMonth() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
+        Teacher john = dbHelper.findTeacherByNameInDatabase(JOHN, PORTER);
 
-        dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course, teacher, classroom);
-        dbHelper.saveTimetableToDatabase(MARCH_TWENTY_FIFTH_NINE_THIRTY, DURATION, course, teacher, classroom);
-
-        List<Timetable> result = dao.findMonthlyForTeacher(teacher.getId(), Month.APRIL);
+        List<Timetable> result = dao.findMonthlyForTeacher(john.getId(), Month.APRIL);
 
         assertThat(result, hasSize(0));
     }
 
     @Test
-    void shouldFindAllTimetablesForTeacherForTeacherForGivenMonth() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
+    void shouldFindAllTimetablesForTeacherForGivenMonth() {
+        Teacher jack = dbHelper.findTeacherByNameInDatabase(JACK, SMITH);
 
-        Timetable timetableA = dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course,
-                teacher,
-                classroom);
-        Timetable timetableB = dbHelper.saveTimetableToDatabase(MARCH_TWENTY_FIFTH_NINE_THIRTY, DURATION,
-                course,
-                teacher,
-                classroom);
-        dbHelper.saveTimetableToDatabase(APRIL_FIFTH_NINE_THIRTY, DURATION, course, teacher, classroom);
+        List<Timetable> result = dao.findMonthlyForTeacher(jack.getId(), Month.MARCH);
 
-        List<Timetable> result = dao.findMonthlyForTeacher(teacher.getId(), Month.MARCH);
-
-        assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(timetableA, timetableB));
+        assertTimetablesForDates(
+                result,
+                MARCH_TEN_NINE_THIRTY, MARCH_TWENTY_FIFTH_NINE_THIRTY);
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldDeleteTimetableById() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
-        Timetable expected = dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course,
-                teacher,
-                classroom);
+        Timetable expected = dbHelper.findRandomTimetableInDatabase();
 
         dao.deleteById(expected.getId());
 
@@ -326,6 +235,7 @@ public class JPATimetableDaoTest {
     }
 
     @Test
+    @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnFalseIfNoTimetableWithGivenIdentifier() {
         boolean result = dao.existsById(1);
 
@@ -333,14 +243,9 @@ public class JPATimetableDaoTest {
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldReturnTrueIfTimetableWithGivenIdentifierExists() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
-        Timetable expected = dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course,
-                teacher,
-                classroom);
+        Timetable expected = dbHelper.findRandomTimetableInDatabase();
 
         boolean result = dao.existsById(expected.getId());
 
@@ -348,40 +253,44 @@ public class JPATimetableDaoTest {
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldThrowExceptionWhenUpdatingNonExistingTimetable() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
-
-        Timetable timetable = new Timetable(MARCH_TEN_NINE_THIRTY, DURATION, course, classroom, teacher);
+        Classroom classroom = dbHelper.findRandomClassroomInDatabase();
+        Teacher teacher = dbHelper.findTeacherByNameInDatabase(JACK, SMITH);
+        Course course = dbHelper.findCourseByNameInDatabase(ADVANCED_BIOLOGY);
+        Timetable timetable = new Timetable(APRIL_FIFTH_NINE_THIRTY, DURATION_NINETY, course, classroom, teacher);
 
         assertThrows(DaoException.class, () -> dao.update(timetable));
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldUpdateExistingTimetable() {
-        Classroom classroom = dbHelper.saveClassroomToDatabase(CAPACITY);
-        Teacher teacher = dbHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
-        Category category = dbHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
-        Course course = dbHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
-        Timetable existing = dbHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course,
-                teacher,
-                classroom);
+        Timetable existing = dbHelper.findRandomTimetableInDatabase();
 
-        Classroom newClassroom = dbHelper.saveClassroomToDatabase(CAPACITY + 10);
-        int newDuration = DURATION + 30;
-        LocalDateTime newTime = MARCH_TWENTY_FIFTH_NINE_THIRTY;
+        Teacher newTeacher = dbHelper.findTeacherByNameInDatabase(JOHN, PORTER);
+        Classroom newClassroom = dbHelper.findClassroomByCapacity(CAPACITY_SIXTY);
+        int newDuration = DURATION_NINETY;
+        LocalDateTime newTime = APRIL_FIFTH_NINE_THIRTY;
+
+        existing.setTeacher(newTeacher);
         existing.setClassroom(newClassroom);
         existing.setDurationInMinutes(newDuration);
         existing.setStartTime(newTime);
 
         dao.update(existing);
 
-        assertTimetableInDatabase(existing);
+        assertTimetableUpdatedInDatabase(existing);
     }
 
-    private void assertTimetableInDatabase(Timetable expected) {
+    private void assertTimetablesForDates(List<Timetable> result, LocalDateTime... expectedDates) {
+        assertThat(result, hasSize(expectedDates.length));
+        for (LocalDateTime expectedDate : expectedDates) {
+            assertThat(result, hasItem(hasProperty("startTime", equalTo(expectedDate))));
+        }
+    }
+
+    private void assertTimetableUpdatedInDatabase(Timetable expected) {
         Optional<Timetable> result = dbHelper.findAllTimetablesInDatabase()
                 .stream()
                 .filter(timetable -> timetable.equals(expected))
@@ -398,7 +307,7 @@ public class JPATimetableDaoTest {
 
     private void assertNoGivenTimetablesInDatabase(Timetable... expected) {
         List<Timetable> result = dbHelper.findAllTimetablesInDatabase();
-        assertThat(result, not(containsInAnyOrder(expected)));
+        assertThat(result, not(hasItems(expected)));
     }
 
     private void assertTimetablesInDatabase(Timetable... expected) {
@@ -406,8 +315,7 @@ public class JPATimetableDaoTest {
                 .forEach(timetable -> assertThat("timetable should have id", timetable.getId(), is(not(nullValue()))));
 
         List<Timetable> result = dbHelper.findAllTimetablesInDatabase();
-        assertThat(result, hasSize(expected.length));
-        assertThat(result, containsInAnyOrder(expected));
+        assertThat(result, hasItems(expected));
     }
 
 }

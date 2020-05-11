@@ -1,16 +1,17 @@
 package org.vdragun.tms.dao.jpa;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.config.JPADaoConfig;
@@ -33,6 +35,7 @@ public class JPACategoryDaoTest {
 
     private static final String CODE_ART = "ART";
     private static final String CODE_BIO = "BIO";
+    private static final String CODE_HIS = "HIS";
     private static final String DESC_ART = "Art";
     private static final String DESC_BIO = "Biology";
 
@@ -43,6 +46,7 @@ public class JPACategoryDaoTest {
     private DBTestHelper dbHelper;
 
     @Test
+    @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnEmptyResultIfNoCategoryWithGivenIdInDatabase() {
         Optional<Category> result = dao.findById(1);
 
@@ -50,8 +54,9 @@ public class JPACategoryDaoTest {
     }
 
     @Test
-    void shouldFindCategoryById() throws SQLException {
-        Category expected = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/category_data.sql" })
+    void shouldFindCategoryById() {
+        Category expected = dbHelper.findCategoryByCodeInDatabase(CODE_ART);
 
         Optional<Category> result = dao.findById(expected.getId());
 
@@ -60,7 +65,8 @@ public class JPACategoryDaoTest {
     }
 
     @Test
-    void shouldSaveNewCategoryToDatabase() throws SQLException {
+    @Sql(scripts = { "/sql/clear_database.sql" })
+    void shouldSaveNewCategoryToDatabase() {
         Category category = new Category(CODE_ART, DESC_ART);
 
         dao.save(category);
@@ -69,7 +75,8 @@ public class JPACategoryDaoTest {
     }
 
     @Test
-    void shouldSaveSeveralNewCategoriesToDatabase() throws SQLException {
+    @Sql(scripts = { "/sql/clear_database.sql" })
+    void shouldSaveSeveralNewCategoriesToDatabase() {
         Category art = new Category(CODE_ART, DESC_ART);
         Category bio = new Category(CODE_BIO, DESC_BIO);
 
@@ -79,6 +86,7 @@ public class JPACategoryDaoTest {
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql" })
     void shouldReturnEmptyListIfNoCategoriesInDatabase() {
         List<Category> result = dao.findAll();
 
@@ -86,19 +94,17 @@ public class JPACategoryDaoTest {
     }
 
     @Test
-    void shouldFildAllCategoryInstancesInDatabase() throws SQLException {
-        Category art = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
-        Category bio = dbHelper.saveCategoryToDatabase(CODE_BIO, DESC_BIO);
-
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/category_data.sql" })
+    void shouldFildAllCategoryInstancesInDatabase() {
         List<Category> result = dao.findAll();
 
-        assertThat(result, hasSize(2));
-        assertThat(result, containsInAnyOrder(art, bio));
+        assertCategoriesWithCodes(result, CODE_ART, CODE_BIO, CODE_HIS);
     }
 
     @Test
-    void shouldReturnTrueIfCategoryWithGivenIdentifierExists() throws SQLException {
-        Category category = dbHelper.saveCategoryToDatabase(CODE_ART, DESC_ART);
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/category_data.sql" })
+    void shouldReturnTrueIfCategoryWithGivenIdentifierExists() {
+        Category category = dbHelper.findCategoryByCodeInDatabase(CODE_ART);
 
         boolean result = dao.existsById(category.getId());
 
@@ -106,18 +112,25 @@ public class JPACategoryDaoTest {
     }
 
     @Test
-    void shouldReturnFalseIfCategoryWithGivenIdentifierNotExist() throws SQLException {
+    @Sql(scripts = { "/sql/clear_database.sql" })
+    void shouldReturnFalseIfCategoryWithGivenIdentifierNotExist() {
         boolean result = dao.existsById(1);
 
         assertFalse(result);
     }
 
-    private void assertCategoriesInDatabase(Category... expected) throws SQLException {
+    private void assertCategoriesWithCodes(List<Category> result, String... codes) {
+        assertThat(result, hasSize(codes.length));
+        for (String code : codes) {
+            assertThat(result, hasItem(hasProperty("code", equalTo(code))));
+        }
+    }
+
+    private void assertCategoriesInDatabase(Category... expected) {
         Arrays.stream(expected)
                 .forEach(category -> assertThat("category should have id", category.getId(), is(not(nullValue()))));
 
         List<Category> result = dbHelper.findAllCategoriesInDatabase();
-        assertThat(result, hasSize(expected.length));
-        assertThat(result, containsInAnyOrder(expected));
+        assertThat(result, hasItems(expected));
     }
 }

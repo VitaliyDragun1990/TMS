@@ -1,7 +1,5 @@
 package org.vdragun.tms.dao;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +14,6 @@ import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.core.domain.Title;
 
 /**
  * Contains helper methods to facilitate DAO testing.
@@ -29,87 +26,81 @@ public class DBTestHelper {
     @PersistenceContext
     private EntityManager em;
 
-    public Classroom saveClassroomToDatabase(int capacity) {
-        Classroom classroom = new Classroom(capacity);
-        em.persist(classroom);
-        return classroom;
-    }
-
     public List<Classroom> findAllClassroomsInDatabase() {
         return em.createQuery("SELECT c FROM Classroom c", Classroom.class).getResultList();
     }
 
-    public Category saveCategoryToDatabase(String code, String description) {
-        Category category = new Category(code, description);
-        em.persist(category);
-        return category;
+    public Category findCategoryByCodeInDatabase(String categoryCode) {
+        TypedQuery<Category> query = em.createQuery("SELECT c FROM Category c WHERE c.code = ?1", Category.class);
+        query.setParameter(1, categoryCode);
+        return query.getSingleResult();
+    }
+
+    public Classroom findRandomClassroomInDatabase() {
+        return em.createQuery("SELECT c FROM Classroom c", Classroom.class).getResultList().get(0);
+    }
+
+    public Group findGroupByNameInDatabase(String groupName) {
+        TypedQuery<Group> query = em.createQuery("SELECT g FROM Group g WHERE g.name = ?1", Group.class);
+        query.setParameter(1, groupName);
+        return query.getSingleResult();
+    }
+
+    public Course findCourseByNameInDatabase(String courseName) {
+        TypedQuery<Course> query = em.createQuery("SELECT c FROM Course c WHERE c.name = ?1", Course.class);
+        query.setParameter(1, courseName);
+        return query.getSingleResult();
+    }
+
+    public Course findRandomCourseInDatabase() {
+        return em.createQuery("SELECT c FROM Course c", Course.class).getResultList().get(0);
+    }
+
+    public Teacher findRandomTeacherInDatabase() {
+        return em.createQuery("SELECT t FROM Teacher t", Teacher.class).getResultList().get(0);
+    }
+
+    public Teacher findTeacherByNameInDatabase(String firstName, String lastName) {
+        TypedQuery<Teacher> query = em.createQuery("SELECT t FROM Teacher t WHERE t.firstName = ?1 AND t.lastName = ?2",
+                Teacher.class);
+        query.setParameter(1, firstName);
+        query.setParameter(2, lastName);
+        return query.getSingleResult();
+    }
+
+    public Student findStudentByNameInDatabase(String firstName, String lastName) {
+        TypedQuery<Student> query = em.createQuery("SELECT s FROM Student s WHERE s.firstName = ?1 AND s.lastName = ?2",
+                Student.class);
+        query.setParameter(1, firstName);
+        query.setParameter(2, lastName);
+        return query.getSingleResult();
+    }
+
+    public Timetable findRandomTimetableInDatabase() {
+        return em.createQuery("SELECT t FROM Timetable t", Timetable.class).getResultList().get(0);
+    }
+
+    public Classroom findClassroomByCapacity(int classroomCapacity) {
+        TypedQuery<Classroom> query = em.createQuery("SELECT c FROM Classroom c WHERE c.capacity = ?1",
+                Classroom.class);
+        query.setParameter(1, classroomCapacity);
+        return query.getSingleResult();
     }
 
     public List<Category> findAllCategoriesInDatabase() {
         return em.createQuery("SELECT c FROM Category c", Category.class).getResultList();
     }
 
-    public Group saveGroupToDatabase(String name) {
-        Group group = new Group(name);
-        em.persist(group);
-        return group;
-    }
-
     public List<Group> findAllGroupsInDatabase() {
         return em.createQuery("SELECT g FROM Group g", Group.class).getResultList();
-    }
-
-    public Teacher saveTeacherToDatabase(String firstName, String lastName, Title title, LocalDate dateHired) {
-        Teacher teacher = new Teacher(firstName, lastName, title, dateHired);
-        em.persist(teacher);
-        return teacher;
     }
 
     public List<Teacher> findAllTeachersInDatabase() {
         return em.createQuery("SELECT t FROM Teacher t", Teacher.class).getResultList();
     }
 
-    public Course saveCourseToDatabase(String name, String desc, Category category, Teacher teacher) {
-        Course course = new Course(name, desc, category, teacher);
-        teacher.addCourse(course);
-        em.persist(teacher);
-        return course;
-    }
-
-    public Student saveStudentToDatabase(String firstName, String lastName, LocalDate enrollmentDate, Group group) {
-        Student student = new Student(firstName, lastName, enrollmentDate);
-        student.setGroup(group);
-        em.persist(student);
-        return student;
-    }
-
-    public Student saveStudentToDatabase(String firstName, String lastName, LocalDate enrollmentDate) {
-        return saveStudentToDatabase(firstName, lastName, enrollmentDate, null);
-    }
-
     public List<Student> findAllStudentsInDatabase() {
         return em.createQuery("SELECT s FROM Student s", Student.class).getResultList();
-    }
-
-    public void addStudentsToCourseInDatabase(Course course, Student... students) {
-        for (Student s : students) {
-            s.addCourse(course);
-            em.persist(s);
-        }
-    }
-
-    public void addStudentToCoursesInDatabase(Student student, Course... courses) {
-        for (Course c : courses) {
-            student.addCourse(c);
-        }
-        em.persist(student);
-    }
-
-    public void addStudentsToGroupInDatabase(Group group, Student... students) {
-        for (Student s : students) {
-            s.setGroup(group);
-            em.persist(s);
-        }
     }
 
     public List<Course> findAllStudentCoursesInDatabase(Student student) {
@@ -125,13 +116,6 @@ public class DBTestHelper {
 
     public List<Course> findAllCoursesInDatabase() {
         return em.createQuery("SELECT c FROM Course c", Course.class).getResultList();
-    }
-
-    public Timetable saveTimetableToDatabase(LocalDateTime startTime, int duration, Course course,
-            Teacher teacher, Classroom classroom) {
-        Timetable timetable = new Timetable(startTime, duration, course, classroom, teacher);
-        em.persist(timetable);
-        return timetable;
     }
 
     public List<Timetable> findAllTimetablesInDatabase() {
