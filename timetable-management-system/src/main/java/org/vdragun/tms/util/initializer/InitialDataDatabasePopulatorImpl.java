@@ -1,17 +1,14 @@
-package org.vdragun.tms.util;
+package org.vdragun.tms.util.initializer;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Course;
@@ -39,14 +36,14 @@ import org.vdragun.tms.util.generator.TeacherGenerator;
 import org.vdragun.tms.util.generator.TimetableGenerator;
 
 /**
- * Initialize application with startup data
- * 
  * @author Vitaliy Dragun
  *
  */
-public class StartupDataInitializer {
-
-    private static final Logger LOG = LoggerFactory.getLogger(StartupDataInitializer.class);
+@Component
+@Transactional
+public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopulator {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(InitialDataDatabasePopulatorImpl.class);
 
     @Value("#{'${generator.category}'.split(',\\s*')}")
     private List<String> categoryData;
@@ -89,7 +86,7 @@ public class StartupDataInitializer {
 
     @Value("${generator.minStudentsPerGroup}")
     private Integer minStudentsPerGroup;
-    
+
     @Value("${generator.maxStudentsPerGroup}")
     private Integer maxStudenstPerGroup;
 
@@ -111,11 +108,6 @@ public class StartupDataInitializer {
     @Value("${generator.timetable.maxClassesPerWeek}")
     private Integer maxClassesPerWeek;
 
-    @Value("${generator.initScript}")
-    private String initScript;
-
-    private DataSource dataSource;
-
     private ClassroomDao classroomDao;
 
     private CategoryDao categoryDao;
@@ -130,8 +122,7 @@ public class StartupDataInitializer {
 
     private TimetableDao timetableDao;
 
-    public StartupDataInitializer(
-            DataSource dataSource,
+    public InitialDataDatabasePopulatorImpl(
             ClassroomDao classroomDao,
             CategoryDao categoryDao,
             GroupDao groupDao,
@@ -139,7 +130,6 @@ public class StartupDataInitializer {
             StudentDao studentDao,
             CourseDao courseDao,
             TimetableDao timetableDao) {
-        this.dataSource = dataSource;
         this.classroomDao = classroomDao;
         this.categoryDao = categoryDao;
         this.groupDao = groupDao;
@@ -149,20 +139,9 @@ public class StartupDataInitializer {
         this.timetableDao = timetableDao;
     }
 
-    @PostConstruct
-    public void initialize() {
-        createDatabaseSchema();
-        populateDatabaseWithInitData();
-    }
 
-    private void createDatabaseSchema() {
-        LOG.info("Creating database schema");
-        ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-        databasePopulator.addScript(new ClassPathResource(initScript));
-        databasePopulator.execute(dataSource);
-    }
-
-    private void populateDatabaseWithInitData() {
+    @Override
+    public void populateDatabaseWithInitialData() {
         LOG.info("Populating database with init data");
         CategoryParser categoryParser = new CategoryParser();
         GroupGenerator groupGenerator = new GroupGenerator();
@@ -184,7 +163,7 @@ public class StartupDataInitializer {
 
         List<Group> groups = groupGenerator.generate(numberOfGroups);
         groupDao.saveAll(groups);
-        
+
         List<Classroom> classrooms = classroomGenerator.generate(numberOfClassroms, classroomFromCapacity,
                 classroomToCapacity);
         classrooms.forEach(classroom -> classroomDao.save(classroom));
@@ -223,4 +202,5 @@ public class StartupDataInitializer {
                 .filter(student -> student.getGroup() != null)
                 .forEach(student -> studentDao.addToGroup(student.getId(), student.getGroup().getId()));
     }
+
 }
