@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.CourseData;
 import org.vdragun.tms.core.application.service.CourseService;
@@ -23,6 +24,7 @@ import org.vdragun.tms.dao.TeacherDao;
  *
  */
 @Service
+@Transactional
 public class CourseServiceImpl implements CourseService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CourseServiceImpl.class);
@@ -52,6 +54,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Course findCourseById(Integer courseId) {
         LOG.debug("Searching for course with id={}", courseId);
 
@@ -60,6 +63,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Course> findAllCourses() {
         LOG.debug("Retrieving all courses");
 
@@ -70,6 +74,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Course> findCoursesByCategory(Integer categoryId) {
         LOG.debug("Retrieving courses belonging to category with id={}", categoryId);
 

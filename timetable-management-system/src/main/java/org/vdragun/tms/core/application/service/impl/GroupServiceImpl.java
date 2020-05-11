@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.GroupService;
 import org.vdragun.tms.core.domain.Group;
@@ -17,6 +18,7 @@ import org.vdragun.tms.dao.GroupDao;
  *
  */
 @Service
+@Transactional
 public class GroupServiceImpl implements GroupService {
 
     private static final Logger LOG = LoggerFactory.getLogger(GroupServiceImpl.class);
@@ -39,6 +41,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Group findGroupById(Integer groupId) {
         LOG.debug("Searching for group with id={}", groupId);
 
@@ -47,6 +50,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Group> findAllGroups() {
         LOG.debug("Retrieving all groups");
 

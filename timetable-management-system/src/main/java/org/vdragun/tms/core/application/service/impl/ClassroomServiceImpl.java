@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.ClassroomService;
 import org.vdragun.tms.core.domain.Classroom;
@@ -17,6 +18,7 @@ import org.vdragun.tms.dao.ClassroomDao;
  *
  */
 @Service
+@Transactional
 public class ClassroomServiceImpl implements ClassroomService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClassroomServiceImpl.class);
@@ -39,6 +41,7 @@ public class ClassroomServiceImpl implements ClassroomService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Classroom findClassroomById(Integer classroomId) {
         LOG.debug("Searching for classroom with id={}", classroomId);
 
@@ -47,6 +50,7 @@ public class ClassroomServiceImpl implements ClassroomService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Classroom> findAllClassrooms() {
         LOG.debug("Retrieving all classrooms");
 
