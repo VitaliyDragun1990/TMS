@@ -52,11 +52,12 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student updateExistingStudent(UpdateStudentData studentData) {
         LOG.debug("Updating existing student using data: {}", studentData);
-        assertStudentExists(studentData.getStudentId(), "Fail to update student");
+
+        assertStudentExists(studentData.getStudentId());
         if (studentData.getGroupId() != null) {
-            assertGroupExists(studentData.getGroupId(), "Fail to add student to group");
+            assertGroupExists(studentData.getGroupId());
         }
-        assertCoursesExists(studentData.getCourseIds(), "Fail to add student to course");
+        assertCoursesExist(studentData.getCourseIds());
 
         updateStudentGroup(studentData.getStudentId(), studentData.getGroupId());
         setStudentCourses(studentData.getStudentId(), studentData.getCourseIds());
@@ -85,7 +86,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<Student> findStudentsForCourse(Integer courseId) {
-        assertCourseExists(courseId, "Fail to find students for course");
+        assertCourseExists(courseId);
 
         return studentDao.findForCourse(courseId);
     }
@@ -93,7 +94,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Student> findStudentsForGroup(Integer groupId) {
         LOG.debug("Searching for students assigned to group with id={}", groupId);
-        assertGroupExists(groupId, "Fail to find students for group");
+        assertGroupExists(groupId);
 
         List<Student> result = studentDao.findForGroup(groupId);
 
@@ -104,7 +105,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void deleteStudentById(Integer studentId) {
         LOG.debug("Deleting student with id={}", studentId);
-        assertStudentExists(studentId, "Fail to delete student");
+        assertStudentExists(studentId);
 
         studentDao.deleteById(studentId);
     }
@@ -150,25 +151,25 @@ public class StudentServiceImpl implements StudentService {
         LOG.debug("Student with id={} has been removed from all assigned courses", studentId);
     }
 
-    private void assertCourseExists(Integer courseId, String msg) {
+    private void assertCourseExists(Integer courseId) {
         if (!courseDao.existsById(courseId)) {
-            throw new ResourceNotFoundException("%s: course with id=%d does not exist", msg, courseId);
+            throw new ResourceNotFoundException("Course with id=%d does not exist", courseId);
         }
     }
 
-    private void assertCoursesExists(List<Integer> courseIds, String msg) {
-        courseIds.forEach(id -> assertCourseExists(id, msg));
+    private void assertCoursesExist(List<Integer> courseIds) {
+        courseIds.forEach(this::assertCourseExists);
     }
 
-    private void assertGroupExists(Integer groupId, String msg) {
+    private void assertGroupExists(Integer groupId) {
         if (!groupDao.existsById(groupId)) {
-            throw new ResourceNotFoundException("%s: group with id=%d does not exist", msg, groupId);
+            throw new ResourceNotFoundException("Group with id=%d does not exist", groupId);
         }
     }
 
-    private void assertStudentExists(Integer studentId, String msg) {
+    private void assertStudentExists(Integer studentId) {
         if (!studentDao.existsById(studentId)) {
-            throw new ResourceNotFoundException("%s: student with id=%d does not exist", msg, studentId);
+            throw new ResourceNotFoundException("Student with id=%d does not exist", studentId);
         }
     }
 

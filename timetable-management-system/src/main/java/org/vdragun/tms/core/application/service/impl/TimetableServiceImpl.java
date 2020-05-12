@@ -51,10 +51,9 @@ public class TimetableServiceImpl implements TimetableService {
     public Timetable registerNewTimetable(CreateTimetableData timetableData) {
         LOG.debug("Registering new timetable using data: {}", timetableData);
 
-        Classroom classroom = requireExistingClassroom(timetableData.getClassroomId(),
-                "Fail to register new timetable");
-        Course course = requireExistingCourse(timetableData.getCourseId());
-        Teacher teacher = requireExistingTeacher(timetableData.getTeacherId());
+        Classroom classroom = getClassroom(timetableData.getClassroomId());
+        Course course = getCourse(timetableData.getCourseId());
+        Teacher teacher = getTeacher(timetableData.getTeacherId());
 
         Timetable timetable = new Timetable(
                 timetableData.getStartTime(),
@@ -72,9 +71,8 @@ public class TimetableServiceImpl implements TimetableService {
     public Timetable updateExistingTimetable(UpdateTimetableData timetableData) {
         LOG.debug("Updating existing timetable suing data: {}", timetableData);
 
-        Timetable timetable = requireExistingTimetable(timetableData.getTimetableId(), "Fail to update timetable");
-        Classroom classroom = requireExistingClassroom(timetableData.getClassroomId(),
-                "Fail to change timetable classroom");
+        Timetable timetable = getTimetable(timetableData.getTimetableId());
+        Classroom classroom = getClassroom(timetableData.getClassroomId());
 
         timetable.setClassroom(classroom);
         timetable.setDurationInMinutes(timetableData.getDurationInMinutes());
@@ -89,8 +87,7 @@ public class TimetableServiceImpl implements TimetableService {
     public Timetable findTimetableById(Integer timetableId) {
         LOG.debug("Searching for timetable with id={}", timetableId);
 
-        return timetableDao.findById(timetableId)
-                .orElseThrow(() -> new ResourceNotFoundException("Timetable with id=%d not found", timetableId));
+        return getTimetable(timetableId);
     }
 
     @Override
@@ -105,7 +102,7 @@ public class TimetableServiceImpl implements TimetableService {
     @Override
     public List<Timetable> findDailyTimetablesForStudent(Integer studentId, LocalDate date) {
         LOG.debug("Retrieving all timetables for student with id={} for date={}", studentId, date);
-        assertStudentExists(studentId, "Fail to find daily timetables for student");
+        assertStudentExists(studentId);
 
         List<Timetable> result = timetableDao.findDailyForStudent(studentId, date);
 
@@ -116,7 +113,7 @@ public class TimetableServiceImpl implements TimetableService {
     @Override
     public List<Timetable> findMonthlyTimetablesForStudent(Integer studentId, Month month) {
         LOG.debug("Retrieving all timetables for student with id={} for month={}", studentId, month);
-        assertStudentExists(studentId, "Fail to find monthly timetables for student");
+        assertStudentExists(studentId);
 
         List<Timetable> result = timetableDao.findMonthlyForStudent(studentId, month);
 
@@ -127,7 +124,7 @@ public class TimetableServiceImpl implements TimetableService {
     @Override
     public List<Timetable> findDailyTimetablesForTeacher(Integer teacherId, LocalDate date) {
         LOG.debug("Retrieving all timetables for teacher with id={} for date={}", teacherId, date);
-        assertTeacherExists(teacherId, "Fail to find daily timetables for teacher");
+        assertTeacherExists(teacherId);
 
         List<Timetable> result = timetableDao.findDailyForTeacher(teacherId, date);
 
@@ -138,7 +135,7 @@ public class TimetableServiceImpl implements TimetableService {
     @Override
     public List<Timetable> findMonthlyTimetablesForTeacher(Integer teacherId, Month month) {
         LOG.debug("Retrieving all timetables for teacher with id={} for month={}", teacherId, month);
-        assertTeacherExists(teacherId, "Fail to find monthly timetables for teacher");
+        assertTeacherExists(teacherId);
 
         List<Timetable> result = timetableDao.findMonthlyForTeacher(teacherId, month);
 
@@ -153,51 +150,47 @@ public class TimetableServiceImpl implements TimetableService {
         if (timetableDao.existsById(timetableId)) {
             timetableDao.deleteById(timetableId);
         } else {
-            throw new ResourceNotFoundException("Fail to delete timetable: timetable with id=%d does not exist",
+            throw new ResourceNotFoundException(
+                    "Fail to delete timetable: timetable with id=%d does not exist",
                     timetableId);
         }
     }
 
-    private void assertTeacherExists(Integer teacherId, String msg) {
+    private void assertTeacherExists(Integer teacherId) {
         if (!teacherDao.existsById(teacherId)) {
-            throw new ResourceNotFoundException("%s: teacher with id=%d does not exist", msg, teacherId);
+            throw new ResourceNotFoundException("Teacher with id=%d does not exist", teacherId);
         }
     }
 
-    private void assertStudentExists(Integer studentId, String msg) {
+    private void assertStudentExists(Integer studentId) {
         if (!studentDao.existsById(studentId)) {
-            throw new ResourceNotFoundException("%s: student with id=%d does not exist", msg, studentId);
+            throw new ResourceNotFoundException("Student with id=%d does not exist", studentId);
         }
     }
 
-    private Timetable requireExistingTimetable(Integer timetableId, String msg) {
-        return timetableDao.findById(timetableId)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(
-                                "%s: classroom with id=%d does not exist",
-                                msg, timetableId));
-    }
 
-    private Classroom requireExistingClassroom(Integer classroomId, String msg) {
+    private Classroom getClassroom(Integer classroomId) {
         return classroomDao.findById(classroomId)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException(
-                                "%s: classroom with id=%d does not exist",
-                                msg, classroomId));
-    }
-    
-    private Course requireExistingCourse(Integer courseId) {
-        return courseDao.findById(courseId)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(
-                                "Fail to register new timetable: course with id=%d does not exist", courseId));
+                        () -> new ResourceNotFoundException("Classroom with id=%d does not exist", classroomId));
     }
 
-    private Teacher requireExistingTeacher(Integer teacherId) {
+    private Timetable getTimetable(Integer timetableId) {
+        return timetableDao.findById(timetableId)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Timetable with id=%d does not exist", timetableId));
+    }
+    
+    private Course getCourse(Integer courseId) {
+        return courseDao.findById(courseId)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Course with id=%d does not exist", courseId));
+    }
+
+    private Teacher getTeacher(Integer teacherId) {
         return teacherDao.findById(teacherId)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException(
-                                "Fail to register new timetable: teacher with id=%d does not exist", teacherId));
+                        () -> new ResourceNotFoundException("Teacher with id=%d does not exist", teacherId));
     }
 
 }
