@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/main-layout}"
+>
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{title.timetableReqForm}">Timetable Registration Form</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <div class="w-75 p-3">
+      <h3 class="mb-5" th:text="#{title.timetableReqForm}">Timetable Registration Form</h3>
+
+      <form action="#" th:action="@{/timetables}" method="POST" id="timetableReqForm" th:object="${timetable}">
+      
+        <div class="form-group row">
+          <label for="startTime" class="col-sm-2 col-form-label" th:text="#{label.date}">Date</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" th:field="*{startTime}">
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <label for="durationInMinutes" class="col-sm-2 col-form-label" th:text="#{label.duration}">Duration (mins)</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" th:field="*{durationInMinutes}" min="30" max="120">
+          </div>
+        </div> 
+        
+        <div class="form-group row">
+          <label for="courseId" class="col-sm-2 col-form-label" th:text="#{label.course}">Course</label>
+          <div class="col-sm-10">
+            <select class="form-control w-50" th:field=*{courseId}>
+              <option th:each="course : ${courses}" th:value="${course.id}"
+                      th:text="${course.name}">
+                Advanced Biology
+              </option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <label for="classroomId" class="col-sm-2 col-form-label" th:text="#{label.classroom}">Classroom</label>
+          <div class="col-sm-10">
+            <select class="form-control w-50" th:field=*{classroomId}>
+              <option th:each="classroom : ${classrooms}" th:value="${classroom.id}"
+                      th:text="${classroom.id}">
+                10
+              </option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <label for="teacherId" class="col-sm-2 col-form-label" th:text="#{label.teacher}">Teacher</label>
+          <div class="col-sm-10">
+            <select class="form-control w-50" th:field=*{teacherId}>
+              <option th:each="teacher : ${teachers}" th:value="${teacher.id}"
+                      th:text="|${teacher.firstName} ${teacher.lastName}|">
+                John Smith
+              </option>
+            </select>
+          </div>
+        </div>
+    
+       <button type="submit" class="btn btn-info" th:text="#{label.submit}">Submit</button>
+
+      </form>
+    </div>
+  </div>
+</body>
+</html>

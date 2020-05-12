@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/main-layout}"
+>
+<head>
+<meta charset="UTF-8" />
+<title th:text="#{title.courseReqForm}">Course Registration Form</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <div class="w-75 p-3">
+      <h3 class="mb-5" th:text="#{title.courseReqForm}">Course Registration Form</h3>
+
+      <form action="#" th:action="@{/courses}" method="POST" id="courseReqForm" th:object="${course}">
+
+        <div class="form-group row">
+          <label for="name" class="col-sm-2 col-form-label" th:text="#{label.name}">Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" th:field="*{name}">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="description" class="col-sm-2 col-form-label" th:text="#{label.description}">Description</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" rows="3" th:field="*{description}"></textarea>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <label for="categoryId" class="col-sm-2 col-form-label" th:text="#{label.category}">Category</label>
+          <div class="col-sm-10">
+            <select class="form-control w-50" th:field=*{categoryId}>
+              <option th:each="category : ${categories}" th:value="${category.id}"
+                      th:text="${category.code}">
+                Biology
+              </option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <label for="teacherId" class="col-sm-2 col-form-label" th:text="#{label.teacher}">Teacher</label>
+          <div class="col-sm-10">
+            <select class="form-control w-50" th:field=*{teacherId}>
+              <option th:each="teacher : ${teachers}" th:value="${teacher.id}"
+                      th:text="|${teacher.firstName} ${teacher.lastName}|">
+                John Smith
+              </option>
+            </select>
+          </div>
+        </div>
+    
+       <button type="submit" class="btn btn-info" th:text="#{label.submit}">Submit</button>
+
+      </form>
+    </div>
+  </div>
+</body>
+</html>

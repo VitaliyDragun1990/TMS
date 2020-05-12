@@ -221,7 +221,7 @@ public class JdbcStudentDaoTest {
     }
 
     @Test
-    void shouldRemoveStudentFromGroupCurrentlyAssignedGroup() throws SQLException {
+    void shouldRemoveStudentFromCurrentlyAssignedGroup() throws SQLException {
         Group group = jdbcHelper.saveGroupToDatabase(PH_TWENTY_FIVE);
         Student jack = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
         Student anna = jdbcHelper.saveStudentToDatabase(ANNA, SNOW, ENROLLMENT_DATE);
@@ -261,6 +261,20 @@ public class JdbcStudentDaoTest {
         Optional<Student> result = dao.findById(student.getId());
 
         assertThat(result.get().getCourses(), containsInAnyOrder(courseA, courseB));
+    }
+
+    @Test
+    void shouldDeleteStudentByGivenIdentifier() throws SQLException {
+        Student student = jdbcHelper.saveStudentToDatabase(JACK, SMITH, ENROLLMENT_DATE);
+
+        dao.deleteById(student.getId());
+
+        assertNoGivenStudentsInDatabase(student);
+    }
+
+    private void assertNoGivenStudentsInDatabase(Student... expected) throws SQLException {
+        List<Student> result = jdbcHelper.findAllStudentsInDatabase();
+        assertThat(result, not(containsInAnyOrder(expected)));
     }
 
     private void assertNoStudentsForGroupInDatabase(Group group) throws SQLException {

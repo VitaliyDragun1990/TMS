@@ -6,10 +6,55 @@ $(function() {
 			viewMode : 'days',
 			format : datePattern
 		});
+		$('#enrollmentDate').datetimepicker({
+			viewMode : 'days',
+			format : datePattern
+		});
+		$('#dateHired').datetimepicker({
+			viewMode : 'days',
+			format : datePattern
+		});
+		$('#startTime').datetimepicker({
+			viewMode : 'days',
+			format : dateTimePattern,
+            icons: {
+                time: "far fa-clock",
+                date: "far fa-calendar-alt",
+                up: "fas fa-arrow-up",
+                down: "fas fa-arrow-down"
+            }
+		});
 		$('#dailySearch').on('click', dailySearchPicker);
 		$('#monthlySearch').on('click', monthlySearchPicker);
 		$('#searchTmBtn').on('click', searchTimetables);
+		
+		$('#deleteDialogBtn').on('click', showDeleteDialog);
+		$('#confirmDeleteBtn').on('click', hideDeleteDialog);
+		
+		$('#updateDialogBtn').on('click', showUpdateDialog);
+		$('#confirmUpdateBtn').on('click', hideUpdateDialog);
 	};
+	
+	var hideDeleteDialog = function() {
+		var targetUrl = $('#deleteDialog').attr('data-target-url');
+		var targetId = $('#deleteDialog').attr('data-target-id');
+		$('#deleteDialog').modal('hide');
+		postForm(targetUrl, 'id', targetId);
+	}
+	
+	var hideUpdateDialog = function() {
+		var targetFormId = $('#updateDialog').attr('data-form-id');
+		$('#updateDialog').modal('hide');
+		$('#' + targetFormId).submit();
+	}
+	
+	var showDeleteDialog = function() {
+		$('#deleteDialog').modal();
+	}
+	
+	var showUpdateDialog = function() {
+		$('#updateDialog').modal();
+	}
 	
 	var searchTimetables = function() {
 		var date = $('#dateTimePicker').val();

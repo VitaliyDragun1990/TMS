@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.web.controller;
+package org.vdragun.tms.ui.web.controller.timetable;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -7,9 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,20 +17,20 @@ import org.vdragun.tms.core.application.service.TimetableService;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.ui.web.converter.StringToLocalDateCustomFormatter;
+import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.ui.web.util.Constants.Attribute;
 import org.vdragun.tms.ui.web.util.Constants.Message;
 import org.vdragun.tms.ui.web.util.Constants.Page;
 
 /**
- * Processes teacher-related requests
+ * Processes timetable-related search requests
  * 
  * @author Vitaliy Dragun
  *
  */
 @Controller
 @RequestMapping("/timetables")
-public class TimetableController extends AbstractController {
+public class SearchTimetableController extends AbstractController {
 
     @Autowired
     private TimetableService timetableService;
@@ -43,14 +41,6 @@ public class TimetableController extends AbstractController {
     @Autowired
     private StudentService studentService;
 
-    @Autowired
-    private StringToLocalDateCustomFormatter stringToLocalDateCustomFormatter;
-
-    @InitBinder("targetDate")
-    public void setupBinder(WebDataBinder binder) {
-        binder.addCustomFormatter(stringToLocalDateCustomFormatter);
-    }
-
     @GetMapping
     public String showAllTimetables(Model model) {
         log.trace("Received GET request to show all timetables, URI={}", getRequestUri());
@@ -60,6 +50,14 @@ public class TimetableController extends AbstractController {
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_TIMETABLES, result.size()));
 
         return Page.TIMETABLES;
+    }
+
+    @GetMapping("/{timetableId}")
+    public String showTimetableInfo(@PathVariable("timetableId") Integer timetableId, Model model) {
+        log.trace("Received GET request to show data for timetable with id={}, URI={}", timetableId, getRequestUri());
+        model.addAttribute(Attribute.TIMETABLE, timetableService.findTimetableById(timetableId));
+
+        return Page.TIMETABLE_INFO;
     }
 
     @GetMapping("/teacher/{teacherId}/day")
@@ -153,5 +151,4 @@ public class TimetableController extends AbstractController {
 
         return Page.TIMETABLES;
     }
-
 }

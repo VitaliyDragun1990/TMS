@@ -3,29 +3,35 @@ package org.vdragun.tms.core.application.service;
 import java.time.LocalDateTime;
 
 /**
- * Contains necessary data to create new timetable
+ * Contains data necessary to update existing timetable
  * 
  * @author Vitaliy Dragun
  *
  */
-public class TimetableData {
+public class UpdateTimetableData {
 
+    private Integer timetableId;
     private LocalDateTime startTime;
     private int durationInMinutes;
-    private Integer courseId;
     private Integer classroomId;
-    private Integer teacherId;
 
-    public TimetableData() {
+    public UpdateTimetableData() {
     }
 
-    public TimetableData(LocalDateTime startTime, int durationInMinutes, Integer courseId, Integer classroomId,
-            Integer teacherId) {
+    public UpdateTimetableData(Integer timetableId, LocalDateTime startTime, int durationInMinutes,
+            Integer classroomId) {
+        this.timetableId = timetableId;
         this.startTime = startTime;
         this.durationInMinutes = durationInMinutes;
-        this.courseId = courseId;
         this.classroomId = classroomId;
-        this.teacherId = teacherId;
+    }
+
+    public Integer getTimetableId() {
+        return timetableId;
+    }
+
+    public void setTimetableId(Integer timetableId) {
+        this.timetableId = timetableId;
     }
 
     public LocalDateTime getStartTime() {
@@ -44,14 +50,6 @@ public class TimetableData {
         this.durationInMinutes = durationInMinutes;
     }
 
-    public Integer getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(Integer courseId) {
-        this.courseId = courseId;
-    }
-
     public Integer getClassroomId() {
         return classroomId;
     }
@@ -60,18 +58,10 @@ public class TimetableData {
         this.classroomId = classroomId;
     }
 
-    public Integer getTeacherId() {
-        return teacherId;
-    }
-
-    public void setTeacherId(Integer teacherId) {
-        this.teacherId = teacherId;
-    }
-
     @Override
     public String toString() {
-        return "TimetableData [startTime=" + startTime + ", durationInMinutes=" + durationInMinutes + ", courseId="
-                + courseId + ", classroomId=" + classroomId + ", teacherId=" + teacherId + "]";
+        return "UpdateTimetableData [timetableId=" + timetableId + ", startTime=" + startTime + ", durationInMinutes="
+                + durationInMinutes + ", classroomId=" + classroomId + "]";
     }
 
 }

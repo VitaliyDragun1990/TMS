@@ -73,8 +73,8 @@ public class Timetable {
         return classroom;
     }
 
-    public void setClassroom(Classroom classRoom) {
-        this.classroom = classRoom;
+    public void setClassroom(Classroom classroom) {
+        this.classroom = classroom;
     }
 
     public Teacher getTeacher() {

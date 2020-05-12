@@ -22,6 +22,11 @@ public interface TimetableDao {
     void save(Timetable timetable);
 
     /**
+     * Updates specified timetable instance.
+     */
+    void update(Timetable timetable);
+
+    /**
      * Saves all specified timetable instances. Each saved object receives unique
      * identifier.
      */
@@ -60,4 +65,16 @@ public interface TimetableDao {
      * specified month.
      */
     List<Timetable> findMonthlyForTeacher(Integer teacherId, Month month);
+
+    /**
+     * Deletes timetable with given identifier, if any
+     */
+    void deleteById(Integer timetableId);
+
+    /**
+     * Checks whether timetable with provided identifier exists
+     * 
+     * @return {@code true} if such timetable exists, {@code false} otherwise
+     */
+    boolean existsById(Integer timetableId);
 }

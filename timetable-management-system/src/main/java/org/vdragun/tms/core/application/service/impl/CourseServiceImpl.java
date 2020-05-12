@@ -41,8 +41,8 @@ public class CourseServiceImpl implements CourseService {
     public Course registerNewCourse(CourseData courseData) {
         LOG.debug("Registering new course using data: {}", courseData);
 
-        Category category = requireExistingCategory(courseData.getCategoryId());
-        Teacher teacher = requireExistingTeacher(courseData.getTeacherId());
+        Category category = getCategory(courseData.getCategoryId());
+        Teacher teacher = getTeacher(courseData.getTeacherId());
         Course course = new Course(courseData.getName(), courseData.getDescription(), category, teacher);
         courseDao.save(course);
 
@@ -79,7 +79,7 @@ public class CourseServiceImpl implements CourseService {
         return result;
     }
 
-    private Teacher requireExistingTeacher(Integer teacherId) {
+    private Teacher getTeacher(Integer teacherId) {
         Optional<Teacher> result = teacherDao.findById(teacherId);
         if (!result.isPresent()) {
             throw new ResourceNotFoundException("Fail to register new course: teacher with id=%d does not exist",
@@ -88,7 +88,7 @@ public class CourseServiceImpl implements CourseService {
         return result.get();
     }
 
-    private Category requireExistingCategory(Integer categoryId) {
+    private Category getCategory(Integer categoryId) {
         Optional<Category> result = categoryDao.findById(categoryId);
         if (!result.isPresent()) {
             throw new ResourceNotFoundException("Fail to register new course: category with id=%d does not exist",

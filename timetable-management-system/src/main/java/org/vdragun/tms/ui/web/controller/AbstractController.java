@@ -20,7 +20,7 @@ import org.vdragun.tms.ui.web.util.Constants.Message;
  * @author Vitaliy Dragun
  *
  */
-abstract class AbstractController {
+public abstract class AbstractController {
 
     protected Logger log = LoggerFactory.getLogger(getClass());
 
@@ -47,6 +47,10 @@ abstract class AbstractController {
     protected String getRequestUri() {
         ServletUriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromCurrentRequest();
         return uriBuilder.toUriString();
+    }
+
+    protected String redirectTo(String targetURI) {
+        return "redirect:" + targetURI;
     }
 
 }

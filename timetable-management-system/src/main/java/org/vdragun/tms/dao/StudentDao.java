@@ -78,4 +78,9 @@ public interface StudentDao {
      */
     boolean existsById(Integer studentId);
 
+    /**
+     * Deletes student with given identifier, if any
+     */
+    void deleteById(Integer studentId);
+
 }

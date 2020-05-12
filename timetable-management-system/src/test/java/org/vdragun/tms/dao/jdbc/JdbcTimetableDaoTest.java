@@ -8,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.vdragun.tms.core.domain.Title.PROFESSOR;
 
@@ -32,6 +33,7 @@ import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.dao.DaoException;
 import org.vdragun.tms.dao.TimetableDao;
 
 @SpringJUnitConfig(classes = { DaoConfig.class, DBTestConfig.class })
@@ -288,6 +290,92 @@ public class JdbcTimetableDaoTest {
 
         assertThat(result, hasSize(2));
         assertThat(result, containsInAnyOrder(timetableA, timetableB));
+    }
+
+    @Test
+    void shouldDeleteTimetableById() throws SQLException {
+        Classroom classroom = jdbcHelper.saveClassroomToDatabase(CAPACITY);
+        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
+        Category category = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
+        Course course = jdbcHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
+        Timetable expected = jdbcHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course, teacher,
+                classroom);
+
+        dao.deleteById(expected.getId());
+
+        assertNoGivenTimetablesInDatabase(expected);
+    }
+
+    @Test
+    void shouldReturnFalseIfNoTimetableWithGivenIdentifier() {
+        boolean result = dao.existsById(1);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void shouldReturnTrueIfTimetableWithGivenIdentifierExists() throws SQLException {
+        Classroom classroom = jdbcHelper.saveClassroomToDatabase(CAPACITY);
+        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
+        Category category = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
+        Course course = jdbcHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
+        Timetable expected = jdbcHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course, teacher,
+                classroom);
+
+        boolean result = dao.existsById(expected.getId());
+
+        assertTrue(result);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdatingNonExistingTimetable() throws SQLException {
+        Classroom classroom = jdbcHelper.saveClassroomToDatabase(CAPACITY);
+        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
+        Category category = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
+        Course course = jdbcHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
+        Timetable timetable = new Timetable(MARCH_TEN_NINE_THIRTY, DURATION, course, classroom, teacher);
+
+        assertThrows(DaoException.class, () -> dao.update(timetable));
+    }
+
+    @Test
+    void shouldUpdateExistingTimetable() throws SQLException {
+        Classroom classroom = jdbcHelper.saveClassroomToDatabase(CAPACITY);
+        Teacher teacher = jdbcHelper.saveTeacherToDatabase(JACK, THOMPSON, PROFESSOR, DATE_HIRED);
+        Category category = jdbcHelper.saveCategoryToDatabase(CODE_BIO, DESCR_BIO);
+        Course course = jdbcHelper.saveCourseToDatabase(BIO_TWENTY_FIVE, COURSE_DESCR, category, teacher);
+        Timetable existing = jdbcHelper.saveTimetableToDatabase(MARCH_TEN_NINE_THIRTY, DURATION, course, teacher,
+                classroom);
+
+        Classroom newClassroom = jdbcHelper.saveClassroomToDatabase(CAPACITY + 10);
+        int newDuration = DURATION + 30;
+        LocalDateTime newTime = MARCH_TWENTY_FIFTH_NINE_THIRTY;
+        existing.setClassroom(newClassroom);
+        existing.setDurationInMinutes(newDuration);
+        existing.setStartTime(newTime);
+
+        dao.update(existing);
+
+        assertTimetableInDatabase(existing);
+    }
+
+    private void assertTimetableInDatabase(Timetable expected) throws SQLException {
+        Optional<Timetable> result = jdbcHelper.findAllTimetablesInDatabase().stream()
+                .filter(timetable -> timetable.equals(expected))
+                .findFirst();
+
+        assertTrue(result.isPresent());
+        Timetable actual = result.get();
+        assertThat(actual.getStartTime(), equalTo(expected.getStartTime()));
+        assertThat(actual.getDurationInMinutes(), equalTo(expected.getDurationInMinutes()));
+        assertThat(actual.getClassroom(), equalTo(expected.getClassroom()));
+        assertThat(actual.getTeacher(), equalTo(expected.getTeacher()));
+        assertThat(actual.getCourse(), equalTo(expected.getCourse()));
+    }
+
+    private void assertNoGivenTimetablesInDatabase(Timetable... expected) throws SQLException {
+        List<Timetable> result = jdbcHelper.findAllTimetablesInDatabase();
+        assertThat(result, not(containsInAnyOrder(expected)));
     }
 
     private void assertTimetablesInDatabase(Timetable... expected) throws SQLException {

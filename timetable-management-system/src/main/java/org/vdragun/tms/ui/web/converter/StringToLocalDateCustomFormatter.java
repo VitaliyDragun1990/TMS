@@ -11,7 +11,7 @@ import org.vdragun.tms.ui.web.util.Constants.Message;
 
 /**
  * Responsible for converting string values into {@link LocalDate} instances and
- * vice versa using different patterns depending on current user's locale
+ * vice versa using different patterns according to user's locale
  * 
  * @author Vitaliy Dragun
  *
@@ -26,16 +26,16 @@ public class StringToLocalDateCustomFormatter implements Formatter<LocalDate> {
 
     @Override
     public String print(LocalDate object, Locale locale) {
-        String pattern = messageSource.getMessage(Message.DATE_FORMAT, null, locale);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        return formatter.format(object);
+        return getFormatter(locale).format(object);
     }
 
     @Override
     public LocalDate parse(String text, Locale locale) throws ParseException {
-        String pattern = messageSource.getMessage(Message.DATE_FORMAT, null, locale);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        return LocalDate.parse(text, formatter);
+        return LocalDate.parse(text, getFormatter(locale));
     }
 
+    private DateTimeFormatter getFormatter(Locale locale) {
+        String pattern = messageSource.getMessage(Message.DATE_FORMAT, null, locale);
+        return DateTimeFormatter.ofPattern(pattern);
+    }
 }

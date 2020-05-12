@@ -2,7 +2,6 @@ package org.vdragun.tms.config;
 
 import java.util.Locale;
 
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
@@ -11,11 +10,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
@@ -26,8 +25,10 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.vdragun.tms.ui.web.converter.StringToLocalDateCustomFormatter;
+import org.vdragun.tms.ui.web.converter.StringToLocalDateTimeCustomFormatter;
 import org.vdragun.tms.ui.web.converter.StringToTitleConverter;
 import org.vdragun.tms.ui.web.converter.TitleToStringConverter;
+import org.vdragun.tms.ui.web.util.Constants.Page;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import nz.net.ultraq.thymeleaf.decorators.strategies.GroupingRespectLayoutTitleStrategy;
@@ -40,7 +41,7 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
     private ApplicationContext applicationContext;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
@@ -99,6 +100,11 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
         return new StringToLocalDateCustomFormatter(messageSource);
     }
 
+    @Bean
+    public StringToLocalDateTimeCustomFormatter stringToLocalDateTimeCustomFormatter(MessageSource messageSource) {
+        return new StringToLocalDateTimeCustomFormatter(messageSource);
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
@@ -115,19 +121,25 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        DateTimeFormatterRegistrar registrar = new DateTimeFormatterRegistrar();
-        registrar.setUseIsoFormat(true);
-        registrar.registerFormatters(registry);
         registry.addConverter(new TitleToStringConverter());
         registry.addConverter(new StringToTitleConverter());
+        registry.addFormatter(stringToLocalDateCustomFormatter(messageSource()));
+        registry.addFormatter(stringToLocalDateTimeCustomFormatter(messageSource()));
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-                .addResourceHandler("/css/**", "/js/**")
-                .addResourceLocations("classpath:/static/css/", "classpath:/static/js/")
-                .setCachePeriod(0);
+                .addResourceHandler("/css/**", "/js/**", "/webjars/**")
+                .addResourceLocations("classpath:/static/css/", "classpath:/static/js/", "/webjars/")
+                .resourceChain(false);
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        WebMvcConfigurer.super.addViewControllers(registry);
+        registry.addViewController("/").setViewName(Page.HOME);
+        registry.addRedirectViewController("/home", "/");
     }
 
 }

@@ -21,7 +21,17 @@ public interface TimetableService {
      * @param timetableData data to register new timetable
      * @return newly registered timetable
      */
-    Timetable registerNewTimetable(TimetableData timetableData);
+    Timetable registerNewTimetable(CreateTimetableData timetableData);
+
+    /**
+     * Update existing timetable using provided data
+     * 
+     * @param timetableData data to update existing timetable
+     * @return updated timetable
+     * @throws ResourceNotFoundException if timetable and/or any specified resource
+     *                                   intended for update is not found
+     */
+    Timetable updateExistingTimetable(UpdateTimetableData timetableData);
 
     /**
      * Returns existing timetable using provided identifier
@@ -74,5 +84,13 @@ public interface TimetableService {
      * @param month     month for which timetables should be found
      */
     List<Timetable> findMonthlyTimetablesForTeacher(Integer teacherId, Month month);
+
+    /**
+     * Deletes timetable with specified identifier
+     * 
+     * @param timetableId timetable identifier
+     * @throws ResourceNotFoundException if no timetable with specified identifier
+     */
+    void deleteTimetableById(Integer timetableId);
 
 }

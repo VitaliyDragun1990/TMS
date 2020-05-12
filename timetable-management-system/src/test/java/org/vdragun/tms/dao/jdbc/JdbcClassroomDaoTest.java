@@ -81,6 +81,22 @@ public class JdbcClassroomDaoTest {
         assertThat(result, containsInAnyOrder(classroomA, classroomB));
     }
 
+    @Test
+    void shouldReturnFalseIfClassroomWithGivenIdentifierDoesNotExist() {
+        boolean result = dao.existsById(1);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void shouldReturnTrueIfClassroomWithGivenIdentifierExists() throws SQLException {
+        Classroom classroom = jdbcHelper.saveClassroomToDatabase(CAPACITY);
+
+        boolean result = dao.existsById(classroom.getId());
+
+        assertTrue(result);
+    }
+
     private void assertClassroomInDatabase(Classroom classroom) throws SQLException {
         assertThat("classroom should have id", classroom.getId(), is(not(nullValue())));
 

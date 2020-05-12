@@ -61,6 +61,9 @@ public class JdbcStudentDao implements StudentDao {
     @Value("${student.exists}")
     private String existsQuery;
 
+    @Value("${student.deleteById}")
+    private String deleteByIdQuery;
+
     private JdbcTemplate jdbc;
     private StudentsWithCoursesExtractor studentsExtractor;
 
@@ -168,6 +171,13 @@ public class JdbcStudentDao implements StudentDao {
     public void removeFromAllCourses(Integer studentId) {
         LOG.debug("Removing student with id={} from all assigned courses in the database", studentId);
         jdbc.update(removeFromAllCoursesQuery, studentId);
+    }
+
+    @Override
+    public void deleteById(Integer studentId) {
+        removeFromAllCourses(studentId);
+        LOG.debug("Deleting student with id={} from the database", studentId);
+        jdbc.update(deleteByIdQuery, studentId);
     }
 
 }

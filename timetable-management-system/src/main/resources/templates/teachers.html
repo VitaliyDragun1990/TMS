@@ -19,7 +19,7 @@
           <th scope="col" th:text="#{label.courses}">Courses</th>
         </tr>
       </thead>
-      <tbody th:with="df=#{format.date}">
+      <tbody>
         <tr th:each="teacher,iterStat : ${teachers}" th:object="${teacher}">
           <th scope="row" th:text="${iterStat.count}">1</th>
           <td>
@@ -28,7 +28,7 @@
               Mark Otto
             </a>
           </td>
-          <td th:text="${#temporals.format(teacher.dateHired, df)}">25/10/2017</td>
+          <td th:text="*{{dateHired}}">25/10/2017</td>
           <td th:text="#{|label.title.${teacher.title}|}">Instructor</td>
           <td>
             <p th:each="course : ${teacher.courses}" th:text="${course.name}" class="text-dark">

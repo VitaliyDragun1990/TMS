@@ -22,7 +22,12 @@
       <tbody>
         <tr th:each="course,iterStat : ${courses}" th:object="${course}">
           <th scope="row" th:text="${iterStat.count}">1</th>
-          <td th:text="*{name}">Basic English</td>
+          <td>
+            <a class="btn btn-link" href="#" th:href="@{/courses/{courseId}(courseId=*{id})}"
+               th:text="*{name}">
+              Basic English
+            </a>
+          </td>
           <td th:text="*{description}">Totally awesome course</td>
           <td th:text="*{category.code}">ENG</td>
           <td>

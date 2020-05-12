@@ -23,6 +23,11 @@
                               Show All
                             </a>
                         </li>
+                        <li>
+                            <a href="#" th:href="@{/students/register}" th:text="#{label.register}">
+                              Register
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li th:class="${#strings.contains(#request.requestURI,'/teachers') ? 'active': ''}">
@@ -33,6 +38,9 @@
                     <ul class="collapse list-unstyled" id="teacherSubmenu">
                         <li>
                             <a href="#" th:href="@{/teachers}" th:text="#{label.showAll}">Show All</a>
+                        </li>
+                        <li>
+                            <a href="#" th:href="@{/teachers/register}" th:text="#{label.register}">Register</a>
                         </li>
                     </ul>
                 </li>
@@ -45,6 +53,9 @@
                         <li>
                             <a href="#" th:href="@{/timetables}" th:text="#{label.showAll}">Show All</a>
                         </li>
+                        <li>
+                            <a href="#" th:href="@{/timetables/register}" th:text="#{label.register}">Register</a>
+                        </li>
                     </ul>
                 </li>
                 <li th:class="${#strings.contains(#request.requestURI,'/courses') ? 'active': ''}">
@@ -55,6 +66,9 @@
                     <ul class="collapse list-unstyled" id="courseSubmenu">
                         <li>
                             <a href="#" th:href="@{/courses}" th:text="#{label.showAll}">Show All</a>
+                        </li>
+                        <li>
+                            <a href="#" th:href="@{/courses/register}" th:text="#{label.register}">Register</a>
                         </li>
                     </ul>
                 </li>

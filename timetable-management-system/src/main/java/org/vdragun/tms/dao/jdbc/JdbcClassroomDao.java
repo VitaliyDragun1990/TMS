@@ -35,6 +35,9 @@ public class JdbcClassroomDao implements ClassroomDao {
     @Value("${classroom.findAll}")
     private String findAllQuery;
 
+    @Value("${classroom.exists}")
+    private String existsQuery;
+
     private JdbcTemplate jdbc;
     private ClassroomMapper mapper;
 
@@ -76,5 +79,11 @@ public class JdbcClassroomDao implements ClassroomDao {
     public List<Classroom> findAll() {
         LOG.debug("Retrieving all classrooms from the database");
         return jdbc.query(findAllQuery, mapper);
+    }
+
+    @Override
+    public boolean existsById(Integer classroomId) {
+        LOG.debug("Checking whether classroom with id={} exists in the database", classroomId);
+        return jdbc.queryForObject(existsQuery, Boolean.class, classroomId);
     }
 }

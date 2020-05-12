@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.web.controller;
+package org.vdragun.tms.ui.web.controller.teacher;
 
 import java.util.List;
 
@@ -10,19 +10,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.vdragun.tms.core.application.service.TeacherService;
 import org.vdragun.tms.core.domain.Teacher;
+import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.ui.web.util.Constants.Attribute;
 import org.vdragun.tms.ui.web.util.Constants.Message;
 import org.vdragun.tms.ui.web.util.Constants.Page;
 
 /**
- * Processes teacher-related requests
+ * Processes teacher-related search requests
  * 
  * @author Vitaliy Dragun
  *
  */
 @Controller
 @RequestMapping("/teachers")
-public class TeacherController extends AbstractController {
+public class SearchTeacherController extends AbstractController {
 
     @Autowired
     private TeacherService teacherService;

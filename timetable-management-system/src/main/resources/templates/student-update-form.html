@@ -4,18 +4,16 @@
 >
 <head>
 <meta charset="UTF-8" />
-<title th:text="#{title.studentInfo}">Student Info</title>
+<title th:text="#{title.studentUpdateForm}">Student Update Form</title>
 </head>
 <body>
   <div layout:fragment="content">
     <div class="w-75 p-3">
     
-      <div th:replace="fragments/info-message :: message (${infoMsg})">
-      </div>
-    
-      <h3 class="mb-5" th:text="#{title.studentInfo}">Student Info</h3>
+      <h3 class="mb-5" th:text="#{title.studentUpdateForm}">Student Update Form</h3>
 
-      <form id="studentForm" th:object="${student}">
+      <form id="studentForm" th:object="${student}" th:action="@{/students/{id}(id=${student.id})}" method="post">
+        <input type="hidden" name="studentId" th:value="*{id}">
 
         <div class="form-group row">
           <label for="firstName" class="col-sm-2 col-form-label" th:text="#{label.fname}">First name</label>
@@ -37,14 +35,17 @@
             <input type="text" class="form-control" th:field="*{enrollmentDate}" disabled>
           </div>
         </div>
-        
+
         <div class="form-group row" th:with="hasGroup=${student.group ne null}">
-          <label for="group" class="col-sm-2 col-form-label" th:text="#{label.group}">Group</label>
+          <label for="group.id" class="col-sm-2 col-form-label" th:text="#{label.group}">Group</label>
           <div class="col-sm-10 form-row">
-            <select class="form-control w-25" name="group" id="group" disabled>
-              <option value="''" 
-                      th:value="${hasGroup} ? ${student.group.id} : ''" 
-                      th:text="${hasGroup} ? ${student.group.name} : '-'">-</option>
+            <select class="form-control w-25" name="groupId">
+              <option th:value="''" th:text="'-'" th:selected="${student.group == null}">-</option>
+              <option th:each="group : ${groups}"
+                      th:value="${group.id}"
+                      th:text="${group.name}"
+                      th:selected="${group.equals(student.group)}">ph-25</option>
+              
             </select>
           </div>
         </div>
@@ -53,32 +54,24 @@
           <div class="row">
             <legend class="col-form-label col-sm-2 pt-0" th:text="#{label.courses}">Courses</legend>
             <div class="col-sm-4">
-                <div class="form-check" th:each="course : ${student.courses}" th:object="${course}">
-                  <input class="form-check-input" type="checkbox" th:name="|course-*{id}|" th:id="*{name}" th:value="*{id}" 
-                         checked disabled>
-                  <label class="form-check-label" th:for="*{name}" th:text="*{name}">History</label>
+                <div class="form-check" th:each="course : ${courses}">
+                  <input class="form-check-input" type="checkbox" th:name="'courseIds'" th:value="${course.id}"
+                         th:id="${course.id}" th:checked="${#lists.contains(student.courses, course)}">
+                  <label class="form-check-label" th:for="${course.id}" th:text="${course.name}">
+                    History
+                  </label>
                 </div>
             </div>
           </div>
         </fieldset>
         
-        <div class="row">
-          <a href="#" th:href="@{/students/{id}/update(id=${student.id})}" class="btn btn-info mb-3 mr-3" 
-             th:text="#{label.updateStudent}">
-            Update Student
-          </a>
-          <button type="button" id="deleteDialogBtn" class="btn btn-danger mb-3" th:text="#{label.deleteStudent}">
-            Delete Student
-          </button>
-        </div>
+        <button type="button" id="updateDialogBtn" class="btn btn-info mb-3 mr-3" th:text="#{label.submit}">
+          Submit
+        </button>
         
       </form>
       
-      <hr />
-      <div th:replace="fragments/search-timetables :: search (@{'/timetables/student/'+${student.id}+'/'})">
-      </div>
-      
-      <div th:replace="fragments/dialogs :: delete (@{/students/delete},${student.id},#{title.studentDelete},#{msg.confirmStudentDelete})">
+      <div th:replace="fragments/dialogs :: update ('studentForm',#{title.studentUpdate},#{msg.confirmStudentUpdate})">
       </div>
       
     </div>
