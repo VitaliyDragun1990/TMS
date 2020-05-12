@@ -18,7 +18,7 @@
         <webjars-jquery.version>3.5.1</webjars-jquery.version>
         <webjars-popperjs.version>2.0.2</webjars-popperjs.version>
         <webjars-fontawesome.version>5.13.0</webjars-fontawesome.version>
-       
+
         <junit-pioneer.version>0.5.3</junit-pioneer.version>
     </properties>
 
@@ -84,6 +84,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <dependency>

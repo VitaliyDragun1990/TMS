@@ -28,7 +28,7 @@ import org.vdragun.tms.ui.web.util.Constants.Page;
  * @author Vitaliy Dragun
  *
  */
-@ControllerAdvice
+@ControllerAdvice(basePackages = "org.vdragun.tms.ui.web.controller")
 public class ApplicationExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationExceptionHandler.class);

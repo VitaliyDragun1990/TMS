@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
  */
 @SpringBootApplication(
         scanBasePackages = "org.vdragun.tms.config",
-        exclude = HibernateJpaAutoConfiguration.class)
+        exclude = { HibernateJpaAutoConfiguration.class })
 public class TMSApplication {
 
     public static void main(String[] args) {
