@@ -1,11 +1,14 @@
 package org.vdragun.tms.config;
 
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.jndi.JndiTemplate;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -13,8 +16,11 @@ import com.zaxxer.hikari.HikariDataSource;
 @PropertySource("classpath:db.properties")
 public class DBConfig {
 
-    @Bean
-    public DataSource dataSource(Environment env) {
+    @Autowired
+    private Environment env;
+
+//    @Bean
+    public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(env.getRequiredProperty("db.url"));
         dataSource.setDriverClassName(env.getRequiredProperty("db.driverClassName"));
@@ -25,6 +31,11 @@ public class DBConfig {
         dataSource.setIdleTimeout(env.getRequiredProperty("db.maxIdleTimeout", Integer.class));
 
         return dataSource;
+    }
+
+    @Bean
+    public DataSource jndiDataSource() throws NamingException {
+        return (DataSource) new JndiTemplate().lookup(env.getRequiredProperty("db.jndi.url"));
     }
 
 }
