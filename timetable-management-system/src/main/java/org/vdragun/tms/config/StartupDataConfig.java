@@ -2,7 +2,6 @@ package org.vdragun.tms.config;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -21,7 +20,7 @@ public class StartupDataConfig {
 
     @Bean
     public StartupDataInitializer startupDataInitializer(
-            @Qualifier("jndiDataSource") DataSource dataSource,
+            DataSource dataSource,
             ClassroomDao classroomDao,
             GroupDao groupDao,
             CategoryDao categoryDao,
