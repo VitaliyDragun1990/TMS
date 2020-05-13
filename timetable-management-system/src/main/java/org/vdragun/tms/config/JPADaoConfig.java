@@ -18,7 +18,7 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.vdragun.tms.dao.hibernate.TitleConverter;
+import org.vdragun.tms.dao.jpa.TitleConverter;
 
 /**
  * Contains configuration related to DAO layer implementation using Hibernate

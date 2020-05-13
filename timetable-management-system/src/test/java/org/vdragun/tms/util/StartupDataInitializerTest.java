@@ -11,13 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.vdragun.tms.config.JdbcDaoConfig;
+import org.vdragun.tms.config.JPADaoConfig;
 import org.vdragun.tms.config.StartupDataConfig;
-import org.vdragun.tms.dao.jdbc.DBTestConfig;
-import org.vdragun.tms.dao.jdbc.JdbcTestHelper;
+import org.vdragun.tms.dao.DBTestHelper;
+import org.vdragun.tms.dao.DaoTestConfig;
 
 @DisplayName("Startup Data Initializer")
-@SpringJUnitConfig({ DBTestConfig.class, JdbcDaoConfig.class, StartupDataConfig.class })
+@SpringJUnitConfig({ DaoTestConfig.class, JPADaoConfig.class, StartupDataConfig.class })
 class StartupDataInitializerTest {
 
     @Value("#{'${generator.category}'.split(',\\s*').length}")
@@ -42,17 +42,17 @@ class StartupDataInitializerTest {
     private Integer numberOfMonths;
 
     @Autowired
-    private JdbcTestHelper jdbcHelper;
+    private DBTestHelper dbHelper;
 
     @Test
     void shouldPopulateDatabaseWithInitDataOnStartup() throws SQLException {
-        int studentsInDatabase = jdbcHelper.findAllStudentsInDatabase().size();
-        int teachersInDatabase = jdbcHelper.findAllTeachersInDatabase().size();
-        int categoriesInDatabase = jdbcHelper.findAllCategoriesInDatabase().size();
-        int classroomsInDatabase = jdbcHelper.findAllClassroomsInDatabase().size();
-        int groupsInDatabase = jdbcHelper.findAllGroupsInDatabase().size();
-        int coursesInDatabase = jdbcHelper.findAllCoursesInDatabase().size();
-        int timetablesInDatabase = jdbcHelper.findAllTimetablesInDatabase().size();
+        int studentsInDatabase = dbHelper.findAllStudentsInDatabase().size();
+        int teachersInDatabase = dbHelper.findAllTeachersInDatabase().size();
+        int categoriesInDatabase = dbHelper.findAllCategoriesInDatabase().size();
+        int classroomsInDatabase = dbHelper.findAllClassroomsInDatabase().size();
+        int groupsInDatabase = dbHelper.findAllGroupsInDatabase().size();
+        int coursesInDatabase = dbHelper.findAllCoursesInDatabase().size();
+        int timetablesInDatabase = dbHelper.findAllTimetablesInDatabase().size();
 
         assertThat(studentsInDatabase, equalTo(expectedNumberOfStudents));
         assertThat(teachersInDatabase, equalTo(expectedNumberOfTeachers));

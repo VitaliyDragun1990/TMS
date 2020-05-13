@@ -1,4 +1,4 @@
-package org.vdragun.tms.dao.hibernate;
+package org.vdragun.tms.dao.jpa;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
