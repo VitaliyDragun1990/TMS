@@ -81,6 +81,7 @@ public class Teacher extends Person {
         this.dateHired = dateHired;
     }
 
+//    @Convert(converter = TitleConverter.class)
     @Column(name = "title")
     public Title getTitle() {
         return title;

@@ -30,7 +30,7 @@ public interface TimetableDao {
      * Saves all specified timetable instances. Each saved object receives unique
      * identifier.
      */
-    void saveAll(List<Timetable> timetables);
+    void saveAll(Iterable<Timetable> timetables);
 
     /**
      * Returns timetable with given identifier if any

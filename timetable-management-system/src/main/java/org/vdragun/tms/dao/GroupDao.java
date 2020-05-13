@@ -23,7 +23,7 @@ public interface GroupDao {
      * Saves all specified group instances. Each saved object receives unique
      * identifier.
      */
-    void saveAll(List<Group> groups);
+    void saveAll(Iterable<Group> groups);
 
     /**
      * Returns group with specified identifier if any.

@@ -1,5 +1,6 @@
 package org.vdragun.tms.dao.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,12 +39,14 @@ public class JPACourseDao implements CourseDao {
     }
 
     @Override
-    public void saveAll(List<Course> courses) {
-        LOG.debug("Saving {} new courses to the database", courses.size());
-        for (int i = 0; i < courses.size(); i++) {
+    public void saveAll(Iterable<Course> courses) {
+        List<Course> list = new ArrayList<>();
+        courses.forEach(list::add);
+        LOG.debug("Saving {} new courses to the database", list.size());
+        for (int i = 0; i < list.size(); i++) {
             // saves course instance into active persistent context (but not in the database)
-            entityManager.persist(courses.get(i));
-            if (i % batchSize == 0 || i == courses.size() - 1) {
+            entityManager.persist(list.get(i));
+            if (i % batchSize == 0 || i == list.size() - 1) {
                 // flush changes to the database (actually save courses into the database)
                 entityManager.flush();
                 // clear persistent context from all persisted entities

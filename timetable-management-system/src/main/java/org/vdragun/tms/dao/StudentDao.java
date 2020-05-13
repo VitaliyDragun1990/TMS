@@ -23,7 +23,7 @@ public interface StudentDao {
      * Saves all specified student instances. Each saved object receives unique
      * identifier.
      */
-    void saveAll(List<Student> students);
+    void saveAll(Iterable<Student> students);
 
     /**
      * Returns student with given identifier if any.

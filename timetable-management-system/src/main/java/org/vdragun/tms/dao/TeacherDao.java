@@ -23,7 +23,7 @@ public interface TeacherDao {
      * Saves all specified teacher instances. Each saved object receives unique
      * identifier.
      */
-    void saveAll(List<Teacher> teachers);
+    void saveAll(Iterable<Teacher> teachers);
 
     /**
      * Returns teacher with given identifier if any.

@@ -1,5 +1,6 @@
 package org.vdragun.tms.dao.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,12 +39,14 @@ public class JPATeacherDao implements TeacherDao {
     }
 
     @Override
-    public void saveAll(List<Teacher> teachers) {
-        LOG.debug("Saving {} new teachers to the database", teachers.size());
-        for (int i = 0; i < teachers.size(); i++) {
+    public void saveAll(Iterable<Teacher> teachers) {
+        List<Teacher> list = new ArrayList<>();
+        teachers.forEach(list::add);
+        LOG.debug("Saving {} new teachers to the database", list.size());
+        for (int i = 0; i < list.size(); i++) {
             // saves teacher instance into active persistence context (but not in the database)
-            entityManager.persist(teachers.get(i));
-            if (i % batchSize == 0 || i == teachers.size() - 1) {
+            entityManager.persist(list.get(i));
+            if (i % batchSize == 0 || i == list.size() - 1) {
                 // flush changes to the database (actually save teachers into the database)
                 entityManager.flush();
                 // clear persistence context from all persisted entities

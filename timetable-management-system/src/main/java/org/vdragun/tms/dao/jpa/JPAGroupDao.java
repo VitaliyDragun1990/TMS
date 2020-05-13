@@ -1,5 +1,6 @@
 package org.vdragun.tms.dao.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,12 +39,14 @@ public class JPAGroupDao implements GroupDao {
     }
 
     @Override
-    public void saveAll(List<Group> groups) {
-        LOG.debug("Saving {} new groups to the database", groups.size());
-        for (int i = 0; i < groups.size(); i++) {
+    public void saveAll(Iterable<Group> groups) {
+        List<Group> list = new ArrayList<>();
+        groups.forEach(list::add);
+        LOG.debug("Saving {} new groups to the database", list.size());
+        for (int i = 0; i < list.size(); i++) {
             // saves group instance into active persistent context (but not in the database)
-            entityManager.persist(groups.get(i));
-            if (i % batchSize == 0 || i == groups.size() - 1) {
+            entityManager.persist(list.get(i));
+            if (i % batchSize == 0 || i == list.size() - 1) {
                 // flush changes to the database (actually save groups into the database)
                 entityManager.flush();
                 // clear persistence context from all persisted entities

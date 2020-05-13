@@ -16,11 +16,11 @@ import org.vdragun.tms.dao.DaoException;
 @Aspect
 public class DaoExceptionAspect {
 
-    @Pointcut("within(@org.springframework.stereotype.Repository *)")
-    public void repositoryClassMethods() {
+    @Pointcut("within(org.vdragun.tms.dao..*)")
+    public void daoLayerComponentMethods() {
     }
 
-    @AfterThrowing(pointcut = "repositoryClassMethods()", throwing = "ex")
+    @AfterThrowing(pointcut = "daoLayerComponentMethods()", throwing = "ex")
     public void wrapDataAccessException(DataAccessException ex) {
         throw new DaoException(ex);
     }

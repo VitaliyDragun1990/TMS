@@ -1,5 +1,6 @@
 package org.vdragun.tms.dao.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,12 +39,14 @@ public class JPACategoryDao implements CategoryDao {
     }
 
     @Override
-    public void saveAll(List<Category> categories) {
-        LOG.debug("Saving {} new categories to the database", categories.size());
-        for (int i = 0; i < categories.size(); i++) {
+    public void saveAll(Iterable<Category> categories) {
+        List<Category> list = new ArrayList<>();
+        categories.forEach(list::add);
+        LOG.debug("Saving {} new categories to the database", list.size());
+        for (int i = 0; i < list.size(); i++) {
             // saves category instance into active persistent context (but not in the database)
-            entityManager.persist(categories.get(i));
-            if (i % batchSize == 0 || i == categories.size() - 1) {
+            entityManager.persist(list.get(i));
+            if (i % batchSize == 0 || i == list.size() - 1) {
                 // flush changes to the database (actually save categories into the database)
                 entityManager.flush();
                 // clear persistent context from all persisted entities

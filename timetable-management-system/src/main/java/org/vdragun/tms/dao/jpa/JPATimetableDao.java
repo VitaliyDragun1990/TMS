@@ -2,6 +2,7 @@ package org.vdragun.tms.dao.jpa;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,12 +50,14 @@ public class JPATimetableDao implements TimetableDao {
     }
 
     @Override
-    public void saveAll(List<Timetable> timetables) {
-        LOG.debug("Saving {} new timetables to the database", timetables.size());
-        for (int i = 0; i < timetables.size(); i++) {
+    public void saveAll(Iterable<Timetable> timetables) {
+        List<Timetable> list = new ArrayList<>();
+        timetables.forEach(list::add);
+        LOG.debug("Saving {} new timetables to the database", list.size());
+        for (int i = 0; i < list.size(); i++) {
             // saves timetable instance into active persistence context (but not in the database)
-            entityManager.persist(timetables.get(i));
-            if (i % batchSize == 0 || i == timetables.size() - 1) {
+            entityManager.persist(list.get(i));
+            if (i % batchSize == 0 || i == list.size() - 1) {
                 // flush changes to the database (actually save timetables into the database)
                 entityManager.flush();
                 // clear persistence context from all persisted entities
