@@ -79,7 +79,7 @@ public class JPAStudentDao implements StudentDao {
     }
 
     @Override
-    public List<Student> findForCourse(Integer courseId) {
+    public List<Student> findByCourseId(Integer courseId) {
         LOG.debug("Retrieving all students registered for course with id={} from the database", courseId);
         TypedQuery<Student> query = entityManager.createQuery(
                 "SELECT DISTINCT s FROM Student s JOIN FETCH s.courses "
@@ -90,7 +90,7 @@ public class JPAStudentDao implements StudentDao {
     }
 
     @Override
-    public List<Student> findForGroup(Integer groupId) {
+    public List<Student> findByGroupId(Integer groupId) {
         LOG.debug("Retrieving all students assigned to group with id={} from the database", groupId);
         TypedQuery<Student> query = entityManager.createQuery(
                 "SELECT DISTINCT s FROM Student s LEFT JOIN FETCH s.courses c WHERE s.group.id = ?1",

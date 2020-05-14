@@ -79,7 +79,7 @@ public class JPATeacherDao implements TeacherDao {
     }
 
     @Override
-    public Optional<Teacher> findForCourse(Integer courseId) {
+    public Optional<Teacher> findForCourseWithId(Integer courseId) {
         LOG.debug("Searching for teacher assigned to course with id={} in the database", courseId);
         // Select teacher assigned to course with given identity if any
         // returns such teachers and all their courses eagerly loaded in one select

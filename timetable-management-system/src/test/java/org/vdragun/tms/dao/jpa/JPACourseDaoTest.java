@@ -115,7 +115,7 @@ public class JPACourseDaoTest {
     void shouldReturnEmptyListIfNoCourseWithSpecifiedCategory() {
         Category categoryArt = jdbcHelper.findCategoryByCodeInDatabase(CODE_ART);
 
-        List<Course> result = dao.findByCategory(categoryArt.getId());
+        List<Course> result = dao.findByCategoryId(categoryArt.getId());
 
         assertThat(result, hasSize(0));
     }
@@ -125,7 +125,7 @@ public class JPACourseDaoTest {
     void shouldFindAllCoursesForSpecifiedCategory() {
         Category categoryBio = jdbcHelper.findCategoryByCodeInDatabase(CODE_BIO);
 
-        List<Course> result = dao.findByCategory(categoryBio.getId());
+        List<Course> result = dao.findByCategoryId(categoryBio.getId());
 
         assertCoursesWithNames(result, ADVANCED_BIOLOGY, INTERMEDIATE_BIOLOGY);
     }

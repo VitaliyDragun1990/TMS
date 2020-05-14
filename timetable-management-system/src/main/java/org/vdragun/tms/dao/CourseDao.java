@@ -38,7 +38,7 @@ public interface CourseDao {
     /**
      * Finds all courses belonging to category with specified identifier
      */
-    List<Course> findByCategory(Integer categoryId);
+    List<Course> findByCategoryId(Integer categoryId);
 
     /**
      * Checks whether course with specified identifier exists

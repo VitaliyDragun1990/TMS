@@ -124,7 +124,7 @@ public class SpringDataStudentDaoTest {
     void shouldReturnEmptyListIfNoStudentsForGivenCourse() {
         Course coreHistory = dbHelper.findCourseByNameInDatabase(CORE_HISORY);
 
-        List<Student> result = dao.findForCourse(coreHistory.getId());
+        List<Student> result = dao.findByCourseId(coreHistory.getId());
 
         assertThat(result, hasSize(0));
     }
@@ -134,7 +134,7 @@ public class SpringDataStudentDaoTest {
     void shouldFindAllStudentsAssignedToCourseWithGivenId() {
         Course advancedBilogy = dbHelper.findCourseByNameInDatabase(ADVANCED_BIOLOGY);
 
-        List<Student> result = dao.findForCourse(advancedBilogy.getId());
+        List<Student> result = dao.findByCourseId(advancedBilogy.getId());
 
         assertStudentsWithNames(
                 result,
@@ -146,7 +146,7 @@ public class SpringDataStudentDaoTest {
     void shouldFindAllStudentsWithAllCoursesAssignedToCourseWithGivenId() {
         Course coreBilogy = dbHelper.findCourseByNameInDatabase(CORE_BIOLOGY);
 
-        List<Student> result = dao.findForCourse(coreBilogy.getId());
+        List<Student> result = dao.findByCourseId(coreBilogy.getId());
 
         assertStudentsWithNames(
                 result,
@@ -159,7 +159,7 @@ public class SpringDataStudentDaoTest {
     void shouldReturnEmptyListIfNoStudentsForGivenGroupInDatabase() {
         Group psTwenty = dbHelper.findGroupByNameInDatabase(PS_TWENTY);
 
-        List<Student> result = dao.findForGroup(psTwenty.getId());
+        List<Student> result = dao.findByGroupId(psTwenty.getId());
 
         assertThat(result, hasSize(0));
     }
@@ -169,7 +169,7 @@ public class SpringDataStudentDaoTest {
     void shouldFindAllStudentsAssignedToGroupWithGivenIdInDatabase() {
         Group mhTen = dbHelper.findGroupByNameInDatabase(MH_TEN);
 
-        List<Student> result = dao.findForGroup(mhTen.getId());
+        List<Student> result = dao.findByGroupId(mhTen.getId());
 
         assertStudentsWithNames(
                 result,

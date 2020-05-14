@@ -118,7 +118,7 @@ public class JPATeacherDaoTest {
     @Test
     @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnEmptyResultIfNoCourseWithGivenIdInDatabase() {
-        Optional<Teacher> result = dao.findForCourse(1);
+        Optional<Teacher> result = dao.findForCourseWithId(1);
 
         assertFalse(result.isPresent());
     }
@@ -128,7 +128,7 @@ public class JPATeacherDaoTest {
     void shouldReturnTeacherForCourseWithGivenId() {
         Course advancedBiology = dbHelper.findCourseByNameInDatabase(ADVANCED_BIOLOGY);
 
-        Optional<Teacher> result = dao.findForCourse(advancedBiology.getId());
+        Optional<Teacher> result = dao.findForCourseWithId(advancedBiology.getId());
 
         assertTrue(result.isPresent());
         assertTeacherCourses(result.get(), ADVANCED_BIOLOGY, INTERMEDIATE_BIOLOGY);

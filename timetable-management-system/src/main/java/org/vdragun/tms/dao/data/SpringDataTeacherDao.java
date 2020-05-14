@@ -27,5 +27,5 @@ public interface SpringDataTeacherDao extends TeacherDao {
 
     @Override
     @Query("SELECT t FROM Course c JOIN c.teacher t JOIN FETCH t.courses WHERE c.id = ?1")
-    Optional<Teacher> findForCourse(Integer courseId);
+    Optional<Teacher> findForCourseWithId(Integer courseId);
 }

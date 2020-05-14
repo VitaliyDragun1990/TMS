@@ -68,7 +68,7 @@ public class JPACourseDao implements CourseDao {
     }
 
     @Override
-    public List<Course> findByCategory(Integer categoryId) {
+    public List<Course> findByCategoryId(Integer categoryId) {
         LOG.debug("Retrieving all courses belonging to category with id={} from the database", categoryId);
         TypedQuery<Course> query = entityManager.createQuery("SELECT c FROM Course c WHERE c.category.id = ?1",
                 Course.class);

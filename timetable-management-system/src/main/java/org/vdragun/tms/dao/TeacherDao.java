@@ -38,7 +38,7 @@ public interface TeacherDao {
     /**
      * Finds teacher assigned to the course with given identifier if any.
      */
-    Optional<Teacher> findForCourse(Integer courseId);
+    Optional<Teacher> findForCourseWithId(Integer courseId);
 
     /**
      * Checks whether teacher with specified identifier exists

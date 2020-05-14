@@ -78,7 +78,7 @@ public class CourseServiceImpl implements CourseService {
     public List<Course> findCoursesByCategory(Integer categoryId) {
         LOG.debug("Retrieving courses belonging to category with id={}", categoryId);
 
-        List<Course> result = courseDao.findByCategory(categoryId);
+        List<Course> result = courseDao.findByCategoryId(categoryId);
 
         LOG.debug("Found {} courses belonging to category with id={}", result.size(), categoryId);
         return result;

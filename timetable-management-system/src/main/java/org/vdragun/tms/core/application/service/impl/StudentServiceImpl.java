@@ -93,7 +93,7 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> findStudentsForCourse(Integer courseId) {
         assertCourseExists(courseId);
 
-        return studentDao.findForCourse(courseId);
+        return studentDao.findByCourseId(courseId);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class StudentServiceImpl implements StudentService {
         LOG.debug("Searching for students assigned to group with id={}", groupId);
         assertGroupExists(groupId);
 
-        List<Student> result = studentDao.findForGroup(groupId);
+        List<Student> result = studentDao.findByGroupId(groupId);
 
         LOG.debug("Found {} students assigned to group with id={}", result.size(), groupId);
         return result;

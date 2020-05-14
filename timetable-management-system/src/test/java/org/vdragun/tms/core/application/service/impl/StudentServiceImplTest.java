@@ -119,7 +119,7 @@ public class StudentServiceImplTest {
         Student jack = new Student(STUDENT_ID, JACK, SMITH, ENROLLMENT_DATE);
         Student anna = new Student(STUDENT_ID + 1, ANNA, PORTER, ENROLLMENT_DATE);
         when(groupDaoMock.existsById(eq(GROUP_ID))).thenReturn(true);
-        when(studentDaoMock.findForGroup(GROUP_ID)).thenReturn(asList(jack, anna));
+        when(studentDaoMock.findByGroupId(GROUP_ID)).thenReturn(asList(jack, anna));
 
         List<Student> result = service.findStudentsForGroup(GROUP_ID);
 
@@ -139,7 +139,7 @@ public class StudentServiceImplTest {
         Student jack = new Student(STUDENT_ID, JACK, SMITH, ENROLLMENT_DATE);
         Student anna = new Student(STUDENT_ID + 1, ANNA, PORTER, ENROLLMENT_DATE);
         when(courseDaoMock.existsById(eq(COURSE_ID))).thenReturn(true);
-        when(studentDaoMock.findForCourse(COURSE_ID)).thenReturn(asList(jack, anna));
+        when(studentDaoMock.findByCourseId(COURSE_ID)).thenReturn(asList(jack, anna));
 
         List<Student> result = service.findStudentsForCourse(COURSE_ID);
 

@@ -28,9 +28,9 @@ public interface SpringDataStudentDao extends StudentDao, StudentDaoFragment {
     @Override
     @Query("SELECT DISTINCT s FROM Student s JOIN FETCH s.courses "
             + "WHERE s.id IN (SELECT st.id FROM Student st JOIN st.courses c WHERE c.id = ?1)")
-    List<Student> findForCourse(Integer courseId);
+    List<Student> findByCourseId(Integer courseId);
 
     @Override
-    @Query("SELECT DISTINCT s FROM Student s LEFT JOIN FETCH s.courses c WHERE s.group.id = ?1")
-    List<Student> findForGroup(Integer groupId);
+    // TODO: need JOIN FETCH student.courses
+    List<Student> findByGroupId(Integer groupId);
 }
