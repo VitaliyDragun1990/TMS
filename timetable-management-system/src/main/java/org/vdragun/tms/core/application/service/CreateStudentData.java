@@ -2,6 +2,11 @@ package org.vdragun.tms.core.application.service;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Size;
+
 /**
  * Contains necessary data to create new student
  * 
@@ -10,8 +15,16 @@ import java.time.LocalDate;
  */
 public class CreateStudentData {
 
+    @NotBlank
+    @Size(min = 2, max = 50)
     private String firstName;
+
+    @NotBlank
+    @Size(min = 2, max = 50)
     private String lastName;
+
+    @NotNull
+    @PastOrPresent
     private LocalDate enrollmentDate;
 
     public CreateStudentData() {
