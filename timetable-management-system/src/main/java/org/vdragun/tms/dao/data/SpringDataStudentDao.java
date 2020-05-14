@@ -3,6 +3,7 @@ package org.vdragun.tms.dao.data;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.RepositoryDefinition;
 import org.vdragun.tms.core.domain.Student;
@@ -18,11 +19,11 @@ import org.vdragun.tms.dao.StudentDao;
 public interface SpringDataStudentDao extends StudentDao, StudentDaoFragment {
 
     @Override
-    @Query("SELECT s FROM Student s LEFT JOIN FETCH s.courses WHERE s.id = ?1")
+    @EntityGraph(attributePaths = { "courses", "group" })
     Optional<Student> findById(Integer studentId);
 
     @Override
-    @Query("SELECT DISTINCT s FROM Student s LEFT JOIN FETCH s.courses")
+    @EntityGraph(attributePaths = { "courses", "group" })
     List<Student> findAll();
 
     @Override
@@ -31,6 +32,6 @@ public interface SpringDataStudentDao extends StudentDao, StudentDaoFragment {
     List<Student> findByCourseId(Integer courseId);
 
     @Override
-    // TODO: need JOIN FETCH student.courses
+    @EntityGraph(attributePaths = { "courses", "group" })
     List<Student> findByGroupId(Integer groupId);
 }

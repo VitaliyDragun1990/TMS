@@ -3,6 +3,7 @@ package org.vdragun.tms.dao.data;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.RepositoryDefinition;
 import org.vdragun.tms.core.domain.Teacher;
@@ -18,11 +19,11 @@ import org.vdragun.tms.dao.TeacherDao;
 public interface SpringDataTeacherDao extends TeacherDao {
 
     @Override
-    @Query("SELECT t FROM Teacher t LEFT JOIN FETCH t.courses WHERE t.id = ?1")
+    @EntityGraph(attributePaths = "courses")
     Optional<Teacher> findById(Integer teacherId);
 
     @Override
-    @Query("SELECT DISTINCT t FROM Teacher t LEFT JOIN FETCH t.courses")
+    @EntityGraph(attributePaths = "courses")
     List<Teacher> findAll();
 
     @Override
