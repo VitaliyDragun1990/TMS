@@ -32,8 +32,8 @@ import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.dao.DBTestHelper;
 import org.vdragun.tms.dao.DaoTestConfig;
+import org.vdragun.tms.dao.FullName;
 import org.vdragun.tms.dao.TeacherDao;
-import org.vdragun.tms.dao.jpa.FullName;
 
 @SpringJUnitConfig(classes = { SpringDataDaoConfig.class, DaoTestConfig.class })
 @DisplayName("Spring Data Teacher DAO")
