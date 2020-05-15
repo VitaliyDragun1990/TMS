@@ -1,5 +1,10 @@
 package org.vdragun.tms.core.application.service;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
+
 /**
  * Contains necessary data to create new course
  * 
@@ -8,9 +13,18 @@ package org.vdragun.tms.core.application.service;
  */
 public class CourseData {
 
+    @NotBlank
+    @Size(min = 5, max = 50)
     private String name;
+
     private String description;
+
+    @NotNull
+    @Positive
     private Integer categoryId;
+
+    @NotNull
+    @Positive
     private Integer teacherId;
 
     public CourseData() {
