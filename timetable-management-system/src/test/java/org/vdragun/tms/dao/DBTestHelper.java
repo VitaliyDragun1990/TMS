@@ -76,6 +76,10 @@ public class DBTestHelper {
         return query.getSingleResult();
     }
 
+    public Student findStudentByIdInDatabase(Integer studentId) {
+        return em.find(Student.class, studentId);
+    }
+
     public Timetable findRandomTimetableInDatabase() {
         return em.createQuery("SELECT t FROM Timetable t", Timetable.class).getResultList().get(0);
     }

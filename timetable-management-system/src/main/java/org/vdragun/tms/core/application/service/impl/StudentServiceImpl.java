@@ -1,6 +1,8 @@
 package org.vdragun.tms.core.application.service.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +12,8 @@ import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.CreateStudentData;
 import org.vdragun.tms.core.application.service.StudentService;
 import org.vdragun.tms.core.application.service.UpdateStudentData;
+import org.vdragun.tms.core.domain.Course;
+import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.dao.CourseDao;
 import org.vdragun.tms.dao.GroupDao;
@@ -55,17 +59,14 @@ public class StudentServiceImpl implements StudentService {
     public Student updateExistingStudent(UpdateStudentData studentData) {
         LOG.debug("Updating existing student using data: {}", studentData);
 
-        assertStudentExists(studentData.getStudentId());
-        if (studentData.getGroupId() != null) {
-            assertGroupExists(studentData.getGroupId());
-        }
-        assertCoursesExist(studentData.getCourseIds());
+        Student student = getStudent(studentData.getStudentId());
+        student.setGroup(getGroup(studentData.getGroupId()));
+        student.setCourses(getCourses(studentData.getCourseIds()));
 
-        updateStudentGroup(studentData.getStudentId(), studentData.getGroupId());
-        setStudentCourses(studentData.getStudentId(), studentData.getCourseIds());
+        studentDao.save(student);
 
         LOG.debug("Student with id={} has been successfully updated", studentData.getStudentId());
-        return studentDao.findById(studentData.getStudentId()).get();
+        return student;
     }
 
     @Override
@@ -116,55 +117,10 @@ public class StudentServiceImpl implements StudentService {
         studentDao.deleteById(studentId);
     }
 
-    private void updateStudentGroup(Integer studentId, Integer groupId) {
-        if (groupId == null) {
-            removeStudentFromGroup(studentId);
-        } else {
-            addStudentToGroup(studentId, groupId);
-        }
-    }
-
-    private void addStudentToGroup(Integer studentId, Integer groupId) {
-        LOG.debug("Adding student with id={} to group with id={}", studentId, groupId);
-
-        studentDao.addToGroup(studentId, groupId);
-
-        LOG.debug("Student with id={} has been added to group with id={}", studentId, groupId);
-    }
-
-    private void removeStudentFromGroup(Integer studentId) {
-        LOG.debug("Removing student wiht id={} from current group", studentId);
-
-        studentDao.removeFromGroup(studentId);
-
-        LOG.debug("Student with id={} has been removed from current group", studentId);
-    }
-
-    private void setStudentCourses(Integer studentId, List<Integer> courseIds) {
-        LOG.debug("Assigning student with id={} to courses with ids={}", studentId, courseIds);
-
-        removeStudentFromAllCourses(studentId);
-        courseIds.forEach(courseId -> studentDao.addToCourse(studentId, courseId));
-
-        LOG.debug("Student with id={} has been assign to courses with ids={}", studentId, courseIds);
-    }
-
-    private void removeStudentFromAllCourses(Integer studentId) {
-        LOG.debug("Removing student with id={} from all currently assigned courses", studentId);
-
-        studentDao.removeFromAllCourses(studentId);
-
-        LOG.debug("Student with id={} has been removed from all assigned courses", studentId);
-    }
-
     private void assertCourseExists(Integer courseId) {
         if (!courseDao.existsById(courseId)) {
             throw new ResourceNotFoundException("Course with id=%d does not exist", courseId);
         }
-    }
-
-    private void assertCoursesExist(List<Integer> courseIds) {
-        courseIds.forEach(this::assertCourseExists);
     }
 
     private void assertGroupExists(Integer groupId) {
@@ -177,6 +133,32 @@ public class StudentServiceImpl implements StudentService {
         if (!studentDao.existsById(studentId)) {
             throw new ResourceNotFoundException("Student with id=%d does not exist", studentId);
         }
+    }
+
+    private Student getStudent(Integer studentId) {
+        return studentDao
+                .findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student with id=%d does not exist", studentId));
+    }
+
+    private Group getGroup(Integer groupId) {
+        if (groupId != null) {
+            return groupDao
+                    .findById(groupId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Group with id=%d does not exist", groupId));
+        }
+        return null;
+    }
+
+    private Set<Course> getCourses(List<Integer> courseIds) {
+        Set<Course> result = new HashSet<>();
+        for (Integer courseId : courseIds) {
+            Course course = courseDao
+                    .findById(courseId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Course with id=%d does not exist", courseId));
+            result.add(course);
+        }
+        return result;
     }
 
 }

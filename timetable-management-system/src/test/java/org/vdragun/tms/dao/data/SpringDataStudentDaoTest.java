@@ -12,13 +12,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,9 +49,11 @@ public class SpringDataStudentDaoTest {
     private static final String MARY = "Mary";
     private static final String AMANDA = "Amanda";
     private static final String WILLIAM = "William";
+    private static final String JOHN = "JOHN";
     private static final String BIRKIN = "Birkin";
+    private static final String SMITH = "Smith";
 
-    private static final String CORE_HISORY = "Core History";
+    private static final String CORE_HISTORY = "Core History";
     private static final String CORE_BIOLOGY = "Core Biology";
     private static final String ADVANCED_BIOLOGY = "Advanced Biology";
 
@@ -102,6 +108,85 @@ public class SpringDataStudentDaoTest {
     }
 
     @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldUpdateExistingStudentNameInDatabase() {
+        Student student = dbHelper.findStudentByNameInDatabase(WILLIAM, BIRKIN);
+        student.setFirstName(JOHN);
+        student.setLastName(SMITH);
+
+        dao.save(student);
+
+        assertUpdatedStudentInDatabase(student);
+    }
+
+    @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldUpdateExistingStudentCoursesInDatabase() {
+        Student student = dbHelper.findStudentByNameInDatabase(WILLIAM, BIRKIN);
+        Course courseOne = dbHelper.findCourseByNameInDatabase(CORE_BIOLOGY);
+        Course courseTwo = dbHelper.findCourseByNameInDatabase(CORE_HISTORY);
+        student.setCourses(asSet(courseOne, courseTwo));
+
+        dao.save(student);
+
+        assertUpdatedStudentInDatabase(student);
+    }
+
+    private Set<Course> asSet(Course... courses) {
+        return new HashSet<>(Arrays.asList(courses));
+    }
+
+    @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldUpdateExistingStudentGroupInDatabase() {
+        Student student = dbHelper.findStudentByNameInDatabase(WILLIAM, BIRKIN);
+        Group newGroup = dbHelper.findGroupByNameInDatabase(PS_TWENTY);
+        student.setGroup(newGroup);
+
+        dao.save(student);
+
+        assertUpdatedStudentInDatabase(student);
+    }
+
+    @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldRemoveExistingStudentGroupInDatabase() {
+        Student student = dbHelper.findStudentByNameInDatabase(WILLIAM, BIRKIN);
+        student.setGroup(null);
+
+        dao.save(student);
+
+        assertUpdatedStudentInDatabase(student);
+    }
+
+    @Test
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
+    void shouldRemoveExistingStudentCoursesInDatabase() {
+        Student student = dbHelper.findStudentByNameInDatabase(WILLIAM, BIRKIN);
+        student.removeAllCourses();
+
+        dao.save(student);
+
+        assertUpdatedStudentInDatabase(student);
+        assertNoCoursesForStudentInDatabase(student);
+    }
+
+    private void assertUpdatedStudentInDatabase(Student expected) {
+        Student actual = dbHelper.findStudentByIdInDatabase(expected.getId());
+
+        assertNotNull(actual);
+        assertThat(actual.getFirstName(), equalTo(expected.getFirstName()));
+        assertThat(actual.getLastName(), equalTo(expected.getLastName()));
+        if (expected.getGroup() == null) {
+            assertNull("Student in database should not have group assigned", actual.getGroup());
+        } else {
+            assertThat(actual.getGroup(), equalTo(expected.getGroup()));
+        }
+        assertThat(actual.getCourses(), equalTo(expected.getCourses()));
+        assertThat(actual.getLastName(), equalTo(expected.getLastName()));
+    }
+
+    @Test
     @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnEmptyListIfNoStudentsInDatabase() {
         List<Student> result = dao.findAll();
@@ -122,7 +207,7 @@ public class SpringDataStudentDaoTest {
     @Test
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
     void shouldReturnEmptyListIfNoStudentsForGivenCourse() {
-        Course coreHistory = dbHelper.findCourseByNameInDatabase(CORE_HISORY);
+        Course coreHistory = dbHelper.findCourseByNameInDatabase(CORE_HISTORY);
 
         List<Student> result = dao.findByCourseId(coreHistory.getId());
 
@@ -180,11 +265,11 @@ public class SpringDataStudentDaoTest {
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/student_data.sql" })
     void shouldAddStudentToSpecifiedCourse() {
         Student mary = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
-        Course coreHistory = dbHelper.findCourseByNameInDatabase(CORE_HISORY);
+        Course coreHistory = dbHelper.findCourseByNameInDatabase(CORE_HISTORY);
 
         dao.addToCourse(mary.getId(), coreHistory.getId());
 
-        assertStudentCoursesInDatabase(mary, CORE_BIOLOGY, ADVANCED_BIOLOGY, CORE_HISORY);
+        assertStudentCoursesInDatabase(mary, CORE_BIOLOGY, ADVANCED_BIOLOGY, CORE_HISTORY);
     }
 
     @Test
