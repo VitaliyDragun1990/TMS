@@ -16,6 +16,9 @@ import javax.validation.constraints.Size;
  */
 public class UpdateStudentData {
 
+    /**
+     * Identifier of the student to update
+     */
     @NotNull
     @Positive
     private Integer studentId;
@@ -89,7 +92,8 @@ public class UpdateStudentData {
 
     @Override
     public String toString() {
-        return "UpdateStudentData [studentId=" + studentId + ", groupId=" + groupId + ", courseIds=" + courseIds + "]";
+        return "UpdateStudentData [studentId=" + studentId + ", groupId=" + groupId + ", firstName=" + firstName
+                + ", lastName=" + lastName + ", courseIds=" + courseIds + "]";
     }
 
 }

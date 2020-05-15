@@ -67,6 +67,7 @@ public final class Constants {
         public static final String COURSE = "course";
         public static final String STUDENTS = "students";
         public static final String STUDENT = "student";
+        public static final String STUDENT_ID = "studentId";
         public static final String TEACHERS = "teachers";
         public static final String TEACHER = "teacher";
         public static final String TIMETABLE = "timetable";
