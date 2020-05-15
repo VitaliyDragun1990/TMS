@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.core.convert.converter.Converter;
-import org.vdragun.tms.core.application.service.UpdateStudentData;
+import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.core.domain.Student;
