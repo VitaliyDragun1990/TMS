@@ -2,6 +2,12 @@ package org.vdragun.tms.core.application.service;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 /**
  * Contains necessary data to create new timetable
  * 
@@ -10,17 +16,32 @@ import java.time.LocalDateTime;
  */
 public class CreateTimetableData {
 
+    @NotNull
+    @Future
     private LocalDateTime startTime;
-    private int durationInMinutes;
+
+    @NotNull
+    @Min(value = 30)
+    @Max(value = 90)
+    private Integer durationInMinutes;
+
+    @NotNull
+    @Positive
     private Integer courseId;
+
+    @NotNull
+    @Positive
     private Integer classroomId;
+
+    @NotNull
+    @Positive
     private Integer teacherId;
 
     public CreateTimetableData() {
     }
 
-    public CreateTimetableData(LocalDateTime startTime, int durationInMinutes, Integer courseId, Integer classroomId,
-            Integer teacherId) {
+    public CreateTimetableData(LocalDateTime startTime, Integer durationInMinutes, Integer courseId,
+            Integer classroomId, Integer teacherId) {
         this.startTime = startTime;
         this.durationInMinutes = durationInMinutes;
         this.courseId = courseId;
@@ -36,11 +57,11 @@ public class CreateTimetableData {
         this.startTime = startTime;
     }
 
-    public int getDurationInMinutes() {
+    public Integer getDurationInMinutes() {
         return durationInMinutes;
     }
 
-    public void setDurationInMinutes(int durationInMinutes) {
+    public void setDurationInMinutes(Integer durationInMinutes) {
         this.durationInMinutes = durationInMinutes;
     }
 

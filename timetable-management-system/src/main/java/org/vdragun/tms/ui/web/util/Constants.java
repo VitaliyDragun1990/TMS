@@ -29,6 +29,7 @@ public final class Constants {
         public static final String TEACHER_REGISTER_SUCCESS = "msg.teacherRegisterSuccess";
         public static final String COURSE_REGISTER_SUCCESS = "msg.courseRegisterSuccess";
         public static final String TIMETABLE_UPDATE_SUCCESS = "msg.timetableUpdateSuccess";
+        public static final String TIMETABLE_REGISTER_SUCCESS = "msg.timetableRegisterSuccess";
 
         private Message() {
         }

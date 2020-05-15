@@ -2,9 +2,9 @@ package org.vdragun.tms.core.application.service;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -27,7 +27,7 @@ public class CreateStudentData {
     private String lastName;
 
     @NotNull
-    @PastOrPresent
+    @FutureOrPresent
     private LocalDate enrollmentDate;
 
     public CreateStudentData() {
