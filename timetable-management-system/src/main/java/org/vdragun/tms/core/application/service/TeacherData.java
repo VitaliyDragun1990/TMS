@@ -29,6 +29,7 @@ public class TeacherData {
     @PastOrPresent
     private LocalDate dateHired;
 
+    @NotNull
     private Title title;
 
     public TeacherData() {
