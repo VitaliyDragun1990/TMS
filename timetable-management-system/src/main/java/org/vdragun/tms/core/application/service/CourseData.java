@@ -2,6 +2,7 @@ package org.vdragun.tms.core.application.service;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
@@ -14,6 +15,7 @@ import javax.validation.constraints.Size;
 public class CourseData {
 
     @NotBlank
+    @Pattern(regexp = "^[A-Za-z]*$")
     @Size(min = 5, max = 50)
     private String name;
 

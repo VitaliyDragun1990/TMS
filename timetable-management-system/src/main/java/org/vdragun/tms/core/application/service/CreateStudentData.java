@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
@@ -16,10 +17,12 @@ import javax.validation.constraints.Size;
 public class CreateStudentData {
 
     @NotBlank
+    @Pattern(regexp = "^[A-Za-z]*$")
     @Size(min = 2, max = 50)
     private String firstName;
 
     @NotBlank
+    @Pattern(regexp = "^[A-Za-z]*$")
     @Size(min = 2, max = 50)
     private String lastName;
 
