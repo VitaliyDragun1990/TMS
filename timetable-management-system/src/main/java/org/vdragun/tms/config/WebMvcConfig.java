@@ -18,6 +18,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.vdragun.tms.ui.web.converter.StringToLocalDateCustomFormatter;
 import org.vdragun.tms.ui.web.converter.StringToLocalDateTimeCustomFormatter;
 import org.vdragun.tms.ui.web.converter.StudentToUpdateStudentDataConverter;
+import org.vdragun.tms.ui.web.converter.TimetableToUpdateTimetableDataConverter;
 import org.vdragun.tms.ui.web.converter.TitleCustomFormatter;
 import org.vdragun.tms.ui.web.util.Constants.Page;
 
@@ -72,6 +73,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addFormatter(stringToLocalDateTimeCustomFormatter());
         registry.addFormatter(new TitleCustomFormatter());
         registry.addConverter(new StudentToUpdateStudentDataConverter());
+        registry.addConverter(new TimetableToUpdateTimetableDataConverter());
     }
 
     @Override

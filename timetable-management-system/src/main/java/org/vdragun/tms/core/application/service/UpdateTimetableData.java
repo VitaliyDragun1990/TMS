@@ -2,6 +2,12 @@ package org.vdragun.tms.core.application.service;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 /**
  * Contains data necessary to update existing timetable
  * 
@@ -10,9 +16,21 @@ import java.time.LocalDateTime;
  */
 public class UpdateTimetableData {
 
+    @NotNull
+    @Positive
     private Integer timetableId;
+
+    @NotNull
+    @Future
     private LocalDateTime startTime;
+
+    @NotNull
+    @Min(value = 30)
+    @Max(value = 90)
     private int durationInMinutes;
+
+    @NotNull
+    @Positive
     private Integer classroomId;
 
     public UpdateTimetableData() {
