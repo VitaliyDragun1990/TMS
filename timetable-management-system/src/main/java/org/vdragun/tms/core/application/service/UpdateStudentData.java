@@ -3,6 +3,9 @@ package org.vdragun.tms.core.application.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 /**
  * Contains data necessary to update existing student
  * 
@@ -11,9 +14,14 @@ import java.util.List;
  */
 public class UpdateStudentData {
 
+    @NotNull
+    @Positive
     private Integer studentId;
+
+    @Positive
     private Integer groupId;
-    private List<Integer> courseIds;
+
+    private List<@NotNull @Positive Integer> courseIds;
 
     public UpdateStudentData() {
         courseIds = new ArrayList<>();
