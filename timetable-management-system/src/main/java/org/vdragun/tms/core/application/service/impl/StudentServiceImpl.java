@@ -60,6 +60,8 @@ public class StudentServiceImpl implements StudentService {
         LOG.debug("Updating existing student using data: {}", studentData);
 
         Student student = getStudent(studentData.getStudentId());
+        student.setFirstName(studentData.getFirstName());
+        student.setLastName(studentData.getLastName());
         student.setGroup(getGroup(studentData.getGroupId()));
         student.setCourses(getCourses(studentData.getCourseIds()));
 

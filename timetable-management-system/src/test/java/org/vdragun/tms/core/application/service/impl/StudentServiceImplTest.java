@@ -171,7 +171,7 @@ public class StudentServiceImplTest {
     @Test
     void shouldThrowExceptionWhenUpdateNonExistingStudent() {
         when(studentDaoMock.findById(any(Integer.class))).thenReturn(Optional.empty());
-        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, GROUP_ID, asList(COURSE_ID));
+        UpdateStudentData studentData = updateData(STUDENT_ID, GROUP_ID, ANNA, PORTER, asList(COURSE_ID));
         
         assertThrows(ResourceNotFoundException.class, () -> service.updateExistingStudent(studentData));
 
@@ -182,7 +182,7 @@ public class StudentServiceImplTest {
     void shouldThrowExceptionWhenUpdatingStudentWithNonExistingGroup() {
         when(studentDaoMock.findById(eq(STUDENT_ID))).thenReturn(Optional.of(studentStub()));
         when(groupDaoMock.findById(any(Integer.class))).thenReturn(Optional.empty());
-        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, GROUP_ID, asList(COURSE_ID));
+        UpdateStudentData studentData = updateData(STUDENT_ID, GROUP_ID, JACK, SMITH, asList(COURSE_ID));
 
         assertThrows(ResourceNotFoundException.class, () -> service.updateExistingStudent(studentData));
 
@@ -194,7 +194,7 @@ public class StudentServiceImplTest {
         when(studentDaoMock.findById(eq(STUDENT_ID))).thenReturn(Optional.of(studentStub()));
         when(groupDaoMock.findById(any(Integer.class))).thenReturn(Optional.of(groupStub()));
         when(courseDaoMock.findById(eq(COURSE_ID))).thenReturn(Optional.empty());
-        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, GROUP_ID, asList(COURSE_ID));
+        UpdateStudentData studentData = updateData(STUDENT_ID, GROUP_ID, JACK, SMITH, asList(COURSE_ID));
 
         assertThrows(ResourceNotFoundException.class, () -> service.updateExistingStudent(studentData));
 
@@ -206,7 +206,7 @@ public class StudentServiceImplTest {
         when(studentDaoMock.findById(eq(STUDENT_ID))).thenReturn(Optional.of(studentStub()));
         when(groupDaoMock.findById(any(Integer.class))).thenReturn(Optional.of(groupStub()));
         when(courseDaoMock.findById(eq(COURSE_ID))).thenReturn(Optional.of(courseStab()));
-        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, null, asList(COURSE_ID));
+        UpdateStudentData studentData = updateData(STUDENT_ID, null, JACK, SMITH, asList(COURSE_ID));
 
         Student result = service.updateExistingStudent(studentData);
 
@@ -219,7 +219,7 @@ public class StudentServiceImplTest {
         when(studentDaoMock.findById(eq(STUDENT_ID))).thenReturn(Optional.of(studentStub()));
         when(groupDaoMock.findById(any(Integer.class))).thenReturn(Optional.of(expectedGroup));
         when(courseDaoMock.findById(eq(COURSE_ID))).thenReturn(Optional.of(courseStab()));
-        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, GROUP_ID, asList(COURSE_ID));
+        UpdateStudentData studentData = updateData(STUDENT_ID, GROUP_ID, JACK, SMITH, asList(COURSE_ID));
 
         Student result = service.updateExistingStudent(studentData);
 
@@ -232,12 +232,30 @@ public class StudentServiceImplTest {
         when(groupDaoMock.findById(any(Integer.class))).thenReturn(Optional.of(groupStub()));
         Course expectedCourse = courseStab();
         when(courseDaoMock.findById(eq(COURSE_ID))).thenReturn(Optional.of(expectedCourse));
-        UpdateStudentData studentData = new UpdateStudentData(STUDENT_ID, GROUP_ID, asList(COURSE_ID));
+        UpdateStudentData studentData = updateData(STUDENT_ID, GROUP_ID, JACK, SMITH, asList(COURSE_ID));
 
         Student result = service.updateExistingStudent(studentData);
 
         assertThat(result.getCourses(), hasSize(1));
         assertThat(result.getCourses(), hasItem(expectedCourse));
+    }
+
+    @Test
+    void shouldUpdateStudentFirstAndLastNameWhenUpdating() {
+        when(studentDaoMock.findById(eq(STUDENT_ID))).thenReturn(Optional.of(studentStub()));
+        when(groupDaoMock.findById(any(Integer.class))).thenReturn(Optional.of(groupStub()));
+        when(courseDaoMock.findById(eq(COURSE_ID))).thenReturn(Optional.of(courseStab()));
+        UpdateStudentData studentData = updateData(STUDENT_ID, GROUP_ID, ANNA, PORTER, asList(COURSE_ID));
+
+        Student result = service.updateExistingStudent(studentData);
+
+        assertThat(result.getFirstName(), equalTo(ANNA));
+        assertThat(result.getLastName(), equalTo(PORTER));
+    }
+
+    private UpdateStudentData updateData(Integer studentId, Integer groupId, String fName, String lName,
+            List<Integer> courseIds) {
+        return new UpdateStudentData(studentId, groupId, fName, lName, courseIds);
     }
 
     private Student studentStub() {
