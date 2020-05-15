@@ -91,6 +91,7 @@ public class SpringDataStudentDaoTest {
         Student student = new Student(MARY, BIRKIN, ENROLLMENT_DATE);
 
         dao.save(student);
+        dbHelper.flushChangesToDatabase();
 
         assertStudentsInDatabase(student);
     }
@@ -103,6 +104,7 @@ public class SpringDataStudentDaoTest {
         Student william = new Student(WILLIAM, BIRKIN, ENROLLMENT_DATE);
 
         dao.saveAll(asList(mary, amanda, william));
+        dbHelper.flushChangesToDatabase();
 
         assertStudentsInDatabase(mary, amanda, william);
     }
@@ -115,6 +117,7 @@ public class SpringDataStudentDaoTest {
         student.setLastName(SMITH);
 
         dao.save(student);
+        dbHelper.flushChangesToDatabase();
 
         assertUpdatedStudentInDatabase(student);
     }
@@ -128,12 +131,9 @@ public class SpringDataStudentDaoTest {
         student.setCourses(asSet(courseOne, courseTwo));
 
         dao.save(student);
+        dbHelper.flushChangesToDatabase();
 
         assertUpdatedStudentInDatabase(student);
-    }
-
-    private Set<Course> asSet(Course... courses) {
-        return new HashSet<>(Arrays.asList(courses));
     }
 
     @Test
@@ -144,6 +144,7 @@ public class SpringDataStudentDaoTest {
         student.setGroup(newGroup);
 
         dao.save(student);
+        dbHelper.flushChangesToDatabase();
 
         assertUpdatedStudentInDatabase(student);
     }
@@ -155,6 +156,7 @@ public class SpringDataStudentDaoTest {
         student.setGroup(null);
 
         dao.save(student);
+        dbHelper.flushChangesToDatabase();
 
         assertUpdatedStudentInDatabase(student);
     }
@@ -166,24 +168,10 @@ public class SpringDataStudentDaoTest {
         student.removeAllCourses();
 
         dao.save(student);
+        dbHelper.flushChangesToDatabase();
 
         assertUpdatedStudentInDatabase(student);
         assertNoCoursesForStudentInDatabase(student);
-    }
-
-    private void assertUpdatedStudentInDatabase(Student expected) {
-        Student actual = dbHelper.findStudentByIdInDatabase(expected.getId());
-
-        assertNotNull(actual);
-        assertThat(actual.getFirstName(), equalTo(expected.getFirstName()));
-        assertThat(actual.getLastName(), equalTo(expected.getLastName()));
-        if (expected.getGroup() == null) {
-            assertNull("Student in database should not have group assigned", actual.getGroup());
-        } else {
-            assertThat(actual.getGroup(), equalTo(expected.getGroup()));
-        }
-        assertThat(actual.getCourses(), equalTo(expected.getCourses()));
-        assertThat(actual.getLastName(), equalTo(expected.getLastName()));
     }
 
     @Test
@@ -268,6 +256,7 @@ public class SpringDataStudentDaoTest {
         Course coreHistory = dbHelper.findCourseByNameInDatabase(CORE_HISTORY);
 
         dao.addToCourse(mary.getId(), coreHistory.getId());
+        dbHelper.flushChangesToDatabase();
 
         assertStudentCoursesInDatabase(mary, CORE_BIOLOGY, ADVANCED_BIOLOGY, CORE_HISTORY);
     }
@@ -279,6 +268,7 @@ public class SpringDataStudentDaoTest {
         Course coreBiology = dbHelper.findCourseByNameInDatabase(CORE_BIOLOGY);
 
         dao.removeFromCourse(mary.getId(), coreBiology.getId());
+        dbHelper.flushChangesToDatabase();
 
         assertStudentCoursesInDatabase(mary, ADVANCED_BIOLOGY);
     }
@@ -289,6 +279,7 @@ public class SpringDataStudentDaoTest {
         Student mary = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
         dao.removeFromAllCourses(mary.getId());
+        dbHelper.flushChangesToDatabase();
 
         assertNoCoursesForStudentInDatabase(mary);
     }
@@ -300,6 +291,7 @@ public class SpringDataStudentDaoTest {
         Student mary = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
         dao.addToGroup(mary.getId(), group.getId());
+        dbHelper.flushChangesToDatabase();
 
         assertGroupStudentsInDatabase(group, mary);
     }
@@ -310,6 +302,7 @@ public class SpringDataStudentDaoTest {
         Student mary = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
         dao.removeFromGroup(mary.getId());
+        dbHelper.flushChangesToDatabase();
 
         assertStudentWithoutGroupInDatabase(mary);
     }
@@ -349,10 +342,30 @@ public class SpringDataStudentDaoTest {
         Student student = dbHelper.findStudentByNameInDatabase(MARY, BIRKIN);
 
         dao.deleteById(student.getId());
+        dbHelper.flushChangesToDatabase();
 
         assertNoGivenStudentsInDatabase(student);
     }
     
+    private Set<Course> asSet(Course... courses) {
+        return new HashSet<>(Arrays.asList(courses));
+    }
+
+    private void assertUpdatedStudentInDatabase(Student expected) {
+        Student actual = dbHelper.findStudentByIdInDatabase(expected.getId());
+
+        assertNotNull(actual);
+        assertThat(actual.getFirstName(), equalTo(expected.getFirstName()));
+        assertThat(actual.getLastName(), equalTo(expected.getLastName()));
+        if (expected.getGroup() == null) {
+            assertNull("Student in database should not have group assigned", actual.getGroup());
+        } else {
+            assertThat(actual.getGroup(), equalTo(expected.getGroup()));
+        }
+        assertThat(actual.getCourses(), equalTo(expected.getCourses()));
+        assertThat(actual.getLastName(), equalTo(expected.getLastName()));
+    }
+
     private void assertStudentWithoutGroupInDatabase(Student student) {
         Student result = dbHelper.findStudentByNameInDatabase(student.getFirstName(), student.getLastName());
         assertThat(result.getGroup(), is(nullValue()));

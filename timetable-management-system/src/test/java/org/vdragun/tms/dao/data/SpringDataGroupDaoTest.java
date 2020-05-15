@@ -68,6 +68,7 @@ public class SpringDataGroupDaoTest {
         Group group = new Group(PS_TWENTY);
 
         dao.save(group);
+        dbHelper.flushChangesToDatabase();
 
         assertGroupsInDatabase(group);
     }
@@ -79,6 +80,7 @@ public class SpringDataGroupDaoTest {
         Group mhTen = new Group(MH_TEN);
 
         dao.saveAll(asList(psTwentyFive, mhTen));
+        dbHelper.flushChangesToDatabase();
 
         assertGroupsInDatabase(psTwentyFive, mhTen);
     }

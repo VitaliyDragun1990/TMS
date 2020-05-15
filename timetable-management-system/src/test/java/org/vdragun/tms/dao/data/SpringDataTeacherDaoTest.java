@@ -83,6 +83,7 @@ public class SpringDataTeacherDaoTest {
         Teacher teacher = new Teacher(MIKE, SMITH, PROFESSOR, DATE_HIRED);
 
         dao.save(teacher);
+        dbHelper.flushChangesToDatabase();
 
         assertTeachersInDatabase(teacher);
     }
@@ -94,6 +95,7 @@ public class SpringDataTeacherDaoTest {
         Teacher anna = new Teacher(ANNA, SNOW, INSTRUCTOR, DATE_HIRED);
 
         dao.saveAll(asList(mike, anna));
+        dbHelper.flushChangesToDatabase();
 
         assertTeachersInDatabase(mike, anna);
     }
