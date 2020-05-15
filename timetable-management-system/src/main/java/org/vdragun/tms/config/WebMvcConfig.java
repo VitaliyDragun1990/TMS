@@ -17,8 +17,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.vdragun.tms.ui.web.converter.StringToLocalDateCustomFormatter;
 import org.vdragun.tms.ui.web.converter.StringToLocalDateTimeCustomFormatter;
-import org.vdragun.tms.ui.web.converter.StringToTitleConverter;
-import org.vdragun.tms.ui.web.converter.TitleToStringConverter;
+import org.vdragun.tms.ui.web.converter.TitleCustomFormatter;
 import org.vdragun.tms.ui.web.util.Constants.Page;
 
 @Configuration
@@ -68,10 +67,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new TitleToStringConverter());
-        registry.addConverter(new StringToTitleConverter());
         registry.addFormatter(stringToLocalDateCustomFormatter());
         registry.addFormatter(stringToLocalDateTimeCustomFormatter());
+        registry.addFormatter(new TitleCustomFormatter());
     }
 
     @Override
