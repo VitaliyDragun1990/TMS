@@ -66,6 +66,7 @@ public class Course {
         this.category = category;
         this.description = description;
         this.teacher = teacher;
+        teacher.addCourse(this);
     }
 
     public Integer getId() {
