@@ -1,5 +1,10 @@
 package org.vdragun.tms.core.application.service.category;
 
+import javax.validation.constraints.NotBlank;
+
+import org.vdragun.tms.core.application.validation.CategoryCode;
+import org.vdragun.tms.core.application.validation.LatinCharacters;
+
 /**
  * Contains necessary data to create new category
  * 
@@ -8,7 +13,11 @@ package org.vdragun.tms.core.application.service.category;
  */
 public class CategoryData {
 
+    @NotBlank
+    @CategoryCode
     private String code;
+
+    @LatinCharacters
     private String description;
 
     public CategoryData() {
