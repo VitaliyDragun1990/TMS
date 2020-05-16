@@ -2,9 +2,10 @@ package org.vdragun.tms.core.application.service.course;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+
+import org.vdragun.tms.core.application.validation.LatinCharacters;
 
 /**
  * Contains necessary data to create new course
@@ -15,10 +16,11 @@ import javax.validation.constraints.Size;
 public class CourseData {
 
     @NotBlank
-    @Pattern(regexp = "^[A-Za-z]*$")
+    @LatinCharacters
     @Size(min = 5, max = 50)
     private String name;
 
+    @LatinCharacters
     private String description;
 
     @NotNull

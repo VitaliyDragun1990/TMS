@@ -5,9 +5,10 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+
+import org.vdragun.tms.core.application.validation.LatinCharacters;
 
 /**
  * Contains data necessary to update existing student
@@ -28,12 +29,12 @@ public class UpdateStudentData {
     private Integer groupId;
 
     @NotBlank
-    @Pattern(regexp = "^[A-Za-z]*$")
+    @LatinCharacters
     @Size(min = 2, max = 50)
     private String firstName;
 
     @NotBlank
-    @Pattern(regexp = "^[A-Za-z]*$")
+    @LatinCharacters
     @Size(min = 2, max = 50)
     private String lastName;
 

@@ -5,9 +5,9 @@ import java.time.LocalDate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.vdragun.tms.core.application.validation.LatinCharacters;
 import org.vdragun.tms.core.domain.Title;
 
 /**
@@ -19,12 +19,12 @@ import org.vdragun.tms.core.domain.Title;
 public class TeacherData {
 
     @NotBlank
-    @Pattern(regexp = "^[A-Za-z]*$")
+    @LatinCharacters
     @Size(min = 2, max = 50)
     private String firstName;
 
     @NotBlank
-    @Pattern(regexp = "^[A-Za-z]*$")
+    @LatinCharacters
     @Size(min = 2, max = 50)
     private String lastName;
 
