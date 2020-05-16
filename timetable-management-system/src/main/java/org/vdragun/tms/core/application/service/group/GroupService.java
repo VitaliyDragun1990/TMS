@@ -14,12 +14,12 @@ import org.vdragun.tms.core.domain.Group;
 public interface GroupService {
 
     /**
-     * Registers new group with given name
+     * Registers new group using provided data
      * 
-     * @param name name of the group to register
+     * @param groupData data to register new group
      * @return newly registered group instance
      */
-    Group registerNewGroup(String name);
+    Group registerNewGroup(GroupData groupData);
 
     /**
      * Returns group with given identifier

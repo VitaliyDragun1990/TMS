@@ -49,7 +49,7 @@ public class GroupServiceImplTest {
 
     @Test
     void shouldRegisterNewGroup() {
-        service.registerNewGroup(NAME);
+        service.registerNewGroup(new GroupData(NAME));
 
         verify(daoMock, times(1)).save(captor.capture());
         Group savedGroup = captor.getValue();

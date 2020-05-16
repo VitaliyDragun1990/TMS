@@ -29,10 +29,10 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group registerNewGroup(String name) {
-        LOG.debug("Registering new group with name={}", name);
+    public Group registerNewGroup(GroupData groupData) {
+        LOG.debug("Registering new group with name={}", groupData.getName());
 
-        Group group = new Group(name);
+        Group group = new Group(groupData.getName());
         dao.save(group);
 
         LOG.debug("New group has been registered: {}", group);
