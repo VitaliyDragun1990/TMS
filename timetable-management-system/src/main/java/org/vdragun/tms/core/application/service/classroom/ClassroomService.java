@@ -16,10 +16,10 @@ public interface ClassroomService {
     /**
      * Register new {@link Classroom} instance
      * 
-     * @param capacity capacity of the new classroom
+     * @param classroomData data to register new classroom
      * @return newly registered classroom instance
      */
-    Classroom registerNewClassroom(int capacity);
+    Classroom registerNewClassroom(ClassroomData classroomData);
 
     /**
      * Returns classroom with given identifier

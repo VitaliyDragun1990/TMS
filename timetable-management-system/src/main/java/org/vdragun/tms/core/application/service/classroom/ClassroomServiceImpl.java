@@ -29,10 +29,10 @@ public class ClassroomServiceImpl implements ClassroomService {
     }
 
     @Override
-    public Classroom registerNewClassroom(int capacity) {
-        LOG.debug("Registering new classroom with capacity={}", capacity);
+    public Classroom registerNewClassroom(ClassroomData classroomData) {
+        LOG.debug("Registering new classroom with capacity={}", classroomData.getCapacity());
 
-        Classroom classroom = new Classroom(capacity);
+        Classroom classroom = new Classroom(classroomData.getCapacity());
         dao.save(classroom);
 
         LOG.debug("New classroom has been registered: {}", classroom);

@@ -45,7 +45,7 @@ public class ClassroomServiceImplTest {
 
     @Test
     void shouldRegisterNewClassroom() {
-        service.registerNewClassroom(CAPACITY);
+        service.registerNewClassroom(new ClassroomData(CAPACITY));
 
         ArgumentCaptor<Classroom> captor = ArgumentCaptor.forClass(Classroom.class);
         verify(daoMock, times(1)).save(captor.capture());

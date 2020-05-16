@@ -1,6 +1,6 @@
 package org.vdragun.tms.core.application.service.group;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.vdragun.tms.core.application.validation.GroupName;
 
@@ -12,7 +12,7 @@ import org.vdragun.tms.core.application.validation.GroupName;
  */
 public class GroupData {
 
-    @NotBlank
+    @NotNull
     @GroupName
     private String name;
 
