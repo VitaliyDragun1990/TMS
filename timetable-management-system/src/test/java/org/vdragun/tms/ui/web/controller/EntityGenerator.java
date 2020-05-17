@@ -120,6 +120,12 @@ public class EntityGenerator {
         return new Group(randomIdx, GROUP + randomInt(10, 99));
     }
 
+    public List<Group> generateGroups(int number) {
+        return IntStream.rangeClosed(1, number)
+                .mapToObj(idx -> generateGroup())
+                .collect(toList());
+    }
+
     private int randomInt(int inner, int upper) {
         return ThreadLocalRandom.current().nextInt(inner, upper);
     }
