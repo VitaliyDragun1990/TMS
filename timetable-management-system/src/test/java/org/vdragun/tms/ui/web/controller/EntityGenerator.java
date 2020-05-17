@@ -3,6 +3,8 @@ package org.vdragun.tms.ui.web.controller;
 import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -104,15 +106,29 @@ public class EntityGenerator {
     }
 
     public Timetable generateTimetable() {
-        return null;
+        return new Timetable(
+                randomInt(9999),
+                LocalDateTime.now().plusDays(randomInt(1, 30)).truncatedTo(ChronoUnit.MINUTES),
+                randomInt(30, 60),
+                generateCourse(),
+                generateClassroom(),
+                generateTeacher());
     }
 
     public List<Timetable> generateTimetables(int number) {
-        return null;
+        return IntStream.rangeClosed(1, number)
+                .mapToObj(idx -> generateTimetable())
+                .collect(toList());
     }
 
     public Classroom generateClassroom() {
         return new Classroom(randomInt(9999), randomInt(30, 60));
+    }
+
+    public List<Classroom> generateClassrooms(int number) {
+        return IntStream.rangeClosed(1, number)
+                .mapToObj(idx -> generateClassroom())
+                .collect(toList());
     }
 
     public Group generateGroup() {
