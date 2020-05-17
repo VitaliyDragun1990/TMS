@@ -1,6 +1,7 @@
 package org.vdragun.tms.ui.web.controller.course;
 
 import static java.lang.String.format;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
@@ -99,7 +100,7 @@ public class SearchCourseControllerTest {
                 .perform(get("/courses/{courseId}", courseId).locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(model().attributeExists(Attribute.MESSAGE, Attribute.ERROR))
-                .andExpect(model().attribute(Attribute.ERROR, equalTo(format("\"%s\"", courseId))))
+                .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", courseId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/courses/" + courseId))))
                 .andExpect(view().name(Page.BAD_REQUEST));

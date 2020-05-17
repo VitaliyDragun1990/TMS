@@ -1,5 +1,7 @@
 package org.vdragun.tms.ui.web.controller.teacher;
 
+import static java.lang.String.format;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -92,7 +94,7 @@ public class SearchTeacherControllerTest {
         mockMvc.perform(get("/teachers/{teacherId}", teacherId).locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(model().attributeExists(Attribute.MESSAGE, Attribute.ERROR))
-                .andExpect(model().attribute(Attribute.ERROR, equalTo(String.format("\"%s\"", teacherId))))
+                .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", teacherId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/teachers/" + teacherId))))
                 .andExpect(view().name(Page.BAD_REQUEST));
