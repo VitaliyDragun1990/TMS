@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -98,7 +97,6 @@ public class SearchCourseControllerTest {
 
         mockMvc
                 .perform(get("/courses/{courseId}", courseId).locale(Locale.US))
-                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(model().attributeExists(Attribute.MESSAGE, Attribute.ERROR))
                 .andExpect(model().attribute(Attribute.ERROR, equalTo(format("\"%s\"", courseId))))
