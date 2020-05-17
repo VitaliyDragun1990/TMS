@@ -27,7 +27,7 @@ import javax.validation.constraints.Pattern;
 @ReportAsSingleViolation
 @Documented
 @Constraint(validatedBy = {})
-public @interface LatinCharacters {
+public @interface LatinWord {
 
     String message() default "{org.vdragun.tms.core.application.validation.LatinCharacters.message}";
 

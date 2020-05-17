@@ -3,7 +3,7 @@ package org.vdragun.tms.core.application.service.category;
 import javax.validation.constraints.NotBlank;
 
 import org.vdragun.tms.core.application.validation.CategoryCode;
-import org.vdragun.tms.core.application.validation.LatinCharacters;
+import org.vdragun.tms.core.application.validation.LatinSentence;
 
 /**
  * Contains necessary data to create new category
@@ -17,7 +17,7 @@ public class CategoryData {
     @CategoryCode
     private String code;
 
-    @LatinCharacters
+    @LatinSentence
     private String description;
 
     public CategoryData() {

@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
-import org.vdragun.tms.core.application.validation.LatinCharacters;
+import org.vdragun.tms.core.application.validation.LatinWord;
 
 /**
  * Contains data necessary to update existing student
@@ -29,12 +29,12 @@ public class UpdateStudentData {
     private Integer groupId;
 
     @NotBlank
-    @LatinCharacters
+    @LatinWord
     @Size(min = 2, max = 50)
     private String firstName;
 
     @NotBlank
-    @LatinCharacters
+    @LatinWord
     @Size(min = 2, max = 50)
     private String lastName;
 

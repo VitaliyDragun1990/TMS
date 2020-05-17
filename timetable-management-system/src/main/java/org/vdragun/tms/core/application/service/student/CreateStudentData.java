@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 
-import org.vdragun.tms.core.application.validation.LatinCharacters;
+import org.vdragun.tms.core.application.validation.LatinWord;
 
 /**
  * Contains necessary data to create new student
@@ -18,12 +18,12 @@ import org.vdragun.tms.core.application.validation.LatinCharacters;
 public class CreateStudentData {
 
     @NotBlank
-    @LatinCharacters
+    @LatinWord
     @Size(min = 2, max = 50)
     private String firstName;
 
     @NotBlank
-    @LatinCharacters
+    @LatinWord
     @Size(min = 2, max = 50)
     private String lastName;
 
