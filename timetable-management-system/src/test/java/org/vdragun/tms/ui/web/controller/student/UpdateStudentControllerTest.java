@@ -1,17 +1,21 @@
 package org.vdragun.tms.ui.web.controller.student;
 
 import static io.florianlopes.spring.test.web.servlet.request.MockMvcRequestBuilderUtils.postForm;
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -32,6 +36,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.vdragun.tms.config.WebMvcConfig;
+import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.application.service.group.GroupService;
 import org.vdragun.tms.core.application.service.student.StudentService;
@@ -63,7 +68,7 @@ public class UpdateStudentControllerTest {
     private MessageProvider messageProvider;
 
     @MockBean
-    private StudentService studentsServiceMock;
+    private StudentService studentServiceMock;
 
     @MockBean
     private CourseService courseServiceMock;
@@ -85,7 +90,7 @@ public class UpdateStudentControllerTest {
         Student student = generator.generateStudent();
         List<Course> courses = generator.generateCourses(10);
         List<Group> groups = generator.generateGroups(10);
-        when(studentsServiceMock.findStudentById(student.getId())).thenReturn(student);
+        when(studentServiceMock.findStudentById(student.getId())).thenReturn(student);
         when(courseServiceMock.findAllCourses()).thenReturn(courses);
         when(groupServiceMock.findAllGroups()).thenReturn(groups);
         
@@ -99,7 +104,34 @@ public class UpdateStudentControllerTest {
     }
     
     @Test
-    void shouldUpdateStudentIfNoValdiationErrors() throws Exception {
+    void shouldShowPageNotFoundIfTryToGetUpdateFormForNonExistingStudent() throws Exception {
+        Integer studentId = 1;
+        when(studentServiceMock.findStudentById(studentId))
+                .thenThrow(new ResourceNotFoundException("Student with id=%d not found", studentId));
+
+        mockMvc.perform(get("/students/{studentId}/update", studentId).locale(Locale.US))
+                .andExpect(status().isNotFound())
+                .andExpect(model().attributeExists(Attribute.MESSAGE))
+                .andExpect(model().attribute(Attribute.MESSAGE,
+                        equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + studentId + "/update"))))
+                .andExpect(view().name(Page.NOT_FOUND));
+    }
+
+    @Test
+    void shouldShowPageBadRequestIfTryToGetUpdateFormForStudentWithInvalidId() throws Exception {
+        String invalidStudentId = "id";
+
+        mockMvc.perform(get("/students/{studentId}/update", invalidStudentId).locale(Locale.US))
+                .andExpect(status().isBadRequest())
+                .andExpect(model().attributeExists(Attribute.ERROR, Attribute.MESSAGE))
+                .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", invalidStudentId))))
+                .andExpect(model().attribute(Attribute.MESSAGE,
+                        equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + invalidStudentId + "/update"))))
+                .andExpect(view().name(Page.BAD_REQUEST));
+    }
+
+    @Test
+    void shouldUpdateStudentIfNoErrors() throws Exception {
         Integer studentId = 1;
         Integer groupId = 1;
         List<Integer> courseIds = asList(1);
@@ -111,7 +143,7 @@ public class UpdateStudentControllerTest {
                         equalTo(getMessage(Message.STUDENT_UPDATE_SUCCESS))))
                 .andExpect(redirectedUrlTemplate("/students/{studentId}", studentId));
 
-        verify(studentsServiceMock, times(1)).updateExistingStudent(captor.capture());
+        verify(studentServiceMock, times(1)).updateExistingStudent(captor.capture());
         assertThat(captor.getValue(), samePropertyValuesAs(updateData));
     }
 
@@ -134,7 +166,51 @@ public class UpdateStudentControllerTest {
                 .andExpect(model().attribute(Attribute.VALIDATED, equalTo(true)))
                 .andExpect(view().name(Page.STUDENT_UPDATE_FORM));
 
-        verify(studentsServiceMock, never()).updateExistingStudent(any(UpdateStudentData.class));
+        verify(studentServiceMock, never()).updateExistingStudent(any(UpdateStudentData.class));
+    }
+
+    @Test
+    void shouldShowPageNotFoundIfTryToUpdateNonExistingStudent() throws Exception {
+        Integer nonExistingStudentId = 1;
+        Integer groupId = 1;
+        List<Integer> courseIds = asList(1);
+        doThrow(new ResourceNotFoundException("Student with id=%d not found", nonExistingStudentId))
+                .when(studentServiceMock).updateExistingStudent(any(UpdateStudentData.class));
+
+        UpdateStudentData updateData = new UpdateStudentData(nonExistingStudentId, groupId, "Jack", "Smith", courseIds);
+
+        mockMvc.perform(postForm("/students/" + 1, updateData).locale(Locale.US))
+                .andExpect(status().isNotFound())
+                .andExpect(model().attributeExists(Attribute.MESSAGE))
+                .andExpect(model().attribute(Attribute.MESSAGE,
+                        equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + nonExistingStudentId))))
+                .andExpect(view().name(Page.NOT_FOUND));
+
+        verify(studentServiceMock, times(1)).updateExistingStudent(captor.capture());
+        assertThat(captor.getValue(), samePropertyValuesAs(updateData));
+    }
+
+    @Test
+    void shouldShowPageBadRequestIftryToUpdateStudentUsingInvalidIdentifier() throws Exception {
+        String invalidStudentId = "id";
+        String firstName = "Jack";
+        String lastName = "Smith";
+        Integer groupId = 1;
+        Integer courseId = 1;
+
+        mockMvc.perform(post("/students/{studentId}", invalidStudentId).locale(Locale.US)
+                .param("firstName", firstName)
+                .param("lastName", lastName)
+                .param("groupId", groupId.toString())
+                .param("courseIds[0]", courseId.toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(model().attributeExists(Attribute.ERROR, Attribute.MESSAGE))
+                .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", invalidStudentId))))
+                .andExpect(model().attribute(Attribute.MESSAGE,
+                        equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + invalidStudentId))))
+                .andExpect(view().name(Page.BAD_REQUEST));
+
+        verify(studentServiceMock, never()).updateExistingStudent(any(UpdateStudentData.class));
     }
 
     private UpdateStudentData updateDataFrom(Student student) {
