@@ -78,6 +78,7 @@ public final class Constants {
         public static final String GROUPS = "groups";
         public static final String ERROR = "error";
         public static final String VALIDATED = "validated";
+        public static final String TITLES = "titles";
 
         private Attribute() {
         }

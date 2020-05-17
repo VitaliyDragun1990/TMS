@@ -21,7 +21,6 @@ import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -66,6 +65,9 @@ public class RegisterCourseControllerTest {
 
     private EntityGenerator generator = new EntityGenerator();
 
+    private String getMessage(String msgCode, Object... args) {
+        return messageProvider.getMessage(msgCode, args);
+    }
 
     @Test
     void shouldShowCourseRegistrationForm() throws Exception {
@@ -87,7 +89,7 @@ public class RegisterCourseControllerTest {
     void shouldRegisterNewCourseIfNoValidationErrors() throws Exception {
         CourseData courseData = new CourseData("English", "Course description", 1, 1);
         Course course = generator.generateCourse();
-        when(courseServiceMock.registerNewCourse(ArgumentMatchers.any(CourseData.class))).thenReturn(course);
+        when(courseServiceMock.registerNewCourse(any(CourseData.class))).thenReturn(course);
 
         mockMvc.perform(postForm("/courses", courseData).locale(Locale.US))
                 .andExpect(status().is3xxRedirection())
@@ -115,10 +117,6 @@ public class RegisterCourseControllerTest {
                 .andExpect(view().name(Page.COURSE_FORM));
 
         verify(courseServiceMock, never()).registerNewCourse(any(CourseData.class));
-    }
-
-    private String getMessage(String msgCode, Object... args) {
-        return messageProvider.getMessage(msgCode, args);
     }
 
 }

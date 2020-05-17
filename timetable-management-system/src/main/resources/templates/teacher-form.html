@@ -67,7 +67,7 @@
           <label for="title" class="col-sm-2 col-form-label" th:text="#{label.title}">Title</label>
           <div class="col-sm-10">
             <select class="form-control w-50" th:field=*{title}>
-              <option th:each="title : ${allTitles}" th:value="${title}" th:text="#{|label.title.${title}|}">
+              <option th:each="title : ${titles}" th:value="${title}" th:text="#{|label.title.${title}|}">
                 Professor
               </option>
             </select>

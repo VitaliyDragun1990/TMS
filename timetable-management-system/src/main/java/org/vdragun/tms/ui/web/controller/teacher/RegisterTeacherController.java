@@ -1,7 +1,8 @@
 package org.vdragun.tms.ui.web.controller.teacher;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -45,9 +46,9 @@ public class RegisterTeacherController extends AbstractController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @ModelAttribute("allTitles")
+    @ModelAttribute(Attribute.TITLES)
     public List<Title> titles() {
-        return new ArrayList<>(Arrays.asList(Title.values()));
+        return new ArrayList<>(asList(Title.values()));
     }
 
     @GetMapping("/register")
