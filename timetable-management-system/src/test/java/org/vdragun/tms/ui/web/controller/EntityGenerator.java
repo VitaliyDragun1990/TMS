@@ -3,8 +3,10 @@ package org.vdragun.tms.ui.web.controller;
 import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.vdragun.tms.core.domain.Category;
@@ -24,11 +26,14 @@ import org.vdragun.tms.core.domain.Title;
  */
 public class EntityGenerator {
 
+    private static List<String> LETTERS = Arrays.stream("abcdefghijklmnopqrstuvwxyz".split(""))
+            .map(String::toUpperCase)
+            .collect(toList());
+
     private static final String FIRST_NAME = "Jack-";
     private static final String LAST_NAME = "Smith-";
     private static final String COURSE = "Course-";
     private static final String DESCRIPTION = "Description";
-    private static final String CATEGORY = "ART";
     private static final String GROUP = "ps-";
 
     public Course generateCourse() {
@@ -68,7 +73,10 @@ public class EntityGenerator {
 
     public Category generateCategory() {
         int randomIdx = randomInt(9999);
-        return new Category(randomIdx, CATEGORY, DESCRIPTION);
+        return new Category(
+                randomIdx,
+                generateCategoryName(),
+                DESCRIPTION);
     }
 
     public List<Category> generateCategories(int number) {
@@ -118,5 +126,11 @@ public class EntityGenerator {
 
     private int randomInt(int upper) {
         return ThreadLocalRandom.current().nextInt(1, upper);
+    }
+
+    private String generateCategoryName() {
+        return IntStream.rangeClosed(1, 3)
+                .mapToObj(i -> LETTERS.get(randomInt(0, LETTERS.size())))
+                .collect(Collectors.joining());
     }
 }

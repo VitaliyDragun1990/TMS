@@ -18,6 +18,7 @@
         <webjars-jquery.version>3.5.1</webjars-jquery.version>
         <webjars-popperjs.version>2.0.2</webjars-popperjs.version>
         <webjars-fontawesome.version>5.13.0</webjars-fontawesome.version>
+        <spring-mvc-test-utils.version>2.2.1</spring-mvc-test-utils.version>
 
         <junit-pioneer.version>0.5.3</junit-pioneer.version>
     </properties>
@@ -64,6 +65,12 @@
                 <version>${webjars-fontawesome.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>io.florianlopes</groupId>
+                <artifactId>spring-mvc-test-utils</artifactId>
+                <version>${spring-mvc-test-utils.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -93,6 +100,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.florianlopes</groupId>
+            <artifactId>spring-mvc-test-utils</artifactId>
             <scope>test</scope>
         </dependency>
 
