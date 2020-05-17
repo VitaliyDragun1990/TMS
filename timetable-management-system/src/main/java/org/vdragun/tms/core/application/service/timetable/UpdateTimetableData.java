@@ -27,7 +27,7 @@ public class UpdateTimetableData {
     @NotNull
     @Min(value = 30)
     @Max(value = 90)
-    private int durationInMinutes;
+    private Integer durationInMinutes;
 
     @NotNull
     @Positive
@@ -36,7 +36,7 @@ public class UpdateTimetableData {
     public UpdateTimetableData() {
     }
 
-    public UpdateTimetableData(Integer timetableId, LocalDateTime startTime, int durationInMinutes,
+    public UpdateTimetableData(Integer timetableId, LocalDateTime startTime, Integer durationInMinutes,
             Integer classroomId) {
         this.timetableId = timetableId;
         this.startTime = startTime;
@@ -60,11 +60,11 @@ public class UpdateTimetableData {
         this.startTime = startTime;
     }
 
-    public int getDurationInMinutes() {
+    public Integer getDurationInMinutes() {
         return durationInMinutes;
     }
 
-    public void setDurationInMinutes(int durationInMinutes) {
+    public void setDurationInMinutes(Integer durationInMinutes) {
         this.durationInMinutes = durationInMinutes;
     }
 
