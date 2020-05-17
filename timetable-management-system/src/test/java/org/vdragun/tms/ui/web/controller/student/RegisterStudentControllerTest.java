@@ -20,9 +20,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -45,6 +46,7 @@ import org.vdragun.tms.ui.web.util.Constants.Page;
  */
 @WebMvcTest(controllers = RegisterStudentController.class)
 @Import({ WebMvcConfig.class, MessageProvider.class })
+@DisplayName("Register Student Controller")
 public class RegisterStudentControllerTest {
 
     @Autowired
@@ -61,8 +63,19 @@ public class RegisterStudentControllerTest {
 
     private EntityGenerator generator = new EntityGenerator();
 
+    private String dateFormat;
+
+    @BeforeEach
+    void setUp() {
+        dateFormat = getMessage(Message.DATE_FORMAT);
+    }
+
     private String getMessage(String msgCode, Object... args) {
         return messageProvider.getMessage(msgCode, args);
+    }
+
+    private String formatDate(LocalDate date) {
+        return date.format(DateTimeFormatter.ofPattern(dateFormat));
     }
 
     @Test
@@ -76,35 +89,37 @@ public class RegisterStudentControllerTest {
 
     @Test
     void shouldRegisterNewStudentIfNoValidationErrors() throws Exception {
-        String dateFormat = getMessage(Message.DATE_FORMAT);
-        CreateStudentData data = new CreateStudentData("Jack", "Smith", LocalDate.now());
-        Student student = generator.generateStudent();
-        when(studentsServiceMock.registerNewStudent(ArgumentMatchers.any(CreateStudentData.class))).thenReturn(student);
+        String firstName = "Jack";
+        String lastName = "Smith";
+        LocalDate enrollmentDate = LocalDate.now();
+
+        Student registered = generator.generateStudent();
+        when(studentsServiceMock.registerNewStudent(any(CreateStudentData.class))).thenReturn(registered);
 
         mockMvc.perform(post("/students").locale(Locale.US)
-                .param("firstName", data.getFirstName())
-                .param("lastName", data.getLastName())
-                .param("enrollmentDate", data.getEnrollmentDate().format(DateTimeFormatter.ofPattern(dateFormat))))
+                .param("firstName", firstName)
+                .param("lastName", lastName)
+                .param("enrollmentDate", formatDate(enrollmentDate)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(Attribute.INFO_MESSAGE,
                         equalTo(getMessage(Message.STUDENT_REGISTER_SUCCESS))))
-                .andExpect(redirectedUrlTemplate("/students/{studentId}", student.getId()));
+                .andExpect(redirectedUrlTemplate("/students/{studentId}", registered.getId()));
 
+        CreateStudentData expected = new CreateStudentData(firstName, lastName, enrollmentDate);
         verify(studentsServiceMock, times(1)).registerNewStudent(captor.capture());
-        assertThat(captor.getValue(), samePropertyValuesAs(data));
+        assertThat(captor.getValue(), samePropertyValuesAs(expected));
     }
 
     @Test
     void shouldShowStudentRegistrationFormIfValidationErrors() throws Exception {
-        String dateFormat = getMessage(Message.DATE_FORMAT);
         String nonLatinFirstName = "Джек";
         String toShortLastName = "J";
-        String enrollmentDateInTheFuture = LocalDate.now().plusDays(5).format(DateTimeFormatter.ofPattern(dateFormat));
+        LocalDate enrollmentDateInTheFuture = LocalDate.now().plusDays(5);
 
         mockMvc.perform(post("/students").locale(Locale.US)
                 .param("firstName", nonLatinFirstName)
                 .param("lastName", toShortLastName)
-                .param("enrollmentDate", enrollmentDateInTheFuture))
+                .param("enrollmentDate", formatDate(enrollmentDateInTheFuture)))
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(3))
                 .andExpect(model().attributeHasFieldErrors("student", "firstName", "lastName", "enrollmentDate"))

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -53,6 +54,7 @@ import org.vdragun.tms.ui.web.util.Constants.Page;
  */
 @WebMvcTest(controllers = RegisterTimetableController.class)
 @Import({ WebMvcConfig.class, MessageProvider.class })
+@DisplayName("Register Timetable Controller")
 public class RegisterTimetableControllerTest {
 
     @Autowired
@@ -89,7 +91,7 @@ public class RegisterTimetableControllerTest {
         return messageProvider.getMessage(msgCode, args);
     }
 
-    private String formattedDateTime(LocalDateTime dateTime) {
+    private String formatDateTime(LocalDateTime dateTime) {
         return dateTime.format(DateTimeFormatter.ofPattern(dateTimeFormat));
     }
 
@@ -121,11 +123,11 @@ public class RegisterTimetableControllerTest {
         Integer classroomId = 1;
         Integer teacherId = 1;
 
-        Timetable timetable = generator.generateTimetable();
-        when(timetableServiceMock.registerNewTimetable(any(CreateTimetableData.class))).thenReturn(timetable);
+        Timetable registered = generator.generateTimetable();
+        when(timetableServiceMock.registerNewTimetable(any(CreateTimetableData.class))).thenReturn(registered);
         
         mockMvc.perform(post("/timetables").locale(Locale.US)
-                .param("startTime", formattedDateTime(startTime))
+                .param("startTime", formatDateTime(startTime))
                 .param("durationInMinutes", duration.toString())
                 .param("courseId", courseId.toString())
                 .param("classroomId", classroomId.toString())
@@ -133,7 +135,7 @@ public class RegisterTimetableControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(Attribute.INFO_MESSAGE,
                         equalTo(getMessage(Message.TIMETABLE_REGISTER_SUCCESS))))
-                .andExpect(redirectedUrlTemplate("/timetables/{timetableId}", timetable.getId()));
+                .andExpect(redirectedUrlTemplate("/timetables/{timetableId}", registered.getId()));
 
         CreateTimetableData expected = new CreateTimetableData(
                 startTime,
@@ -154,7 +156,7 @@ public class RegisterTimetableControllerTest {
         Integer invalidTeacherId = -100;
 
         mockMvc.perform(post("/timetables").locale(Locale.US)
-                .param("startTime", formattedDateTime(pastStartTime))
+                .param("startTime", formatDateTime(pastStartTime))
                 .param("durationInMinutes", invalidDuration.toString())
                 .param("courseId", invalidCourseId.toString())
                 .param("classroomId", invalidClassroomId.toString())

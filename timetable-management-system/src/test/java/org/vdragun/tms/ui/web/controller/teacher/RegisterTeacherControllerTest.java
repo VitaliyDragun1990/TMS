@@ -1,5 +1,6 @@
 package org.vdragun.tms.ui.web.controller.teacher;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
@@ -18,10 +19,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -47,6 +49,7 @@ import org.vdragun.tms.ui.web.util.Constants.Page;
  */
 @WebMvcTest(controllers = RegisterTeacherController.class)
 @Import({ WebMvcConfig.class, MessageProvider.class })
+@DisplayName("Register Teacher Controller")
 public class RegisterTeacherControllerTest {
 
     @Autowired
@@ -63,13 +66,24 @@ public class RegisterTeacherControllerTest {
 
     private EntityGenerator generator = new EntityGenerator();
 
+    private String dateFormat;
+
+    @BeforeEach
+    void setUp() {
+        dateFormat = getMessage(Message.DATE_FORMAT);
+    }
+
     private String getMessage(String msgCode, Object... args) {
         return messageProvider.getMessage(msgCode, args);
     }
 
+    private String formatDate(LocalDate date) {
+        return date.format(DateTimeFormatter.ofPattern(dateFormat));
+    }
+
     @Test
     void shouldShowTeacherRegistrationForm() throws Exception {
-        List<Title> titles = Arrays.asList(Title.values());
+        List<Title> titles = asList(Title.values());
 
         mockMvc.perform(get("/teachers/register").locale(Locale.US))
                 .andExpect(status().isOk())
@@ -81,36 +95,39 @@ public class RegisterTeacherControllerTest {
 
     @Test
     void shouldRegisterNewTeacherIfNoValidationErrors() throws Exception {
-        String dateFormat = getMessage(Message.DATE_FORMAT);
-        TeacherData teacherData = new TeacherData("Jack", "Smith", LocalDate.now(), Title.PROFESSOR);
-        Teacher teacher = generator.generateTeacher();
-        when(teacherServiceMock.registerNewTeacher(any(TeacherData.class))).thenReturn(teacher);
+        String firstName = "Jack";
+        String lastName = "Smith";
+        LocalDate dateHired = LocalDate.now();
+        Title title = Title.PROFESSOR;
+        
+        Teacher registered = generator.generateTeacher();
+        when(teacherServiceMock.registerNewTeacher(any(TeacherData.class))).thenReturn(registered);
         
         mockMvc.perform(post("/teachers").locale(Locale.US)
-                .param("firstName", teacherData.getFirstName())
-                .param("lastName", teacherData.getLastName())
-                .param("title", teacherData.getTitle().toString())
-                .param("dateHired", teacherData.getDateHired().format(DateTimeFormatter.ofPattern(dateFormat))))
+                .param("firstName", firstName)
+                .param("lastName", lastName)
+                .param("title", title.toString())
+                .param("dateHired", formatDate(dateHired)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(Attribute.INFO_MESSAGE,
                         equalTo(getMessage(Message.TEACHER_REGISTER_SUCCESS))))
-                .andExpect(redirectedUrlTemplate("/teachers/{teacherId}", teacher.getId()));
+                .andExpect(redirectedUrlTemplate("/teachers/{teacherId}", registered.getId()));
 
+        TeacherData expected = new TeacherData(firstName, lastName, dateHired, title);
         verify(teacherServiceMock, times(1)).registerNewTeacher(captor.capture());
-        assertThat(captor.getValue(), samePropertyValuesAs(teacherData));
+        assertThat(captor.getValue(), samePropertyValuesAs(expected));
     }
 
     @Test
     void shouldShowTeacherRegistrationFormIfValidationErrors() throws Exception {
-        String dateFormat = getMessage(Message.DATE_FORMAT);
         String nonLatinFirstName = "Джек";
         String toShortLastName = "J";
-        String dateHiredInTheFuture = LocalDate.now().plusDays(5).format(DateTimeFormatter.ofPattern(dateFormat));
+        LocalDate dateHiredInTheFuture = LocalDate.now().plusDays(5);
 
         mockMvc.perform(post("/teachers").locale(Locale.US)
                 .param("firstName", nonLatinFirstName)
                 .param("lastName", toShortLastName)
-                .param("dateHired", dateHiredInTheFuture))
+                .param("dateHired", formatDate(dateHiredInTheFuture)))
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(4))
                 .andExpect(model().attributeHasFieldErrors("teacher", "firstName", "lastName", "title", "dateHired"))

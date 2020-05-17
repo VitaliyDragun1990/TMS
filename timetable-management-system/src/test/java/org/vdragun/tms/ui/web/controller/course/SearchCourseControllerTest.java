@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -35,6 +36,7 @@ import org.vdragun.tms.ui.web.util.Constants.Page;
  */
 @WebMvcTest(controllers = SearchCourseController.class)
 @Import({ WebMvcConfig.class, MessageProvider.class })
+@DisplayName("Search Course Controller")
 public class SearchCourseControllerTest {
 
     @Autowired

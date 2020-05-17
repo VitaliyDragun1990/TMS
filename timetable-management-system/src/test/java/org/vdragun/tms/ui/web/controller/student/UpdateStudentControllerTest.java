@@ -1,5 +1,6 @@
 package org.vdragun.tms.ui.web.controller.student;
 
+import static io.florianlopes.spring.test.web.servlet.request.MockMvcRequestBuilderUtils.postForm;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -51,6 +53,7 @@ import io.florianlopes.spring.test.web.servlet.request.MockMvcRequestBuilderUtil
  */
 @WebMvcTest(controllers = UpdateStudentController.class)
 @Import({ WebMvcConfig.class, MessageProvider.class })
+@DisplayName("Update Student Controller")
 public class UpdateStudentControllerTest {
 
     @Autowired
@@ -102,7 +105,7 @@ public class UpdateStudentControllerTest {
         List<Integer> courseIds = asList(1);
         UpdateStudentData updateData = new UpdateStudentData(studentId, groupId, "Jack", "Smith", courseIds);
 
-        mockMvc.perform(MockMvcRequestBuilderUtils.postForm("/students/" + 1, updateData).locale(Locale.US))
+        mockMvc.perform(postForm("/students/" + 1, updateData).locale(Locale.US))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(Attribute.INFO_MESSAGE,
                         equalTo(getMessage(Message.STUDENT_UPDATE_SUCCESS))))
@@ -118,14 +121,16 @@ public class UpdateStudentControllerTest {
         Integer invalidGroupId = -1;
         List<Integer> invalidCourseIds = asList(-0);
         String toShortFirstName = "J";
+        String blankLastName = "  ";
         UpdateStudentData updateData =
-                new UpdateStudentData(studentId, invalidGroupId, toShortFirstName, "Smith", invalidCourseIds);
+                new UpdateStudentData(studentId, invalidGroupId, toShortFirstName, blankLastName, invalidCourseIds);
 
         mockMvc.perform(MockMvcRequestBuilderUtils.postForm("/students/" + 1, updateData).locale(Locale.US))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(model().errorCount(3))
-                .andExpect(model().attributeHasFieldErrors("student", "firstName", "groupId", "courseIds[0]"))
+                .andExpect(model().errorCount(4))
+                .andExpect(model().attributeHasFieldErrors("student", "firstName", "lastName", "groupId",
+                        "courseIds[0]"))
                 .andExpect(model().attribute(Attribute.VALIDATED, equalTo(true)))
                 .andExpect(view().name(Page.STUDENT_UPDATE_FORM));
 

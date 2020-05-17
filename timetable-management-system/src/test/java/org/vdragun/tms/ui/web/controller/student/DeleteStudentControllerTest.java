@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Locale;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -37,6 +38,7 @@ import org.vdragun.tms.ui.web.util.Constants.Page;
  */
 @WebMvcTest(controllers = DeleteStudentController.class)
 @Import({ WebMvcConfig.class, MessageProvider.class })
+@DisplayName("Delete Student Controller")
 public class DeleteStudentControllerTest {
 
     @Autowired

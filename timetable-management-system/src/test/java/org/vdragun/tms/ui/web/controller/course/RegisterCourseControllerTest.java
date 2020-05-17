@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ import org.vdragun.tms.ui.web.util.Constants.Page;
  */
 @WebMvcTest(controllers = RegisterCourseController.class)
 @Import({ WebMvcConfig.class, MessageProvider.class })
+@DisplayName("Register Course Controller")
 public class RegisterCourseControllerTest {
 
     @Autowired
@@ -88,14 +90,15 @@ public class RegisterCourseControllerTest {
     @Test
     void shouldRegisterNewCourseIfNoValidationErrors() throws Exception {
         CourseData courseData = new CourseData("English", "Course description", 1, 1);
-        Course course = generator.generateCourse();
-        when(courseServiceMock.registerNewCourse(any(CourseData.class))).thenReturn(course);
+
+        Course registered = generator.generateCourse();
+        when(courseServiceMock.registerNewCourse(any(CourseData.class))).thenReturn(registered);
 
         mockMvc.perform(postForm("/courses", courseData).locale(Locale.US))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(Attribute.INFO_MESSAGE,
                         equalTo(getMessage(Message.COURSE_REGISTER_SUCCESS))))
-                .andExpect(redirectedUrlTemplate("/courses/{courseId}", course.getId()));
+                .andExpect(redirectedUrlTemplate("/courses/{courseId}", registered.getId()));
 
         ArgumentCaptor<CourseData> captor = ArgumentCaptor.forClass(CourseData.class);
         verify(courseServiceMock, times(1)).registerNewCourse(captor.capture());
