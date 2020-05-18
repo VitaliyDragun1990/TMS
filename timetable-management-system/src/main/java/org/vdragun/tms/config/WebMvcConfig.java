@@ -5,7 +5,6 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.LocaleResolver;
@@ -21,8 +20,7 @@ import org.vdragun.tms.ui.web.converter.TitleToStringConverter;
 import org.vdragun.tms.ui.web.util.Constants.Page;
 
 @Configuration
-@ComponentScan(basePackages = "org.vdragun.tms.ui.web")
-public class WebConfig implements WebMvcConfigurer {
+public class WebMvcConfig implements WebMvcConfigurer {
 
     @Autowired
     private MessageSource messageSource;

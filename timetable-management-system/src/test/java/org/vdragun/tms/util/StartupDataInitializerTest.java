@@ -10,11 +10,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.vdragun.tms.config.JPADaoConfig;
-import org.vdragun.tms.config.StartupDataConfig;
 import org.vdragun.tms.dao.DBTestHelper;
 import org.vdragun.tms.dao.DaoTestConfig;
+import org.vdragun.tms.util.StartupDataInitializerTest.StartupDataConfig;
 
 @DisplayName("Startup Data Initializer")
 @SpringJUnitConfig({ DaoTestConfig.class, JPADaoConfig.class, StartupDataConfig.class })
@@ -61,6 +63,12 @@ class StartupDataInitializerTest {
         assertThat(groupsInDatabase, equalTo(expectedNumberOfGroups));
         assertThat(coursesInDatabase, equalTo(expectedNumberOfCourses));
         assertThat(timetablesInDatabase, greaterThanOrEqualTo(numberOfMonths * 4 * coursesInDatabase));
+    }
+
+    @Configuration
+    @ComponentScan(basePackages = { "org.vdragun.tms.util.initializer" })
+    static class StartupDataConfig {
+
     }
 
 }
