@@ -55,6 +55,7 @@ public interface TimetableService {
      * 
      * @param studentId student identifier
      * @param date      day for which timetables should be found
+     * @throws ResourceNotFoundException if no student with specified identifier
      */
     List<Timetable> findDailyTimetablesForStudent(Integer studentId, LocalDate date);
 
@@ -64,6 +65,7 @@ public interface TimetableService {
      * 
      * @param studentId student identifier
      * @param month     month for which timetables should be found
+     * @throws ResourceNotFoundException if no student with specified identifier
      */
     List<Timetable> findMonthlyTimetablesForStudent(Integer studentId, Month month);
 
@@ -73,6 +75,7 @@ public interface TimetableService {
      * 
      * @param teacherId teacher identifier
      * @param date      day for which timetables should be found
+     * @throws ResourceNotFoundException if no teacher with specified identifier
      */
     List<Timetable> findDailyTimetablesForTeacher(Integer teacherId, LocalDate date);
 
@@ -82,6 +85,7 @@ public interface TimetableService {
      * 
      * @param teacherId teacher identifier
      * @param month     month for which timetables should be found
+     * @throws ResourceNotFoundException if no teacher with specified identifier
      */
     List<Timetable> findMonthlyTimetablesForTeacher(Integer teacherId, Month month);
 

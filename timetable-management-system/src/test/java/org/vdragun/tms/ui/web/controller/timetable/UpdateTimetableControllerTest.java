@@ -106,7 +106,7 @@ public class UpdateTimetableControllerTest {
     }
 
     @Test
-    void shouldShowBadRequestPageWithStatusBadRequestIfTimetableIdentifierIsNotNumber() throws Exception {
+    void shouldShowBadRequestPageIfTimetableIdentifierIsNotNumber() throws Exception {
         String timetableId = "id";
 
         mockMvc.perform(get("/timetables/{timetableId}/update", timetableId).locale(Locale.US))
@@ -119,7 +119,7 @@ public class UpdateTimetableControllerTest {
     }
 
     @Test
-    void shouldShowNotFoundPageWithStatusNotFoundIfNoTimetableToUpdateWithGivenIdentifier() throws Exception {
+    void shouldShowNotFoundPageIfNoTimetableToUpdateWithGivenIdentifier() throws Exception {
         Integer timetableId = 1;
         when(timetableServiceMock.findTimetableById(any(Integer.class)))
                 .thenThrow(new ResourceNotFoundException("Timetable with id=%d not found", timetableId));
@@ -177,7 +177,7 @@ public class UpdateTimetableControllerTest {
     }
     
     @Test
-    void shouldShowPageNotFoundWithStatusNotFoundIfTryToUpdateNonExistedTimetable() throws Exception {
+    void shouldShowPageNotFoundIfTryToUpdateNonExistedTimetable() throws Exception {
         Integer timetableId = 1;
         LocalDateTime startTime = LocalDateTime.now().plusDays(3).truncatedTo(ChronoUnit.MINUTES);
         Integer duration = 60;
@@ -202,7 +202,7 @@ public class UpdateTimetableControllerTest {
     }
 
     @Test
-    void shouldShowPageBadRequestWithStatusBadRequestIfTryToUpdateTimetableWithNonNumberIdentifier() throws Exception {
+    void shouldShowPageBadRequestIfTryToUpdateTimetableWithNonNumberIdentifier() throws Exception {
         String invalidTimetableId = "id";
         LocalDateTime startTime = LocalDateTime.now().plusDays(3).truncatedTo(ChronoUnit.MINUTES);
         Integer duration = 60;

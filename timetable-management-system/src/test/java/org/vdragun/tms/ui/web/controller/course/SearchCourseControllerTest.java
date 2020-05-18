@@ -50,6 +50,10 @@ public class SearchCourseControllerTest {
 
     private EntityGenerator generator = new EntityGenerator();
 
+    private String getMessage(String msgCode, Object... args) {
+        return messageProvider.getMessage(msgCode, args);
+    }
+
     @Test
     void shouldShowPageWithAvailableCourses() throws Exception {
         List<Course> courses = generator.generateCourses(10);
@@ -80,7 +84,7 @@ public class SearchCourseControllerTest {
     }
 
     @Test
-    void shouldShowNotFoundPageAndStatus404IfNoCourseWithGivenIdentifier() throws Exception {
+    void shouldShowNotFoundPageIfNoCourseWithGivenIdentifier() throws Exception {
         Integer courseId = 10;
         when(courseServiceMock.findCourseById(courseId))
                 .thenThrow(new ResourceNotFoundException("Course with id=%d not found", courseId));
@@ -95,7 +99,7 @@ public class SearchCourseControllerTest {
     }
 
     @Test
-    void shouldShowBadRequestPageAndStatus400IfGivenCourseIdentifierIsNotNumber() throws Exception {
+    void shouldShowBadRequestPageIfGivenCourseIdentifierIsNotNumber() throws Exception {
         String courseId = "id";
 
         mockMvc
@@ -106,10 +110,6 @@ public class SearchCourseControllerTest {
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/courses/" + courseId))))
                 .andExpect(view().name(Page.BAD_REQUEST));
-    }
-
-    private String getMessage(String msgCode, Object... args) {
-        return messageProvider.getMessage(msgCode, args);
     }
 
 }

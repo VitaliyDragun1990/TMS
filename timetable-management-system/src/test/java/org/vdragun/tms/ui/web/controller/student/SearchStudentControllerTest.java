@@ -80,7 +80,7 @@ public class SearchStudentControllerTest {
     }
 
     @Test
-    void shouldShowNotFoundPageWithStatusNotFoundIfNoStudentWithGivenIdentifier() throws Exception {
+    void shouldShowNotFoundPageIfNoStudentWithGivenIdentifier() throws Exception {
         Integer studentId = 1;
         when(studentServiceMock.findStudentById(studentId))
                 .thenThrow(new ResourceNotFoundException("Student with id=%d not found", studentId));
@@ -94,15 +94,15 @@ public class SearchStudentControllerTest {
     }
 
     @Test
-    void shouldShowBadRequestPageWithStatusBadRequestIfGivenStudentIdentifierIsNotNumber() throws Exception {
-        String studentId = "id";
+    void shouldShowBadRequestPageIfGivenStudentIdentifierIsNotNumber() throws Exception {
+        String invalidStudentId = "id";
 
-        mockMvc.perform(get("/students/{studentId}", studentId).locale(Locale.US))
+        mockMvc.perform(get("/students/{studentId}", invalidStudentId).locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(model().attributeExists(Attribute.ERROR, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", studentId))))
+                .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", invalidStudentId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
-                        equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + studentId))))
+                        equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + invalidStudentId))))
                 .andExpect(view().name(Page.BAD_REQUEST));
     }
 

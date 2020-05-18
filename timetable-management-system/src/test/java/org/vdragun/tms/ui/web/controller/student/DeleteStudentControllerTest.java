@@ -59,7 +59,7 @@ public class DeleteStudentControllerTest {
         Integer studentId = 1;
 
         mockMvc.perform(post("/students/delete").locale(Locale.US)
-                .param("id", studentId + ""))
+                .param("id", studentId.toString()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(Attribute.INFO_MESSAGE,
                         equalTo(getMessage(Message.STUDENT_DELETE_SUCCESS, studentId))))
@@ -69,7 +69,7 @@ public class DeleteStudentControllerTest {
     }
 
     @Test
-    void shouldShowNotFoundPageWithStatusNotFoundIfNoStudentWithGivenIdentifier() throws Exception {
+    void shouldShowNotFoundPageIfNoStudentWithGivenIdentifier() throws Exception {
         Integer studentId = 1;
         doThrow(new ResourceNotFoundException("Student with id=%d not found", studentId))
                 .when(studentsServiceMock)
@@ -87,14 +87,14 @@ public class DeleteStudentControllerTest {
     }
     
     @Test
-    void shouldShowBadRequestPageWithStatusBadRequestIfStudentIdentifierIsNotNumber() throws Exception {
-        String studentId = "id";
+    void shouldShowBadRequestPageIfStudentIdentifierIsNotNumber() throws Exception {
+        String invalidStudentId = "id";
 
         mockMvc.perform(post("/students/delete").locale(Locale.US)
-                .param("id", studentId + ""))
+                .param("id", invalidStudentId + ""))
                 .andExpect(status().isBadRequest())
                 .andExpect(model().attributeExists(Attribute.ERROR, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", studentId))))
+                .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", invalidStudentId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/delete"))))
                 .andExpect(view().name(Page.BAD_REQUEST));
