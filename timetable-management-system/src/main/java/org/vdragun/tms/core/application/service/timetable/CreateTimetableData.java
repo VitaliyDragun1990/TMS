@@ -3,10 +3,10 @@ package org.vdragun.tms.core.application.service.timetable;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.Future;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+
+import org.vdragun.tms.core.application.validation.TimetableDuration;
 
 /**
  * Contains necessary data to create new timetable
@@ -21,8 +21,7 @@ public class CreateTimetableData {
     private LocalDateTime startTime;
 
     @NotNull
-    @Min(value = 30)
-    @Max(value = 90)
+    @TimetableDuration
     private Integer durationInMinutes;
 
     @NotNull

@@ -15,7 +15,8 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 /**
  * @author Vitaliy Dragun
@@ -23,13 +24,14 @@ import javax.validation.constraints.Pattern;
  */
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
-@Pattern(regexp = "^[A-Za-z]*$")
+@Min(30)
+@Max(90)
 @ReportAsSingleViolation
 @Documented
 @Constraint(validatedBy = {})
-public @interface LatinWord {
+public @interface TimetableDuration {
 
-    String message() default "{org.vdragun.tms.core.application.validation.LatinCharacters.message}";
+    String message() default "{org.vdragun.tms.core.application.validation.TimetableDuration.message}";
 
     Class<?>[] groups() default {};
 

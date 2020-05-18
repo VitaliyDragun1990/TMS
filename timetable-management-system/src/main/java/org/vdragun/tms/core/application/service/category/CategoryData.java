@@ -1,6 +1,6 @@
 package org.vdragun.tms.core.application.service.category;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.vdragun.tms.core.application.validation.CategoryCode;
 import org.vdragun.tms.core.application.validation.LatinSentence;
@@ -13,7 +13,7 @@ import org.vdragun.tms.core.application.validation.LatinSentence;
  */
 public class CategoryData {
 
-    @NotBlank
+    @NotNull
     @CategoryCode
     private String code;
 

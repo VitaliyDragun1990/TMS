@@ -3,12 +3,10 @@ package org.vdragun.tms.core.application.service.student;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 
-import org.vdragun.tms.core.application.validation.LatinWord;
+import org.vdragun.tms.core.application.validation.PersonName;
 
 /**
  * Contains data necessary to update existing student
@@ -28,14 +26,12 @@ public class UpdateStudentData {
     @Positive
     private Integer groupId;
 
-    @NotBlank
-    @LatinWord
-    @Size(min = 2, max = 50)
+    @NotNull
+    @PersonName
     private String firstName;
 
-    @NotBlank
-    @LatinWord
-    @Size(min = 2, max = 50)
+    @NotNull
+    @PersonName
     private String lastName;
 
     private List<@NotNull @Positive Integer> courseIds;

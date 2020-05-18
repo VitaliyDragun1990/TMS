@@ -1,12 +1,10 @@
 package org.vdragun.tms.core.application.service.course;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 
+import org.vdragun.tms.core.application.validation.CourseName;
 import org.vdragun.tms.core.application.validation.LatinSentence;
-import org.vdragun.tms.core.application.validation.LatinWord;
 
 /**
  * Contains necessary data to create new course
@@ -16,9 +14,8 @@ import org.vdragun.tms.core.application.validation.LatinWord;
  */
 public class CourseData {
 
-    @NotBlank
-    @LatinWord
-    @Size(min = 5, max = 50)
+    @NotNull
+    @CourseName
     private String name;
 
     @LatinSentence
