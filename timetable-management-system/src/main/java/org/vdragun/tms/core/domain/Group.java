@@ -1,6 +1,12 @@
 package org.vdragun.tms.core.domain;
 
-import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  * Represents group at university
@@ -8,13 +14,25 @@ import java.util.Objects;
  * @author Vitaliy Dragun
  *
  */
+@Entity
+@Table(name = "groups")
 public class Group {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "groupGen")
+    @SequenceGenerator(name = "groupGen", sequenceName = "groups_group_id_seq", allocationSize = 1)
+    @Column(name = "group_id")
     private Integer id;
+
+    @Column(name = "group_name")
     private String name;
 
-    public Group() {
-        this(null);
+    protected Group() {
+        this((Integer) null);
+    }
+
+    public Group(Integer id) {
+        this(id, null);
     }
 
     public Group(String name) {
@@ -44,7 +62,7 @@ public class Group {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return 2021;
     }
 
     @Override
@@ -59,7 +77,7 @@ public class Group {
             return false;
         }
         Group other = (Group) obj;
-        return Objects.equals(id, other.id);
+        return id != null && id.equals(other.getId());
     }
 
     @Override

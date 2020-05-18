@@ -12,6 +12,12 @@ import org.springframework.jndi.JndiTemplate;
 
 import com.zaxxer.hikari.HikariDataSource;
 
+/**
+ * Contains database-related configuration
+ * 
+ * @author Vitaliy Dragun
+ *
+ */
 @Configuration
 @PropertySource("classpath:db.properties")
 public class DBConfig {

@@ -2,8 +2,17 @@ package org.vdragun.tms.core.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  * Represents teacher instance in the application
@@ -11,13 +20,15 @@ import java.util.List;
  * @author Vitaliy Dragun
  *
  */
+@Entity
+@Table(name = "teachers")
 public class Teacher extends Person {
 
     private LocalDate dateHired;
     private Title title;
     private List<Course> courses;
 
-    public Teacher() {
+    protected Teacher() {
         this(null, null, null);
     }
 
@@ -40,6 +51,28 @@ public class Teacher extends Person {
         courses = new ArrayList<>();
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teacherGen")
+    @SequenceGenerator(name = "teacherGen", sequenceName = "teachers_teacher_id_seq", allocationSize = 1)
+    @Column(name = "teacher_id")
+    @Override
+    public Integer getId() {
+        return super.getId();
+    }
+
+    @Column(name = "t_first_name")
+    @Override
+    public String getFirstName() {
+        return super.getFirstName();
+    }
+
+    @Column(name = "t_last_name")
+    @Override
+    public String getLastName() {
+        return super.getLastName();
+    }
+
+    @Column(name = "date_hired")
     public LocalDate getDateHired() {
         return dateHired;
     }
@@ -48,6 +81,7 @@ public class Teacher extends Person {
         this.dateHired = dateHired;
     }
 
+    @Column(name = "title")
     public Title getTitle() {
         return title;
     }
@@ -56,12 +90,13 @@ public class Teacher extends Person {
         this.title = title;
     }
 
+    @OneToMany(mappedBy = "teacher", cascade = { CascadeType.PERSIST })
     public List<Course> getCourses() {
-        return Collections.unmodifiableList(courses);
+        return courses;
     }
 
     public void setCourses(List<Course> courses) {
-        this.courses.addAll(courses);
+        this.courses = courses;
     }
 
     public void addCourse(Course course) {
@@ -72,7 +107,7 @@ public class Teacher extends Person {
     @Override
     public String toString() {
         return "Teacher [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName +
-                ", dateHired=" + dateHired + ", title=" + title + ", courses=" + courses + "]";
+                ", dateHired=" + dateHired + ", title=" + title + "]";
     }
 
 }

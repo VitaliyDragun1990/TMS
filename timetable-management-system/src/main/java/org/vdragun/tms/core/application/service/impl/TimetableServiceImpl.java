@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.CreateTimetableData;
 import org.vdragun.tms.core.application.service.TimetableService;
@@ -28,6 +29,7 @@ import org.vdragun.tms.dao.TimetableDao;
  *
  */
 @Service
+@Transactional
 public class TimetableServiceImpl implements TimetableService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TimetableServiceImpl.class);
@@ -84,6 +86,7 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Timetable findTimetableById(Integer timetableId) {
         LOG.debug("Searching for timetable with id={}", timetableId);
 
@@ -91,6 +94,7 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Timetable> findAllTimetables() {
         LOG.debug("Retrieving all timetables");
 
@@ -100,6 +104,7 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Timetable> findDailyTimetablesForStudent(Integer studentId, LocalDate date) {
         LOG.debug("Retrieving all timetables for student with id={} for date={}", studentId, date);
         assertStudentExists(studentId);
@@ -111,6 +116,7 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Timetable> findMonthlyTimetablesForStudent(Integer studentId, Month month) {
         LOG.debug("Retrieving all timetables for student with id={} for month={}", studentId, month);
         assertStudentExists(studentId);
@@ -122,6 +128,7 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Timetable> findDailyTimetablesForTeacher(Integer teacherId, LocalDate date) {
         LOG.debug("Retrieving all timetables for teacher with id={} for date={}", teacherId, date);
         assertTeacherExists(teacherId);
@@ -133,6 +140,7 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Timetable> findMonthlyTimetablesForTeacher(Integer teacherId, Month month) {
         LOG.debug("Retrieving all timetables for teacher with id={} for month={}", teacherId, month);
         assertTeacherExists(teacherId);

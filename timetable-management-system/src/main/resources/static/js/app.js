@@ -2,10 +2,8 @@ $(function() {
 
 	var init = function() {
 		$('#sidebarCollapse').on('click', toggleSidebar);
-		$('#dateTimePicker').datetimepicker({
-			viewMode : 'days',
-			format : datePattern
-		});
+		$('#dateTimePicker').datetimepicker(getInitPickerState());
+		
 		$('#enrollmentDate').datetimepicker({
 			viewMode : 'days',
 			format : datePattern
@@ -34,6 +32,18 @@ $(function() {
 		$('#updateDialogBtn').on('click', showUpdateDialog);
 		$('#confirmUpdateBtn').on('click', hideUpdateDialog);
 	};
+	
+	var getInitPickerState = function() {
+		var initState =  {
+				viewMode : 'days',
+				format : datePattern
+		};
+		if($('#monthlySearch').is(':checked')) {
+			initState.viewMode = 'months';
+			initState.format = 'MMMM';
+		}
+		return initState;
+	}
 	
 	var hideDeleteDialog = function() {
 		var targetUrl = $('#deleteDialog').attr('data-target-url');
@@ -114,6 +124,7 @@ $(function() {
 			$('#dateTimePicker').data("DateTimePicker").clear();
 			// set day format
 			$('#dateTimePicker').data("DateTimePicker").format(datePattern);
+			$('#dateTimePicker').data("DateTimePicker").viewMode('days');
 		}
 	}
 	
@@ -123,6 +134,7 @@ $(function() {
 			$('#dateTimePicker').data("DateTimePicker").clear();
 			// set month format
 			$('#dateTimePicker').data("DateTimePicker").format('MMMM');
+			$('#dateTimePicker').data("DateTimePicker").viewMode('months');
 		}
 	}
 

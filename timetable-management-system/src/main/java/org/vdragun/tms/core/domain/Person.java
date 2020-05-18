@@ -1,7 +1,5 @@
 package org.vdragun.tms.core.domain;
 
-import java.util.Objects;
-
 /**
  * Abstract class with common properties that represents person
  * 
@@ -54,7 +52,7 @@ abstract class Person {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return 2021;
     }
 
     @Override
@@ -69,7 +67,7 @@ abstract class Person {
             return false;
         }
         Person other = (Person) obj;
-        return Objects.equals(id, other.id);
+        return id != null && id.equals(other.id);
     }
     
 }

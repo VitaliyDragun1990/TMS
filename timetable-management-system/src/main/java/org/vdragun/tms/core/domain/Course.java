@@ -1,6 +1,15 @@
 package org.vdragun.tms.core.domain;
 
-import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  * Represents university course
@@ -8,15 +17,35 @@ import java.util.Objects;
  * @author Vitaliy Dragun
  *
  */
+@Entity
+@Table(name = "courses")
 public class Course {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "courseGen")
+    @SequenceGenerator(name = "courseGen", sequenceName = "courses_course_id_seq", allocationSize = 1)
+    @Column(name = "course_id")
     private Integer id;
+
+    @Column(name = "course_name")
     private String name;
+
+    @Column(name = "course_description")
     private String description;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
     private Category category;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    public Course() {
+    protected Course() {
+    }
+
+    public Course(Integer id) {
+        this(id, null, null, null);
     }
 
     public Course(String name, Category category, Teacher teacher) {
@@ -81,7 +110,7 @@ public class Course {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return 2021;
     }
 
     @Override
@@ -96,7 +125,7 @@ public class Course {
             return false;
         }
         Course other = (Course) obj;
-        return Objects.equals(id, other.id);
+        return id != null && id.equals(other.getId());
     }
 
     @Override

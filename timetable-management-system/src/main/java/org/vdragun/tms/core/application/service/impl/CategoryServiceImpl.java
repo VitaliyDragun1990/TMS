@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.CategoryData;
 import org.vdragun.tms.core.application.service.CategoryService;
@@ -18,6 +19,7 @@ import org.vdragun.tms.dao.CategoryDao;
  *
  */
 @Service
+@Transactional
 public class CategoryServiceImpl implements CategoryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CategoryServiceImpl.class);
@@ -40,6 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Category findCategoryById(Integer categoryId) {
         LOG.debug("Searching for category with id={}", categoryId);
 
@@ -48,6 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Category> findAllCategories() {
         LOG.debug("Retrieving all categories");
 

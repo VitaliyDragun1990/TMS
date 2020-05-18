@@ -1,6 +1,12 @@
 package org.vdragun.tms.core.domain;
 
-import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  * Represents course category
@@ -8,13 +14,23 @@ import java.util.Objects;
  * @author Vitaliy Dragun
  *
  */
+@Entity
+@Table(name = "categories")
 public class Category {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "categoryGen")
+    @SequenceGenerator(name = "categoryGen", sequenceName = "categories_category_id_seq", allocationSize = 1)
+    @Column(name = "category_id")
     private Integer id;
+
+    @Column(name = "category_code")
     private String code;
+
+    @Column(name = "category_description")
     private String description;
 
-    public Category() {
+    protected Category() {
         this(null);
     }
 
@@ -62,7 +78,7 @@ public class Category {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return 2021;
     }
 
     @Override
@@ -77,7 +93,7 @@ public class Category {
             return false;
         }
         Category other = (Category) obj;
-        return Objects.equals(id, other.id);
+        return id != null && id.equals(other.getId());
     }
 
     @Override

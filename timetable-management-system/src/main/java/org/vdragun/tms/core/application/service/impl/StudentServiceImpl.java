@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.CreateStudentData;
 import org.vdragun.tms.core.application.service.StudentService;
@@ -21,6 +22,7 @@ import org.vdragun.tms.dao.StudentDao;
  *
  */
 @Service
+@Transactional
 public class StudentServiceImpl implements StudentService {
 
     private static final Logger LOG = LoggerFactory.getLogger(StudentServiceImpl.class);
@@ -67,6 +69,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Student findStudentById(Integer studentId) {
         LOG.debug("Searching for student with id={}", studentId);
 
@@ -75,6 +78,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Student> findAllStudents() {
         LOG.debug("Retrieving all students");
 
@@ -85,6 +89,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Student> findStudentsForCourse(Integer courseId) {
         assertCourseExists(courseId);
 
@@ -92,6 +97,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Student> findStudentsForGroup(Integer groupId) {
         LOG.debug("Searching for students assigned to group with id={}", groupId);
         assertGroupExists(groupId);
