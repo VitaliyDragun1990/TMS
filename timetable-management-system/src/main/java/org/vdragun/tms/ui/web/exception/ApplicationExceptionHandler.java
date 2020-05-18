@@ -11,6 +11,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -59,7 +60,7 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
-    public String handlemethodArgumentMismatchException(
+    public String handleMethodArgumentMismatchException(
             MethodArgumentTypeMismatchException exception,
             Model model,
             HttpServletRequest request) {
@@ -69,6 +70,21 @@ public class ApplicationExceptionHandler {
         if (exception.getRootCause() instanceof NumberFormatException) {
             errMsg = extractMessage((Exception) exception.getRootCause());
         }
+        model.addAttribute(Attribute.ERROR, errMsg);
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+
+        return Page.BAD_REQUEST;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({ MissingServletRequestParameterException.class })
+    public String handleMissingRequestParameterException(
+            MissingServletRequestParameterException exception,
+            Model model,
+            HttpServletRequest request) {
+        LOG.warn("Handling missing request parameter exception", exception);
+
+        String errMsg = getMessage(Message.REQUIRED_REQUEST_PARAMETER, exception.getParameterName());
         model.addAttribute(Attribute.ERROR, errMsg);
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
 
