@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.web.util;
+package org.vdragun.tms.ui.common.util;
 
 /**
  * Contains constant values used across web layer

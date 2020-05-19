@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.vdragun.tms.ui.web.util.Constants.Message;
+import org.vdragun.tms.ui.common.util.Constants.Message;
 
 /**
  * Parent class with common functionality for all application controllers.

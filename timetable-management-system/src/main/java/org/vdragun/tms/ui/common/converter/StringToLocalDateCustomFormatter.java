@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.web.converter;
+package org.vdragun.tms.ui.common.converter;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -7,7 +7,7 @@ import java.util.Locale;
 
 import org.springframework.context.MessageSource;
 import org.springframework.format.Formatter;
-import org.vdragun.tms.ui.web.util.Constants.Message;
+import org.vdragun.tms.ui.common.util.Constants.Message;
 
 /**
  * Responsible for converting string values into {@link LocalDate} instances and

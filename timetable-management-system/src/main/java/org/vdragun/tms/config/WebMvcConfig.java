@@ -15,12 +15,12 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.vdragun.tms.ui.web.converter.StringToLocalDateCustomFormatter;
-import org.vdragun.tms.ui.web.converter.StringToLocalDateTimeCustomFormatter;
-import org.vdragun.tms.ui.web.converter.StudentToUpdateStudentDataConverter;
-import org.vdragun.tms.ui.web.converter.TimetableToUpdateTimetableDataConverter;
-import org.vdragun.tms.ui.web.converter.TitleCustomFormatter;
-import org.vdragun.tms.ui.web.util.Constants.Page;
+import org.vdragun.tms.ui.common.converter.StringToLocalDateCustomFormatter;
+import org.vdragun.tms.ui.common.converter.StringToLocalDateTimeCustomFormatter;
+import org.vdragun.tms.ui.common.converter.StudentToUpdateStudentDataConverter;
+import org.vdragun.tms.ui.common.converter.TimetableToUpdateTimetableDataConverter;
+import org.vdragun.tms.ui.common.converter.TitleCustomFormatter;
+import org.vdragun.tms.ui.common.util.Constants.Page;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
