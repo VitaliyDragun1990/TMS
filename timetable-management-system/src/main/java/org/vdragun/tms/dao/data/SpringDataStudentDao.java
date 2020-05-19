@@ -33,6 +33,6 @@ public interface SpringDataStudentDao extends StudentDao, StudentDaoFragment {
     List<Student> findByCourseId(Integer courseId);
 
     @Override
-    @EntityGraph(attributePaths = { "courses", "group" })
+    @EntityGraph(attributePaths = "courses", type = EntityGraphType.LOAD)
     List<Student> findByGroupId(Integer groupId);
 }

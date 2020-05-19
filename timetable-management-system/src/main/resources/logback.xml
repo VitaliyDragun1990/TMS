@@ -10,7 +10,7 @@
         <appender-ref ref="CONSOLE" />
     </logger>
     
-    <logger name="org.vdragun.tms.ui.web" level="trace" additivity="false">
+    <logger name="org.vdragun.tms.ui" level="trace" additivity="false">
         <appender-ref ref="CONSOLE" />
     </logger>
 
