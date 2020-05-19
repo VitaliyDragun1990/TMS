@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.RepositoryDefinition;
 import org.vdragun.tms.core.domain.Student;
@@ -19,11 +20,11 @@ import org.vdragun.tms.dao.StudentDao;
 public interface SpringDataStudentDao extends StudentDao, StudentDaoFragment {
 
     @Override
-    @EntityGraph(attributePaths = { "courses", "group" })
+    @EntityGraph(attributePaths = "courses", type = EntityGraphType.LOAD)
     Optional<Student> findById(Integer studentId);
 
     @Override
-    @EntityGraph(attributePaths = { "courses", "group" })
+    @EntityGraph(attributePaths = "courses", type = EntityGraphType.LOAD)
     List<Student> findAll();
 
     @Override
