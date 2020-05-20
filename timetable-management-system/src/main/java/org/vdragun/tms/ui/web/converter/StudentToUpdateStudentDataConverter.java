@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.common.converter;
+package org.vdragun.tms.ui.web.converter;
 
 import static java.util.stream.Collectors.toList;
 

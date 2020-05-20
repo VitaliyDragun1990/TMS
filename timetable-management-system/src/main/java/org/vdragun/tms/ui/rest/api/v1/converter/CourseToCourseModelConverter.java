@@ -4,7 +4,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.resource.v1.course.SearchCourseResource;
@@ -17,7 +16,6 @@ import org.vdragun.tms.ui.rest.resource.v1.teacher.SearchTeacherResource;
  * @author Vitaliy Dragun
  *
  */
-@Component
 public class CourseToCourseModelConverter implements Converter<Course, CourseModel> {
 
     @Override

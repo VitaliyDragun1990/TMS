@@ -4,14 +4,14 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.ui.common.converter.LocalDateCustomFormatter;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.resource.v1.student.SearchStudentResource;
@@ -23,15 +23,16 @@ import org.vdragun.tms.ui.rest.resource.v1.student.SearchStudentResource;
  * @author Vitaliy Dragun
  *
  */
-@Component
 public class StudentToStudentModelConverter implements Converter<Student, StudentModel> {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
     private CourseToCourseModelConverter courseConverter;
+    private LocalDateCustomFormatter dateFormatter;
 
-    public StudentToStudentModelConverter(CourseToCourseModelConverter courseConverter) {
+    public StudentToStudentModelConverter(
+            CourseToCourseModelConverter courseConverter,
+            LocalDateCustomFormatter dateFormatter) {
         this.courseConverter = courseConverter;
+        this.dateFormatter = dateFormatter;
     }
 
     @Override
@@ -41,7 +42,7 @@ public class StudentToStudentModelConverter implements Converter<Student, Studen
                 student.getFirstName(),
                 student.getLastName(),
                 student.getGroup() != null ? student.getGroup().getName() : null,
-                DATE_FORMATTER.format(student.getEnrollmentDate()),
+                dateFormatter.print(student.getEnrollmentDate(), LocaleContextHolder.getLocale()),
                 convertToDTO(student.getCourses()));
 
         model.add(

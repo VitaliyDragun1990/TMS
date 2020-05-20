@@ -32,6 +32,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.service.teacher.TeacherData;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
@@ -48,7 +49,7 @@ import org.vdragun.tms.ui.web.controller.MessageProvider;
  *
  */
 @WebMvcTest(controllers = RegisterTeacherController.class)
-@Import({ WebMvcConfig.class, MessageProvider.class })
+@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
 @DisplayName("Register Teacher Controller")
 public class RegisterTeacherControllerTest {
 

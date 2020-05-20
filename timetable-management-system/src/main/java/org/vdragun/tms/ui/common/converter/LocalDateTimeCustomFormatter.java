@@ -16,11 +16,11 @@ import org.vdragun.tms.ui.common.util.Constants.Message;
  * @author Vitaliy Dragun
  *
  */
-public class StringToLocalDateTimeCustomFormatter implements Formatter<LocalDateTime> {
+public class LocalDateTimeCustomFormatter implements Formatter<LocalDateTime> {
 
     private MessageSource messageSource;
 
-    public StringToLocalDateTimeCustomFormatter(MessageSource messageSource) {
+    public LocalDateTimeCustomFormatter(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 

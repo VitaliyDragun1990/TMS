@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.common.converter;
+package org.vdragun.tms.ui.web.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;

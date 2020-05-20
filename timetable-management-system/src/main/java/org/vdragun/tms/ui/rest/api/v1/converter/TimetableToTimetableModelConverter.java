@@ -3,11 +3,10 @@ package org.vdragun.tms.ui.rest.api.v1.converter;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.time.format.DateTimeFormatter;
-
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.ui.common.converter.LocalDateTimeCustomFormatter;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.resource.v1.timetable.SearchTimetableResource;
 
@@ -18,22 +17,23 @@ import org.vdragun.tms.ui.rest.resource.v1.timetable.SearchTimetableResource;
  * @author Vitaliy Dragun
  *
  */
-@Component
 public class TimetableToTimetableModelConverter implements Converter<Timetable, TimetableModel> {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
     private CourseToCourseModelConverter courseConverter;
+    private LocalDateTimeCustomFormatter dateTimeFormatter;
 
-    public TimetableToTimetableModelConverter(CourseToCourseModelConverter courseConverter) {
+    public TimetableToTimetableModelConverter(
+            CourseToCourseModelConverter courseConverter,
+            LocalDateTimeCustomFormatter dateTimeFormatter) {
         this.courseConverter = courseConverter;
+        this.dateTimeFormatter = dateTimeFormatter;
     }
 
     @Override
     public TimetableModel convert(Timetable timetable) {
         TimetableModel model = new TimetableModel(
                 timetable.getId(),
-                DATE_FORMATTER.format(timetable.getStartTime()),
+                dateTimeFormatter.print(timetable.getStartTime(), LocaleContextHolder.getLocale()),
                 timetable.getDurationInMinutes(),
                 courseConverter.convert(timetable.getCourse()),
                 timetable.getClassroom().getId(),
