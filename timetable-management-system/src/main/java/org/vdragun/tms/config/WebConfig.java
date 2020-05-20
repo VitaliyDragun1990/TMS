@@ -12,6 +12,8 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.vdragun.tms.ui.common.converter.LocalDateCustomFormatter;
 import org.vdragun.tms.ui.common.converter.LocalDateTimeCustomFormatter;
+import org.vdragun.tms.ui.common.util.DefaultTranslator;
+import org.vdragun.tms.ui.common.util.Translator;
 
 /**
  * Contains common configuration for UI layer.
@@ -39,6 +41,11 @@ public class WebConfig {
         factory.setValidationMessageSource(messageSource);
 
         return factory;
+    }
+
+    @Bean
+    public Translator translator() {
+        return new DefaultTranslator(messageSource);
     }
 
     @Bean
