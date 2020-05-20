@@ -8,6 +8,9 @@ import javax.validation.constraints.Positive;
 
 import org.vdragun.tms.core.application.validation.TimetableDuration;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Contains data necessary to update existing timetable
  * 
@@ -22,10 +25,12 @@ public class UpdateTimetableData {
 
     @NotNull
     @Future
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime startTime;
 
     @NotNull
     @TimetableDuration
+    @JsonProperty("duration")
     private Integer durationInMinutes;
 
     @NotNull
