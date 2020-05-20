@@ -1,8 +1,9 @@
 package org.vdragun.tms.ui.rest.resource.v1.course;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.course.CourseData;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
-import org.vdragun.tms.ui.rest.api.v1.model.CourseDTO;
+import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 
 /**
@@ -31,13 +32,13 @@ public class RegisterCourseResource extends AbstractResource {
         super(conversionService);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public CourseDTO registerNewCourse(@RequestBody CourseData courseData) {
+    @PostMapping(produces = "application/hal+json")
+    @ResponseStatus(CREATED)
+    public CourseModel registerNewCourse(@RequestBody CourseData courseData) {
         log.trace("Received POST request to register new course, data={}, URI={}", courseData, getRequestUri());
 
         Course course = courseService.registerNewCourse(courseData);
-        return convert(course, CourseDTO.class);
+        return convert(course, CourseModel.class);
     }
 
 }

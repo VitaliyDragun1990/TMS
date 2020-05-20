@@ -1,5 +1,9 @@
 package org.vdragun.tms.ui.rest.api.v1.model;
 
+import java.util.Objects;
+
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 import org.vdragun.tms.core.domain.Course;
 
 /**
@@ -9,7 +13,8 @@ import org.vdragun.tms.core.domain.Course;
  * @author Vitaliy Dragun
  *
  */
-public class CourseDTO {
+@Relation(collectionRelation = "courses", itemRelation = "course")
+public class CourseModel extends RepresentationModel<CourseModel> {
 
     private Integer id;
     private String name;
@@ -18,10 +23,10 @@ public class CourseDTO {
     private Integer teacherId;
     private String teacherFullName;
 
-    public CourseDTO() {
+    public CourseModel() {
     }
 
-    public CourseDTO(
+    public CourseModel(
             Integer id,
             String name,
             String description,
@@ -78,6 +83,27 @@ public class CourseDTO {
 
     public void setTeacherFullName(String teacherFullName) {
         this.teacherFullName = teacherFullName;
+    }
+
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(id);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CourseModel other = (CourseModel) obj;
+        return Objects.equals(id, other.id);
     }
 
     @Override

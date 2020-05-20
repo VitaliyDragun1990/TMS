@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.student.CreateStudentData;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.domain.Student;
-import org.vdragun.tms.ui.rest.api.v1.model.StudentDTO;
+import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 
 /**
@@ -32,13 +32,13 @@ public class RegisterStudentResource extends AbstractResource {
         super(conversionService);
     }
 
-    @PostMapping
+    @PostMapping(produces = "application/hal+json")
     @ResponseStatus(CREATED)
-    public StudentDTO registerNewStudent(@RequestBody CreateStudentData studentData) {
+    public StudentModel registerNewStudent(@RequestBody CreateStudentData studentData) {
         log.trace("Received POST request to register new student, data={}, URI={}", studentData, getRequestUri());
 
         Student student = studentService.registerNewStudent(studentData);
-        return convert(student, StudentDTO.class);
+        return convert(student, StudentModel.class);
     }
 
 }

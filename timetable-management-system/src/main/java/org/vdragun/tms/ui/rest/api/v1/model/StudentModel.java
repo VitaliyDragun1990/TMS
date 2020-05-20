@@ -1,7 +1,10 @@
 package org.vdragun.tms.ui.rest.api.v1.model;
 
 import java.util.List;
+import java.util.Objects;
 
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 import org.vdragun.tms.core.domain.Student;
 
 /**
@@ -11,25 +14,26 @@ import org.vdragun.tms.core.domain.Student;
  * @author Vitaliy Dragun
  *
  */
-public class StudentDTO {
+@Relation(collectionRelation = "students", itemRelation = "student")
+public class StudentModel extends RepresentationModel<StudentModel> {
 
     private Integer id;
     private String firstName;
     private String lastName;
     private String group;
     private String enrollmentDate;
-    private List<CourseDTO> courses;
+    private List<CourseModel> courses;
 
-    public StudentDTO() {
+    public StudentModel() {
     }
 
-    public StudentDTO(
+    public StudentModel(
             Integer id,
             String firstName,
             String lastName,
             String group,
             String enrollmentDate,
-            List<CourseDTO> courses) {
+            List<CourseModel> courses) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -78,12 +82,32 @@ public class StudentDTO {
         this.enrollmentDate = enrollmentDate;
     }
 
-    public List<CourseDTO> getCourses() {
+    public List<CourseModel> getCourses() {
         return courses;
     }
 
-    public void setCourses(List<CourseDTO> courses) {
+    public void setCourses(List<CourseModel> courses) {
         this.courses = courses;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(id);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        StudentModel other = (StudentModel) obj;
+        return Objects.equals(id, other.id);
     }
 
     @Override

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 import org.vdragun.tms.core.domain.Student;
-import org.vdragun.tms.ui.rest.api.v1.model.StudentDTO;
+import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 
 /**
@@ -33,16 +33,16 @@ public class UpdateStudentResource extends AbstractResource {
         super(conversionService);
     }
 
-    @PutMapping("/{studentId}")
+    @PutMapping(path = "/{studentId}", produces = "application/hal+json")
     @ResponseStatus(OK)
-    public StudentDTO updateExistingStudent(
+    public StudentModel updateExistingStudent(
             @PathVariable("studentId") Integer studentId,
             @RequestBody UpdateStudentData studentData) {
         log.trace("Received PUT request to update student with id={}, data={} URI={}",
                 studentId, studentData, getRequestUri());
 
         Student student = studentService.updateExistingStudent(studentData);
-        return convert(student, StudentDTO.class);
+        return convert(student, StudentModel.class);
     }
 
 }

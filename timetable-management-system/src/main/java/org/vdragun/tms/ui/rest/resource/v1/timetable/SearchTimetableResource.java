@@ -1,5 +1,7 @@
 package org.vdragun.tms.ui.rest.resource.v1.timetable;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.time.LocalDate;
@@ -8,6 +10,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.ui.rest.api.v1.model.TimetableDTO;
+import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 
 /**
@@ -26,7 +29,7 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  *
  */
 @RestController
-@RequestMapping("/api/v1/timetables")
+@RequestMapping(path = "/api/v1/timetables", produces = "application/hal+json")
 public class SearchTimetableResource extends AbstractResource {
 
     @Autowired
@@ -38,72 +41,111 @@ public class SearchTimetableResource extends AbstractResource {
 
     @GetMapping
     @ResponseStatus(OK)
-    public List<TimetableDTO> getAllTimetables() {
+    public CollectionModel<TimetableModel> getAllTimetables() {
         log.trace("Received GET request to retrieve all timetables, URI={}", getRequestUri());
-        return convertList(timetableService.findAllTimetables(), Timetable.class, TimetableDTO.class);
+        List<TimetableModel> list = convertList(
+                timetableService.findAllTimetables(),
+                Timetable.class,
+                TimetableModel.class);
+        
+        return new CollectionModel<>(
+                list,
+                linkTo(methodOn(SearchTimetableResource.class).getAllTimetables()).withSelfRel());
     }
 
     @GetMapping("/{timetableId}")
     @ResponseStatus(OK)
-    public TimetableDTO getTimetableById(@PathVariable("timetableId") Integer timetableId) {
+    public TimetableModel getTimetableById(@PathVariable("timetableId") Integer timetableId) {
         log.trace("Received GET request to retrieve timetable with id={}, URI={}", timetableId, getRequestUri());
-        return convert(timetableService.findTimetableById(timetableId), TimetableDTO.class);
+        return convert(timetableService.findTimetableById(timetableId), TimetableModel.class);
     }
 
     @GetMapping("/teacher/{teacherId}/day")
     @ResponseStatus(OK)
-    public List<TimetableDTO> getDailyTimetablesForTeacher(
+    public CollectionModel<TimetableModel> getDailyTimetablesForTeacher(
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetDate") LocalDate targetDate) {
         log.trace("Received GET request to retrieve daily timetables for teacher with id={} for date={}, URI={}",
                 teacherId, targetDate, getRequestUri());
 
-        return convertList(
+        List<TimetableModel> list = convertList(
                 timetableService.findDailyTimetablesForTeacher(teacherId, targetDate),
                 Timetable.class,
-                TimetableDTO.class);
+                TimetableModel.class);
+
+        return new CollectionModel<>(
+                list,
+                linkTo(SearchTimetableResource.class)
+                        .slash("teacher")
+                        .slash(teacherId)
+                        .slash("day?targetDate=" + convert(targetDate, String.class))
+                        .withSelfRel());
     }
 
     @GetMapping("/teacher/{teacherId}/month")
     @ResponseStatus(OK)
-    public List<TimetableDTO> getMonthlyTimetablesForTeacher(
+    public CollectionModel<TimetableModel> getMonthlyTimetablesForTeacher(
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetMonth") Month targetMonth) {
         log.trace("Received GET request to retrieve monthly timetables for teacher with id={} for month={}, URI={}",
                 teacherId, targetMonth, getRequestUri());
 
-        return convertList(
+        List<TimetableModel> list = convertList(
                 timetableService.findMonthlyTimetablesForTeacher(teacherId, targetMonth),
                 Timetable.class,
-                TimetableDTO.class);
+                TimetableModel.class);
+
+        return new CollectionModel<>(
+                list,
+                linkTo(SearchTimetableResource.class)
+                        .slash("teacher")
+                        .slash(teacherId)
+                        .slash("month?targetMonth=" + convert(targetMonth, String.class))
+                        .withSelfRel());
     }
 
     @GetMapping("/student/{studentId}/day")
     @ResponseStatus(OK)
-    public List<TimetableDTO> getDailyTimetablesForStudent(
+    public CollectionModel<TimetableModel> getDailyTimetablesForStudent(
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetDate") LocalDate targetDate) {
         log.trace("Received GET request to retrieve daily timetables for student with id={} for date={}, URI={}",
                 studentId, targetDate, getRequestUri());
 
-        return convertList(
+        List<TimetableModel> list = convertList(
                 timetableService.findDailyTimetablesForStudent(studentId, targetDate),
                 Timetable.class,
-                TimetableDTO.class);
+                TimetableModel.class);
+
+        return new CollectionModel<>(
+                list,
+                linkTo(SearchTimetableResource.class)
+                        .slash("student")
+                        .slash(studentId)
+                        .slash("day?targetDate=" + convert(targetDate, String.class))
+                        .withSelfRel());
     }
 
     @GetMapping("/student/{studentId}/month")
     @ResponseStatus(OK)
-    public List<TimetableDTO> getMonthlyTimetablesForStudent(
+    public CollectionModel<TimetableModel> getMonthlyTimetablesForStudent(
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetMonth") Month targetMonth) {
         log.trace("Received GET request to retrieve monthly timetables for student with id={} for month={}, URI={}",
                 studentId, targetMonth, getRequestUri());
 
-        return convertList(
+        List<TimetableModel> list = convertList(
                 timetableService.findMonthlyTimetablesForStudent(studentId, targetMonth),
                 Timetable.class,
-                TimetableDTO.class);
+                TimetableModel.class);
+
+        return new CollectionModel<>(
+                list,
+                linkTo(SearchTimetableResource.class)
+                        .slash("student")
+                        .slash(studentId)
+                        .slash("month?targetMonth=" + convert(targetMonth, String.class))
+                        .withSelfRel());
     }
 
 }

@@ -1,5 +1,9 @@
 package org.vdragun.tms.ui.rest.api.v1.model;
 
+import java.util.Objects;
+
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 import org.vdragun.tms.core.domain.Timetable;
 
 /**
@@ -9,23 +13,24 @@ import org.vdragun.tms.core.domain.Timetable;
  * @author Vitaliy Dragun
  *
  */
-public class TimetableDTO {
+@Relation(collectionRelation = "timetables", itemRelation = "timetable")
+public class TimetableModel extends RepresentationModel<TimetableModel> {
 
     private Integer id;
     private String startTime;
     private Integer duration;
-    private CourseDTO course;
+    private CourseModel course;
     private Integer classroomId;
     private Integer classroomCapacity;
 
-    public TimetableDTO() {
+    public TimetableModel() {
     }
 
-    public TimetableDTO(
+    public TimetableModel(
             Integer id,
             String startTime,
             Integer duration,
-            CourseDTO course,
+            CourseModel course,
             Integer classroomId,
             Integer classroomCapacity) {
         this.id = id;
@@ -60,11 +65,11 @@ public class TimetableDTO {
         this.duration = duration;
     }
 
-    public CourseDTO getCourse() {
+    public CourseModel getCourse() {
         return course;
     }
 
-    public void setCourse(CourseDTO course) {
+    public void setCourse(CourseModel course) {
         this.course = course;
     }
 
@@ -82,6 +87,26 @@ public class TimetableDTO {
 
     public void setClassroomCapacity(Integer classroomCapacity) {
         this.classroomCapacity = classroomCapacity;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(id);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TimetableModel other = (TimetableModel) obj;
+        return Objects.equals(id, other.id);
     }
 
     @Override

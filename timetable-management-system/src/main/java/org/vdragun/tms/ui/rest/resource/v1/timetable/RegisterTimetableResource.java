@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.ui.rest.api.v1.model.TimetableDTO;
+import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 
 /**
@@ -32,13 +32,13 @@ public class RegisterTimetableResource extends AbstractResource {
         super(conversionService);
     }
 
-    @PostMapping
+    @PostMapping(produces = "application/hal+json")
     @ResponseStatus(CREATED)
-    public TimetableDTO registerNewTimetable(@RequestBody CreateTimetableData timetableData) {
+    public TimetableModel registerNewTimetable(@RequestBody CreateTimetableData timetableData) {
         log.trace("Received POST request to register new timetable, data={}, URI={}", timetableData, getRequestUri());
 
         Timetable timetable = timetableService.registerNewTimetable(timetableData);
-        return convert(timetable, TimetableDTO.class);
+        return convert(timetable, TimetableModel.class);
     }
 
 }

@@ -1,11 +1,14 @@
 package org.vdragun.tms.ui.rest.resource.v1.student;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.domain.Student;
-import org.vdragun.tms.ui.rest.api.v1.model.StudentDTO;
+import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 
 /**
@@ -23,7 +26,7 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  *
  */
 @RestController
-@RequestMapping("/api/v1/students")
+@RequestMapping(path = "/api/v1/students", produces = "application/hal+json")
 public class SearchStudentResource extends AbstractResource {
 
     @Autowired
@@ -35,16 +38,20 @@ public class SearchStudentResource extends AbstractResource {
 
     @GetMapping
     @ResponseStatus(OK)
-    public List<StudentDTO> getAllStudents() {
+    public CollectionModel<StudentModel> getAllStudents() {
         log.trace("Received GET request to retrieve all students, URI={}", getRequestUri());
-        return convertList(studentService.findAllStudents(), Student.class, StudentDTO.class);
+        List<StudentModel> list = convertList(studentService.findAllStudents(), Student.class, StudentModel.class);
+
+        return new CollectionModel<>(
+                list,
+                linkTo(methodOn(SearchStudentResource.class).getAllStudents()).withSelfRel());
     }
 
     @GetMapping("/{studentId}")
     @ResponseStatus(OK)
-    public StudentDTO getStudentById(@PathVariable("studentId") Integer studentId) {
+    public StudentModel getStudentById(@PathVariable("studentId") Integer studentId) {
         log.trace("Received GET request to retrieve student with id={}, URI={}", studentId, getRequestUri());
-        return convert(studentService.findStudentById(studentId), StudentDTO.class);
+        return convert(studentService.findStudentById(studentId), StudentModel.class);
     }
 
 }

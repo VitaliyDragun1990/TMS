@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.ui.rest.api.v1.model.TimetableDTO;
+import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 
 /**
@@ -33,16 +33,16 @@ public class UpdateTimetableResource extends AbstractResource {
         super(conversionService);
     }
 
-    @PutMapping("/{timetableId}")
+    @PutMapping(path = "/{timetableId}", produces = "application/hal+json")
     @ResponseStatus(OK)
-    public TimetableDTO updateExistingTimetable(
+    public TimetableModel updateExistingTimetable(
             @PathVariable Integer timetableId,
             @RequestBody UpdateTimetableData timetableData) {
         log.trace("Received PUT request to update timetable with id={}, data={}, URI={}",
                 timetableId, timetableData, getRequestUri());
 
         Timetable timetable = timetableService.updateExistingTimetable(timetableData);
-        return convert(timetable, TimetableDTO.class);
+        return convert(timetable, TimetableModel.class);
     }
 
 }
