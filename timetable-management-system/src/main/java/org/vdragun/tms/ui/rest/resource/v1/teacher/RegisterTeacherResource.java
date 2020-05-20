@@ -3,10 +3,7 @@ package org.vdragun.tms.ui.rest.resource.v1.teacher;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,11 +30,6 @@ public class RegisterTeacherResource extends AbstractResource {
 
     public RegisterTeacherResource(ConversionService conversionService) {
         super(conversionService);
-    }
-
-    @InitBinder
-    void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
     @PostMapping
