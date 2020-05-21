@@ -3,12 +3,16 @@ package org.vdragun.tms.ui.rest.exception;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
 import org.hibernate.validator.internal.engine.path.PathImpl;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -52,12 +56,12 @@ public class ApiError {
         this.debugMessage = ex.getLocalizedMessage();
     }
 
-    public void addFieldValidationErrors(List<FieldError> fieldErrors) {
-        fieldErrors.forEach(this::addValidationError);
+    public void addFieldValidationErrors(List<FieldError> fieldErrors, MessageSource messageSource) {
+        fieldErrors.forEach(err -> addValidationError(err, messageSource));
     }
 
-    public void addGlobalValidationErrors(List<ObjectError> globalErrors) {
-        globalErrors.forEach(this::addValidationError);
+    public void addGlobalValidationErrors(List<ObjectError> globalErrors, MessageSource messageSource) {
+        globalErrors.forEach(err -> addValidationError(err, messageSource));
     }
 
     public void addValidationErrors(Set<ConstraintViolation<?>> violations) {
@@ -144,18 +148,19 @@ public class ApiError {
         addSubError(new ApiValidationError(object, message));
     }
 
-    private void addValidationError(FieldError fieldError) {
+    private void addValidationError(FieldError fieldError, MessageSource messageSource) {
         addValidationError(
                 fieldError.getObjectName(),
                 fieldError.getField(),
                 fieldError.getRejectedValue(),
-                fieldError.getDefaultMessage());
+                getMessage(fieldError, messageSource));
     }
 
-    private void addValidationError(ObjectError objectError) {
+
+    private void addValidationError(ObjectError objectError, MessageSource messageSource) {
         addValidationError(
                 objectError.getObjectName(),
-                objectError.getDefaultMessage());
+                getMessage(objectError, messageSource));
     }
 
     /**
@@ -170,4 +175,11 @@ public class ApiError {
                 violation.getMessage());
     }
 
+    private String getMessage(MessageSourceResolvable resolvable, MessageSource messageSource) {
+        return messageSource.getMessage(resolvable, getLocale());
+    }
+
+    private Locale getLocale() {
+        return LocaleContextHolder.getLocale();
+    }
 }

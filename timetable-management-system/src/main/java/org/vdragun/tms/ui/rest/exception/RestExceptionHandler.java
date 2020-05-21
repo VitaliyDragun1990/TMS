@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -54,6 +55,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Autowired
     private Translator translator;
+
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * Handles {@link MissingServletRequestParameterException}. Triggered when a
@@ -110,8 +114,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         ApiError apiError = new ApiError(BAD_REQUEST);
         apiError.setMessage(translator.getLocalizedMessage(Message.VALIDATION_ERROR));
-        apiError.addFieldValidationErrors(ex.getBindingResult().getFieldErrors());
-        apiError.addGlobalValidationErrors(ex.getBindingResult().getGlobalErrors());
+        apiError.addFieldValidationErrors(ex.getBindingResult().getFieldErrors(), messageSource);
+        apiError.addGlobalValidationErrors(ex.getBindingResult().getGlobalErrors(), messageSource);
         return buildResponseEntity(apiError);
     }
 
