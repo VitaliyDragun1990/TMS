@@ -9,7 +9,6 @@ import java.util.List;
 import javax.validation.constraints.Positive;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 
@@ -36,8 +36,8 @@ public class SearchStudentResource extends AbstractResource {
     @Autowired
     private StudentService studentService;
 
-    public SearchStudentResource(ConversionService conversionService) {
-        super(conversionService);
+    public SearchStudentResource(ModelConverter converter) {
+        super(converter);
     }
 
     @GetMapping

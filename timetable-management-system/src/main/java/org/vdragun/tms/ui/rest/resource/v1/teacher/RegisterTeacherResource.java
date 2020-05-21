@@ -5,7 +5,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.teacher.TeacherData;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Teacher;
+import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.TeacherModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 
@@ -32,8 +32,8 @@ public class RegisterTeacherResource extends AbstractResource {
     @Autowired
     private TeacherService teacherService;
 
-    public RegisterTeacherResource(ConversionService conversionService) {
-        super(conversionService);
+    public RegisterTeacherResource(ModelConverter converter) {
+        super(converter);
     }
 
     @PostMapping(produces = "application/hal+json")

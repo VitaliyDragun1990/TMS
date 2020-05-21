@@ -6,7 +6,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 
@@ -34,8 +34,8 @@ public class UpdateTimetableResource extends AbstractResource {
     @Autowired
     private TimetableService timetableService;
 
-    public UpdateTimetableResource(ConversionService conversionService) {
-        super(conversionService);
+    public UpdateTimetableResource(ModelConverter converter) {
+        super(converter);
     }
 
     @PutMapping(path = "/{timetableId}", produces = "application/hal+json")

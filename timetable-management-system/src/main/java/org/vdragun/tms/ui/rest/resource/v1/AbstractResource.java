@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 
 
 /**
@@ -19,26 +18,23 @@ public abstract class AbstractResource {
 
     protected Logger log = LoggerFactory.getLogger(getClass());
 
-    private ConversionService conversionService;
-
-    public AbstractResource(ConversionService conversionService) {
-        this.conversionService = conversionService;
-    }
+    private ModelConverter modelConverter;
 
     protected String getRequestUri() {
         ServletUriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromCurrentRequest();
         return uriBuilder.toUriString();
     }
 
-    @SuppressWarnings("unchecked")
+    public AbstractResource(ModelConverter modelConverter) {
+        this.modelConverter = modelConverter;
+    }
+
     protected <S, T> List<T> convertList(List<S> source, Class<S> sourceClass, Class<T> targetClass) {
-        TypeDescriptor sourceType = TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(sourceClass));
-        TypeDescriptor targetType = TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(targetClass));
-        return (List<T>) conversionService.convert(source, sourceType, targetType);
+        return modelConverter.convertList(source, sourceClass, targetClass);
     }
 
     protected <S, T> T convert(S source, Class<T> targetClass) {
-        return conversionService.convert(source, targetClass);
+        return modelConverter.convert(source, targetClass);
     }
 
 }

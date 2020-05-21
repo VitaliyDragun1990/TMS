@@ -11,7 +11,6 @@ import java.util.List;
 import javax.validation.constraints.Positive;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 
@@ -39,8 +39,8 @@ public class SearchTimetableResource extends AbstractResource {
     @Autowired
     private TimetableService timetableService;
 
-    public SearchTimetableResource(ConversionService conversionService) {
-        super(conversionService);
+    public SearchTimetableResource(ModelConverter converter) {
+        super(converter);
     }
 
     @GetMapping
