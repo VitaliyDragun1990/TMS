@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.vdragun.tms.ui.common.converter.LocalDateCustomFormatter;
 import org.vdragun.tms.ui.common.converter.LocalDateTimeCustomFormatter;
 import org.vdragun.tms.ui.common.util.DefaultTranslator;
@@ -29,10 +28,7 @@ public class WebConfig {
 
     @Bean
     public LocaleResolver localResolver() {
-        CookieLocaleResolver localeResolver = new CookieLocaleResolver();
-        localeResolver.setDefaultLocale(Locale.US);
-
-        return localeResolver;
+        return new CustomLocaleResolver(Locale.US, new Locale("en"));
     }
 
     @Bean
