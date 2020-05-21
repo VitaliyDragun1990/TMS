@@ -1,5 +1,6 @@
 package org.vdragun.tms.ui.web.controller;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
@@ -8,7 +9,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.vdragun.tms.core.domain.Category;
@@ -28,13 +28,16 @@ import org.vdragun.tms.core.domain.Title;
  */
 public class EntityGenerator {
 
-    private static List<String> LETTERS = Arrays.stream("abcdefghijklmnopqrstuvwxyz".split(""))
+    private static List<String> UPPER_CASE_LETTERS = Arrays.stream("abcdefghijklmnopqrstuvwxyz".split(""))
             .map(String::toUpperCase)
             .collect(toList());
+    private static List<String> LOWER_CASE_LETTERS = UPPER_CASE_LETTERS.stream()
+            .map(String::toLowerCase)
+            .collect(toList());
 
-    private static final String FIRST_NAME = "Jack-";
-    private static final String LAST_NAME = "Smith-";
-    private static final String COURSE = "Course-";
+    private static final String FIRST_NAME = "Jack";
+    private static final String LAST_NAME = "Smith";
+    private static final String COURSE = "Course ";
     private static final String DESCRIPTION = "Description";
     private static final String GROUP = "ps-";
 
@@ -45,7 +48,7 @@ public class EntityGenerator {
 
         return new Course(
                 randomIdx,
-                COURSE + randomIdx,
+                COURSE + generateRandomString(4),
                 category,
                 DESCRIPTION,
                 teacher);
@@ -61,8 +64,9 @@ public class EntityGenerator {
         int randomIdx = randomInt(9999);
         return new Teacher(
                 randomIdx,
-                FIRST_NAME + randomIdx,
-                LAST_NAME + randomIdx,
+                FIRST_NAME + generateRandomString(3),
+                LAST_NAME + generateRandomString(
+                        3),
                 Title.values()[randomInt(0, Title.values().length - 1)],
                 LocalDate.now().minusDays(randomInt(90)));
     }
@@ -71,6 +75,15 @@ public class EntityGenerator {
         return IntStream.rangeClosed(1, number)
                 .mapToObj(idx -> generateTeacher())
                 .collect(toList());
+    }
+
+    public List<Teacher> generateTeachersWithCourse(int numberOfTeachers, int coursesPerTeacher) {
+        return IntStream.rangeClosed(1, numberOfTeachers)
+                .mapToObj(idx -> {
+                    Teacher t = generateTeacher();
+                    generateCourses(coursesPerTeacher).forEach(c -> t.addCourse(c));
+                    return t;
+                }).collect(toList());
     }
 
     public Category generateCategory() {
@@ -91,8 +104,9 @@ public class EntityGenerator {
         int randomIdx = randomInt(9999);
         Student student = new Student(
                 randomIdx,
-                FIRST_NAME + randomIdx,
-                LAST_NAME + randomIdx,
+                FIRST_NAME + generateRandomString(3),
+                LAST_NAME + generateRandomString(
+                        3),
                 LocalDate.now().minusDays(randomInt(90)));
         student.setGroup(generateGroup());
 
@@ -152,7 +166,13 @@ public class EntityGenerator {
 
     private String generateCategoryName() {
         return IntStream.rangeClosed(1, 3)
-                .mapToObj(i -> LETTERS.get(randomInt(0, LETTERS.size())))
-                .collect(Collectors.joining());
+                .mapToObj(i -> UPPER_CASE_LETTERS.get(randomInt(0, UPPER_CASE_LETTERS.size())))
+                .collect(joining());
+    }
+
+    private String generateRandomString(int charCount) {
+        return IntStream.rangeClosed(1, charCount)
+                .mapToObj(i -> LOWER_CASE_LETTERS.get(randomInt(0, LOWER_CASE_LETTERS.size())))
+                .collect(joining());
     }
 }
