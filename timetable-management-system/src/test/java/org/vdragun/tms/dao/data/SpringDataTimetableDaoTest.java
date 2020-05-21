@@ -1,4 +1,4 @@
-package org.vdragun.tms.dao.jpa;
+package org.vdragun.tms.dao.data;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -11,7 +11,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -27,21 +26,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
-import org.vdragun.tms.config.JPADaoConfig;
+import org.vdragun.tms.config.SpringDataDaoConfig;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.DBTestHelper;
-import org.vdragun.tms.dao.DaoException;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.dao.TimetableDao;
 
-@SpringJUnitConfig(classes = { JPADaoConfig.class, DaoTestConfig.class })
-@DisplayName("JPA Timetable DAO")
+@SpringJUnitConfig(classes = { SpringDataDaoConfig.class, DaoTestConfig.class })
+@DisplayName("Spring Data Timetable DAO")
 @Transactional
-public class JPATimetableDaoTest {
+public class SpringDataTimetableDaoTest {
 
     private static final LocalDate MARCH_TEN = LocalDate.of(2020, 3, 10);
     private static final LocalDate MARCH_TWENTY_FIFTH = LocalDate.of(2020, 3, 25);
@@ -250,17 +248,6 @@ public class JPATimetableDaoTest {
         boolean result = dao.existsById(expected.getId());
 
         assertTrue(result);
-    }
-
-    @Test
-    @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
-    void shouldThrowExceptionWhenUpdatingNonExistingTimetable() {
-        Classroom classroom = dbHelper.findRandomClassroomInDatabase();
-        Teacher teacher = dbHelper.findTeacherByNameInDatabase(JACK, SMITH);
-        Course course = dbHelper.findCourseByNameInDatabase(ADVANCED_BIOLOGY);
-        Timetable timetable = new Timetable(APRIL_FIFTH_NINE_THIRTY, DURATION_NINETY, course, classroom, teacher);
-
-        assertThrows(DaoException.class, () -> dao.update(timetable));
     }
 
     @Test

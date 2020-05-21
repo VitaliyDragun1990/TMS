@@ -139,7 +139,7 @@ public class CourseServiceImplTest {
         Course coreBiology = new Course(COURSE_ID, NAME_CORE_BIOLOGY, provideCategory(), DESC_BIOLOGY, provideTeacher());
         Course advancedBiology = new Course(COURSE_ID + 1, NAME_ADV_BIOLOGY, provideCategory(), DESC_BIOLOGY,
                 provideTeacher());
-        when(courseDaoMock.findByCategory(CATEGORY_ID)).thenReturn(asList(coreBiology, advancedBiology));
+        when(courseDaoMock.findByCategoryId(CATEGORY_ID)).thenReturn(asList(coreBiology, advancedBiology));
 
         List<Course> result = service.findCoursesByCategory(CATEGORY_ID);
 

@@ -1,4 +1,4 @@
-package org.vdragun.tms.dao.jpa;
+package org.vdragun.tms.dao.data;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -22,16 +22,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
-import org.vdragun.tms.config.JPADaoConfig;
+import org.vdragun.tms.config.SpringDataDaoConfig;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.dao.CategoryDao;
 import org.vdragun.tms.dao.DBTestHelper;
 import org.vdragun.tms.dao.DaoTestConfig;
 
-@SpringJUnitConfig(classes = { JPADaoConfig.class, DaoTestConfig.class })
-@DisplayName("JPA Category DAO")
+@SpringJUnitConfig(classes = { SpringDataDaoConfig.class, DaoTestConfig.class })
+@DisplayName("Spring Data Category DAO")
 @Transactional
-public class JPACategoryDaoTest {
+public class SpringDataCategoryDaoTest {
 
     private static final String CODE_ART = "ART";
     private static final String CODE_BIO = "BIO";

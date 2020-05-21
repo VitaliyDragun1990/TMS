@@ -1,4 +1,4 @@
-package org.vdragun.tms.dao.jpa;
+package org.vdragun.tms.dao.data;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
@@ -19,16 +19,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
-import org.vdragun.tms.config.JPADaoConfig;
+import org.vdragun.tms.config.SpringDataDaoConfig;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.dao.ClassroomDao;
 import org.vdragun.tms.dao.DBTestHelper;
 import org.vdragun.tms.dao.DaoTestConfig;
 
-@SpringJUnitConfig(classes = { JPADaoConfig.class, DaoTestConfig.class })
-@DisplayName("JPA Classroom DAO")
+@SpringJUnitConfig(classes = { SpringDataDaoConfig.class, DaoTestConfig.class })
+@DisplayName("Spring Data Classroom DAO")
 @Transactional
-public class JPAClassroomDaoTest {
+public class SpringDataClassroomDaoTest {
 
     private static final int CAPACITY_TEN = 10;
 

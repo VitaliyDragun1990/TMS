@@ -70,7 +70,7 @@ public class TeacherServiceImpl implements TeacherService {
     public Teacher findTeacherForCourse(Integer courseId) {
         LOG.debug("Searching for teacher assigned to course with id={}", courseId);
 
-        return dao.findForCourse(courseId)
+        return dao.findForCourseWithId(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Teacher for course with id=%d not found: No course with such id", courseId));
     }

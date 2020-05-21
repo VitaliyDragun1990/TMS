@@ -23,7 +23,7 @@ public interface StudentDao {
      * Saves all specified student instances. Each saved object receives unique
      * identifier.
      */
-    void saveAll(List<Student> students);
+    void saveAll(Iterable<Student> students);
 
     /**
      * Returns student with given identifier if any.
@@ -38,12 +38,12 @@ public interface StudentDao {
     /**
      * Finds all students assigned to the course with specified identifier.
      */
-    List<Student> findForCourse(Integer courseId);
+    List<Student> findByCourseId(Integer courseId);
 
     /**
      * Finds all students assigned to the group with specified identifier.
      */
-    List<Student> findForGroup(Integer groupId);
+    List<Student> findByGroupId(Integer groupId);
 
     /**
      * Assigns student with specified student identifier to course with specified

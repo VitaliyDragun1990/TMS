@@ -23,7 +23,7 @@ public interface TeacherDao {
      * Saves all specified teacher instances. Each saved object receives unique
      * identifier.
      */
-    void saveAll(List<Teacher> teachers);
+    void saveAll(Iterable<Teacher> teachers);
 
     /**
      * Returns teacher with given identifier if any.
@@ -38,7 +38,7 @@ public interface TeacherDao {
     /**
      * Finds teacher assigned to the course with given identifier if any.
      */
-    Optional<Teacher> findForCourse(Integer courseId);
+    Optional<Teacher> findForCourseWithId(Integer courseId);
 
     /**
      * Checks whether teacher with specified identifier exists

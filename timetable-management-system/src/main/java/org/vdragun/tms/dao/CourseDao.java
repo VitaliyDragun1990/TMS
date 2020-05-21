@@ -23,7 +23,7 @@ public interface CourseDao {
      * Saves all specified course instances. Each saved object receives unique
      * identifier.
      */
-    void saveAll(List<Course> courses);
+    void saveAll(Iterable<Course> courses);
 
     /**
      * Returns course with specified identifier if any.
@@ -38,7 +38,7 @@ public interface CourseDao {
     /**
      * Finds all courses belonging to category with specified identifier
      */
-    List<Course> findByCategory(Integer categoryId);
+    List<Course> findByCategoryId(Integer categoryId);
 
     /**
      * Checks whether course with specified identifier exists

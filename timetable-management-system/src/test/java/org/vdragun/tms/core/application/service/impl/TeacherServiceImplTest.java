@@ -102,7 +102,7 @@ public class TeacherServiceImplTest {
     @Test
     void shouldFindTeacherForCourseWithGivenIdentifier() {
         Teacher expected = new Teacher(ID, JACK, SMITH, ASSOCIATE_PROFESSOR, DATE_HIRED);
-        when(daoMock.findForCourse(eq(COURSE_ID))).thenReturn(Optional.of(expected));
+        when(daoMock.findForCourseWithId(eq(COURSE_ID))).thenReturn(Optional.of(expected));
 
         Teacher result = service.findTeacherForCourse(COURSE_ID);
 
@@ -111,7 +111,7 @@ public class TeacherServiceImplTest {
 
     @Test
     void shouldThrowExceptionIfFailToFindTeacherForCourseWithGivenId() {
-        when(daoMock.findForCourse(COURSE_ID)).thenReturn(Optional.empty());
+        when(daoMock.findForCourseWithId(COURSE_ID)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> service.findTeacherForCourse(COURSE_ID));
     }

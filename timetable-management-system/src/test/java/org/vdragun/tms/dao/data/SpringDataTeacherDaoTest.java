@@ -1,4 +1,4 @@
-package org.vdragun.tms.dao.jpa;
+package org.vdragun.tms.dao.data;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.allOf;
@@ -27,17 +27,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
-import org.vdragun.tms.config.JPADaoConfig;
+import org.vdragun.tms.config.SpringDataDaoConfig;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.dao.DBTestHelper;
 import org.vdragun.tms.dao.DaoTestConfig;
+import org.vdragun.tms.dao.FullName;
 import org.vdragun.tms.dao.TeacherDao;
 
-@SpringJUnitConfig(classes = { JPADaoConfig.class, DaoTestConfig.class })
-@DisplayName("JPA Teacher DAO")
+@SpringJUnitConfig(classes = { SpringDataDaoConfig.class, DaoTestConfig.class })
+@DisplayName("Spring Data Teacher DAO")
 @Transactional
-public class JPATeacherDaoTest {
+public class SpringDataTeacherDaoTest {
     private static final String SMITH = "Smith";
     private static final String SNOW = "Snow";
     private static final String JACK = "Jack";
@@ -118,7 +119,7 @@ public class JPATeacherDaoTest {
     @Test
     @Sql(scripts = "/sql/clear_database.sql")
     void shouldReturnEmptyResultIfNoCourseWithGivenIdInDatabase() {
-        Optional<Teacher> result = dao.findForCourse(1);
+        Optional<Teacher> result = dao.findForCourseWithId(1);
 
         assertFalse(result.isPresent());
     }
@@ -128,7 +129,7 @@ public class JPATeacherDaoTest {
     void shouldReturnTeacherForCourseWithGivenId() {
         Course advancedBiology = dbHelper.findCourseByNameInDatabase(ADVANCED_BIOLOGY);
 
-        Optional<Teacher> result = dao.findForCourse(advancedBiology.getId());
+        Optional<Teacher> result = dao.findForCourseWithId(advancedBiology.getId());
 
         assertTrue(result.isPresent());
         assertTeacherCourses(result.get(), ADVANCED_BIOLOGY, INTERMEDIATE_BIOLOGY);

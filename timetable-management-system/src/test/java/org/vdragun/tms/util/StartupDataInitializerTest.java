@@ -13,13 +13,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.vdragun.tms.config.JPADaoConfig;
+import org.vdragun.tms.config.SpringDataDaoConfig;
 import org.vdragun.tms.dao.DBTestHelper;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.util.StartupDataInitializerTest.StartupDataConfig;
 
 @DisplayName("Startup Data Initializer")
-@SpringJUnitConfig({ DaoTestConfig.class, JPADaoConfig.class, StartupDataConfig.class })
+@SpringJUnitConfig({ DaoTestConfig.class, SpringDataDaoConfig.class, StartupDataConfig.class })
 class StartupDataInitializerTest {
 
     @Value("#{'${generator.category}'.split(',\\s*').length}")

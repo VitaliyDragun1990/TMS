@@ -1,4 +1,4 @@
-package org.vdragun.tms.dao.jpa;
+package org.vdragun.tms.dao.data;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.allOf;
@@ -26,18 +26,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
-import org.vdragun.tms.config.JPADaoConfig;
+import org.vdragun.tms.config.SpringDataDaoConfig;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.dao.DBTestHelper;
 import org.vdragun.tms.dao.DaoTestConfig;
+import org.vdragun.tms.dao.FullName;
 import org.vdragun.tms.dao.StudentDao;
 
-@SpringJUnitConfig(classes = { JPADaoConfig.class, DaoTestConfig.class })
-@DisplayName("JPA Student DAO")
+@SpringJUnitConfig(classes = { SpringDataDaoConfig.class, DaoTestConfig.class })
+@DisplayName("Spring Data Student DAO")
 @Transactional
-public class JPAStudentDaoTest {
+public class SpringDataStudentDaoTest {
 
     private static final LocalDate ENROLLMENT_DATE = LocalDate.now();
 
@@ -123,7 +124,7 @@ public class JPAStudentDaoTest {
     void shouldReturnEmptyListIfNoStudentsForGivenCourse() {
         Course coreHistory = dbHelper.findCourseByNameInDatabase(CORE_HISORY);
 
-        List<Student> result = dao.findForCourse(coreHistory.getId());
+        List<Student> result = dao.findByCourseId(coreHistory.getId());
 
         assertThat(result, hasSize(0));
     }
@@ -133,7 +134,7 @@ public class JPAStudentDaoTest {
     void shouldFindAllStudentsAssignedToCourseWithGivenId() {
         Course advancedBilogy = dbHelper.findCourseByNameInDatabase(ADVANCED_BIOLOGY);
 
-        List<Student> result = dao.findForCourse(advancedBilogy.getId());
+        List<Student> result = dao.findByCourseId(advancedBilogy.getId());
 
         assertStudentsWithNames(
                 result,
@@ -145,7 +146,7 @@ public class JPAStudentDaoTest {
     void shouldFindAllStudentsWithAllCoursesAssignedToCourseWithGivenId() {
         Course coreBilogy = dbHelper.findCourseByNameInDatabase(CORE_BIOLOGY);
 
-        List<Student> result = dao.findForCourse(coreBilogy.getId());
+        List<Student> result = dao.findByCourseId(coreBilogy.getId());
 
         assertStudentsWithNames(
                 result,
@@ -158,7 +159,7 @@ public class JPAStudentDaoTest {
     void shouldReturnEmptyListIfNoStudentsForGivenGroupInDatabase() {
         Group psTwenty = dbHelper.findGroupByNameInDatabase(PS_TWENTY);
 
-        List<Student> result = dao.findForGroup(psTwenty.getId());
+        List<Student> result = dao.findByGroupId(psTwenty.getId());
 
         assertThat(result, hasSize(0));
     }
@@ -168,7 +169,7 @@ public class JPAStudentDaoTest {
     void shouldFindAllStudentsAssignedToGroupWithGivenIdInDatabase() {
         Group mhTen = dbHelper.findGroupByNameInDatabase(MH_TEN);
 
-        List<Student> result = dao.findForGroup(mhTen.getId());
+        List<Student> result = dao.findByGroupId(mhTen.getId());
 
         assertStudentsWithNames(
                 result,

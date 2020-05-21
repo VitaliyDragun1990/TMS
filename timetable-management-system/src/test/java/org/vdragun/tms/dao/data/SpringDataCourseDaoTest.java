@@ -1,4 +1,4 @@
-package org.vdragun.tms.dao.jpa;
+package org.vdragun.tms.dao.data;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
-import org.vdragun.tms.config.JPADaoConfig;
+import org.vdragun.tms.config.SpringDataDaoConfig;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
@@ -31,10 +31,10 @@ import org.vdragun.tms.dao.CourseDao;
 import org.vdragun.tms.dao.DBTestHelper;
 import org.vdragun.tms.dao.DaoTestConfig;
 
-@SpringJUnitConfig(classes = { JPADaoConfig.class, DaoTestConfig.class })
-@DisplayName("JPA Course DAO")
+@SpringJUnitConfig(classes = { SpringDataDaoConfig.class, DaoTestConfig.class })
+@DisplayName("Spring Data Course DAO")
 @Transactional
-public class JPACourseDaoTest {
+public class SpringDataCourseDaoTest {
     private static final String CODE_BIO = "BIO";
     private static final String CODE_ART = "ART";
 
@@ -115,7 +115,7 @@ public class JPACourseDaoTest {
     void shouldReturnEmptyListIfNoCourseWithSpecifiedCategory() {
         Category categoryArt = jdbcHelper.findCategoryByCodeInDatabase(CODE_ART);
 
-        List<Course> result = dao.findByCategory(categoryArt.getId());
+        List<Course> result = dao.findByCategoryId(categoryArt.getId());
 
         assertThat(result, hasSize(0));
     }
@@ -125,7 +125,7 @@ public class JPACourseDaoTest {
     void shouldFindAllCoursesForSpecifiedCategory() {
         Category categoryBio = jdbcHelper.findCategoryByCodeInDatabase(CODE_BIO);
 
-        List<Course> result = dao.findByCategory(categoryBio.getId());
+        List<Course> result = dao.findByCategoryId(categoryBio.getId());
 
         assertCoursesWithNames(result, ADVANCED_BIOLOGY, INTERMEDIATE_BIOLOGY);
     }
