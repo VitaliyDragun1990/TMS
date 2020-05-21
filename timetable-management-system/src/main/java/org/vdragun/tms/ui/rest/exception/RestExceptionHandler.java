@@ -129,7 +129,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         ApiError apiError = new ApiError(BAD_REQUEST);
         apiError.setMessage(translator.getLocalizedMessage(Message.VALIDATION_ERROR));
-        apiError.addValidationErrors(ex.getConstraintViolations());
+        apiError.addValidationErrors(ex.getConstraintViolations(), messageSource);
         return buildResponseEntity(apiError);
     }
 

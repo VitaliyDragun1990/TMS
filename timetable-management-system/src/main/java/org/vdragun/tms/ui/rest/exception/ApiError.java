@@ -64,8 +64,8 @@ public class ApiError {
         globalErrors.forEach(err -> addValidationError(err, messageSource));
     }
 
-    public void addValidationErrors(Set<ConstraintViolation<?>> violations) {
-        violations.forEach(this::addValidationError);
+    public void addValidationErrors(Set<ConstraintViolation<?>> violations, MessageSource messageSource) {
+        violations.forEach(err -> addValidationError(err, messageSource));
     }
 
     public HttpStatus getStatus() {
@@ -167,12 +167,12 @@ public class ApiError {
      * Convenient method for adding error of :{@link ConstraintViolation}. Usually
      * when a {@link Validated} validation fails.
      */
-    private void addValidationError(ConstraintViolation<?> violation) {
+    private void addValidationError(ConstraintViolation<?> violation, MessageSource messageSource) {
         addValidationError(
-                violation.getRootBeanClass().getSimpleName(),
+                null,
                 ((PathImpl) violation.getPropertyPath()).getLeafNode().asString(),
                 violation.getInvalidValue(),
-                violation.getMessage());
+                messageSource.getMessage(violation.getMessage(), null, getLocale()));
     }
 
     private String getMessage(MessageSourceResolvable resolvable, MessageSource messageSource) {

@@ -2,12 +2,16 @@ package org.vdragun.tms.ui.rest.exception;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * Represents API error produced by some kind of validation failure.
  * 
  * @author Vitaliy Dragun
  *
  */
+@JsonInclude(Include.NON_NULL)
 public class ApiValidationError implements ApiSubError {
 
     private String object;
