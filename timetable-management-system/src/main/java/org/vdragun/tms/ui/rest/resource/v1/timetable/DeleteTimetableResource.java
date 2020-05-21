@@ -2,8 +2,11 @@ package org.vdragun.tms.ui.rest.resource.v1.timetable;
 
 import static org.springframework.http.HttpStatus.OK;
 
+import javax.validation.constraints.Positive;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +23,7 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  */
 @RestController
 @RequestMapping("/api/v1/timetables")
+@Validated
 public class DeleteTimetableResource extends AbstractResource {
 
     @Autowired
@@ -31,7 +35,7 @@ public class DeleteTimetableResource extends AbstractResource {
 
     @DeleteMapping("/{timetableId}")
     @ResponseStatus(OK)
-    public void deleteTimetable(@PathVariable("timetableId") Integer timetableId) {
+    public void deleteTimetable(@PathVariable("timetableId") @Positive(message = "Positive.id") Integer timetableId) {
         log.trace("Received POST reuqest to delete timetable with id={}, URI={}", timetableId, getRequestUri());
         timetableService.deleteTimetableById(timetableId);
     }

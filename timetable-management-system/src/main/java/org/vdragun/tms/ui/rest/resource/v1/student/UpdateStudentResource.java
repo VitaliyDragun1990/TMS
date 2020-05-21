@@ -2,8 +2,12 @@ package org.vdragun.tms.ui.rest.resource.v1.student;
 
 import static org.springframework.http.HttpStatus.OK;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +28,7 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  */
 @RestController
 @RequestMapping("/api/v1/students")
+@Validated
 public class UpdateStudentResource extends AbstractResource {
 
     @Autowired
@@ -36,8 +41,8 @@ public class UpdateStudentResource extends AbstractResource {
     @PutMapping(path = "/{studentId}", produces = "application/hal+json")
     @ResponseStatus(OK)
     public StudentModel updateExistingStudent(
-            @PathVariable("studentId") Integer studentId,
-            @RequestBody UpdateStudentData studentData) {
+            @PathVariable("studentId") @Positive(message = "Positive.id") Integer studentId,
+            @RequestBody @Valid UpdateStudentData studentData) {
         log.trace("Received PUT request to update student with id={}, data={} URI={}",
                 studentId, studentData, getRequestUri());
 

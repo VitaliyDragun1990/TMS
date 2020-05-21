@@ -2,8 +2,11 @@ package org.vdragun.tms.ui.rest.resource.v1.student;
 
 import static org.springframework.http.HttpStatus.OK;
 
+import javax.validation.constraints.Positive;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +23,7 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  */
 @RestController
 @RequestMapping("/api/v1/students")
+@Validated
 public class DeleteStudentResource extends AbstractResource {
 
     @Autowired
@@ -31,7 +35,8 @@ public class DeleteStudentResource extends AbstractResource {
 
     @DeleteMapping("/{studentId}")
     @ResponseStatus(OK)
-    public void deleteStudent(@PathVariable("studentId") Integer studentId) {
+    public void deleteStudent(
+            @PathVariable("studentId") @Positive(message = "Positive.id") Integer studentId) {
         log.trace("Received DELETE request to delete student with id={}, URI={}", studentId, getRequestUri());
         studentService.deleteStudentById(studentId);
     }

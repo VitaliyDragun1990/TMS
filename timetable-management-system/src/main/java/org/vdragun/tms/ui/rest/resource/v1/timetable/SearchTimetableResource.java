@@ -8,9 +8,12 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 
+import javax.validation.constraints.Positive;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +33,7 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  */
 @RestController
 @RequestMapping(path = "/api/v1/timetables", produces = "application/hal+json")
+@Validated
 public class SearchTimetableResource extends AbstractResource {
 
     @Autowired
@@ -55,7 +59,8 @@ public class SearchTimetableResource extends AbstractResource {
 
     @GetMapping("/{timetableId}")
     @ResponseStatus(OK)
-    public TimetableModel getTimetableById(@PathVariable("timetableId") Integer timetableId) {
+    public TimetableModel getTimetableById(
+            @PathVariable("timetableId") @Positive(message = "Positive.id") Integer timetableId) {
         log.trace("Received GET request to retrieve timetable with id={}, URI={}", timetableId, getRequestUri());
         return convert(timetableService.findTimetableById(timetableId), TimetableModel.class);
     }
@@ -63,7 +68,7 @@ public class SearchTimetableResource extends AbstractResource {
     @GetMapping("/teacher/{teacherId}/day")
     @ResponseStatus(OK)
     public CollectionModel<TimetableModel> getDailyTimetablesForTeacher(
-            @PathVariable("teacherId") Integer teacherId,
+            @PathVariable("teacherId") @Positive(message = "Positive.id") Integer teacherId,
             @RequestParam("targetDate") LocalDate targetDate) {
         log.trace("Received GET request to retrieve daily timetables for teacher with id={} for date={}, URI={}",
                 teacherId, targetDate, getRequestUri());
@@ -85,7 +90,7 @@ public class SearchTimetableResource extends AbstractResource {
     @GetMapping("/teacher/{teacherId}/month")
     @ResponseStatus(OK)
     public CollectionModel<TimetableModel> getMonthlyTimetablesForTeacher(
-            @PathVariable("teacherId") Integer teacherId,
+            @PathVariable("teacherId") @Positive(message = "Positive.id") Integer teacherId,
             @RequestParam("targetMonth") Month targetMonth) {
         log.trace("Received GET request to retrieve monthly timetables for teacher with id={} for month={}, URI={}",
                 teacherId, targetMonth, getRequestUri());
@@ -107,7 +112,7 @@ public class SearchTimetableResource extends AbstractResource {
     @GetMapping("/student/{studentId}/day")
     @ResponseStatus(OK)
     public CollectionModel<TimetableModel> getDailyTimetablesForStudent(
-            @PathVariable("studentId") Integer studentId,
+            @PathVariable("studentId") @Positive(message = "Positive.id") Integer studentId,
             @RequestParam("targetDate") LocalDate targetDate) {
         log.trace("Received GET request to retrieve daily timetables for student with id={} for date={}, URI={}",
                 studentId, targetDate, getRequestUri());
@@ -129,7 +134,7 @@ public class SearchTimetableResource extends AbstractResource {
     @GetMapping("/student/{studentId}/month")
     @ResponseStatus(OK)
     public CollectionModel<TimetableModel> getMonthlyTimetablesForStudent(
-            @PathVariable("studentId") Integer studentId,
+            @PathVariable("studentId") @Positive(message = "Positive.id") Integer studentId,
             @RequestParam("targetMonth") Month targetMonth) {
         log.trace("Received GET request to retrieve monthly timetables for student with id={} for month={}, URI={}",
                 studentId, targetMonth, getRequestUri());

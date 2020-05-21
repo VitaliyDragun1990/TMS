@@ -2,6 +2,8 @@ package org.vdragun.tms.ui.rest.resource.v1.timetable;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +36,7 @@ public class RegisterTimetableResource extends AbstractResource {
 
     @PostMapping(produces = "application/hal+json")
     @ResponseStatus(CREATED)
-    public TimetableModel registerNewTimetable(@RequestBody CreateTimetableData timetableData) {
+    public TimetableModel registerNewTimetable(@RequestBody @Valid CreateTimetableData timetableData) {
         log.trace("Received POST request to register new timetable, data={}, URI={}", timetableData, getRequestUri());
 
         Timetable timetable = timetableService.registerNewTimetable(timetableData);

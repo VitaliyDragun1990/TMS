@@ -2,8 +2,11 @@ package org.vdragun.tms.ui.rest.resource.v1.teacher;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +26,7 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  */
 @RestController
 @RequestMapping("/api/v1/teachers")
+@Validated
 public class RegisterTeacherResource extends AbstractResource {
 
     @Autowired
@@ -34,7 +38,7 @@ public class RegisterTeacherResource extends AbstractResource {
 
     @PostMapping(produces = "application/hal+json")
     @ResponseStatus(CREATED)
-    public TeacherModel registerNewTeacher(@RequestBody TeacherData teacherData) {
+    public TeacherModel registerNewTeacher(@RequestBody @Valid TeacherData teacherData) {
         log.trace("Received POST request to register new teacher, data={}, URI={}", teacherData, getRequestUri());
 
         Teacher teacher = teacherService.registerNewTeacher(teacherData);

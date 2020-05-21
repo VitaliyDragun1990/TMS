@@ -2,8 +2,12 @@ package org.vdragun.tms.ui.rest.resource.v1.timetable;
 
 import static org.springframework.http.HttpStatus.OK;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +28,7 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  */
 @RestController
 @RequestMapping("/api/v1/timetables")
+@Validated
 public class UpdateTimetableResource extends AbstractResource {
 
     @Autowired
@@ -36,8 +41,8 @@ public class UpdateTimetableResource extends AbstractResource {
     @PutMapping(path = "/{timetableId}", produces = "application/hal+json")
     @ResponseStatus(OK)
     public TimetableModel updateExistingTimetable(
-            @PathVariable Integer timetableId,
-            @RequestBody UpdateTimetableData timetableData) {
+            @PathVariable @Positive(message = "Positive.id") Integer timetableId,
+            @RequestBody @Valid UpdateTimetableData timetableData) {
         log.trace("Received PUT request to update timetable with id={}, data={}, URI={}",
                 timetableId, timetableData, getRequestUri());
 

@@ -6,9 +6,12 @@ import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
 
+import javax.validation.constraints.Positive;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +30,7 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  */
 @RestController
 @RequestMapping(path = "/api/v1/students", produces = "application/hal+json")
+@Validated
 public class SearchStudentResource extends AbstractResource {
 
     @Autowired
@@ -49,7 +53,8 @@ public class SearchStudentResource extends AbstractResource {
 
     @GetMapping("/{studentId}")
     @ResponseStatus(OK)
-    public StudentModel getStudentById(@PathVariable("studentId") Integer studentId) {
+    public StudentModel getStudentById(
+            @PathVariable("studentId") @Positive(message = "Positive.id") Integer studentId) {
         log.trace("Received GET request to retrieve student with id={}, URI={}", studentId, getRequestUri());
         return convert(studentService.findStudentById(studentId), StudentModel.class);
     }

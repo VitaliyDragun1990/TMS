@@ -2,6 +2,8 @@ package org.vdragun.tms.ui.rest.resource.v1.student;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +36,7 @@ public class RegisterStudentResource extends AbstractResource {
 
     @PostMapping(produces = "application/hal+json")
     @ResponseStatus(CREATED)
-    public StudentModel registerNewStudent(@RequestBody CreateStudentData studentData) {
+    public StudentModel registerNewStudent(@RequestBody @Valid CreateStudentData studentData) {
         log.trace("Received POST request to register new student, data={}, URI={}", studentData, getRequestUri());
 
         Student student = studentService.registerNewStudent(studentData);
