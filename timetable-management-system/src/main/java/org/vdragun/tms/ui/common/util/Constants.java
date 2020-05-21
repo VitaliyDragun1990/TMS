@@ -32,6 +32,16 @@ public final class Constants {
         public static final String TIMETABLE_UPDATE_SUCCESS = "msg.timetableUpdateSuccess";
         public static final String TIMETABLE_REGISTER_SUCCESS = "msg.timetableRegisterSuccess";
         public static final String REQUIRED_REQUEST_PARAMETER = "msg.requiredRequestParameter";
+        public static final String MISSING_REQUIRED_PARAMETER = "msg.missingParameter";
+        public static final String UNSUPPORTED_MEDIA_TYPE = "msg.unsuportedMediaType";
+        public static final String VALIDATION_ERROR = "msg.validationError";
+        public static final String RESOURCE_NOT_FOUND = "msg.resourceNotFound";
+        public static final String MALFORMED_JSON_REQUEST = "msg.malformedJsonRequest";
+        public static final String MALFORMED_JSON_RESPONSE = "msg.malformedJsonResponse";
+        public static final String NO_HANDLER_FOUND = "msg.noHandlerFound";
+        public static final String DB_ERROR = "msg.dbError";
+        public static final String INTERNAL_SERVER_ERROR = "msg.internalServerError";
+        public static final String ARGUMENT_TYPE_MISSMATCH = "msg.argumentTypeMissmatch";
 
         private Message() {
         }
