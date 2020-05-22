@@ -1,7 +1,5 @@
 package org.vdragun.tms.ui.rest.resource.v1.course;
 
-import static java.lang.String.format;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,12 +22,11 @@ import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebRestConfig;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
-import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
-import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
+import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
 @WebMvcTest(controllers = SearchCourseResource.class)
-@Import({ WebConfig.class, WebRestConfig.class })
+@Import({ WebConfig.class, WebRestConfig.class, JsonVerifier.class })
 @DisplayName("Search Course Resource")
 public class SearchCourseResourceTest {
 
@@ -39,7 +36,7 @@ public class SearchCourseResourceTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private ModelConverter modelConverter;
+    private JsonVerifier jsonVerifier;
 
     @MockBean
     private CourseService courseServiceMock;
@@ -56,7 +53,7 @@ public class SearchCourseResourceTest {
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON))
                 .andExpect(jsonPath("$._embedded.courses", hasSize(2)));
 
-        verifyJson(resultActions, courses);
+        jsonVerifier.verifyCourseJson(resultActions, courses);
     }
 
     @Test
@@ -69,38 +66,7 @@ public class SearchCourseResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON));
 
-        verifyJson(resultActions, course);
-    }
-
-    private void verifyJson(ResultActions actions, Course course) throws Exception {
-        CourseModel expected = modelConverter.convert(course, CourseModel.class);
-        actions
-                .andExpect(jsonPath("$.id", equalTo(expected.getId())))
-                .andExpect(jsonPath("$.name", equalTo(expected.getName())))
-                .andExpect(jsonPath("$.description", equalTo(expected.getDescription())))
-                .andExpect(jsonPath("$.categoryCode", equalTo(expected.getCategoryCode())))
-                .andExpect(jsonPath("$.teacherId", equalTo(expected.getTeacherId())))
-                .andExpect(jsonPath("$.teacherFullName", equalTo(expected.getTeacherFullName())));
-    }
-
-    private void verifyJson(ResultActions actions, List<Course> courses) throws Exception {
-        List<CourseModel> expected = modelConverter.convertList(courses, Course.class, CourseModel.class);
-        for (int i = 0; i < expected.size(); i++) {
-            CourseModel model = expected.get(i);
-            actions
-                    .andExpect(jsonPath(format("$._embedded.courses[%d].id", i),
-                            equalTo(model.getId())))
-                    .andExpect(jsonPath(format("$._embedded.courses[%d].name", i),
-                            equalTo(model.getName())))
-                    .andExpect(jsonPath(format("$._embedded.courses[%d].description", i),
-                            equalTo(model.getDescription())))
-                    .andExpect(jsonPath(format("$._embedded.courses[%d].categoryCode", i),
-                            equalTo(model.getCategoryCode())))
-                    .andExpect(jsonPath(format("$._embedded.courses[%d].teacherId", i),
-                            equalTo(model.getTeacherId())))
-                    .andExpect(jsonPath(format("$._embedded.courses[%d].teacherFullName", i),
-                            equalTo(model.getTeacherFullName())));
-        }
+        jsonVerifier.verifyCourseJson(resultActions, course);
     }
 
 }

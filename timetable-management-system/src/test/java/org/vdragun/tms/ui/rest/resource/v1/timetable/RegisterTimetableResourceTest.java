@@ -1,7 +1,6 @@
 package org.vdragun.tms.ui.rest.resource.v1.timetable;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.ArgumentMatchers.any;
@@ -10,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
@@ -32,15 +30,13 @@ import org.vdragun.tms.config.WebRestConfig;
 import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
-import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
-import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
+import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(controllers = RegisterTimetableResource.class)
-@Import({ WebConfig.class, WebRestConfig.class })
+@Import({ WebConfig.class, WebRestConfig.class, JsonVerifier.class })
 @DisplayName("Register Timetable Resource")
 public class RegisterTimetableResourceTest {
 
@@ -51,15 +47,14 @@ public class RegisterTimetableResourceTest {
     private static final int COURSE_ID = 1;
     private static final int DURATION = 60;
 
-
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private ModelConverter modelConverter;
+    private ObjectMapper mapper;
 
     @Autowired
-    private ObjectMapper mapper;
+    private JsonVerifier jsonVerifier;
 
     @MockBean
     private TimetableService timetableServiceMock;
@@ -85,26 +80,7 @@ public class RegisterTimetableResourceTest {
         
         verify(timetableServiceMock, times(1)).registerNewTimetable(captor.capture());
         assertThat(captor.getValue(), samePropertyValuesAs(registerData, "startTime"));
-        verifyJson(resultActions, expectedTimetable);
-    }
-
-    private void verifyJson(ResultActions actions, Timetable timetable) throws Exception {
-        TimetableModel expected = modelConverter.convert(timetable, TimetableModel.class);
-        actions
-                .andExpect(jsonPath("$.id", equalTo(expected.getId())))
-                .andExpect(jsonPath("$.startTime", equalTo(expected.getStartTime())))
-                .andExpect(jsonPath("$.duration", equalTo(expected.getDuration())))
-                .andExpect(jsonPath("$.classroomId", equalTo(expected.getClassroomId())))
-                .andExpect(jsonPath("$.classroomCapacity", equalTo(expected.getClassroomCapacity())));
-
-        CourseModel expectedCourse = expected.getCourse();
-        actions
-                .andExpect(jsonPath("$.course.id", equalTo(expectedCourse.getId())))
-                .andExpect(jsonPath("$.course.name", equalTo(expectedCourse.getName())))
-                .andExpect(jsonPath("$.course.description", equalTo(expectedCourse.getDescription())))
-                .andExpect(jsonPath("$.course.categoryCode", equalTo(expectedCourse.getCategoryCode())))
-                .andExpect(jsonPath("$.course.teacherId", equalTo(expectedCourse.getTeacherId())))
-                .andExpect(jsonPath("$.course.teacherFullName", equalTo(expectedCourse.getTeacherFullName())));
+        jsonVerifier.verifyTimetableJson(resultActions, expectedTimetable);
     }
 
 }

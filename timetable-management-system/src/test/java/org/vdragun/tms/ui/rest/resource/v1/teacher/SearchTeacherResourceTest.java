@@ -1,7 +1,5 @@
 package org.vdragun.tms.ui.rest.resource.v1.teacher;
 
-import static java.lang.String.format;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,13 +22,11 @@ import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebRestConfig;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Teacher;
-import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
-import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
-import org.vdragun.tms.ui.rest.api.v1.model.TeacherModel;
+import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
 @WebMvcTest(controllers = SearchTeacherResource.class)
-@Import({ WebConfig.class, WebRestConfig.class })
+@Import({ WebConfig.class, WebRestConfig.class, JsonVerifier.class })
 @DisplayName("Search Teacher Resource")
 public class SearchTeacherResourceTest {
 
@@ -42,7 +38,7 @@ public class SearchTeacherResourceTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private ModelConverter modelConverter;
+    private JsonVerifier jsonVerifier;
 
     @MockBean
     private TeacherService teacherServiceMock;
@@ -61,7 +57,7 @@ public class SearchTeacherResourceTest {
                 .andExpect(jsonPath("$._embedded.teachers", hasSize(NUMBER_OF_TEACHERS)))
                 .andExpect(jsonPath("$._embedded.teachers[*].courses", hasSize(NUMBER_OF_COURSES_PER_TEACHER)));
 
-        verifyJson(resultActions, teachers);
+        jsonVerifier.verifyTeacherJson(resultActions, teachers);
     }
 
     @Test
@@ -74,66 +70,7 @@ public class SearchTeacherResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON));
 
-        verifyJson(resultActions, teacher);
+        jsonVerifier.verifyTeacherJson(resultActions, teacher);
     }
 
-    private void verifyJson(ResultActions actions, List<Teacher> teachers) throws Exception {
-        List<TeacherModel> expected = modelConverter.convertList(teachers, Teacher.class, TeacherModel.class);
-        for (int i = 0; i < expected.size(); i++) {
-            TeacherModel expectedTeacher = expected.get(i);
-            actions
-                    .andExpect(jsonPath(format("$._embedded.teachers[%d].id", i),
-                            equalTo(expectedTeacher.getId())))
-                    .andExpect(jsonPath(format("$._embedded.teachers[%d].firstName", i),
-                            equalTo(expectedTeacher.getFirstName())))
-                    .andExpect(jsonPath(format("$._embedded.teachers[%d].lastName", i),
-                            equalTo(expectedTeacher.getLastName())))
-                    .andExpect(jsonPath(format("$._embedded.teachers[%d].title", i),
-                            equalTo(expectedTeacher.getTitle())))
-                    .andExpect(jsonPath(format("$._embedded.teachers[%d].dateHired", i),
-                            equalTo(expectedTeacher.getDateHired())));
-            for (int j = 0; j < expectedTeacher.getCourses().size(); j++) {
-                CourseModel expectedCourse = expectedTeacher.getCourses().get(j);
-                actions
-                        .andExpect(jsonPath(format("$._embedded.teachers[%d].courses[%d].id", i, j),
-                                equalTo(expectedCourse.getId())))
-                        .andExpect(jsonPath(format("$._embedded.teachers[%d].courses[%d].name", i, j),
-                                equalTo(expectedCourse.getName())))
-                        .andExpect(jsonPath(format("$._embedded.teachers[%d].courses[%d].description", i, j),
-                                equalTo(expectedCourse.getDescription())))
-                        .andExpect(jsonPath(format("$._embedded.teachers[%d].courses[%d].categoryCode", i, j),
-                                equalTo(expectedCourse.getCategoryCode())))
-                        .andExpect(jsonPath(format("$._embedded.teachers[%d].courses[%d].teacherId", i, j),
-                                equalTo(expectedCourse.getTeacherId())))
-                        .andExpect(jsonPath(format("$._embedded.teachers[%d].courses[%d].teacherFullName", i, j),
-                                equalTo(expectedCourse.getTeacherFullName())));
-            }
-        }
-    }
-
-    private void verifyJson(ResultActions actions, Teacher teacher) throws Exception {
-        TeacherModel expectedTeacher = modelConverter.convert(teacher, TeacherModel.class);
-        actions
-                .andExpect(jsonPath("$.id", equalTo(expectedTeacher.getId())))
-                .andExpect(jsonPath("$.firstName", equalTo(expectedTeacher.getFirstName())))
-                .andExpect(jsonPath("$.lastName", equalTo(expectedTeacher.getLastName())))
-                .andExpect(jsonPath("$.title", equalTo(expectedTeacher.getTitle())))
-                .andExpect(jsonPath("$.dateHired", equalTo(expectedTeacher.getDateHired())));
-        for (int j = 0; j < expectedTeacher.getCourses().size(); j++) {
-            CourseModel expectedCourse = expectedTeacher.getCourses().get(j);
-            actions
-                    .andExpect(jsonPath(format("$.courses[%d].id", j),
-                            equalTo(expectedCourse.getId())))
-                    .andExpect(jsonPath(format("$.courses[%d].name", j),
-                            equalTo(expectedCourse.getName())))
-                    .andExpect(jsonPath(format("$.courses[%d].description", j),
-                            equalTo(expectedCourse.getDescription())))
-                    .andExpect(jsonPath(format("$.courses[%d].categoryCode", j),
-                            equalTo(expectedCourse.getCategoryCode())))
-                    .andExpect(jsonPath(format("$.courses[%d].teacherId", j),
-                            equalTo(expectedCourse.getTeacherId())))
-                    .andExpect(jsonPath(format("$.courses[%d].teacherFullName", j),
-                            equalTo(expectedCourse.getTeacherFullName())));
-        }
-    }
 }

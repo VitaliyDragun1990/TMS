@@ -1,7 +1,5 @@
 package org.vdragun.tms.ui.rest.resource.v1.timetable;
 
-import static java.lang.String.format;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,13 +25,11 @@ import org.vdragun.tms.config.WebRestConfig;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.common.util.Translator;
-import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
-import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
-import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
+import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
 @WebMvcTest(controllers = SearchTimetableResource.class)
-@Import({ WebConfig.class, WebRestConfig.class })
+@Import({ WebConfig.class, WebRestConfig.class, JsonVerifier.class })
 @DisplayName("Search Timetable Resource")
 public class SearchTimetableResourceTest {
 
@@ -46,10 +42,10 @@ public class SearchTimetableResourceTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private ModelConverter modelConverter;
+    private Translator translator;
 
     @Autowired
-    private Translator translator;
+    private JsonVerifier jsonVerifier;
 
     @MockBean
     private TimetableService timetableServiceMock;
@@ -66,7 +62,7 @@ public class SearchTimetableResourceTest {
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON))
                 .andExpect(jsonPath("$._embedded.timetables", hasSize(2)));
 
-        verifyJson(resultActions, expectedTimetables);
+        jsonVerifier.verifyTimetableJson(resultActions, expectedTimetables);
     }
 
     @Test
@@ -79,7 +75,7 @@ public class SearchTimetableResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON));
 
-        verifyJson(resultActions, expectedTimetable);
+        jsonVerifier.verifyTimetableJson(resultActions, expectedTimetable);
     }
 
     @Test
@@ -94,7 +90,7 @@ public class SearchTimetableResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON));
         
-        verifyJson(resultActions, expectedTimetables);
+        jsonVerifier.verifyTimetableJson(resultActions, expectedTimetables);
     }
 
     @Test
@@ -109,7 +105,7 @@ public class SearchTimetableResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON));
 
-        verifyJson(resultActions, expectedTimetables);
+        jsonVerifier.verifyTimetableJson(resultActions, expectedTimetables);
     }
     
     @Test
@@ -125,7 +121,7 @@ public class SearchTimetableResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON));
         
-        verifyJson(resultActions, expectedTimetables);
+        jsonVerifier.verifyTimetableJson(resultActions, expectedTimetables);
     }
     
     @Test
@@ -141,59 +137,7 @@ public class SearchTimetableResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON));
         
-        verifyJson(resultActions, expectedTimetables);
-    }
-
-    private void verifyJson(ResultActions actions, List<Timetable> timetables) throws Exception {
-        List<TimetableModel> expected = modelConverter.convertList(timetables, Timetable.class, TimetableModel.class);
-        for (int i = 0; i < expected.size(); i++) {
-            TimetableModel expectedStudent = expected.get(i);
-            actions
-                    .andExpect(jsonPath(format("$._embedded.timetables[%d].id", i),
-                            equalTo(expectedStudent.getId())))
-                    .andExpect(jsonPath(format("$._embedded.timetables[%d].startTime", i),
-                            equalTo(expectedStudent.getStartTime())))
-                    .andExpect(jsonPath(format("$._embedded.timetables[%d].duration", i),
-                            equalTo(expectedStudent.getDuration())))
-                    .andExpect(jsonPath(format("$._embedded.timetables[%d].classroomId", i),
-                            equalTo(expectedStudent.getClassroomId())))
-                    .andExpect(jsonPath(format("$._embedded.timetables[%d].classroomCapacity", i),
-                            equalTo(expectedStudent.getClassroomCapacity())));
-
-            CourseModel expectedCourse = expectedStudent.getCourse();
-            actions
-                    .andExpect(jsonPath(format("$._embedded.timetables[%d].course.id", i),
-                            equalTo(expectedCourse.getId())))
-                    .andExpect(jsonPath(format("$._embedded.timetables[%d].course.name", i),
-                            equalTo(expectedCourse.getName())))
-                    .andExpect(jsonPath(format("$._embedded.timetables[%d].course.description", i),
-                            equalTo(expectedCourse.getDescription())))
-                    .andExpect(jsonPath(format("$._embedded.timetables[%d].course.categoryCode", i),
-                            equalTo(expectedCourse.getCategoryCode())))
-                    .andExpect(jsonPath(format("$._embedded.timetables[%d].course.teacherId", i),
-                            equalTo(expectedCourse.getTeacherId())))
-                    .andExpect(jsonPath(format("$._embedded.timetables[%d].course.teacherFullName", i),
-                            equalTo(expectedCourse.getTeacherFullName())));
-        }
-    }
-
-    private void verifyJson(ResultActions actions, Timetable timetable) throws Exception {
-        TimetableModel expected = modelConverter.convert(timetable, TimetableModel.class);
-        actions
-                .andExpect(jsonPath("$.id", equalTo(expected.getId())))
-                .andExpect(jsonPath("$.startTime", equalTo(expected.getStartTime())))
-                .andExpect(jsonPath("$.duration", equalTo(expected.getDuration())))
-                .andExpect(jsonPath("$.classroomId", equalTo(expected.getClassroomId())))
-                .andExpect(jsonPath("$.classroomCapacity", equalTo(expected.getClassroomCapacity())));
-
-        CourseModel expectedCourse = expected.getCourse();
-        actions
-                .andExpect(jsonPath("$.course.id", equalTo(expectedCourse.getId())))
-                .andExpect(jsonPath("$.course.name", equalTo(expectedCourse.getName())))
-                .andExpect(jsonPath("$.course.description", equalTo(expectedCourse.getDescription())))
-                .andExpect(jsonPath("$.course.categoryCode", equalTo(expectedCourse.getCategoryCode())))
-                .andExpect(jsonPath("$.course.teacherId", equalTo(expectedCourse.getTeacherId())))
-                .andExpect(jsonPath("$.course.teacherFullName", equalTo(expectedCourse.getTeacherFullName())));
+        jsonVerifier.verifyTimetableJson(resultActions, expectedTimetables);
     }
 
 }

@@ -1,6 +1,5 @@
 package org.vdragun.tms.ui.rest.resource.v1.course;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.ArgumentMatchers.any;
@@ -9,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Locale;
@@ -30,14 +28,13 @@ import org.vdragun.tms.config.WebRestConfig;
 import org.vdragun.tms.core.application.service.course.CourseData;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
-import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
-import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
+import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(controllers = RegisterCourseResource.class)
-@Import({ WebConfig.class, WebRestConfig.class })
+@Import({ WebConfig.class, WebRestConfig.class, JsonVerifier.class })
 @DisplayName("Register Course Resource")
 public class RegisterCourseResourceTest {
 
@@ -47,10 +44,10 @@ public class RegisterCourseResourceTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private ModelConverter modelConverter;
+    private ObjectMapper mapper;
 
     @Autowired
-    private ObjectMapper mapper;
+    private JsonVerifier jsonVerifier;
 
     @MockBean
     private CourseService courseServiceMock;
@@ -73,20 +70,9 @@ public class RegisterCourseResourceTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON));
 
-        verifyJson(resultActions, registered);
         verify(courseServiceMock, times(1)).registerNewCourse(captor.capture());
         assertThat(captor.getValue(), samePropertyValuesAs(registerData));
-    }
-
-    private void verifyJson(ResultActions actions, Course course) throws Exception {
-        CourseModel expected = modelConverter.convert(course, CourseModel.class);
-        actions
-                .andExpect(jsonPath("$.id", equalTo(expected.getId())))
-                .andExpect(jsonPath("$.name", equalTo(expected.getName())))
-                .andExpect(jsonPath("$.description", equalTo(expected.getDescription())))
-                .andExpect(jsonPath("$.categoryCode", equalTo(expected.getCategoryCode())))
-                .andExpect(jsonPath("$.teacherId", equalTo(expected.getTeacherId())))
-                .andExpect(jsonPath("$.teacherFullName", equalTo(expected.getTeacherFullName())));
+        jsonVerifier.verifyCourseJson(resultActions, registered);
     }
 
 }
