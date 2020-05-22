@@ -119,6 +119,15 @@ public class EntityGenerator {
                 .collect(toList());
     }
 
+    public List<Student> generateStudentsWithCourses(int numberOfStudents, int coursesPerStudent) {
+        return IntStream.rangeClosed(1, numberOfStudents)
+                .mapToObj(idx -> {
+                    Student s = generateStudent();
+                    generateCourses(coursesPerStudent).forEach(c -> s.addCourse(c));
+                    return s;
+                }).collect(toList());
+    }
+
     public Timetable generateTimetable() {
         return new Timetable(
                 randomInt(9999),
