@@ -1,14 +1,13 @@
 package org.vdragun.tms.ui.rest.resource.v1.course;
 
-import static org.springframework.http.HttpStatus.CREATED;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.course.CourseData;
 import org.vdragun.tms.core.application.service.course.CourseService;
@@ -35,12 +34,16 @@ public class RegisterCourseResource extends AbstractResource {
     }
 
     @PostMapping(produces = "application/hal+json")
-    @ResponseStatus(CREATED)
-    public CourseModel registerNewCourse(@Valid @RequestBody CourseData courseData) {
+    public ResponseEntity<CourseModel> registerNewCourse(@Valid @RequestBody CourseData courseData) {
         log.trace("Received POST request to register new course, data={}, URI={}", courseData, getRequestUri());
 
         Course course = courseService.registerNewCourse(courseData);
-        return convert(course, CourseModel.class);
+        CourseModel courseModel = convert(course, CourseModel.class);
+
+        return ResponseEntity
+                .created(courseModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(courseModel);
+
     }
 
 }
