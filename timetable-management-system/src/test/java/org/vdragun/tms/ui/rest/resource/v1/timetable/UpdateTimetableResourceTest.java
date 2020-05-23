@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.vdragun.tms.ui.rest.resource.v1.timetable.UpdateTimetableResource.BASE_URL;
 
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -73,7 +74,7 @@ public class UpdateTimetableResourceTest {
         Timetable updatedTimetable = generator.generateTimetable();
         when(timetableServiceMock.updateExistingTimetable(any(UpdateTimetableData.class))).thenReturn(updatedTimetable);
 
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/timetables/{timetableId}", TIMETABLE_ID)
+        ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{timetableId}", TIMETABLE_ID)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateData)))
@@ -92,7 +93,7 @@ public class UpdateTimetableResourceTest {
         when(timetableServiceMock.updateExistingTimetable(any(UpdateTimetableData.class)))
                 .thenThrow(new ResourceNotFoundException("Timetable with id=%d not found", TIMETABLE_ID));
         
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/timetables/{timetableId}", TIMETABLE_ID)
+        ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{timetableId}", TIMETABLE_ID)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateData)))
@@ -108,7 +109,7 @@ public class UpdateTimetableResourceTest {
         UpdateTimetableData updateData =
                 new UpdateTimetableData(TIMETABLE_ID, TIMETABLE_START_TIME, DURATION, CLASSROOM_ID);
 
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/timetables/{timetableId}", invalidId)
+        ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{timetableId}", invalidId)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateData)))
@@ -128,7 +129,7 @@ public class UpdateTimetableResourceTest {
         UpdateTimetableData updateData = new UpdateTimetableData(TIMETABLE_ID, TIMETABLE_START_TIME, DURATION,
                 CLASSROOM_ID);
 
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/timetables/{timetableId}", negativeId)
+        ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{timetableId}", negativeId)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateData)))
@@ -149,7 +150,7 @@ public class UpdateTimetableResourceTest {
         UpdateTimetableData invalidData = new UpdateTimetableData(invalidTimetableId, startTimeInthePast, tooShortDuration,
                 invalidClassrommId);
 
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/timetables/{timetableId}", TIMETABLE_ID)
+        ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{timetableId}", TIMETABLE_ID)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invalidData)))
@@ -166,7 +167,7 @@ public class UpdateTimetableResourceTest {
 
     @Test
     void shouldReturnStatusBadRequestIfUpdateDataIsMissing() throws Exception {
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/timetables/{timetableId}", TIMETABLE_ID)
+        ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{timetableId}", TIMETABLE_ID)
                 .locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));

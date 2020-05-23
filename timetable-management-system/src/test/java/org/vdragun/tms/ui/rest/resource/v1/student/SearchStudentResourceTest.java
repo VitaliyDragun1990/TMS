@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.vdragun.tms.ui.rest.resource.v1.student.SearchStudentResource.BASE_URL;
 
 import java.util.List;
 import java.util.Locale;
@@ -55,7 +56,7 @@ public class SearchStudentResourceTest {
                 generator.generateStudentsWithCourses(NUMBER_OF_STUDENTS, NUMBER_OF_COURSES_PER_STUDENT);
         when(studentServiceMock.findAllStudents()).thenReturn(expectedStudents);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/students").locale(Locale.US))
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL).locale(Locale.US))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON))
                 .andExpect(jsonPath("$._embedded.students", hasSize(NUMBER_OF_STUDENTS)))
@@ -69,7 +70,7 @@ public class SearchStudentResourceTest {
         Student expectedStudent = generator.generateStudentsWithCourses(1, NUMBER_OF_COURSES_PER_STUDENT).get(0);
         when(studentServiceMock.findStudentById(expectedStudent.getId())).thenReturn(expectedStudent);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/students/{studentId}", expectedStudent.getId())
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{studentId}", expectedStudent.getId())
                 .locale(Locale.US))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON));
@@ -81,7 +82,7 @@ public class SearchStudentResourceTest {
     void shouldReturnStatusBadRequestIfGivenStudentIdentifierIsNotNumber() throws Exception {
         String invalidId = "id";
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/students/{studentId}", invalidId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{studentId}", invalidId)
                 .locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -98,7 +99,7 @@ public class SearchStudentResourceTest {
         when(studentServiceMock.findStudentById(eq(studentId)))
                 .thenThrow(new ResourceNotFoundException("Student with id=%d not found", studentId));
         
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/students/{studentId}", studentId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{studentId}", studentId)
                 .locale(Locale.US))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -110,7 +111,7 @@ public class SearchStudentResourceTest {
     void shouldReturnStatuBadRequestIfGivenIdentifierIsNotValid() throws Exception {
         Integer negatveId = -1;
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/students/{studentId}", negatveId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{studentId}", negatveId)
                 .locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));

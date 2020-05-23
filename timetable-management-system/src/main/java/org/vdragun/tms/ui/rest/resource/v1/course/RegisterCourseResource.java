@@ -23,8 +23,10 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  *
  */
 @RestController
-@RequestMapping("/api/v1/courses")
+@RequestMapping(RegisterCourseResource.BASE_URL)
 public class RegisterCourseResource extends AbstractResource {
+
+    public static final String BASE_URL = "/api/v1/courses";
 
     @Autowired
     private CourseService courseService;

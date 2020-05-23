@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.vdragun.tms.ui.rest.resource.v1.student.RegisterStudentResource.BASE_URL;
 
 import java.time.LocalDate;
 import java.util.Locale;
@@ -66,7 +67,7 @@ public class RegisterStudentResourceTest {
         Student expectedStudent = generator.generateStudent();
         when(studentServiceMock.registerNewStudent(any(CreateStudentData.class))).thenReturn(expectedStudent);
 
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/students")
+        ResultActions resultActions = mockMvc.perform(post(BASE_URL)
                 .locale(Locale.US)
                 .contentType(CONTENT_TYPE_HAL_JSON)
                 .content(mapper.writeValueAsString(registerData)))
@@ -86,7 +87,7 @@ public class RegisterStudentResourceTest {
         CreateStudentData invalidData = 
                 new CreateStudentData(notLatinFirstName, tooShortLastName, futureRegistrationdate);
 
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/students")
+        ResultActions resultActions = mockMvc.perform(post(BASE_URL)
                 .locale(Locale.US)
                 .contentType(CONTENT_TYPE_HAL_JSON)
                 .content(mapper.writeValueAsString(invalidData)))
@@ -102,7 +103,7 @@ public class RegisterStudentResourceTest {
 
     @Test
     void shouldReturnStatusBadRequestIfRegistrationDataIsMissing() throws Exception {
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/students")
+        ResultActions resultActions = mockMvc.perform(post(BASE_URL)
                 .locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));

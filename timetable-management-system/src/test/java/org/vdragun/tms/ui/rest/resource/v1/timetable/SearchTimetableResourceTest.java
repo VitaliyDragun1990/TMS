@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.vdragun.tms.ui.rest.resource.v1.timetable.SearchTimetableResource.BASE_URL;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -61,7 +62,8 @@ public class SearchTimetableResourceTest {
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
         when(timetableServiceMock.findAllTimetables()).thenReturn(expectedTimetables);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables").locale(Locale.US))
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL)
+                .locale(Locale.US))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON))
                 .andExpect(jsonPath("$._embedded.timetables", hasSize(2)));
@@ -74,7 +76,7 @@ public class SearchTimetableResourceTest {
         Timetable expectedTimetable = generator.generateTimetable();
         when(timetableServiceMock.findTimetableById(expectedTimetable.getId())).thenReturn(expectedTimetable);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/{timetableId}", expectedTimetable.getId())
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{timetableId}", expectedTimetable.getId())
                 .locale(Locale.US))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON));
@@ -88,7 +90,7 @@ public class SearchTimetableResourceTest {
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
         when(timetableServiceMock.findDailyTimetablesForTeacher(TEACHER_ID, targetDate)).thenReturn(expectedTimetables);
         
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/day", TEACHER_ID)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/day", TEACHER_ID)
                 .locale(Locale.US)
                 .param("targetDate", translator.formatDate(targetDate)))
                 .andExpect(status().isOk())
@@ -103,7 +105,7 @@ public class SearchTimetableResourceTest {
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
         when(timetableServiceMock.findDailyTimetablesForStudent(STUDENT_ID, targetDate)).thenReturn(expectedTimetables);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/student/{studentId}/day", STUDENT_ID)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/student/{studentId}/day", STUDENT_ID)
                 .locale(Locale.US)
                 .param("targetDate", translator.formatDate(targetDate)))
                 .andExpect(status().isOk())
@@ -119,7 +121,7 @@ public class SearchTimetableResourceTest {
         when(timetableServiceMock.findMonthlyTimetablesForTeacher(TEACHER_ID, targetMonth))
                 .thenReturn(expectedTimetables);
         
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/month", TEACHER_ID)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/month", TEACHER_ID)
                 .locale(Locale.US)
                 .param("targetMonth", translator.formatMonth(targetMonth)))
                 .andExpect(status().isOk())
@@ -135,7 +137,7 @@ public class SearchTimetableResourceTest {
         when(timetableServiceMock.findMonthlyTimetablesForStudent(STUDENT_ID, targetMonth))
                 .thenReturn(expectedTimetables);
         
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/student/{studentId}/month", STUDENT_ID)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/student/{studentId}/month", STUDENT_ID)
                 .locale(Locale.US)
                 .param("targetMonth", translator.formatMonth(targetMonth)))
                 .andExpect(status().isOk())
@@ -148,7 +150,7 @@ public class SearchTimetableResourceTest {
     void shouldReturnStatusBadRequestIfGivenTimetableIdentifierIsNotNumber() throws Exception {
         String invalidId = "id";
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/{timetableId}", invalidId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{timetableId}", invalidId)
                 .locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -165,7 +167,7 @@ public class SearchTimetableResourceTest {
         when(timetableServiceMock.findTimetableById(eq(timetableId)))
                 .thenThrow(new ResourceNotFoundException("Timetable with id=%d not found", timetableId));
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/{timetableId}", timetableId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{timetableId}", timetableId)
                 .locale(Locale.US))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -177,7 +179,7 @@ public class SearchTimetableResourceTest {
     void shouldReturnStatuBadRequestIfGivenIdentifierIsNotValid() throws Exception {
         Integer negativeId = -1;
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/{timetableId}", negativeId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{timetableId}", negativeId)
                 .locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -191,7 +193,7 @@ public class SearchTimetableResourceTest {
         String invalidId = "id";
         LocalDate targetDate = LocalDate.now();
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/day", invalidId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/day", invalidId)
                 .locale(Locale.US)
                 .param("targetDate", translator.formatDate(targetDate)))
                 .andExpect(status().isBadRequest())
@@ -210,7 +212,7 @@ public class SearchTimetableResourceTest {
         when(timetableServiceMock.findDailyTimetablesForTeacher(teacherId, targetDate))
                 .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", teacherId));
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/day", teacherId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/day", teacherId)
                 .locale(Locale.US)
                 .param("targetDate", translator.formatDate(targetDate)))
                 .andExpect(status().isNotFound())
@@ -224,7 +226,7 @@ public class SearchTimetableResourceTest {
         Integer negativeId = -1;
         LocalDate targetDate = LocalDate.now();
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/day", negativeId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/day", negativeId)
                 .locale(Locale.US)
                 .param("targetDate", translator.formatDate(targetDate)))
                 .andExpect(status().isBadRequest())
@@ -238,7 +240,7 @@ public class SearchTimetableResourceTest {
     void shouldReturnStatusBadRequestIfTargetDateParameterIsMissingForDailyTeacherRequest() throws Exception {
         Integer teacherId = 1;
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/day", teacherId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/day", teacherId)
                 .locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -251,7 +253,7 @@ public class SearchTimetableResourceTest {
         Integer teacherId = 1;
         String targetDate = "invalid";
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/day", teacherId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/day", teacherId)
                 .locale(Locale.US)
                 .param("targetDate", targetDate))
                 .andExpect(status().isBadRequest())
@@ -267,7 +269,7 @@ public class SearchTimetableResourceTest {
         String invalidId = "id";
         Month targetMonth = Month.MAY;
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/month", invalidId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/month", invalidId)
                 .locale(Locale.US)
                 .param("targetMonth", translator.formatMonth(targetMonth)))
                 .andExpect(status().isBadRequest())
@@ -286,7 +288,7 @@ public class SearchTimetableResourceTest {
         when(timetableServiceMock.findMonthlyTimetablesForTeacher(teacherId, targetMonth))
                 .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", teacherId));
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/month", teacherId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/month", teacherId)
                 .locale(Locale.US)
                 .param("targetMonth", translator.formatMonth(targetMonth)))
                 .andExpect(status().isNotFound())
@@ -300,7 +302,7 @@ public class SearchTimetableResourceTest {
         Integer negativeId = -1;
         Month targetMonth = Month.MAY;
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/month", negativeId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/month", negativeId)
                 .locale(Locale.US)
                 .param("targetMonth", translator.formatMonth(targetMonth)))
                 .andExpect(status().isBadRequest())
@@ -314,7 +316,7 @@ public class SearchTimetableResourceTest {
     void shouldReturnStatusBadRequestIfTargetMonthParameterIsMissingForMonthlyTeacherRequest() throws Exception {
         Integer teacherId = 1;
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/month", teacherId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/month", teacherId)
                 .locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -327,7 +329,7 @@ public class SearchTimetableResourceTest {
         Integer teacherId = 1;
         String targetMonth = "invalid";
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/month", teacherId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/month", teacherId)
                 .locale(Locale.US)
                 .param("targetMonth", targetMonth))
                 .andExpect(status().isBadRequest())

@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.vdragun.tms.ui.rest.resource.v1.student.UpdateStudentResource.BASE_URL;
 
 import java.util.List;
 import java.util.Locale;
@@ -70,7 +71,7 @@ public class UpdateStudentResourceTest {
         Student expectedStudent = generator.generateStudent();
         when(studentServiceMock.updateExistingStudent(any(UpdateStudentData.class))).thenReturn(expectedStudent);
         
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/students/{studentId}", STUDENT_ID)
+        ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{studentId}", STUDENT_ID)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateData)))
@@ -88,7 +89,7 @@ public class UpdateStudentResourceTest {
         when(studentServiceMock.updateExistingStudent(any(UpdateStudentData.class)))
                 .thenThrow(new ResourceNotFoundException("Student with id=%d not found", STUDENT_ID));
 
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/students/{studentId}", STUDENT_ID)
+        ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{studentId}", STUDENT_ID)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateData)))
@@ -103,7 +104,7 @@ public class UpdateStudentResourceTest {
         String invalidId = "id";
         UpdateStudentData updateData = new UpdateStudentData(STUDENT_ID, GROUP_ID, "Jack", "Smith", asList(3, 4));
 
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/students/{studentId}",invalidId)
+        ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{studentId}",invalidId)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateData)))
@@ -122,7 +123,7 @@ public class UpdateStudentResourceTest {
         Integer negativeId = -1;
         UpdateStudentData updateData = new UpdateStudentData(STUDENT_ID, GROUP_ID, "Jack", "Smith", asList(3, 4));
 
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/students/{studentId}",negativeId)
+        ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{studentId}",negativeId)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(updateData)))
@@ -148,7 +149,7 @@ public class UpdateStudentResourceTest {
                 tooShortLastName,
                 invalidCourseIds);
 
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/students/{studentId}", STUDENT_ID)
+        ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{studentId}", STUDENT_ID)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invalidData)))
@@ -167,7 +168,7 @@ public class UpdateStudentResourceTest {
 
     @Test
     void shouldReturnStatusBadRequestIfUpdateDataIsMissing() throws Exception {
-        ResultActions resultActions = mockMvc.perform(put("/api/v1/students/{studentId}", STUDENT_ID)
+        ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{studentId}", STUDENT_ID)
                 .locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));

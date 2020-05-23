@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.vdragun.tms.ui.rest.resource.v1.teacher.SearchTeacherResource.BASE_URL;
 
 import java.util.List;
 import java.util.Locale;
@@ -55,7 +56,8 @@ public class SearchTeacherResourceTest {
                 generator.generateTeachersWithCourse(NUMBER_OF_TEACHERS, NUMBER_OF_COURSES_PER_TEACHER);
         when(teacherServiceMock.findAllTeachers()).thenReturn(teachers);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/teachers").locale(Locale.US))
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL)
+                .locale(Locale.US))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON))
                 .andExpect(jsonPath("$._embedded.teachers", hasSize(NUMBER_OF_TEACHERS)))
@@ -69,7 +71,7 @@ public class SearchTeacherResourceTest {
         Teacher teacher = generator.generateTeachersWithCourse(1, NUMBER_OF_COURSES_PER_TEACHER).get(0);
         when(teacherServiceMock.findTeacherById(teacher.getId())).thenReturn(teacher);
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/teachers/{teacherId}", teacher.getId())
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{teacherId}", teacher.getId())
                 .locale(Locale.US))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON));
@@ -81,7 +83,7 @@ public class SearchTeacherResourceTest {
     void shouldReturnStatusBadRequestIfGivenTeacherIdentifierIsNotNumber() throws Exception {
         String invalidId = "id";
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/teachers/{teacherId}", invalidId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{teacherId}", invalidId)
                 .locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -98,7 +100,7 @@ public class SearchTeacherResourceTest {
         when(teacherServiceMock.findTeacherById(eq(teacherId)))
                 .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", teacherId));
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/teachers/{teacherId}", teacherId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{teacherId}", teacherId)
                 .locale(Locale.US))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -110,7 +112,7 @@ public class SearchTeacherResourceTest {
     void shouldReturnStatuBadrequestIfGivenIdentifierIsNotValid() throws Exception {
         Integer negativeId = -1;
 
-        ResultActions resultActions = mockMvc.perform(get("/api/v1/teachers/{teacherId}", negativeId)
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{teacherId}", negativeId)
                 .locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));

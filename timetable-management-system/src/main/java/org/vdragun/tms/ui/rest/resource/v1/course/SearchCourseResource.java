@@ -30,9 +30,11 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  *
  */
 @RestController
-@RequestMapping(path = "/api/v1/courses", produces = "application/hal+json")
+@RequestMapping(path = SearchCourseResource.BASE_URL, produces = "application/hal+json")
 @Validated
 public class SearchCourseResource extends AbstractResource {
+
+    public static final String BASE_URL = "/api/v1/courses";
 
     @Autowired
     private CourseService courseService;

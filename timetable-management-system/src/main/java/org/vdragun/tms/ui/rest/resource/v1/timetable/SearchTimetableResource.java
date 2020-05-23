@@ -33,9 +33,11 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  *
  */
 @RestController
-@RequestMapping(path = "/api/v1/timetables", produces = "application/hal+json")
+@RequestMapping(path = SearchTimetableResource.BASE_URL, produces = "application/hal+json")
 @Validated
 public class SearchTimetableResource extends AbstractResource {
+
+    public static final String BASE_URL = "/api/v1/timetables";
 
     @Autowired
     private TimetableService timetableService;

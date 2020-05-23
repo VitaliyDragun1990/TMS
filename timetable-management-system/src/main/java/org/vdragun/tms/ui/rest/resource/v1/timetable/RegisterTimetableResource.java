@@ -23,8 +23,10 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  *
  */
 @RestController
-@RequestMapping("/api/v1/timetables")
+@RequestMapping(RegisterTimetableResource.BASE_URL)
 public class RegisterTimetableResource extends AbstractResource {
+
+    public static final String BASE_URL = "/api/v1/timetables";
 
     @Autowired
     private TimetableService timetableService;

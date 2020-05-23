@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.vdragun.tms.ui.rest.resource.v1.timetable.RegisterTimetableResource.BASE_URL;
 
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -72,7 +73,7 @@ public class RegisterTimetableResourceTest {
         Timetable expectedTimetable = generator.generateTimetable();
         when(timetableServiceMock.registerNewTimetable(any(CreateTimetableData.class))).thenReturn(expectedTimetable);
 
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/timetables")
+        ResultActions resultActions = mockMvc.perform(post(BASE_URL)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(registerData)))
@@ -93,7 +94,7 @@ public class RegisterTimetableResourceTest {
         CreateTimetableData invalidData =
                 new CreateTimetableData(startTimeInthePast, tooShortDuration, invalidCourseId, null, negativeTeacherId);
 
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/timetables")
+        ResultActions resultActions = mockMvc.perform(post(BASE_URL)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invalidData)))
@@ -110,7 +111,7 @@ public class RegisterTimetableResourceTest {
 
     @Test
     void shouldReturnStatusBadRequestIfRegistrationDataIsMissing() throws Exception {
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/timetables")
+        ResultActions resultActions = mockMvc.perform(post(BASE_URL)
                 .locale(Locale.US))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));

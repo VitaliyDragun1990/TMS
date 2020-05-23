@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.vdragun.tms.ui.rest.resource.v1.course.RegisterCourseResource.BASE_URL;
 
 import java.util.Locale;
 
@@ -65,7 +66,7 @@ public class RegisterCourseResourceTest {
         Course registered = generator.generateCourse();
         when(courseServiceMock.registerNewCourse(any(CourseData.class))).thenReturn(registered);
 
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/courses")
+        ResultActions resultActions = mockMvc.perform(post(BASE_URL)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(registerData)))
@@ -84,7 +85,7 @@ public class RegisterCourseResourceTest {
         int negativeCategoryId = -1;
         CourseData invalidData = new CourseData(invalidCourseName, notLatinDescription, negativeCategoryId, null);
 
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/courses")
+        ResultActions resultActions = mockMvc.perform(post(BASE_URL)
                 .locale(Locale.US)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(invalidData)))
@@ -101,7 +102,7 @@ public class RegisterCourseResourceTest {
     
     @Test
     void shouldReturnStatusBadRequestIfRegistrationDataIsMissing() throws Exception {
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/courses")
+        ResultActions resultActions = mockMvc.perform(post(BASE_URL)
                 .locale(Locale.US))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
