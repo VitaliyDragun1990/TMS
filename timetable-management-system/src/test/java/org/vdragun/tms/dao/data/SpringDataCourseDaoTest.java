@@ -48,7 +48,7 @@ public class SpringDataCourseDaoTest {
     private CourseDao dao;
 
     @Autowired
-    private DBTestHelper jdbcHelper;
+    private DBTestHelper dbHelper;
 
     @Test
     @Sql(scripts = "/sql/clear_database.sql")
@@ -61,7 +61,7 @@ public class SpringDataCourseDaoTest {
     @Test
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/course_data.sql" })
     void shouldFindCourseById() {
-        Course expected = jdbcHelper.findRandomCourseInDatabase();
+        Course expected = dbHelper.findRandomCourseInDatabase();
 
         Optional<Course> result = dao.findById(expected.getId());
 
@@ -72,11 +72,12 @@ public class SpringDataCourseDaoTest {
     @Test
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/course_data.sql" })
     void shouldSaveNewCourseToDatabase() {
-        Category category = jdbcHelper.findCategoryByCodeInDatabase(CODE_BIO);
-        Teacher teacher = jdbcHelper.findRandomTeacherInDatabase();
+        Category category = dbHelper.findCategoryByCodeInDatabase(CODE_BIO);
+        Teacher teacher = dbHelper.findRandomTeacherInDatabase();
         Course course = new Course(CORE_BIOLOGY, category, teacher);
 
         dao.save(course);
+        dbHelper.flushChangesToDatabase();
 
         assertCoursesInDatabase(course);
     }
@@ -84,12 +85,13 @@ public class SpringDataCourseDaoTest {
     @Test
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/course_data.sql" })
     void shouldSaveSeveralNewCoursesToDatabase() {
-        Category category = jdbcHelper.findCategoryByCodeInDatabase(CODE_BIO);
-        Teacher teacher = jdbcHelper.findRandomTeacherInDatabase();
+        Category category = dbHelper.findCategoryByCodeInDatabase(CODE_BIO);
+        Teacher teacher = dbHelper.findRandomTeacherInDatabase();
         Course coreBilogy = new Course(CORE_BIOLOGY, category, teacher);
         Course beginnerBiology = new Course(BEGINNER_BIOLOGY, category, teacher);
 
         dao.saveAll(asList(coreBilogy, beginnerBiology));
+        dbHelper.flushChangesToDatabase();
 
         assertCoursesInDatabase(beginnerBiology, coreBilogy);
     }
@@ -113,7 +115,7 @@ public class SpringDataCourseDaoTest {
     @Test
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/course_data.sql" })
     void shouldReturnEmptyListIfNoCourseWithSpecifiedCategory() {
-        Category categoryArt = jdbcHelper.findCategoryByCodeInDatabase(CODE_ART);
+        Category categoryArt = dbHelper.findCategoryByCodeInDatabase(CODE_ART);
 
         List<Course> result = dao.findByCategoryId(categoryArt.getId());
 
@@ -123,7 +125,7 @@ public class SpringDataCourseDaoTest {
     @Test
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/course_data.sql" })
     void shouldFindAllCoursesForSpecifiedCategory() {
-        Category categoryBio = jdbcHelper.findCategoryByCodeInDatabase(CODE_BIO);
+        Category categoryBio = dbHelper.findCategoryByCodeInDatabase(CODE_BIO);
 
         List<Course> result = dao.findByCategoryId(categoryBio.getId());
 
@@ -133,7 +135,7 @@ public class SpringDataCourseDaoTest {
     @Test
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/course_data.sql" })
     void shouldReturnTrueIfCourseWithProvidedIdentifierExists() {
-        Course course = jdbcHelper.findRandomCourseInDatabase();
+        Course course = dbHelper.findRandomCourseInDatabase();
 
         boolean result = dao.existsById(course.getId());
 
@@ -159,7 +161,7 @@ public class SpringDataCourseDaoTest {
         Arrays.stream(expected)
                 .forEach(course -> assertThat("course should have id", course.getId(), is(not(nullValue()))));
 
-        List<Course> result = jdbcHelper.findAllCoursesInDatabase();
+        List<Course> result = dbHelper.findAllCoursesInDatabase();
         assertThat(result, hasItems(expected));
     }
 }

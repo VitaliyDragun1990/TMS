@@ -12,8 +12,11 @@ import org.vdragun.tms.core.domain.Title;
 public class TitleToStringConverter implements Converter<Title, String> {
 
     @Override
-    public String convert(Title source) {
-        return source.asString();
+    public String convert(Title title) {
+        if (title != null) {
+            return title.name();
+        }
+        return "";
     }
 
 }

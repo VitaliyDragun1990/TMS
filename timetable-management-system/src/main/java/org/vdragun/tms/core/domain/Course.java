@@ -45,7 +45,7 @@ public class Course {
     }
 
     public Course(Integer id) {
-        this(id, null, null, null);
+        this.id = id;
     }
 
     public Course(String name, Category category, Teacher teacher) {
@@ -66,6 +66,7 @@ public class Course {
         this.category = category;
         this.description = description;
         this.teacher = teacher;
+        teacher.addCourse(this);
     }
 
     public Integer getId() {

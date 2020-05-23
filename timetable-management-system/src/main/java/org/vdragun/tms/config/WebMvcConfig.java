@@ -7,6 +7,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -15,8 +17,9 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.vdragun.tms.ui.web.converter.StringToLocalDateCustomFormatter;
 import org.vdragun.tms.ui.web.converter.StringToLocalDateTimeCustomFormatter;
-import org.vdragun.tms.ui.web.converter.StringToTitleConverter;
-import org.vdragun.tms.ui.web.converter.TitleToStringConverter;
+import org.vdragun.tms.ui.web.converter.StudentToUpdateStudentDataConverter;
+import org.vdragun.tms.ui.web.converter.TimetableToUpdateTimetableDataConverter;
+import org.vdragun.tms.ui.web.converter.TitleCustomFormatter;
 import org.vdragun.tms.ui.web.util.Constants.Page;
 
 @Configuration
@@ -41,6 +44,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return interceptor;
     }
 
+    @Override
+    public Validator getValidator() {
+        LocalValidatorFactoryBean factory = new LocalValidatorFactoryBean();
+        factory.setValidationMessageSource(messageSource);
+
+        return factory;
+    }
+
     @Bean
     public StringToLocalDateCustomFormatter stringToLocalDateCustomFormatter() {
         return new StringToLocalDateCustomFormatter(messageSource);
@@ -58,10 +69,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new TitleToStringConverter());
-        registry.addConverter(new StringToTitleConverter());
         registry.addFormatter(stringToLocalDateCustomFormatter());
         registry.addFormatter(stringToLocalDateTimeCustomFormatter());
+        registry.addFormatter(new TitleCustomFormatter());
+        registry.addConverter(new StudentToUpdateStudentDataConverter());
+        registry.addConverter(new TimetableToUpdateTimetableDataConverter());
     }
 
     @Override

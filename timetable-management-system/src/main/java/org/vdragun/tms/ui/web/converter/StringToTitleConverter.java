@@ -13,7 +13,10 @@ public class StringToTitleConverter implements Converter<String, Title> {
 
     @Override
     public Title convert(String source) {
-        return Title.fromString(source.trim());
+        if (source != null) {
+            return Title.valueOf(source.trim().toUpperCase());
+        }
+        return null;
     }
 
 }

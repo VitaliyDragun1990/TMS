@@ -25,7 +25,12 @@ public final class Constants {
         public static final String TIMETABLE_DELETE_SUCCESS = "msg.timetableDeleteSuccess";
         public static final String STUDENT_DELETE_SUCCESS = "msg.studentDeleteSuccess";
         public static final String STUDENT_UPDATE_SUCCESS = "msg.studentUpdateSuccess";
+        public static final String STUDENT_REGISTER_SUCCESS = "msg.studentRegisterSuccess";
+        public static final String TEACHER_REGISTER_SUCCESS = "msg.teacherRegisterSuccess";
+        public static final String COURSE_REGISTER_SUCCESS = "msg.courseRegisterSuccess";
         public static final String TIMETABLE_UPDATE_SUCCESS = "msg.timetableUpdateSuccess";
+        public static final String TIMETABLE_REGISTER_SUCCESS = "msg.timetableRegisterSuccess";
+        public static final String REQUIRED_REQUEST_PARAMETER = "msg.requiredRequestParameter";
 
         private Message() {
         }
@@ -64,6 +69,7 @@ public final class Constants {
         public static final String COURSE = "course";
         public static final String STUDENTS = "students";
         public static final String STUDENT = "student";
+        public static final String STUDENT_ID = "studentId";
         public static final String TEACHERS = "teachers";
         public static final String TEACHER = "teacher";
         public static final String TIMETABLE = "timetable";
@@ -72,6 +78,8 @@ public final class Constants {
         public static final String CLASSROOMS = "classrooms";
         public static final String GROUPS = "groups";
         public static final String ERROR = "error";
+        public static final String VALIDATED = "validated";
+        public static final String TITLES = "titles";
 
         private Attribute() {
         }

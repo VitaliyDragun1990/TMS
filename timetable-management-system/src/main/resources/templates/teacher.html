@@ -9,6 +9,10 @@
 <body>
   <div layout:fragment="content">
     <div class="w-75 p-3">
+      
+      <div th:replace="fragments/info-message :: message (${infoMsg})">
+      </div>
+    
       <h3 class="mb-5" th:text="#{title.teacherInfo}">Teacher Info</h3>
 
       <form data-teacher-id="${teacher.id}" id="teacherForm">

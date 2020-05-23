@@ -98,6 +98,7 @@ public class SpringDataTimetableDaoTest {
         Timetable timetable = new Timetable(APRIL_FIFTH_NINE_THIRTY, DURATION_NINETY, course, classroom, teacher);
 
         dao.save(timetable);
+        dbHelper.flushChangesToDatabase();
 
         assertTimetablesInDatabase(timetable);
     }
@@ -112,6 +113,7 @@ public class SpringDataTimetableDaoTest {
         Timetable timetableB = new Timetable(APRIL_TEN_NINE_THIRTY, DURATION_NINETY, course, classroom, teacher);
 
         dao.saveAll(asList(timetableA, timetableB));
+        dbHelper.flushChangesToDatabase();
 
         assertTimetablesInDatabase(timetableA, timetableB);
     }
@@ -228,6 +230,7 @@ public class SpringDataTimetableDaoTest {
         Timetable expected = dbHelper.findRandomTimetableInDatabase();
 
         dao.deleteById(expected.getId());
+        dbHelper.flushChangesToDatabase();
 
         assertNoGivenTimetablesInDatabase(expected);
     }
@@ -266,6 +269,7 @@ public class SpringDataTimetableDaoTest {
         existing.setStartTime(newTime);
 
         dao.update(existing);
+        dbHelper.flushChangesToDatabase();
 
         assertTimetableUpdatedInDatabase(existing);
     }

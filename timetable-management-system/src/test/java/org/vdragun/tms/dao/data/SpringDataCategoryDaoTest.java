@@ -70,6 +70,7 @@ public class SpringDataCategoryDaoTest {
         Category category = new Category(CODE_ART, DESC_ART);
 
         dao.save(category);
+        dbHelper.flushChangesToDatabase();
 
         assertCategoriesInDatabase(category);
     }
@@ -81,6 +82,7 @@ public class SpringDataCategoryDaoTest {
         Category bio = new Category(CODE_BIO, DESC_BIO);
 
         dao.saveAll(Arrays.asList(art, bio));
+        dbHelper.flushChangesToDatabase();
 
         assertCategoriesInDatabase(art, bio);
     }

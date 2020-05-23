@@ -76,6 +76,10 @@ public class DBTestHelper {
         return query.getSingleResult();
     }
 
+    public Student findStudentByIdInDatabase(Integer studentId) {
+        return em.find(Student.class, studentId);
+    }
+
     public Timetable findRandomTimetableInDatabase() {
         return em.createQuery("SELECT t FROM Timetable t", Timetable.class).getResultList().get(0);
     }
@@ -120,5 +124,13 @@ public class DBTestHelper {
 
     public List<Timetable> findAllTimetablesInDatabase() {
         return em.createQuery("SELECT t FROM Timetable t", Timetable.class).getResultList();
+    }
+
+    /**
+     * Manually flash changes from persistent context to underlying database avoid
+     * false positive in test
+     */
+    public void flushChangesToDatabase() {
+        em.flush();
     }
 }

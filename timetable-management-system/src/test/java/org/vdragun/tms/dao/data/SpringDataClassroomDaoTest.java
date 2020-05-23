@@ -63,6 +63,7 @@ public class SpringDataClassroomDaoTest {
         Classroom classroom = new Classroom(CAPACITY_TEN);
 
         dao.save(classroom);
+        dbHelper.flushChangesToDatabase();
 
         assertClassroomInDatabase(classroom);
     }
