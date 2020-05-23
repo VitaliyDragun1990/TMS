@@ -143,7 +143,7 @@ public class UpdateTimetableControllerTest {
         mockMvc.perform(post("/timetables/{timetableId}", timetableId).locale(Locale.US)
                 .param("timetableId", timetableId.toString())
                 .param("startTime", formatDateTime(startTime))
-                .param("durationInMinutes", duration.toString())
+                .param("duration", duration.toString())
                 .param("classroomId", classroomId.toString()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(Attribute.INFO_MESSAGE,
@@ -165,11 +165,11 @@ public class UpdateTimetableControllerTest {
         mockMvc.perform(post("/timetables/{timetableId}", timetableId).locale(Locale.US)
                 .param("timetableId", timetableId.toString())
                 .param("startTime", formatDateTime(pastStartTime))
-                .param("durationInMinutes", invalidDuration.toString())
+                .param("duration", invalidDuration.toString())
                 .param("classroomId", invalidClassroomId.toString()))
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(3))
-                .andExpect(model().attributeHasFieldErrors("timetable", "startTime", "durationInMinutes",
+                .andExpect(model().attributeHasFieldErrors("timetable", "startTime", "duration",
                         "classroomId"))
                 .andExpect(model().attribute(Attribute.VALIDATED, equalTo(true)))
                 .andExpect(view().name(Page.TIMETABLE_UPDATE_FORM));
@@ -189,7 +189,7 @@ public class UpdateTimetableControllerTest {
         mockMvc.perform(post("/timetables/{timetableId}", timetableId).locale(Locale.US)
                 .param("timetableId", timetableId.toString())
                 .param("startTime", formatDateTime(startTime))
-                .param("durationInMinutes", duration.toString())
+                .param("duration", duration.toString())
                 .param("classroomId", classroomId.toString()))
                 .andExpect(status().isNotFound())
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
@@ -212,7 +212,7 @@ public class UpdateTimetableControllerTest {
         mockMvc.perform(post("/timetables/{timetableId}", invalidTimetableId).locale(Locale.US)
                 .param("timetableId", invalidTimetableId.toString())
                 .param("startTime", formatDateTime(startTime))
-                .param("durationInMinutes", duration.toString())
+                .param("duration", duration.toString())
                 .param("classroomId", classroomId.toString()))
                 .andExpect(status().isBadRequest())
                 .andExpect(model().attributeExists(Attribute.ERROR, Attribute.MESSAGE))

@@ -129,7 +129,8 @@ public class RegisterTimetableControllerTest {
         
         mockMvc.perform(post("/timetables").locale(Locale.US)
                 .param("startTime", formatDateTime(startTime))
-                .param("durationInMinutes", duration.toString())
+                .param("duration", duration
+                        .toString())
                 .param("courseId", courseId.toString())
                 .param("classroomId", classroomId.toString())
                 .param("teacherId", teacherId.toString()))
@@ -158,13 +159,15 @@ public class RegisterTimetableControllerTest {
 
         mockMvc.perform(post("/timetables").locale(Locale.US)
                 .param("startTime", formatDateTime(pastStartTime))
-                .param("durationInMinutes", invalidDuration.toString())
+                .param("duration", invalidDuration
+                        .toString())
                 .param("courseId", invalidCourseId.toString())
                 .param("classroomId", invalidClassroomId.toString())
                 .param("teacherId", invalidTeacherId.toString()))
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(5))
-                .andExpect(model().attributeHasFieldErrors("timetable", "startTime", "durationInMinutes", "courseId",
+                .andExpect(model().attributeHasFieldErrors("timetable", "startTime", "duration",
+                        "courseId",
                         "classroomId", "teacherId"))
                 .andExpect(model().attribute(Attribute.VALIDATED, equalTo(true)))
                 .andExpect(view().name(Page.TIMETABLE_REG_FORM));

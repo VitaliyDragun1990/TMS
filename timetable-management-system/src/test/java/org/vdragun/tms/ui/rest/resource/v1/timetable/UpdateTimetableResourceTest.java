@@ -159,7 +159,7 @@ public class UpdateTimetableResourceTest {
         verify(timetableServiceMock, never()).updateExistingTimetable(any(UpdateTimetableData.class));
         jsonVerifier.verifyErrorMessage(resultActions, Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(resultActions, "startTime", "Future.startTime");
-        jsonVerifier.verifyValidationError(resultActions, "durationInMinutes", "TimetableDuration");
+        jsonVerifier.verifyValidationError(resultActions, "duration", "TimetableDuration");
         jsonVerifier.verifyValidationError(resultActions, "classroomId", "Positive.classroomId");
         jsonVerifier.verifyValidationError(resultActions, "timetableId", "Positive.timetableId");
     }

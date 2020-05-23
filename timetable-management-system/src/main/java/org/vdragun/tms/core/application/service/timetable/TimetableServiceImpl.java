@@ -56,7 +56,7 @@ public class TimetableServiceImpl implements TimetableService {
 
         Timetable timetable = new Timetable(
                 timetableData.getStartTime(),
-                timetableData.getDurationInMinutes(),
+                timetableData.getDuration(),
                 course,
                 classroom,
                 teacher);
@@ -74,7 +74,7 @@ public class TimetableServiceImpl implements TimetableService {
         Classroom classroom = getClassroom(timetableData.getClassroomId());
 
         timetable.setClassroom(classroom);
-        timetable.setDurationInMinutes(timetableData.getDurationInMinutes());
+        timetable.setDurationInMinutes(timetableData.getDuration());
         timetable.setStartTime(timetableData.getStartTime());
         timetableDao.update(timetable);
 

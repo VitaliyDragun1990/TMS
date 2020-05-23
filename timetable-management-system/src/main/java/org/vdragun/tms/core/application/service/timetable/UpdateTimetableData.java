@@ -9,7 +9,6 @@ import javax.validation.constraints.Positive;
 import org.vdragun.tms.core.application.validation.TimetableDuration;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Contains data necessary to update existing timetable
@@ -30,8 +29,7 @@ public class UpdateTimetableData {
 
     @NotNull
     @TimetableDuration
-    @JsonProperty("duration")
-    private Integer durationInMinutes;
+    private Integer duration;
 
     @NotNull
     @Positive
@@ -44,7 +42,7 @@ public class UpdateTimetableData {
             Integer classroomId) {
         this.timetableId = timetableId;
         this.startTime = startTime;
-        this.durationInMinutes = durationInMinutes;
+        this.duration = durationInMinutes;
         this.classroomId = classroomId;
     }
 
@@ -64,12 +62,12 @@ public class UpdateTimetableData {
         this.startTime = startTime;
     }
 
-    public Integer getDurationInMinutes() {
-        return durationInMinutes;
+    public Integer getDuration() {
+        return duration;
     }
 
-    public void setDurationInMinutes(Integer durationInMinutes) {
-        this.durationInMinutes = durationInMinutes;
+    public void setDuration(Integer durationInMinutes) {
+        this.duration = durationInMinutes;
     }
 
     public Integer getClassroomId() {
@@ -83,7 +81,7 @@ public class UpdateTimetableData {
     @Override
     public String toString() {
         return "UpdateTimetableData [timetableId=" + timetableId + ", startTime=" + startTime + ", durationInMinutes="
-                + durationInMinutes + ", classroomId=" + classroomId + "]";
+                + duration + ", classroomId=" + classroomId + "]";
     }
 
 }
