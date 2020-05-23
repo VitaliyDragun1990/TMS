@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.junit.jupiter.api.DisplayName;
@@ -26,9 +28,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebRestConfig;
+import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
@@ -76,6 +80,100 @@ public class UpdateStudentResourceTest {
         verify(studentServiceMock, times(1)).updateExistingStudent(captor.capture());
         assertThat(captor.getValue(), samePropertyValuesAs(updateData));
         jsonVerifier.verifyStudentJson(resultActions, expectedStudent);
+    }
+
+    @Test
+    void shouldReturnStatusNotFoundIfSpecifiedStudentToUpdateNotExist() throws Exception {
+        UpdateStudentData updateData = new UpdateStudentData(STUDENT_ID, GROUP_ID, "Jack", "Smith", asList(3, 4));
+        when(studentServiceMock.updateExistingStudent(any(UpdateStudentData.class)))
+                .thenThrow(new ResourceNotFoundException("Student with id=%d not found", STUDENT_ID));
+
+        ResultActions resultActions = mockMvc.perform(put("/api/v1/students/{studentId}", STUDENT_ID)
+                .locale(Locale.US)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(updateData)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND);
+    }
+
+    @Test
+    void shouldReturnStatusBadRequestIfProvidedStudentIdentifierIsNotNumber() throws Exception {
+        String invalidId = "id";
+        UpdateStudentData updateData = new UpdateStudentData(STUDENT_ID, GROUP_ID, "Jack", "Smith", asList(3, 4));
+
+        ResultActions resultActions = mockMvc.perform(put("/api/v1/students/{studentId}",invalidId)
+                .locale(Locale.US)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(updateData)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        verify(studentServiceMock, never()).updateExistingStudent(any(UpdateStudentData.class));
+        jsonVerifier.verifyErrorMessage(
+                resultActions,
+                Message.ARGUMENT_TYPE_MISSMATCH,
+                "studentId", invalidId, Integer.class);
+    }
+    
+    @Test
+    void shouldReturnStatusBadRequestIfProvidedStudentIdIsNotValid() throws Exception {
+        Integer negativeId = -1;
+        UpdateStudentData updateData = new UpdateStudentData(STUDENT_ID, GROUP_ID, "Jack", "Smith", asList(3, 4));
+
+        ResultActions resultActions = mockMvc.perform(put("/api/v1/students/{studentId}",negativeId)
+                .locale(Locale.US)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(updateData)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        
+        verify(studentServiceMock, never()).updateExistingStudent(any(UpdateStudentData.class));
+        jsonVerifier.verifyErrorMessage(resultActions, Message.VALIDATION_ERROR);
+        jsonVerifier.verifyValidationError(resultActions, "studentId", Message.POSITIVE_ID);
+    }
+
+    @Test
+    void shouldReturnStatusBadRequestIfProvidedUpdateDataIsInvalid() throws Exception {
+        int invalidStudentId = 0;
+        int negativeGroupId = -1;
+        String notLatinFirstName = "Джек";
+        String tooShortLastName = "S";
+        List<Integer> invalidCourseIds = asList(null, negativeGroupId);
+        UpdateStudentData invalidData = new UpdateStudentData(
+                invalidStudentId,
+                negativeGroupId,
+                notLatinFirstName,
+                tooShortLastName,
+                invalidCourseIds);
+
+        ResultActions resultActions = mockMvc.perform(put("/api/v1/students/{studentId}", STUDENT_ID)
+                .locale(Locale.US)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(invalidData)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        verify(studentServiceMock, never()).updateExistingStudent(any(UpdateStudentData.class));
+        jsonVerifier.verifyErrorMessage(resultActions, Message.VALIDATION_ERROR);
+        jsonVerifier.verifyValidationError(resultActions, "studentId", "Positive.studentId");
+        jsonVerifier.verifyValidationError(resultActions, "groupId", "Positive.groupId");
+        jsonVerifier.verifyValidationError(resultActions, "firstName", "PersonName");
+        jsonVerifier.verifyValidationError(resultActions, "lastName", "PersonName");
+        jsonVerifier.verifyValidationError(resultActions, "courseIds[0]", "NotNull.courseIds");
+        jsonVerifier.verifyValidationError(resultActions, "courseIds[1]", "Positive");
+    }
+
+    @Test
+    void shouldReturnStatusBadRequestIfUpdateDataIsMissing() throws Exception {
+        ResultActions resultActions = mockMvc.perform(put("/api/v1/students/{studentId}", STUDENT_ID)
+                .locale(Locale.US))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        verify(studentServiceMock, never()).updateExistingStudent(any(UpdateStudentData.class));
+        jsonVerifier.verifyErrorMessage(resultActions, Message.MALFORMED_JSON_REQUEST);
     }
 
 }

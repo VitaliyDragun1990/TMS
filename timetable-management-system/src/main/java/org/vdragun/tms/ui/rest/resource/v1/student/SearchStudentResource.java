@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
@@ -54,7 +55,7 @@ public class SearchStudentResource extends AbstractResource {
     @GetMapping("/{studentId}")
     @ResponseStatus(OK)
     public StudentModel getStudentById(
-            @PathVariable("studentId") @Positive(message = "Positive.id") Integer studentId) {
+            @PathVariable("studentId") @Positive(message = Message.POSITIVE_ID) Integer studentId) {
         log.trace("Received GET request to retrieve student with id={}, URI={}", studentId, getRequestUri());
         return convert(studentService.findStudentById(studentId), StudentModel.class);
     }

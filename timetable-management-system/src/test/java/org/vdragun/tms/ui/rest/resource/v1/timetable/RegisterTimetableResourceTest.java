@@ -30,6 +30,7 @@ import org.vdragun.tms.config.WebRestConfig;
 import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
@@ -81,6 +82,40 @@ public class RegisterTimetableResourceTest {
         verify(timetableServiceMock, times(1)).registerNewTimetable(captor.capture());
         assertThat(captor.getValue(), samePropertyValuesAs(registerData, "startTime"));
         jsonVerifier.verifyTimetableJson(resultActions, expectedTimetable);
+    }
+    
+    @Test
+    void shouldReturnStatusBadRequestIfProvidedRegistrationDataIsNotValid() throws Exception {
+        LocalDateTime startTimeInthePast = LocalDateTime.now().minusDays(3);
+        int tooShortDuration = 20;
+        int invalidCourseId = 0;
+        int negativeTeacherId = -1;
+        CreateTimetableData invalidData =
+                new CreateTimetableData(startTimeInthePast, tooShortDuration, invalidCourseId, null, negativeTeacherId);
+
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/timetables")
+                .locale(Locale.US)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(invalidData)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(resultActions, Message.VALIDATION_ERROR);
+        jsonVerifier.verifyValidationError(resultActions, "startTime", "Future.startTime");
+        jsonVerifier.verifyValidationError(resultActions, "durationInMinutes", "TimetableDuration");
+        jsonVerifier.verifyValidationError(resultActions, "courseId", "Positive.courseId");
+        jsonVerifier.verifyValidationError(resultActions, "classroomId", "NotNull.classroomId");
+        jsonVerifier.verifyValidationError(resultActions, "teacherId", "Positive.teacherId");
+    }
+
+    @Test
+    void shouldReturnStatusBadRequestIfRegistrationDataIsMissing() throws Exception {
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/timetables")
+                .locale(Locale.US))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(resultActions, Message.MALFORMED_JSON_REQUEST);
     }
 
 }

@@ -42,6 +42,7 @@ public final class Constants {
         public static final String DB_ERROR = "msg.dbError";
         public static final String INTERNAL_SERVER_ERROR = "msg.internalServerError";
         public static final String ARGUMENT_TYPE_MISSMATCH = "msg.argumentTypeMissmatch";
+        public static final String POSITIVE_ID = "Positive.id";
 
         private Message() {
         }

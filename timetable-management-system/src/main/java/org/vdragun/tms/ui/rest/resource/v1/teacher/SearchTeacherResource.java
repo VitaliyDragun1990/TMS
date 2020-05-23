@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Teacher;
+import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.TeacherModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
@@ -54,7 +55,7 @@ public class SearchTeacherResource extends AbstractResource {
     @GetMapping("/{teacherId}")
     @ResponseStatus(OK)
     public TeacherModel getTeacherById(
-            @PathVariable("teacherId") @Positive(message = "Positive.id") Integer teacherId) {
+            @PathVariable("teacherId") @Positive(message = Message.POSITIVE_ID) Integer teacherId) {
         log.trace("Received GET request to retrieve teacher with id={}, URI={}", teacherId, getRequestUri());
         return convert(teacherService.findTeacherById(teacherId), TeacherModel.class);
     }

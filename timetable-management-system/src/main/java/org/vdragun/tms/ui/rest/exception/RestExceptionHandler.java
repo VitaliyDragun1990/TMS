@@ -224,7 +224,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * resolve controller's method argument because of type miss match.
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    protected ResponseEntity<Object> handlemethodArgumentTypeMissmatch(
+    protected ResponseEntity<Object> handleMethodArgumentTypeMissmatch(
             MethodArgumentTypeMismatchException ex) {
         LOG.warn("Handling method argument type missmatch exception", ex);
 

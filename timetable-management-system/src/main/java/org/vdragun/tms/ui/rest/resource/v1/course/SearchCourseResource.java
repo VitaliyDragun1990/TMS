@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
+import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
@@ -54,7 +55,7 @@ public class SearchCourseResource extends AbstractResource {
     @GetMapping("/{courseId}")
     @ResponseStatus(OK)
     public CourseModel getCourseById(
-            @PathVariable("courseId") @Positive(message = "Positive.id") Integer courseId) {
+            @PathVariable("courseId") @Positive(message = Message.POSITIVE_ID) Integer courseId) {
         log.trace("Received GET request to retrieve course with id={}, URI={}", courseId, getRequestUri());
         return convert(courseService.findCourseById(courseId), CourseModel.class);
     }

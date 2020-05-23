@@ -1,7 +1,10 @@
 package org.vdragun.tms.ui.rest.resource.v1;
 
 import static java.lang.String.format;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.util.List;
@@ -12,6 +15,7 @@ import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
@@ -28,9 +32,30 @@ import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 public class JsonVerifier {
 
     private ModelConverter modelConverter;
+    private Translator translator;
 
-    public JsonVerifier(ModelConverter modelConverter) {
+    public JsonVerifier(ModelConverter modelConverter, Translator translator) {
         this.modelConverter = modelConverter;
+        this.translator = translator;
+    }
+
+    public void verifyErrorMessage(ResultActions actions, String msgCode, Object... msgArgs) throws Exception {
+        String expectedMessage = translator.getLocalizedMessage(msgCode, msgArgs);
+        actions.andExpect(jsonPath("$.apierror.message", equalTo(expectedMessage)));
+    }
+
+    public void verifyValidationError(
+            ResultActions actions,
+            String propertyName,
+            String msgCode,
+            Object... msgArgs) throws Exception {
+        String expectedMessage = translator.getLocalizedMessage(msgCode, msgArgs);
+        actions.andExpect(
+                jsonPath("$.apierror.subErrors",
+                        hasItem(
+                                allOf(
+                                        hasEntry("field", propertyName),
+                                        hasEntry("message", expectedMessage)))));
     }
 
     public void verifyTimetableJson(ResultActions actions, List<Timetable> timetables) throws Exception {

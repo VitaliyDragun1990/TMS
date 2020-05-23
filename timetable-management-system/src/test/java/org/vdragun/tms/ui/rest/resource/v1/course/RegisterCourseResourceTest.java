@@ -7,6 +7,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,6 +29,7 @@ import org.vdragun.tms.config.WebRestConfig;
 import org.vdragun.tms.core.application.service.course.CourseData;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
+import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
@@ -73,6 +75,39 @@ public class RegisterCourseResourceTest {
         verify(courseServiceMock, times(1)).registerNewCourse(captor.capture());
         assertThat(captor.getValue(), samePropertyValuesAs(registerData));
         jsonVerifier.verifyCourseJson(resultActions, registered);
+    }
+
+    @Test
+    void shouldReturnStatusBadRequestIfProvidedRegistrationDataIsNotValid() throws Exception {
+        String invalidCourseName = "eng-25";
+        String notLatinDescription = "не латинские символы";
+        int negativeCategoryId = -1;
+        CourseData invalidData = new CourseData(invalidCourseName, notLatinDescription, negativeCategoryId, null);
+
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/courses")
+                .locale(Locale.US)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(invalidData)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        
+        jsonVerifier.verifyErrorMessage(resultActions, Message.VALIDATION_ERROR);
+        jsonVerifier.verifyValidationError(resultActions, "name", "CourseName");
+        jsonVerifier.verifyValidationError(resultActions, "description", "LatinSentence");
+        jsonVerifier.verifyValidationError(resultActions, "categoryId", "Positive.categoryId");
+        jsonVerifier.verifyValidationError(resultActions, "teacherId", "NotNull.teacherId");
+    }
+    
+    @Test
+    void shouldReturnStatusBadRequestIfRegistrationDataIsMissing() throws Exception {
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/courses")
+                .locale(Locale.US))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        
+        jsonVerifier.verifyErrorMessage(resultActions, Message.MALFORMED_JSON_REQUEST);
     }
 
 }

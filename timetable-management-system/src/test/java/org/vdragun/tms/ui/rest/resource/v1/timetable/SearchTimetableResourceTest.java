@@ -1,6 +1,7 @@
 package org.vdragun.tms.ui.rest.resource.v1.timetable;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -18,12 +19,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebRestConfig;
+import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
@@ -138,6 +142,201 @@ public class SearchTimetableResourceTest {
                 .andExpect(content().contentType(CONTENT_TYPE_HAL_JSON));
         
         jsonVerifier.verifyTimetableJson(resultActions, expectedTimetables);
+    }
+
+    @Test
+    void shouldReturnStatusBadRequestIfGivenTimetableIdentifierIsNotNumber() throws Exception {
+        String invalidId = "id";
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/{timetableId}", invalidId)
+                .locale(Locale.US))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(
+                resultActions,
+                Message.ARGUMENT_TYPE_MISSMATCH,
+                "timetableId", invalidId, Integer.class);
+    }
+
+    @Test
+    void shouldReturnStatusNotFoundIfNoTimetableWithGivenIdentifier() throws Exception {
+        Integer timetableId = 1;
+        when(timetableServiceMock.findTimetableById(eq(timetableId)))
+                .thenThrow(new ResourceNotFoundException("Timetable with id=%d not found", timetableId));
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/{timetableId}", timetableId)
+                .locale(Locale.US))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND);
+    }
+
+    @Test
+    void shouldReturnStatuBadRequestIfGivenIdentifierIsNotValid() throws Exception {
+        Integer negativeId = -1;
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/{timetableId}", negativeId)
+                .locale(Locale.US))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(resultActions, Message.VALIDATION_ERROR);
+        jsonVerifier.verifyValidationError(resultActions, "timetableId", Message.POSITIVE_ID);
+    }
+
+    @Test
+    void shouldReturnStatusBadRequestIfGivenTeacherIdentifierIsNotNumberForDailyRequest() throws Exception {
+        String invalidId = "id";
+        LocalDate targetDate = LocalDate.now();
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/day", invalidId)
+                .locale(Locale.US)
+                .param("targetDate", translator.formatDate(targetDate)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(
+                resultActions,
+                Message.ARGUMENT_TYPE_MISSMATCH,
+                "teacherId", invalidId, Integer.class);
+    }
+
+    @Test
+    void shouldReturnStatusNotFoundIfNoTeacherWithGivenIdentifierForDailyRequest() throws Exception {
+        Integer teacherId = 1;
+        LocalDate targetDate = LocalDate.now();
+        when(timetableServiceMock.findDailyTimetablesForTeacher(teacherId, targetDate))
+                .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", teacherId));
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/day", teacherId)
+                .locale(Locale.US)
+                .param("targetDate", translator.formatDate(targetDate)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND);
+    }
+
+    @Test
+    void shouldReturnStatuBadRequestIfGivenTeacherIdentifierIsNotValidForDailyRequest() throws Exception {
+        Integer negativeId = -1;
+        LocalDate targetDate = LocalDate.now();
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/day", negativeId)
+                .locale(Locale.US)
+                .param("targetDate", translator.formatDate(targetDate)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(resultActions, Message.VALIDATION_ERROR);
+        jsonVerifier.verifyValidationError(resultActions, "teacherId", Message.POSITIVE_ID);
+    }
+
+    @Test
+    void shouldReturnStatusBadRequestIfTargetDateParameterIsMissingForDailyTeacherRequest() throws Exception {
+        Integer teacherId = 1;
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/day", teacherId)
+                .locale(Locale.US))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(resultActions, Message.MISSING_REQUIRED_PARAMETER, "targetDate");
+    }
+
+    @Test
+    void shouldReturnStatusBadRequestIfTargetDateParameterIsNotValidDateForDailyTeacherRequest() throws Exception {
+        Integer teacherId = 1;
+        String targetDate = "invalid";
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/day", teacherId)
+                .locale(Locale.US)
+                .param("targetDate", targetDate))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(
+                resultActions,
+                Message.ARGUMENT_TYPE_MISSMATCH,
+                "targetDate", targetDate, LocalDate.class);
+    }
+    @Test
+    void shouldReturnStatusBadRequestIfGivenTeacherIdentifierIsNotNumberForMonthlyRequest() throws Exception {
+        String invalidId = "id";
+        Month targetMonth = Month.MAY;
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/month", invalidId)
+                .locale(Locale.US)
+                .param("targetMonth", translator.formatMonth(targetMonth)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(
+                resultActions,
+                Message.ARGUMENT_TYPE_MISSMATCH,
+                "teacherId", invalidId, Integer.class);
+    }
+
+    @Test
+    void shouldReturnStatusNotFoundIfNoTeacherWithGivenIdentifierForMonthlyRequest() throws Exception {
+        Integer teacherId = 1;
+        Month targetMonth = Month.MAY;
+        when(timetableServiceMock.findMonthlyTimetablesForTeacher(teacherId, targetMonth))
+                .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", teacherId));
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/month", teacherId)
+                .locale(Locale.US)
+                .param("targetMonth", translator.formatMonth(targetMonth)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND);
+    }
+
+    @Test
+    void shouldReturnStatuBadRequestIfGivenTeacherIdentifierIsNotValidForMonthlyRequest() throws Exception {
+        Integer negativeId = -1;
+        Month targetMonth = Month.MAY;
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/month", negativeId)
+                .locale(Locale.US)
+                .param("targetMonth", translator.formatMonth(targetMonth)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(resultActions, Message.VALIDATION_ERROR);
+        jsonVerifier.verifyValidationError(resultActions, "teacherId", Message.POSITIVE_ID);
+    }
+
+    @Test
+    void shouldReturnStatusBadRequestIfTargetMonthParameterIsMissingForMonthlyTeacherRequest() throws Exception {
+        Integer teacherId = 1;
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/month", teacherId)
+                .locale(Locale.US))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(resultActions, Message.MISSING_REQUIRED_PARAMETER, "targetMonth");
+    }
+
+    @Test
+    void shouldReturnStatusBadRequestIfTargetMonthParameterIsNotValidMonthForMonthlyTeacherRequest() throws Exception {
+        Integer teacherId = 1;
+        String targetMonth = "invalid";
+
+        ResultActions resultActions = mockMvc.perform(get("/api/v1/timetables/teacher/{teacherId}/month", teacherId)
+                .locale(Locale.US)
+                .param("targetMonth", targetMonth))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        jsonVerifier.verifyErrorMessage(
+                resultActions,
+                Message.ARGUMENT_TYPE_MISSMATCH,
+                "targetMonth", targetMonth, Month.class);
     }
 
 }
