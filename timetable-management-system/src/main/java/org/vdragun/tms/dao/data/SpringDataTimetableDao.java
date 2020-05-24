@@ -21,13 +21,13 @@ public interface SpringDataTimetableDao extends TimetableDao, TimetableDaoFragme
     @Override
     @Query("SELECT t FROM Timetable t JOIN t.course tc WHERE tc.id IN "
             + "(SELECT sc.id FROM Student s JOIN s.courses sc WHERE s.id = ?1) AND "
-            + "EXTRACT (DAY FROM t.startTime) = EXTRACT(DAY FROM ?2) "
+            + "EXTRACT (DAY FROM t.startTime) = EXTRACT(DAY FROM CAST (?2 AS LocalDate)) "
             + "ORDER BY t.startTime")
     List<Timetable> findDailyForStudent(Integer studentId, LocalDate date);
 
     @Override
     @Query("SELECT t FROM Timetable t JOIN t.teacher tt WHERE tt.id = ?1 "
-            + "AND EXTRACT (DAY FROM t.startTime) = EXTRACT(DAY FROM ?2) "
+            + "AND EXTRACT (DAY FROM t.startTime) = EXTRACT(DAY FROM CAST (?2 AS LocalDate)) "
             + "ORDER BY t.startTime")
     List<Timetable> findDailyForTeacher(Integer teacherId, LocalDate date);
 
