@@ -25,6 +25,7 @@ import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebRestConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
+import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 
@@ -85,7 +86,7 @@ public class DeleteTimetableResourceTest {
 
     @Test
     void shouldReturnStatusNotFoundIfNoTimetableWithProvidedIdentifierExist() throws Exception {
-        doThrow(new ResourceNotFoundException("Timetable with id=%d not found", TIMETABLE_ID))
+        doThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found", TIMETABLE_ID))
                 .when(timetableServiceMock).deleteTimetableById(any(Integer.class));
 
         ResultActions resultActions = mockMvc.perform(delete(BASE_URL + "/{timetableId}", TIMETABLE_ID)
@@ -93,7 +94,7 @@ public class DeleteTimetableResourceTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND, Timetable.class.getSimpleName());
     }
 
 }

@@ -25,6 +25,7 @@ import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebRestConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
+import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 
@@ -86,7 +87,7 @@ public class DeleteStudentResourceTest {
     @Test
     void shouldReturnStatusNotFoundIfNoStudentWithProvidedIdentifierExist() throws Exception {
         Integer studentId = 1;
-        doThrow(new ResourceNotFoundException("Student with id=%d not found", studentId))
+        doThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", studentId))
                 .when(studentServiceMock).deleteStudentById(studentId);
 
         ResultActions resultActions = mockMvc.perform(delete(BASE_URL + "/{studentId}", studentId)
@@ -94,7 +95,7 @@ public class DeleteStudentResourceTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND, Student.class.getSimpleName());
     }
 
 }

@@ -27,6 +27,7 @@ import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebRestConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
+import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.common.util.Translator;
@@ -165,14 +166,15 @@ public class SearchTimetableResourceTest {
     void shouldReturnStatusNotFoundIfNoTimetableWithGivenIdentifier() throws Exception {
         Integer timetableId = 1;
         when(timetableServiceMock.findTimetableById(eq(timetableId)))
-                .thenThrow(new ResourceNotFoundException("Timetable with id=%d not found", timetableId));
+                .thenThrow(
+                        new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found", timetableId));
 
         ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{timetableId}", timetableId)
                 .locale(Locale.US))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND, Timetable.class.getSimpleName());
     }
 
     @Test
@@ -210,7 +212,7 @@ public class SearchTimetableResourceTest {
         Integer teacherId = 1;
         LocalDate targetDate = LocalDate.now();
         when(timetableServiceMock.findDailyTimetablesForTeacher(teacherId, targetDate))
-                .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", teacherId));
+                .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", teacherId));
 
         ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/day", teacherId)
                 .locale(Locale.US)
@@ -218,7 +220,7 @@ public class SearchTimetableResourceTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND, Teacher.class.getSimpleName());
     }
 
     @Test
@@ -286,7 +288,7 @@ public class SearchTimetableResourceTest {
         Integer teacherId = 1;
         Month targetMonth = Month.MAY;
         when(timetableServiceMock.findMonthlyTimetablesForTeacher(teacherId, targetMonth))
-                .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", teacherId));
+                .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", teacherId));
 
         ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/teacher/{teacherId}/month", teacherId)
                 .locale(Locale.US)
@@ -294,7 +296,7 @@ public class SearchTimetableResourceTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND, Teacher.class.getSimpleName());
     }
 
     @Test

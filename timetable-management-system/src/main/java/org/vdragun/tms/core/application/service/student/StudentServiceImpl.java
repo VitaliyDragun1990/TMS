@@ -74,7 +74,8 @@ public class StudentServiceImpl implements StudentService {
         LOG.debug("Searching for student with id={}", studentId);
 
         return studentDao.findById(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Student with id=%d not found", studentId));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(Student.class, "Student with id=%d not found", studentId));
     }
 
     @Override
@@ -118,33 +119,35 @@ public class StudentServiceImpl implements StudentService {
 
     private void assertCourseExists(Integer courseId) {
         if (!courseDao.existsById(courseId)) {
-            throw new ResourceNotFoundException("Course with id=%d does not exist", courseId);
+            throw new ResourceNotFoundException(Course.class, "Course with id=%d does not exist", courseId);
         }
     }
 
     private void assertGroupExists(Integer groupId) {
         if (!groupDao.existsById(groupId)) {
-            throw new ResourceNotFoundException("Group with id=%d does not exist", groupId);
+            throw new ResourceNotFoundException(Group.class, "Group with id=%d does not exist", groupId);
         }
     }
 
     private void assertStudentExists(Integer studentId) {
         if (!studentDao.existsById(studentId)) {
-            throw new ResourceNotFoundException("Student with id=%d does not exist", studentId);
+            throw new ResourceNotFoundException(Student.class, "Student with id=%d does not exist", studentId);
         }
     }
 
     private Student getStudent(Integer studentId) {
         return studentDao
                 .findById(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Student with id=%d does not exist", studentId));
+                .orElseThrow(() -> 
+                new ResourceNotFoundException(Student.class, "Student with id=%d does not exist", studentId));
     }
 
     private Group getGroup(Integer groupId) {
         if (groupId != null) {
             return groupDao
                     .findById(groupId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Group with id=%d does not exist", groupId));
+                    .orElseThrow(() -> 
+                    new ResourceNotFoundException(Group.class, "Group with id=%d does not exist", groupId));
         }
         return null;
     }
@@ -154,7 +157,8 @@ public class StudentServiceImpl implements StudentService {
         for (Integer courseId : courseIds) {
             Course course = courseDao
                     .findById(courseId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Course with id=%d does not exist", courseId));
+                    .orElseThrow(() -> 
+                    new ResourceNotFoundException(Course.class, "Course with id=%d does not exist", courseId));
             result.add(course);
         }
         return result;

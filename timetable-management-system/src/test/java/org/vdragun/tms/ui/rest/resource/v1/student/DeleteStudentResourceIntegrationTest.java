@@ -29,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
+import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
@@ -122,7 +123,7 @@ public class DeleteStudentResourceIntegrationTest {
     @Test
     void shouldReturnStatusNotFoundIfNoStudentWithProvidedIdentifierExist() throws Exception {
         Integer studentId = 1;
-        doThrow(new ResourceNotFoundException("Student with id=%d not found", studentId))
+        doThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", studentId))
                 .when(studentServiceMock).deleteStudentById(studentId);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
@@ -138,7 +139,7 @@ public class DeleteStudentResourceIntegrationTest {
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
-        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND, Student.class.getSimpleName());
     }
 
 }

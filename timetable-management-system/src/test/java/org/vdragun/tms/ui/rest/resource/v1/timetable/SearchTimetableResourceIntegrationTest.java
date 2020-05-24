@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
+import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.ui.common.util.Constants.Message;
@@ -182,7 +183,8 @@ public class SearchTimetableResourceIntegrationTest {
     void shouldReturnStatusNotFoundIfNoTimetableWithGivenIdentifier() throws Exception {
         Integer timetableId = 1;
         when(timetableServiceMock.findTimetableById(eq(timetableId)))
-                .thenThrow(new ResourceNotFoundException("Timetable with id=%d not found", timetableId));
+                .thenThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found",
+                        timetableId));
 
         ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{timetableId}", String.class,
                 timetableId);
@@ -190,7 +192,10 @@ public class SearchTimetableResourceIntegrationTest {
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
-        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(
+                response.getBody(),
+                Message.RESOURCE_NOT_FOUND,
+                Timetable.class.getSimpleName());
     }
 
     @Test
@@ -230,7 +235,7 @@ public class SearchTimetableResourceIntegrationTest {
     void shouldReturnStatusNotFoundIfNoTeacherWithGivenIdentifierForDailyRequest() throws Exception {
         LocalDate targetDate = LocalDate.now();
         when(timetableServiceMock.findDailyTimetablesForTeacher(TEACHER_ID, targetDate))
-                .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", TEACHER_ID));
+                .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", TEACHER_ID));
 
         ResponseEntity<String> response = restTemplate.getForEntity(
                 BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDate(targetDate),
@@ -240,7 +245,10 @@ public class SearchTimetableResourceIntegrationTest {
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
-        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(
+                response.getBody(),
+                Message.RESOURCE_NOT_FOUND,
+                Teacher.class.getSimpleName());
     }
 
     @Test
@@ -316,7 +324,7 @@ public class SearchTimetableResourceIntegrationTest {
     void shouldReturnStatusNotFoundIfNoTeacherWithGivenIdentifierForMonthlyRequest() throws Exception {
         Month targetMonth = Month.MAY;
         when(timetableServiceMock.findMonthlyTimetablesForTeacher(TEACHER_ID, targetMonth))
-                .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", TEACHER_ID));
+                .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", TEACHER_ID));
 
         ResponseEntity<String> response = restTemplate.getForEntity(
                 BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + translator.formatMonth(targetMonth),
@@ -326,7 +334,10 @@ public class SearchTimetableResourceIntegrationTest {
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
-        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(
+                response.getBody(),
+                Message.RESOURCE_NOT_FOUND,
+                Teacher.class.getSimpleName());
     }
 
     @Test

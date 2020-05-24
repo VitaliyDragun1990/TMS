@@ -108,7 +108,8 @@ public class UpdateTimetableResourceIntegrationTest {
         UpdateTimetableData updateData =
                 new UpdateTimetableData(TIMETABLE_ID, TIMETABLE_START_TIME, DURATION, CLASSROOM_ID);
         when(timetableServiceMock.updateExistingTimetable(any(UpdateTimetableData.class)))
-                .thenThrow(new ResourceNotFoundException("Timetable with id=%d not found", TIMETABLE_ID));
+                .thenThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found",
+                        TIMETABLE_ID));
         
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
@@ -123,7 +124,8 @@ public class UpdateTimetableResourceIntegrationTest {
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
-        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND,
+                Timetable.class.getSimpleName());
     }
     
     @Test

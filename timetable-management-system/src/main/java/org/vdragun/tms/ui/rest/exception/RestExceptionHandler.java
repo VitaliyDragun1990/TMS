@@ -142,7 +142,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         LOG.warn("Handling resource not found exception", ex);
 
         ApiError apiError = new ApiError(NOT_FOUND);
-        apiError.setMessage(translator.getLocalizedMessage(Message.RESOURCE_NOT_FOUND));
+        apiError.setMessage(translator.getLocalizedMessage(Message.RESOURCE_NOT_FOUND,
+                ex.getResourceClass().getSimpleName()));
         return buildResponseEntity(apiError);
     }
 

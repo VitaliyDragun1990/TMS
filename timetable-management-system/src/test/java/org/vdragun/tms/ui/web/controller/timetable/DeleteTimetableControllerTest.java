@@ -28,6 +28,7 @@ import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
+import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.common.util.Constants.Attribute;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.common.util.Constants.Page;
@@ -72,7 +73,7 @@ public class DeleteTimetableControllerTest {
     @Test
     void shouldShowNotFoundPageInNoTimetableWithProvidedIdentifier() throws Exception {
         Integer timetableId = 1;
-        doThrow(new ResourceNotFoundException("Timetable with id=%d not found", timetableId))
+        doThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found", timetableId))
                 .when(timetableServiceMock).deleteTimetableById(timetableId);
 
         mockMvc.perform(post("/timetables/delete").locale(Locale.US)

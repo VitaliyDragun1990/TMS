@@ -102,7 +102,7 @@ public class UpdateStudentResourceIntegrationTest {
     void shouldReturnStatusNotFoundIfSpecifiedStudentToUpdateNotExist() throws Exception {
         UpdateStudentData updateData = new UpdateStudentData(STUDENT_ID, GROUP_ID, "Jack", "Smith", asList(3, 4));
         when(studentServiceMock.updateExistingStudent(any(UpdateStudentData.class)))
-                .thenThrow(new ResourceNotFoundException("Student with id=%d not found", STUDENT_ID));
+                .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", STUDENT_ID));
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
@@ -117,7 +117,7 @@ public class UpdateStudentResourceIntegrationTest {
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
-        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND, Student.class.getSimpleName());
     }
 
     @Test

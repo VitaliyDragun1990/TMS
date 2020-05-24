@@ -97,14 +97,14 @@ public class SearchStudentResourceTest {
     void shouldReturnStatusNotFoundIfNoStudentWithGivenIdentifier() throws Exception {
         Integer studentId = 1;
         when(studentServiceMock.findStudentById(eq(studentId)))
-                .thenThrow(new ResourceNotFoundException("Student with id=%d not found", studentId));
+                .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", studentId));
         
         ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{studentId}", studentId)
                 .locale(Locale.US))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         
-        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND, Student.class.getSimpleName());
     }
 
     @Test

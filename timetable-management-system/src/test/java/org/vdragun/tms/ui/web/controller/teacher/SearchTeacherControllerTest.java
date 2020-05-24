@@ -80,7 +80,7 @@ public class SearchTeacherControllerTest {
     void shouldShowNotFoundPageIfNoTeacherWithGivenIdentifier() throws Exception {
         Integer teacherId = 1;
         when(teacherServiceMock.findTeacherById(teacherId))
-                .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", teacherId));
+                .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", teacherId));
         
         mockMvc.perform(get("/teachers/{teacherId}", teacherId).locale(Locale.US))
                 .andExpect(status().isNotFound())

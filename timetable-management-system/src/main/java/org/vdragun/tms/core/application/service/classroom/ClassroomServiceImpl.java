@@ -45,7 +45,8 @@ public class ClassroomServiceImpl implements ClassroomService {
         LOG.debug("Searching for classroom with id={}", classroomId);
 
         return dao.findById(classroomId)
-                .orElseThrow(() -> new ResourceNotFoundException("Classroom with id=%d not found", classroomId));
+                .orElseThrow(() -> 
+                new ResourceNotFoundException(Classroom.class, "Classroom with id=%d not found", classroomId));
     }
 
     @Override

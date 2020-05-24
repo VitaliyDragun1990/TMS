@@ -87,7 +87,7 @@ public class UpdateStudentResourceTest {
     void shouldReturnStatusNotFoundIfSpecifiedStudentToUpdateNotExist() throws Exception {
         UpdateStudentData updateData = new UpdateStudentData(STUDENT_ID, GROUP_ID, "Jack", "Smith", asList(3, 4));
         when(studentServiceMock.updateExistingStudent(any(UpdateStudentData.class)))
-                .thenThrow(new ResourceNotFoundException("Student with id=%d not found", STUDENT_ID));
+                .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", STUDENT_ID));
 
         ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{studentId}", STUDENT_ID)
                 .locale(Locale.US)
@@ -96,7 +96,7 @@ public class UpdateStudentResourceTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
-        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND, Student.class.getSimpleName());
     }
 
     @Test

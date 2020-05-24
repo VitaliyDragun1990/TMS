@@ -88,7 +88,7 @@ public class SearchCourseControllerTest {
     void shouldShowNotFoundPageIfNoCourseWithGivenIdentifier() throws Exception {
         Integer courseId = 10;
         when(courseServiceMock.findCourseById(courseId))
-                .thenThrow(new ResourceNotFoundException("Course with id=%d not found", courseId));
+                .thenThrow(new ResourceNotFoundException(Course.class, "Course with id=%d not found", courseId));
         
         mockMvc
                 .perform(get("/courses/{courseId}", courseId).locale(Locale.US))

@@ -45,7 +45,7 @@ public class GroupServiceImpl implements GroupService {
         LOG.debug("Searching for group with id={}", groupId);
 
         return dao.findById(groupId)
-                .orElseThrow(() -> new ResourceNotFoundException("Group with id=%d not found", groupId));
+                .orElseThrow(() -> new ResourceNotFoundException(Group.class, "Group with id=%d not found", groupId));
     }
 
     @Override

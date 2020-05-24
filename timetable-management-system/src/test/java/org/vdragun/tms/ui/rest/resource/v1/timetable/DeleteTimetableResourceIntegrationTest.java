@@ -29,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
+import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
@@ -120,7 +121,7 @@ public class DeleteTimetableResourceIntegrationTest {
 
     @Test
     void shouldReturnStatusNotFoundIfNoTimetableWithProvidedIdentifierExist() throws Exception {
-        doThrow(new ResourceNotFoundException("Timetable with id=%d not found", TIMETABLE_ID))
+        doThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found", TIMETABLE_ID))
                 .when(timetableServiceMock).deleteTimetableById(any(Integer.class));
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
@@ -136,7 +137,10 @@ public class DeleteTimetableResourceIntegrationTest {
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
-        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(
+                response.getBody(),
+                Message.RESOURCE_NOT_FOUND,
+                Timetable.class.getSimpleName());
     }
 
 }

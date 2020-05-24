@@ -108,7 +108,7 @@ public class UpdateStudentControllerTest {
     void shouldShowPageNotFoundIfTryToGetUpdateFormForNonExistingStudent() throws Exception {
         Integer studentId = 1;
         when(studentServiceMock.findStudentById(studentId))
-                .thenThrow(new ResourceNotFoundException("Student with id=%d not found", studentId));
+                .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", studentId));
 
         mockMvc.perform(get("/students/{studentId}/update", studentId).locale(Locale.US))
                 .andExpect(status().isNotFound())
@@ -175,7 +175,7 @@ public class UpdateStudentControllerTest {
         Integer nonExistingStudentId = 1;
         Integer groupId = 1;
         List<Integer> courseIds = asList(1);
-        doThrow(new ResourceNotFoundException("Student with id=%d not found", nonExistingStudentId))
+        doThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", nonExistingStudentId))
                 .when(studentServiceMock).updateExistingStudent(any(UpdateStudentData.class));
 
         UpdateStudentData updateData = new UpdateStudentData(nonExistingStudentId, groupId, "Jack", "Smith", courseIds);

@@ -91,7 +91,8 @@ public class UpdateTimetableResourceTest {
         UpdateTimetableData updateData =
                 new UpdateTimetableData(TIMETABLE_ID, TIMETABLE_START_TIME, DURATION, CLASSROOM_ID);
         when(timetableServiceMock.updateExistingTimetable(any(UpdateTimetableData.class)))
-                .thenThrow(new ResourceNotFoundException("Timetable with id=%d not found", TIMETABLE_ID));
+                .thenThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found",
+                        TIMETABLE_ID));
         
         ResultActions resultActions = mockMvc.perform(put(BASE_URL + "/{timetableId}", TIMETABLE_ID)
                 .locale(Locale.US)
@@ -100,7 +101,7 @@ public class UpdateTimetableResourceTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         
-        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(resultActions, Message.RESOURCE_NOT_FOUND, Timetable.class.getSimpleName());
     }
     
     @Test

@@ -28,6 +28,7 @@ import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
+import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.ui.common.util.Constants.Attribute;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.common.util.Constants.Page;
@@ -72,7 +73,7 @@ public class DeleteStudentControllerTest {
     @Test
     void shouldShowNotFoundPageIfNoStudentWithGivenIdentifier() throws Exception {
         Integer studentId = 1;
-        doThrow(new ResourceNotFoundException("Student with id=%d not found", studentId))
+        doThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", studentId))
                 .when(studentsServiceMock)
                 .deleteStudentById(studentId);
 

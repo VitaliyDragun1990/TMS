@@ -105,7 +105,7 @@ public class SearchStudentResourceIntegrationTest {
     void shouldReturnStatusNotFoundIfNoStudentWithGivenIdentifier() throws Exception {
         Integer studentId = 1;
         when(studentServiceMock.findStudentById(eq(studentId)))
-                .thenThrow(new ResourceNotFoundException("Student with id=%d not found", studentId));
+                .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", studentId));
         
         ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{studentId}", String.class,
                 studentId);
@@ -113,7 +113,7 @@ public class SearchStudentResourceIntegrationTest {
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
-        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND);
+        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND, Student.class.getSimpleName());
     }
 
     @Test

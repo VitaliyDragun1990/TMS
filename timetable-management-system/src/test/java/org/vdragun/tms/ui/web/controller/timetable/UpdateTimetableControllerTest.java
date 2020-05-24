@@ -123,7 +123,8 @@ public class UpdateTimetableControllerTest {
     void shouldShowNotFoundPageIfNoTimetableToUpdateWithGivenIdentifier() throws Exception {
         Integer timetableId = 1;
         when(timetableServiceMock.findTimetableById(any(Integer.class)))
-                .thenThrow(new ResourceNotFoundException("Timetable with id=%d not found", timetableId));
+                .thenThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found",
+                        timetableId));
 
         mockMvc.perform(get("/timetables/{timetableId}/update", timetableId).locale(Locale.US))
                 .andExpect(status().isNotFound())
@@ -183,7 +184,7 @@ public class UpdateTimetableControllerTest {
         LocalDateTime startTime = LocalDateTime.now().plusDays(3).truncatedTo(ChronoUnit.MINUTES);
         Integer duration = 60;
         Integer classroomId = 1;
-        doThrow(new ResourceNotFoundException("Timetable with id=%d not found", timetableId))
+        doThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found", timetableId))
                 .when(timetableServiceMock).updateExistingTimetable(any(UpdateTimetableData.class));
 
         mockMvc.perform(post("/timetables/{timetableId}", timetableId).locale(Locale.US)
