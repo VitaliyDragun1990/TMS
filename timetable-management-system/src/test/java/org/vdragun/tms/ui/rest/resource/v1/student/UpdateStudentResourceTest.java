@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.vdragun.tms.ui.rest.resource.v1.student.UpdateStudentResource.BASE_URL;
+import static org.vdragun.tms.ui.rest.resource.v1.student.StudentResource.BASE_URL;
 
 import java.util.List;
 import java.util.Locale;
@@ -39,9 +39,9 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest(controllers = UpdateStudentResource.class)
+@WebMvcTest(controllers = StudentResource.class)
 @Import({ WebConfig.class, WebRestConfig.class, JsonVerifier.class })
-@DisplayName("Update Student Resource")
+@DisplayName("Student Resource Update Functionality")
 public class UpdateStudentResourceTest {
 
     private static final String CONTENT_TYPE_HAL_JSON = "application/hal+json";

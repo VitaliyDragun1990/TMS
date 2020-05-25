@@ -8,7 +8,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.common.converter.LocalDateTimeCustomFormatter;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
-import org.vdragun.tms.ui.rest.resource.v1.timetable.SearchTimetableResource;
+import org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource;
 
 /**
  * Custom converter to convert {@link Timetable} domain entity into
@@ -40,8 +40,8 @@ public class TimetableToTimetableModelConverter implements Converter<Timetable, 
                 timetable.getClassroom().getCapacity());
 
         model.add(
-                linkTo(methodOn(SearchTimetableResource.class).getTimetableById(model.getId())).withSelfRel(),
-                linkTo(methodOn(SearchTimetableResource.class).getAllTimetables()).withRel("timetables"));
+                linkTo(methodOn(TimetableResource.class).getTimetableById(model.getId())).withSelfRel(),
+                linkTo(methodOn(TimetableResource.class).getAllTimetables()).withRel("timetables"));
 
         return model;
     }

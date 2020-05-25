@@ -14,7 +14,7 @@ import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.ui.common.converter.LocalDateCustomFormatter;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
-import org.vdragun.tms.ui.rest.resource.v1.student.SearchStudentResource;
+import org.vdragun.tms.ui.rest.resource.v1.student.StudentResource;
 
 /**
  * Custom converter to convert {@link Student} domain entity into
@@ -46,8 +46,8 @@ public class StudentToStudentModelConverter implements Converter<Student, Studen
                 convertToDTO(student.getCourses()));
 
         model.add(
-                linkTo(methodOn(SearchStudentResource.class).getStudentById(model.getId())).withSelfRel(),
-                linkTo(methodOn(SearchStudentResource.class).getAllStudents()).withRel("students"));
+                linkTo(methodOn(StudentResource.class).getStudentById(model.getId())).withSelfRel(),
+                linkTo(methodOn(StudentResource.class).getAllStudents()).withRel("students"));
 
         return model;
     }

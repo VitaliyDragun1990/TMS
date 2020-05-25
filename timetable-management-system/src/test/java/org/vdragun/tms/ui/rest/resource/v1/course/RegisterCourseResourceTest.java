@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.vdragun.tms.ui.rest.resource.v1.course.RegisterCourseResource.BASE_URL;
+import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL;
 
 import java.util.Locale;
 
@@ -36,9 +36,9 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest(controllers = RegisterCourseResource.class)
+@WebMvcTest(controllers = CourseResource.class)
 @Import({ WebConfig.class, WebRestConfig.class, JsonVerifier.class })
-@DisplayName("Register Course Resource")
+@DisplayName("Course Resource Register Functionality")
 public class RegisterCourseResourceTest {
 
     private static final String CONTENT_TYPE_HAL_JSON = "application/hal+json";

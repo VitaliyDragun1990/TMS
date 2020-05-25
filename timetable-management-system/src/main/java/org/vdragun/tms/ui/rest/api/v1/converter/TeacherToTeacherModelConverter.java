@@ -13,7 +13,7 @@ import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.ui.common.converter.LocalDateCustomFormatter;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.api.v1.model.TeacherModel;
-import org.vdragun.tms.ui.rest.resource.v1.teacher.SearchTeacherResource;
+import org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource;
 
 /**
  * Custom converter to convert {@link Teacher} domain entity into
@@ -46,8 +46,8 @@ public class TeacherToTeacherModelConverter implements Converter<Teacher, Teache
                 convertToDTO(teacher.getCourses()));
 
         model.add(
-                linkTo(methodOn(SearchTeacherResource.class).getTeacherById(model.getId())).withSelfRel(),
-                linkTo(methodOn(SearchTeacherResource.class).getAllTeachers()).withRel("teachers"));
+                linkTo(methodOn(TeacherResource.class).getTeacherById(model.getId())).withSelfRel(),
+                linkTo(methodOn(TeacherResource.class).getAllTeachers()).withRel("teachers"));
 
         return model;
     }

@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.vdragun.tms.ui.rest.resource.v1.student.DeleteStudentResource.BASE_URL;
+import static org.vdragun.tms.ui.rest.resource.v1.student.StudentResource.BASE_URL;
 
 import java.util.Locale;
 
@@ -28,9 +28,9 @@ import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 
-@WebMvcTest(controllers = DeleteStudentResource.class)
+@WebMvcTest(controllers = StudentResource.class)
 @Import({ WebConfig.class, WebRestConfig.class, JsonVerifier.class })
-@DisplayName("Delete Student Resource")
+@DisplayName("Student Resource Delete Functionality")
 public class DeleteStudentResourceTest {
 
     @Autowired

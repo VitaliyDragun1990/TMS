@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.vdragun.tms.ui.rest.resource.v1.student.SearchStudentResource.BASE_URL;
+import static org.vdragun.tms.ui.rest.resource.v1.student.StudentResource.BASE_URL;
 
 import java.util.List;
 import java.util.Locale;
@@ -30,9 +30,9 @@ import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
-@WebMvcTest(controllers = SearchStudentResource.class)
+@WebMvcTest(controllers = StudentResource.class)
 @Import({ WebConfig.class, WebRestConfig.class, JsonVerifier.class })
-@DisplayName("Search Student Resource")
+@DisplayName("Student Resource Search Functionality")
 public class SearchStudentResourceTest {
 
     private static final String CONTENT_TYPE_HAL_JSON = "application/hal+json";

@@ -8,18 +8,27 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
+import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
@@ -27,22 +36,22 @@ import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 
 /**
- * REST controller that processes timetable-related search requests
+ * REST controller that processes timetable-related requests
  * 
  * @author Vitaliy Dragun
  *
  */
 @RestController
-@RequestMapping(path = SearchTimetableResource.BASE_URL, produces = "application/hal+json")
+@RequestMapping(path = TimetableResource.BASE_URL, produces = "application/hal+json")
 @Validated
-public class SearchTimetableResource extends AbstractResource {
+public class TimetableResource extends AbstractResource {
 
     public static final String BASE_URL = "/api/v1/timetables";
 
     @Autowired
     private TimetableService timetableService;
 
-    public SearchTimetableResource(ModelConverter converter) {
+    public TimetableResource(ModelConverter converter) {
         super(converter);
     }
 
@@ -57,7 +66,7 @@ public class SearchTimetableResource extends AbstractResource {
         
         return new CollectionModel<>(
                 list,
-                linkTo(methodOn(SearchTimetableResource.class).getAllTimetables()).withSelfRel());
+                linkTo(methodOn(TimetableResource.class).getAllTimetables()).withSelfRel());
     }
 
     @GetMapping("/{timetableId}")
@@ -83,7 +92,7 @@ public class SearchTimetableResource extends AbstractResource {
 
         return new CollectionModel<>(
                 list,
-                linkTo(SearchTimetableResource.class)
+                linkTo(TimetableResource.class)
                         .slash("teacher")
                         .slash(teacherId)
                         .slash("day?targetDate=" + convert(targetDate, String.class))
@@ -105,7 +114,7 @@ public class SearchTimetableResource extends AbstractResource {
 
         return new CollectionModel<>(
                 list,
-                linkTo(SearchTimetableResource.class)
+                linkTo(TimetableResource.class)
                         .slash("teacher")
                         .slash(teacherId)
                         .slash("month?targetMonth=" + convert(targetMonth, String.class))
@@ -127,7 +136,7 @@ public class SearchTimetableResource extends AbstractResource {
 
         return new CollectionModel<>(
                 list,
-                linkTo(SearchTimetableResource.class)
+                linkTo(TimetableResource.class)
                         .slash("student")
                         .slash(studentId)
                         .slash("day?targetDate=" + convert(targetDate, String.class))
@@ -149,11 +158,42 @@ public class SearchTimetableResource extends AbstractResource {
 
         return new CollectionModel<>(
                 list,
-                linkTo(SearchTimetableResource.class)
+                linkTo(TimetableResource.class)
                         .slash("student")
                         .slash(studentId)
                         .slash("month?targetMonth=" + convert(targetMonth, String.class))
                         .withSelfRel());
+    }
+
+    @PostMapping(produces = "application/hal+json")
+    public ResponseEntity<TimetableModel> registerNewTimetable(@RequestBody @Valid CreateTimetableData timetableData) {
+        log.trace("Received POST request to register new timetable, data={}, URI={}", timetableData, getRequestUri());
+
+        Timetable timetable = timetableService.registerNewTimetable(timetableData);
+        TimetableModel timetableModel = convert(timetable, TimetableModel.class);
+
+        return ResponseEntity
+                .created(timetableModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(timetableModel);
+    }
+
+    @PutMapping(path = "/{timetableId}", produces = "application/hal+json")
+    @ResponseStatus(OK)
+    public TimetableModel updateExistingTimetable(
+            @PathVariable @Positive(message = "Positive.id") Integer timetableId,
+            @RequestBody @Valid UpdateTimetableData timetableData) {
+        log.trace("Received PUT request to update timetable with id={}, data={}, URI={}",
+                timetableId, timetableData, getRequestUri());
+
+        Timetable timetable = timetableService.updateExistingTimetable(timetableData);
+        return convert(timetable, TimetableModel.class);
+    }
+
+    @DeleteMapping("/{timetableId}")
+    @ResponseStatus(OK)
+    public void deleteTimetable(@PathVariable("timetableId") @Positive(message = "Positive.id") Integer timetableId) {
+        log.trace("Received POST reuqest to delete timetable with id={}, URI={}", timetableId, getRequestUri());
+        timetableService.deleteTimetableById(timetableId);
     }
 
 }

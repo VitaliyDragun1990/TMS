@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.vdragun.tms.ui.rest.resource.v1.timetable.DeleteTimetableResource.BASE_URL;
+import static org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource.BASE_URL;
 
 import java.util.Locale;
 
@@ -28,9 +28,9 @@ import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 
-@WebMvcTest(controllers = DeleteTimetableResource.class)
+@WebMvcTest(controllers = TimetableResource.class)
 @Import({ WebConfig.class, WebRestConfig.class, JsonVerifier.class })
-@DisplayName("Delete Timetable Resource")
+@DisplayName("Timetable Resource Delete Fucntionality")
 public class DeleteTimetableResourceTest {
 
     private static final Integer TIMETABLE_ID = 1;

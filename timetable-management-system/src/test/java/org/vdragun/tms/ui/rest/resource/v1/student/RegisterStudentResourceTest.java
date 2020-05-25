@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.vdragun.tms.ui.rest.resource.v1.student.RegisterStudentResource.BASE_URL;
+import static org.vdragun.tms.ui.rest.resource.v1.student.StudentResource.BASE_URL;
 
 import java.time.LocalDate;
 import java.util.Locale;
@@ -37,9 +37,9 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest(controllers = RegisterStudentResource.class)
+@WebMvcTest(controllers = StudentResource.class)
 @Import({ WebConfig.class, WebRestConfig.class, JsonVerifier.class })
-@DisplayName("Register Student Resource")
+@DisplayName("Student Resource Register Functionality")
 public class RegisterStudentResourceTest {
 
     private static final String CONTENT_TYPE_HAL_JSON = "application/hal+json";
