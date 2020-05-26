@@ -32,7 +32,6 @@ import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.common.util.Translator;
-import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
@@ -71,7 +70,7 @@ public class SearchTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(AbstractResource.APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(2));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -97,13 +96,13 @@ public class SearchTimetableResourceTest {
         when(timetableServiceMock.findDailyTimetablesForTeacher(TEACHER_ID, targetDate)).thenReturn(expectedTimetables);
         
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDate(targetDate),
+                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDateDefault(targetDate),
                 String.class,
                 TEACHER_ID);
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(AbstractResource.APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(NUMBER_OF_TIMETABLES));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -115,13 +114,13 @@ public class SearchTimetableResourceTest {
         when(timetableServiceMock.findDailyTimetablesForStudent(STUDENT_ID, targetDate)).thenReturn(expectedTimetables);
 
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/student/{studentId}/day?targetDate=" + translator.formatDate(targetDate),
+                BASE_URL + "/student/{studentId}/day?targetDate=" + translator.formatDateDefault(targetDate),
                 String.class,
                 STUDENT_ID);
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(AbstractResource.APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(NUMBER_OF_TIMETABLES));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -140,7 +139,7 @@ public class SearchTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(AbstractResource.APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(NUMBER_OF_TIMETABLES));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -159,7 +158,7 @@ public class SearchTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(AbstractResource.APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(NUMBER_OF_TIMETABLES));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -219,7 +218,7 @@ public class SearchTimetableResourceTest {
         LocalDate targetDate = LocalDate.now();
 
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDate(targetDate),
+                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDateDefault(targetDate),
                 String.class,
                 invalidId);
 
@@ -239,7 +238,7 @@ public class SearchTimetableResourceTest {
                 .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", TEACHER_ID));
 
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDate(targetDate),
+                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDateDefault(targetDate),
                 String.class,
                 TEACHER_ID);
 
@@ -258,7 +257,7 @@ public class SearchTimetableResourceTest {
         LocalDate targetDate = LocalDate.now();
 
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDate(targetDate),
+                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDateDefault(targetDate),
                 String.class,
                 negativeId);
 
