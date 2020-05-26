@@ -3,7 +3,6 @@ package org.vdragun.tms.ui.rest.exception;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-import org.springframework.boot.jackson.JsonComponent;
 import org.vdragun.tms.ui.common.util.Translator;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -17,7 +16,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  * @author Vitaliy Dragun
  *
  */
-@JsonComponent
+//@JsonComponent
 public class CustomTimestampSerializer extends JsonSerializer<LocalDateTime> {
 
     private Translator translator;

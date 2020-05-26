@@ -45,11 +45,11 @@ public class TeacherData {
 
     @NotNull
     @PastOrPresent
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Schema(
             description = "Date when particular teacher was hired (past or present only)",
-            pattern = "dd/MM/yyyy",
-            example = "22/05/2020",
+            pattern = "yyyy-MM-dd",
+            example = "2020-05-22",
             required = true)
     private LocalDate dateHired;
 

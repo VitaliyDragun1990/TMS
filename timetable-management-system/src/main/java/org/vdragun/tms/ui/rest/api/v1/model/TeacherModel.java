@@ -37,7 +37,7 @@ public class TeacherModel extends RepresentationModel<TeacherModel> {
             allowableValues = { "PROFESSOR", "ASSOCIATE_PROFESSOR", "INSTRUCTOR" })
     private String title;
 
-    @Schema(description = "Date when particular teacher was hired", example = "24/05/2020")
+    @Schema(description = "Date when particular teacher was hired", example = "2020-05-22")
     private String dateHired;
 
     @ArraySchema(schema = @Schema(implementation = CourseModel.class))

@@ -27,7 +27,7 @@ public class CreateStudentData {
 
     @NotNull
     @PastOrPresent
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate enrollmentDate;
 
     public CreateStudentData() {

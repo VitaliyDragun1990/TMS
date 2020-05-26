@@ -41,7 +41,7 @@ public class ApiError {
     @Schema(description = "HTTP statuis code of the error", example = "BAD_REQUEST")
     private HttpStatus status;
 
-    @Schema(description = "Timestamp when error occurred", example = "24/30/2020 12:30:48")
+    @Schema(description = "Timestamp when error occurred", example = "2020-05-24 12:30:48.356")
     private LocalDateTime timestamp;
 
     @Schema(description = "Error message", example = "Provided identifier is invalid")
