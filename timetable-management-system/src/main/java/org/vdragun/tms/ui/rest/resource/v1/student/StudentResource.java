@@ -39,7 +39,7 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  *
  */
 @RestController
-@RequestMapping(path = StudentResource.BASE_URL, produces = "application/hal+json")
+@RequestMapping(path = StudentResource.BASE_URL, produces = AbstractResource.APPLICATION_HAL_JSON)
 @Validated
 public class StudentResource extends AbstractResource {
 
@@ -71,7 +71,7 @@ public class StudentResource extends AbstractResource {
         return convert(studentService.findStudentById(studentId), StudentModel.class);
     }
 
-    @PostMapping(produces = "application/hal+json")
+    @PostMapping
     public ResponseEntity<StudentModel> registerNewStudent(@RequestBody @Valid CreateStudentData studentData) {
         log.trace("Received POST request to register new student, data={}, URI={}", studentData, getRequestUri());
 
@@ -83,7 +83,7 @@ public class StudentResource extends AbstractResource {
                 .body(studentModel);
     }
 
-    @PutMapping(path = "/{studentId}", produces = "application/hal+json")
+    @PutMapping(path = "/{studentId}")
     @ResponseStatus(OK)
     public StudentModel updateExistingStudent(
             @PathVariable("studentId") @Positive(message = "Positive.id") Integer studentId,

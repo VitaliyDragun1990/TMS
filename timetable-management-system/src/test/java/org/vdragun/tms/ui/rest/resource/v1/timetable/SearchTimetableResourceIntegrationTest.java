@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
 import static org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource.BASE_URL;
 
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.common.util.Translator;
+import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 
@@ -41,7 +43,6 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 @DisplayName("Timetable Resource Search Functionality Integration Test")
 public class SearchTimetableResourceIntegrationTest {
 
-    private static final String CONTENT_TYPE_HAL_JSON = "application/hal+json";
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final int NUMBER_OF_TIMETABLES = 2;
     private static final Integer TEACHER_ID = 1;
@@ -70,7 +71,7 @@ public class SearchTimetableResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(AbstractResource.APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(2));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -85,7 +86,7 @@ public class SearchTimetableResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetable);
     }
 
@@ -102,7 +103,7 @@ public class SearchTimetableResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(AbstractResource.APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(NUMBER_OF_TIMETABLES));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -120,7 +121,7 @@ public class SearchTimetableResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(AbstractResource.APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(NUMBER_OF_TIMETABLES));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -139,7 +140,7 @@ public class SearchTimetableResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(AbstractResource.APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(NUMBER_OF_TIMETABLES));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -158,7 +159,7 @@ public class SearchTimetableResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(AbstractResource.APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(NUMBER_OF_TIMETABLES));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }

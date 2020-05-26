@@ -13,6 +13,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
 import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL;
 
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +46,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Course Resource Register Functionality Integration Test")
 public class RegisterCourseResourceIntegrationTest {
 
-    private static final String CONTENT_TYPE_HAL_JSON = "application/hal+json";
     private static final String CONTENT_TYPE_JSON = "application/json";
 
     @Autowired
@@ -83,7 +83,7 @@ public class RegisterCourseResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(CREATED));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyCourseJson(response.getBody(), registered);
 
         verify(courseServiceMock, times(1)).registerNewCourse(captor.capture());

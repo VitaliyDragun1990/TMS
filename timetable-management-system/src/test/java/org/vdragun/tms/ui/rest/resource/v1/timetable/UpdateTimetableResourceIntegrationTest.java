@@ -16,6 +16,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
 import static org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource.BASE_URL;
 
 import java.time.LocalDateTime;
@@ -51,7 +52,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Timetable Resource Update Functionality Integration Test")
 public class UpdateTimetableResourceIntegrationTest {
 
-    private static final String CONTENT_TYPE_HAL_JSON = "application/hal+json";
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final LocalDateTime TIMETABLE_START_TIME = LocalDateTime.now().plusDays(3).truncatedTo(MINUTES);
     private static final int TIMETABLE_ID = 1;
@@ -96,7 +96,7 @@ public class UpdateTimetableResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyTimetableJson(response.getBody(), updatedTimetable);
 
         verify(timetableServiceMock, times(1)).updateExistingTimetable(captor.capture());

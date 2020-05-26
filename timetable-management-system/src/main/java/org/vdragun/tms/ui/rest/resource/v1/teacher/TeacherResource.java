@@ -36,7 +36,7 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  *
  */
 @RestController
-@RequestMapping(path = TeacherResource.BASE_URL, produces = "application/hal+json")
+@RequestMapping(path = TeacherResource.BASE_URL, produces = AbstractResource.APPLICATION_HAL_JSON)
 @Validated
 public class TeacherResource extends AbstractResource {
 
@@ -68,7 +68,7 @@ public class TeacherResource extends AbstractResource {
         return convert(teacherService.findTeacherById(teacherId), TeacherModel.class);
     }
 
-    @PostMapping(produces = "application/hal+json")
+    @PostMapping
     public ResponseEntity<TeacherModel> registerNewTeacher(@RequestBody @Valid TeacherData teacherData) {
         log.trace("Received POST request to register new teacher, data={}, URI={}", teacherData, getRequestUri());
 

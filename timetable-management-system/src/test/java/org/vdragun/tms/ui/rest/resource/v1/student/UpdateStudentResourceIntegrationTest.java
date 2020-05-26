@@ -15,6 +15,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
 import static org.vdragun.tms.ui.rest.resource.v1.student.StudentResource.BASE_URL;
 
 import java.util.List;
@@ -50,7 +51,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Student Resource Update Functionality Integration Test")
 public class UpdateStudentResourceIntegrationTest {
 
-    private static final String CONTENT_TYPE_HAL_JSON = "application/hal+json";
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final int GROUP_ID = 2;
     private static final int STUDENT_ID = 1;
@@ -92,7 +92,7 @@ public class UpdateStudentResourceIntegrationTest {
         
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyStudentJson(response.getBody(), expectedStudent);
         
         verify(studentServiceMock, times(1)).updateExistingStudent(captor.capture());

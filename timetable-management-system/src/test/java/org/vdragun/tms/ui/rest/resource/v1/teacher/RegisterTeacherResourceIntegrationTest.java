@@ -13,6 +13,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
 import static org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource.BASE_URL;
 
 import java.time.LocalDate;
@@ -48,7 +49,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Teacher Resource Register Functionality Integration Test")
 public class RegisterTeacherResourceIntegrationTest {
 
-    private static final String CONTENT_TYPE_HAL_JSON = "application/hal+json";
     private static final String CONTENT_TYPE_JSON = "application/json";
 
     @Autowired
@@ -86,7 +86,7 @@ public class RegisterTeacherResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(CREATED));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyTeacherJson(response.getBody(), registered);
 
         verify(teacherServiceMock, times(1)).registerNewTeacher(captor.capture());

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
 import static org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource.BASE_URL;
 
 import java.util.List;
@@ -37,7 +38,6 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 @DisplayName("Teacher Resource Search Functionality Integration Test")
 public class SearchTeacherResourceIntegrationTest {
 
-    private static final String CONTENT_TYPE_HAL_JSON = "application/hal+json";
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final int NUMBER_OF_TEACHERS = 2;
     private static final int NUMBER_OF_COURSES_PER_TEACHER = 2;
@@ -63,7 +63,7 @@ public class SearchTeacherResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.teachers", hasSize(NUMBER_OF_TEACHERS));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.teachers[*].courses",
                 hasSize(NUMBER_OF_COURSES_PER_TEACHER));
@@ -80,7 +80,7 @@ public class SearchTeacherResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyTeacherJson(response.getBody(), teacher);
     }
 

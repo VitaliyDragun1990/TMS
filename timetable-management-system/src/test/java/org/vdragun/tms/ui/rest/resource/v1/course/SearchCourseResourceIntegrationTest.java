@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
 import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL;
 
 import java.util.List;
@@ -37,7 +38,6 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 @DisplayName("Course Resource Search Functionality Integration Test")
 public class SearchCourseResourceIntegrationTest {
 
-    private static final String CONTENT_TYPE_HAL_JSON = "application/hal+json";
     private static final String CONTENT_TYPE_JSON = "application/json";
 
     @Autowired
@@ -60,7 +60,7 @@ public class SearchCourseResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.courses", hasSize(2));
         jsonVerifier.verifyCourseJson(response.getBody(), courses);
     }
@@ -75,7 +75,7 @@ public class SearchCourseResourceIntegrationTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_HAL_JSON));
+        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyCourseJson(response.getBody(), course);
     }
 

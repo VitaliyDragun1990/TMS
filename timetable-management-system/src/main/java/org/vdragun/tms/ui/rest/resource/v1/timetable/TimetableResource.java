@@ -42,7 +42,7 @@ import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
  *
  */
 @RestController
-@RequestMapping(path = TimetableResource.BASE_URL, produces = "application/hal+json")
+@RequestMapping(path = TimetableResource.BASE_URL, produces = AbstractResource.APPLICATION_HAL_JSON)
 @Validated
 public class TimetableResource extends AbstractResource {
 
@@ -165,7 +165,7 @@ public class TimetableResource extends AbstractResource {
                         .withSelfRel());
     }
 
-    @PostMapping(produces = "application/hal+json")
+    @PostMapping
     public ResponseEntity<TimetableModel> registerNewTimetable(@RequestBody @Valid CreateTimetableData timetableData) {
         log.trace("Received POST request to register new timetable, data={}, URI={}", timetableData, getRequestUri());
 
@@ -177,7 +177,7 @@ public class TimetableResource extends AbstractResource {
                 .body(timetableModel);
     }
 
-    @PutMapping(path = "/{timetableId}", produces = "application/hal+json")
+    @PutMapping(path = "/{timetableId}")
     @ResponseStatus(OK)
     public TimetableModel updateExistingTimetable(
             @PathVariable @Positive(message = "Positive.id") Integer timetableId,

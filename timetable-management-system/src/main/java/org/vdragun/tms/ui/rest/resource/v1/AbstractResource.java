@@ -16,6 +16,8 @@ import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
  */
 public abstract class AbstractResource {
 
+    public static final String APPLICATION_HAL_JSON = "application/hal+json";
+
     protected Logger log = LoggerFactory.getLogger(getClass());
 
     private ModelConverter modelConverter;
