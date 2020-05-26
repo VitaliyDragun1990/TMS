@@ -29,8 +29,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -40,6 +42,10 @@ import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.common.util.Translator;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 /**
  * Responsible for handling application exceptions in RESTful resources by
  * providing appropriate response entity to the client
@@ -48,7 +54,8 @@ import org.vdragun.tms.ui.common.util.Translator;
  *
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@ControllerAdvice(basePackages = "org.vdragun.tms.ui.rest.resource")
+@RestControllerAdvice(basePackages = "org.vdragun.tms.ui.rest.resource")
+@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestExceptionHandler.class);
@@ -246,6 +253,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * Handles other exceptions.
      */
     @ExceptionHandler(Exception.class)
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    @ApiResponse(
+            responseCode = "500",
+            description = "Internal Server Error",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ApiError.class)))
     protected ResponseEntity<Object> handleApplicationException(Exception ex) {
         LOG.error("Handling application exception", ex);
 
