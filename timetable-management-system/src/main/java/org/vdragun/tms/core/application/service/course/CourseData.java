@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author Vitaliy Dragun
  *
  */
-@Schema(description = "DTO (input model) containing necessary information to register new course")
+@Schema(description = "DTO (input model) containing information necessary to register new course")
 public class CourseData {
 
     @NotNull

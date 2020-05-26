@@ -137,7 +137,7 @@ public class TeacherModel extends RepresentationModel<TeacherModel> {
 
     @Override
     public String toString() {
-        return "TeacherDTO [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", title=" + title
+        return "TeacherModel [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", title=" + title
                 + ", dateHired=" + dateHired + ", courses=" + courses + "]";
     }
 

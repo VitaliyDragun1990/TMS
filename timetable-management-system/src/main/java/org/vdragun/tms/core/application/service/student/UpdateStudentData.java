@@ -8,12 +8,16 @@ import javax.validation.constraints.Positive;
 
 import org.vdragun.tms.core.application.validation.PersonName;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * Contains data necessary to update existing student
  * 
  * @author Vitaliy Dragun
  *
  */
+@Schema(description = "DTO (input model) containing information necessary to update existing student")
 public class UpdateStudentData {
 
     /**
@@ -21,19 +25,49 @@ public class UpdateStudentData {
      */
     @NotNull
     @Positive
+    @Schema(
+            description = "Unique student identifier",
+            example = "1",
+            required = true,
+            minimum = "1")
     private Integer studentId;
 
     @Positive
+    @Schema(
+            description = "Unique group identifier student assigned to",
+            example = "1",
+            required = false,
+            minimum = "1")
     private Integer groupId;
 
     @NotNull
     @PersonName
+    @Schema(
+            description = "Student first name",
+            pattern = "^[A-Z]{1}[a-z]+$",
+            minLength = 2,
+            maxLength = 50,
+            example = "John",
+            required = true)
     private String firstName;
 
     @NotNull
     @PersonName
+    @Schema(
+            description = "Student last name",
+            pattern = "^[A-Z]{1}[a-z]+$",
+            minLength = 2,
+            maxLength = 50,
+            example = "Smith",
+            required = true)
     private String lastName;
 
+    @ArraySchema(
+            schema = @Schema(
+                    description = "Unique ciurse identifier",
+                    example = "1",
+                    minimum = "1",
+                    required = false))
     private List<@NotNull @Positive Integer> courseIds;
 
     public UpdateStudentData() {
