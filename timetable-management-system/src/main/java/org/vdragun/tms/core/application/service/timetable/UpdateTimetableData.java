@@ -10,29 +10,53 @@ import org.vdragun.tms.core.application.validation.TimetableDuration;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * Contains data necessary to update existing timetable
  * 
  * @author Vitaliy Dragun
  *
  */
+@Schema(description = "DTO (input model) containing information necessary to update existing timetable")
 public class UpdateTimetableData {
 
     @NotNull
     @Positive
+    @Schema(
+            description = "Unique identifier of the timetable to update",
+            minimum = "1",
+            required = true)
     private Integer timetableId;
 
     @NotNull
     @Future
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm[:ss]")
+    @Schema(
+            implementation = String.class,
+            description = "Date and time for which particular timetable should be registered (future only)",
+            pattern = "yyyy-MM-dd HH:mm",
+            example = "2020-05-22 14:30",
+            required = true)
     private LocalDateTime startTime;
 
     @NotNull
     @TimetableDuration
+    @Schema(
+            description = "Duration of the timetable (in minutes)",
+            minimum = "30",
+            maximum = "90",
+            example = "60",
+            required = true)
     private Integer duration;
 
     @NotNull
     @Positive
+    @Schema(
+            description = "Unique identifier of the classroom timetable registered at",
+            minimum = "1",
+            example = "1",
+            required = true)
     private Integer classroomId;
 
     public UpdateTimetableData() {
