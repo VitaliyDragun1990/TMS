@@ -2,9 +2,12 @@ package org.vdragun.tms.ui.rest.api.v1.model;
 
 import java.util.Objects;
 
+import org.springframework.hateoas.Links;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 import org.vdragun.tms.core.domain.Course;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Data transfer object with essential information for particular {@link Course}
@@ -14,13 +17,25 @@ import org.vdragun.tms.core.domain.Course;
  *
  */
 @Relation(collectionRelation = "courses", itemRelation = "course")
+@Schema(description = "DTO containing essential information about particular course")
 public class CourseModel extends RepresentationModel<CourseModel> {
 
+    @Schema(description = "Unique identifier of the course", example = "1")
     private Integer id;
+
+    @Schema(description = "Name of the course", example = "Advanced English")
     private String name;
+
+    @Schema(description = "Description of the course", example = "Updated Advanced English course")
     private String description;
+
+    @Schema(description = "Code of the category to which course belongs", example = "ENG")
     private String categoryCode;
+
+    @Schema(description = "Unique identfier of the teacher who asigned to the course", example = "1")
     private Integer teacherId;
+
+    @Schema(description = "Full name of the teacher who assigned to the course", example = "Anna Smith")
     private String teacherFullName;
 
     public CourseModel() {
@@ -85,6 +100,11 @@ public class CourseModel extends RepresentationModel<CourseModel> {
         this.teacherFullName = teacherFullName;
     }
 
+    @Schema(hidden = true)
+    @Override
+    public Links getLinks() {
+        return super.getLinks();
+    }
 
     @Override
     public int hashCode() {
