@@ -26,6 +26,7 @@ public class UpdateTimetableData {
     @Schema(
             description = "Unique identifier of the timetable to update",
             minimum = "1",
+            example = "1",
             required = true)
     private Integer timetableId;
 
