@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @PropertySource("classpath:generator.properties")
+@ConditionalOnProperty(
+        name = "tms.stage.development",
+        havingValue = "true",
+        matchIfMissing = true)
 public class StartupDataInitializer {
 
     private static final Logger LOG = LoggerFactory.getLogger(StartupDataInitializer.class);

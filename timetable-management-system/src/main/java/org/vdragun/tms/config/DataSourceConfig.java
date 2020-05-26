@@ -6,6 +6,7 @@ import java.util.Properties;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -21,6 +22,10 @@ public class DataSourceConfig {
         return PropertiesLoaderUtils.loadProperties(new ClassPathResource("/db.properties"));
     }
 
+    @ConditionalOnProperty(
+            name = "tms.stage.development",
+            havingValue = "true",
+            matchIfMissing = true)
     @Bean(destroyMethod = "")
     public DataSource dataSource(Properties dataSourceProperties) throws NamingException {
         JndiObjectFactoryBean factoryBean = new JndiObjectFactoryBean();

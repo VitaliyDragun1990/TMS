@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,10 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
+@ConditionalOnProperty(
+        name = "tms.stage.development",
+        havingValue = "true",
+        matchIfMissing = true)
 public class DatabaseSchemaCreatorImpl implements DatabaseSchemaCreator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseSchemaCreatorImpl.class);
