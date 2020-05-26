@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.rest.resource.v1.teacher;
+package org.vdragun.tms.ui.rest.resource.v1.course;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -14,9 +14,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
-import static org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource.BASE_URL;
-
-import java.time.LocalDate;
+import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,10 +29,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.vdragun.tms.core.application.service.teacher.TeacherData;
-import org.vdragun.tms.core.application.service.teacher.TeacherService;
-import org.vdragun.tms.core.domain.Teacher;
-import org.vdragun.tms.core.domain.Title;
+import org.vdragun.tms.core.application.service.course.CourseData;
+import org.vdragun.tms.core.application.service.course.CourseService;
+import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
@@ -46,8 +43,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
 @Import({ DaoTestConfig.class, JsonVerifier.class })
-@DisplayName("Teacher Resource Register Functionality Integration Test")
-public class RegisterTeacherResourceIntegrationTest {
+@DisplayName("Course Resource Register Functionality Integration Test")
+public class RegisterCourseResourceTest {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
 
@@ -61,20 +58,20 @@ public class RegisterTeacherResourceIntegrationTest {
     private TestRestTemplate restTemplate;
 
     @MockBean
-    private TeacherService teacherServiceMock;
+    private CourseService courseServiceMock;
 
     @Captor
-    private ArgumentCaptor<TeacherData> captor;
+    private ArgumentCaptor<CourseData> captor;
 
     private EntityGenerator generator = new EntityGenerator();
 
     private HttpHeaders headers = new HttpHeaders();
 
     @Test
-    void shouldRegisterNewTeacher() throws Exception {
-        TeacherData registerData = new TeacherData("Jack", "Smith", LocalDate.now(), Title.INSTRUCTOR);
-        Teacher registered = generator.generateTeacher();
-        when(teacherServiceMock.registerNewTeacher(any(TeacherData.class))).thenReturn(registered);
+    void shouldRegisterNewCourse() throws Exception {
+        CourseData registerData = new CourseData("English", "Course description", 1, 1);
+        Course registered = generator.generateCourse();
+        when(courseServiceMock.registerNewCourse(any(CourseData.class))).thenReturn(registered);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(registerData), headers);
@@ -87,18 +84,18 @@ public class RegisterTeacherResourceIntegrationTest {
         assertThat(response.getStatusCode(), equalTo(CREATED));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(APPLICATION_HAL_JSON));
-        jsonVerifier.verifyTeacherJson(response.getBody(), registered);
+        jsonVerifier.verifyCourseJson(response.getBody(), registered);
 
-        verify(teacherServiceMock, times(1)).registerNewTeacher(captor.capture());
+        verify(courseServiceMock, times(1)).registerNewCourse(captor.capture());
         assertThat(captor.getValue(), samePropertyValuesAs(registerData));
     }
 
     @Test
     void shouldReturnStatusBadRequestIfProvidedRegistrationDataIsNotValid() throws Exception {
-        String notLatinFirstName = "Джек";
-        String tooShortLastName = "S";
-        LocalDate dateHiredInFuture = LocalDate.now().plusDays(3);
-        TeacherData invalidData = new TeacherData(notLatinFirstName, tooShortLastName, dateHiredInFuture, null);
+        String invalidCourseName = "eng-25";
+        String notLatinDescription = "не латинские символы";
+        int negativeCategoryId = -1;
+        CourseData invalidData = new CourseData(invalidCourseName, notLatinDescription, negativeCategoryId, null);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(invalidData), headers);
@@ -107,19 +104,19 @@ public class RegisterTeacherResourceIntegrationTest {
                 BASE_URL,
                 request,
                 String.class);
-
+        
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
-        jsonVerifier.verifyValidationError(response.getBody(), "firstName", "PersonName");
-        jsonVerifier.verifyValidationError(response.getBody(), "lastName", "PersonName");
-        jsonVerifier.verifyValidationError(response.getBody(), "dateHired", "PastOrPresent.dateHired");
-        jsonVerifier.verifyValidationError(response.getBody(), "title", "NotNull.title");
+        jsonVerifier.verifyValidationError(response.getBody(), "name", "CourseName");
+        jsonVerifier.verifyValidationError(response.getBody(), "description", "LatinSentence");
+        jsonVerifier.verifyValidationError(response.getBody(), "categoryId", "Positive.categoryId");
+        jsonVerifier.verifyValidationError(response.getBody(), "teacherId", "NotNull.teacherId");
 
-        verify(teacherServiceMock, never()).registerNewTeacher(any(TeacherData.class));
+        verify(courseServiceMock, never()).registerNewCourse(any(CourseData.class));
     }
-
+    
     @Test
     void shouldReturnStatusBadRequestIfRegistrationDataIsMissing() throws Exception {
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
@@ -135,6 +132,7 @@ public class RegisterTeacherResourceIntegrationTest {
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.MALFORMED_JSON_REQUEST);
 
-        verify(teacherServiceMock, never()).registerNewTeacher(any(TeacherData.class));
+        verify(courseServiceMock, never()).registerNewCourse(any(CourseData.class));
     }
+
 }

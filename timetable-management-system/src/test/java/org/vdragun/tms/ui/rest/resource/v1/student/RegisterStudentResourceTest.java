@@ -1,6 +1,5 @@
-package org.vdragun.tms.ui.rest.resource.v1.timetable;
+package org.vdragun.tms.ui.rest.resource.v1.student;
 
-import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -15,9 +14,9 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
-import static org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource.BASE_URL;
+import static org.vdragun.tms.ui.rest.resource.v1.student.StudentResource.BASE_URL;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,9 +31,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
-import org.vdragun.tms.core.application.service.timetable.TimetableService;
-import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.core.application.service.student.CreateStudentData;
+import org.vdragun.tms.core.application.service.student.StudentService;
+import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
@@ -46,15 +45,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
 @Import({ DaoTestConfig.class, JsonVerifier.class })
-@DisplayName("Timetable Resource Register Functionality Integration Test")
-public class RegisterTimetableResourceIntegrationTest {
+@DisplayName("Student Resource Register Functionality Integration Test")
+public class RegisterStudentResourceTest {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
-    private static final LocalDateTime TIMETABLE_START_TIME = LocalDateTime.now().plusDays(3).truncatedTo(MINUTES);
-    private static final int TEACHER_ID = 3;
-    private static final int CLASSROOM_ID = 2;
-    private static final int COURSE_ID = 1;
-    private static final int DURATION = 60;
 
     @Autowired
     private ObjectMapper mapper;
@@ -66,21 +60,20 @@ public class RegisterTimetableResourceIntegrationTest {
     private TestRestTemplate restTemplate;
 
     @MockBean
-    private TimetableService timetableServiceMock;
+    private StudentService studentServiceMock;
 
     @Captor
-    private ArgumentCaptor<CreateTimetableData> captor;
+    private ArgumentCaptor<CreateStudentData> captor;
 
     private EntityGenerator generator = new EntityGenerator();
 
     private HttpHeaders headers = new HttpHeaders();
 
     @Test
-    void shouldRegisterNewTimetable() throws Exception {
-        CreateTimetableData registerData =
-                new CreateTimetableData(TIMETABLE_START_TIME, DURATION, COURSE_ID, CLASSROOM_ID, TEACHER_ID);
-        Timetable expectedTimetable = generator.generateTimetable();
-        when(timetableServiceMock.registerNewTimetable(any(CreateTimetableData.class))).thenReturn(expectedTimetable);
+    void shouldRegisterNewStudent() throws Exception {
+        CreateStudentData registerData = new CreateStudentData("Jack", "Smith", LocalDate.now());
+        Student expectedStudent = generator.generateStudent();
+        when(studentServiceMock.registerNewStudent(any(CreateStudentData.class))).thenReturn(expectedStudent);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(registerData), headers);
@@ -89,24 +82,23 @@ public class RegisterTimetableResourceIntegrationTest {
                 BASE_URL,
                 request,
                 String.class);
-        
+
         assertThat(response.getStatusCode(), equalTo(CREATED));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(APPLICATION_HAL_JSON));
-        jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetable);
+        jsonVerifier.verifyStudentJson(response.getBody(), expectedStudent);
 
-        verify(timetableServiceMock, times(1)).registerNewTimetable(captor.capture());
-        assertThat(captor.getValue(), samePropertyValuesAs(registerData, "startTime"));
+        verify(studentServiceMock, times(1)).registerNewStudent(captor.capture());
+        assertThat(captor.getValue(), samePropertyValuesAs(registerData));
     }
     
     @Test
     void shouldReturnStatusBadRequestIfProvidedRegistrationDataIsNotValid() throws Exception {
-        LocalDateTime startTimeInthePast = LocalDateTime.now().minusDays(3);
-        int tooShortDuration = 20;
-        int invalidCourseId = 0;
-        int negativeTeacherId = -1;
-        CreateTimetableData invalidData =
-                new CreateTimetableData(startTimeInthePast, tooShortDuration, invalidCourseId, null, negativeTeacherId);
+        String notLatinFirstName = "Джек";
+        String tooShortLastName = "S";
+        LocalDate futureRegistrationdate = LocalDate.now().plusDays(10);
+        CreateStudentData invalidData = 
+                new CreateStudentData(notLatinFirstName, tooShortLastName, futureRegistrationdate);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(invalidData), headers);
@@ -120,13 +112,11 @@ public class RegisterTimetableResourceIntegrationTest {
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
-        jsonVerifier.verifyValidationError(response.getBody(), "startTime", "Future.startTime");
-        jsonVerifier.verifyValidationError(response.getBody(), "duration", "TimetableDuration");
-        jsonVerifier.verifyValidationError(response.getBody(), "courseId", "Positive.courseId");
-        jsonVerifier.verifyValidationError(response.getBody(), "classroomId", "NotNull.classroomId");
-        jsonVerifier.verifyValidationError(response.getBody(), "teacherId", "Positive.teacherId");
+        jsonVerifier.verifyValidationError(response.getBody(), "firstName", "PersonName");
+        jsonVerifier.verifyValidationError(response.getBody(), "lastName", "PersonName");
+        jsonVerifier.verifyValidationError(response.getBody(), "enrollmentDate", "PastOrPresent.enrollmentDate");
 
-        verify(timetableServiceMock, never()).registerNewTimetable(any(CreateTimetableData.class));
+        verify(studentServiceMock, never()).registerNewStudent(any(CreateStudentData.class));
     }
 
     @Test
@@ -144,7 +134,7 @@ public class RegisterTimetableResourceIntegrationTest {
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.MALFORMED_JSON_REQUEST);
 
-        verify(timetableServiceMock, never()).registerNewTimetable(any(CreateTimetableData.class));
+        verify(studentServiceMock, never()).registerNewStudent(any(CreateStudentData.class));
     }
 
 }

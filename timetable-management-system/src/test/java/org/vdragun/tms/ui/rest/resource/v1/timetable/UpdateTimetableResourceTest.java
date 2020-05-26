@@ -50,7 +50,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
         properties = "tms.stage.development=false")
 @Import({ DaoTestConfig.class, JsonVerifier.class })
 @DisplayName("Timetable Resource Update Functionality Integration Test")
-public class UpdateTimetableResourceIntegrationTest {
+public class UpdateTimetableResourceTest {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final LocalDateTime TIMETABLE_START_TIME = LocalDateTime.now().plusDays(3).truncatedTo(MINUTES);

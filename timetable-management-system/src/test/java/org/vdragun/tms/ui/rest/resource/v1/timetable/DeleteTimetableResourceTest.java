@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.rest.resource.v1.student;
+package org.vdragun.tms.ui.rest.resource.v1.timetable;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -14,7 +14,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.vdragun.tms.ui.rest.resource.v1.student.StudentResource.BASE_URL;
+import static org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource.BASE_URL;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,8 +28,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
-import org.vdragun.tms.core.application.service.student.StudentService;
-import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.core.application.service.timetable.TimetableService;
+import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
@@ -38,11 +38,12 @@ import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
 @Import({ DaoTestConfig.class, JsonVerifier.class })
-@DisplayName("Student Resource Delete Functionality Integration Test")
-public class DeleteStudentResourceIntegrationTest {
+@DisplayName("Timetable Resource Delete Functionality Integration Test")
+public class DeleteTimetableResourceTest {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
-
+    private static final Integer TIMETABLE_ID = 1;
+    
     @Autowired
     private JsonVerifier jsonVerifier;
 
@@ -50,37 +51,35 @@ public class DeleteStudentResourceIntegrationTest {
     private TestRestTemplate restTemplate;
 
     @MockBean
-    private StudentService studentServiceMock;
+    private TimetableService timetableServiceMock;
 
     private HttpHeaders headers = new HttpHeaders();
 
     @Test
-    void shouldDeleteStudentByGivenIdentifier() throws Exception {
-        Integer studentId = 1;
-
+    void shouldDeleteTimetableById() throws Exception {
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<Void> response = restTemplate.exchange(
-                BASE_URL + "/{studentId}",
+                BASE_URL + "/{timetableId}",
                 DELETE,
                 request,
                 Void.class,
-                studentId);
+                TIMETABLE_ID);
 
         assertThat(response.getStatusCode(), equalTo(OK));
-        verify(studentServiceMock, times(1)).deleteStudentById(studentId);
+        verify(timetableServiceMock, times(1)).deleteTimetableById(TIMETABLE_ID);
     }
 
     @Test
-    void shouldReturnStatusBadRequestIfProvidedStudentIdentifierIsNotNumber() throws Exception {
+    void shouldReturnStatusBadReqeustIfProvidedTimetableIdentifierIsNotNumber() throws Exception {
         String invalidId = "id";
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                BASE_URL + "/{studentId}",
+                BASE_URL + "/{timetableId}",
                 DELETE,
                 request,
                 String.class,
@@ -92,20 +91,20 @@ public class DeleteStudentResourceIntegrationTest {
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.ARGUMENT_TYPE_MISSMATCH,
-                "studentId", invalidId, Integer.class);
+                "timetableId", invalidId, Integer.class);
 
-        verify(studentServiceMock, never()).deleteStudentById(any(Integer.class));
+        verify(timetableServiceMock, never()).deleteTimetableById(any(Integer.class));
     }
 
     @Test
-    void shouldReturnStatusBadRequestIfProvidedStudentIdentifierIsNotValid() throws Exception {
+    void shouldReturnStatusBadRequestIfProvidedTimetableIdentifierIsNotValid() throws Exception {
         Integer negativeId = -1;
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                BASE_URL + "/{studentId}",
+                BASE_URL + "/{timetableId}",
                 DELETE,
                 request,
                 String.class,
@@ -115,31 +114,33 @@ public class DeleteStudentResourceIntegrationTest {
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
-        jsonVerifier.verifyValidationError(response.getBody(), "studentId", Message.POSITIVE_ID);
+        jsonVerifier.verifyValidationError(response.getBody(), "timetableId", Message.POSITIVE_ID);
 
-        verify(studentServiceMock, never()).deleteStudentById(any(Integer.class));
+        verify(timetableServiceMock, never()).deleteTimetableById(any(Integer.class));
     }
 
     @Test
-    void shouldReturnStatusNotFoundIfNoStudentWithProvidedIdentifierExist() throws Exception {
-        Integer studentId = 1;
-        doThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", studentId))
-                .when(studentServiceMock).deleteStudentById(studentId);
+    void shouldReturnStatusNotFoundIfNoTimetableWithProvidedIdentifierExist() throws Exception {
+        doThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found", TIMETABLE_ID))
+                .when(timetableServiceMock).deleteTimetableById(any(Integer.class));
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                BASE_URL + "/{studentId}",
+                BASE_URL + "/{timetableId}",
                 DELETE,
                 request,
                 String.class,
-                studentId);
+                TIMETABLE_ID);
 
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
-        jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND, Student.class.getSimpleName());
+        jsonVerifier.verifyErrorMessage(
+                response.getBody(),
+                Message.RESOURCE_NOT_FOUND,
+                Timetable.class.getSimpleName());
     }
 
 }

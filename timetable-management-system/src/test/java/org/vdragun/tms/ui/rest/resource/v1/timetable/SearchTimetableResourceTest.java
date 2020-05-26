@@ -41,7 +41,7 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
         properties = "tms.stage.development=false")
 @Import({ DaoTestConfig.class, JsonVerifier.class })
 @DisplayName("Timetable Resource Search Functionality Integration Test")
-public class SearchTimetableResourceIntegrationTest {
+public class SearchTimetableResourceTest {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final int NUMBER_OF_TIMETABLES = 2;

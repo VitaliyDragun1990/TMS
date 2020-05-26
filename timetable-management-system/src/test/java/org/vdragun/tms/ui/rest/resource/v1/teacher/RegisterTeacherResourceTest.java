@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.rest.resource.v1.student;
+package org.vdragun.tms.ui.rest.resource.v1.teacher;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -14,7 +14,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
-import static org.vdragun.tms.ui.rest.resource.v1.student.StudentResource.BASE_URL;
+import static org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource.BASE_URL;
 
 import java.time.LocalDate;
 
@@ -31,9 +31,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.vdragun.tms.core.application.service.student.CreateStudentData;
-import org.vdragun.tms.core.application.service.student.StudentService;
-import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.core.application.service.teacher.TeacherData;
+import org.vdragun.tms.core.application.service.teacher.TeacherService;
+import org.vdragun.tms.core.domain.Teacher;
+import org.vdragun.tms.core.domain.Title;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
@@ -45,8 +46,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
 @Import({ DaoTestConfig.class, JsonVerifier.class })
-@DisplayName("Student Resource Register Functionality Integration Test")
-public class RegisterStudentResourceIntegrationTest {
+@DisplayName("Teacher Resource Register Functionality Integration Test")
+public class RegisterTeacherResourceTest {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
 
@@ -60,20 +61,20 @@ public class RegisterStudentResourceIntegrationTest {
     private TestRestTemplate restTemplate;
 
     @MockBean
-    private StudentService studentServiceMock;
+    private TeacherService teacherServiceMock;
 
     @Captor
-    private ArgumentCaptor<CreateStudentData> captor;
+    private ArgumentCaptor<TeacherData> captor;
 
     private EntityGenerator generator = new EntityGenerator();
 
     private HttpHeaders headers = new HttpHeaders();
 
     @Test
-    void shouldRegisterNewStudent() throws Exception {
-        CreateStudentData registerData = new CreateStudentData("Jack", "Smith", LocalDate.now());
-        Student expectedStudent = generator.generateStudent();
-        when(studentServiceMock.registerNewStudent(any(CreateStudentData.class))).thenReturn(expectedStudent);
+    void shouldRegisterNewTeacher() throws Exception {
+        TeacherData registerData = new TeacherData("Jack", "Smith", LocalDate.now(), Title.INSTRUCTOR);
+        Teacher registered = generator.generateTeacher();
+        when(teacherServiceMock.registerNewTeacher(any(TeacherData.class))).thenReturn(registered);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(registerData), headers);
@@ -86,19 +87,18 @@ public class RegisterStudentResourceIntegrationTest {
         assertThat(response.getStatusCode(), equalTo(CREATED));
         String contentType = response.getHeaders().getContentType().toString();
         assertThat(contentType, containsString(APPLICATION_HAL_JSON));
-        jsonVerifier.verifyStudentJson(response.getBody(), expectedStudent);
+        jsonVerifier.verifyTeacherJson(response.getBody(), registered);
 
-        verify(studentServiceMock, times(1)).registerNewStudent(captor.capture());
+        verify(teacherServiceMock, times(1)).registerNewTeacher(captor.capture());
         assertThat(captor.getValue(), samePropertyValuesAs(registerData));
     }
-    
+
     @Test
     void shouldReturnStatusBadRequestIfProvidedRegistrationDataIsNotValid() throws Exception {
         String notLatinFirstName = "Джек";
         String tooShortLastName = "S";
-        LocalDate futureRegistrationdate = LocalDate.now().plusDays(10);
-        CreateStudentData invalidData = 
-                new CreateStudentData(notLatinFirstName, tooShortLastName, futureRegistrationdate);
+        LocalDate dateHiredInFuture = LocalDate.now().plusDays(3);
+        TeacherData invalidData = new TeacherData(notLatinFirstName, tooShortLastName, dateHiredInFuture, null);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(invalidData), headers);
@@ -114,9 +114,10 @@ public class RegisterStudentResourceIntegrationTest {
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "firstName", "PersonName");
         jsonVerifier.verifyValidationError(response.getBody(), "lastName", "PersonName");
-        jsonVerifier.verifyValidationError(response.getBody(), "enrollmentDate", "PastOrPresent.enrollmentDate");
+        jsonVerifier.verifyValidationError(response.getBody(), "dateHired", "PastOrPresent.dateHired");
+        jsonVerifier.verifyValidationError(response.getBody(), "title", "NotNull.title");
 
-        verify(studentServiceMock, never()).registerNewStudent(any(CreateStudentData.class));
+        verify(teacherServiceMock, never()).registerNewTeacher(any(TeacherData.class));
     }
 
     @Test
@@ -134,7 +135,6 @@ public class RegisterStudentResourceIntegrationTest {
         assertThat(contentType, containsString(CONTENT_TYPE_JSON));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.MALFORMED_JSON_REQUEST);
 
-        verify(studentServiceMock, never()).registerNewStudent(any(CreateStudentData.class));
+        verify(teacherServiceMock, never()).registerNewTeacher(any(TeacherData.class));
     }
-
 }

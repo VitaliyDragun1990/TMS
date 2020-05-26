@@ -49,7 +49,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
         properties = "tms.stage.development=false")
 @Import({ DaoTestConfig.class, JsonVerifier.class })
 @DisplayName("Student Resource Update Functionality Integration Test")
-public class UpdateStudentResourceIntegrationTest {
+public class UpdateStudentResourceTest {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final int GROUP_ID = 2;
