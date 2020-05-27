@@ -24,9 +24,11 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.config.SpringDataDaoConfig;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
@@ -35,9 +37,10 @@ import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.dao.FullName;
 import org.vdragun.tms.dao.TeacherDao;
 
-@SpringJUnitConfig(classes = { SpringDataDaoConfig.class, DaoTestConfig.class })
+@DataJpaTest
+@Import({ SpringDataDaoConfig.class, DaoTestConfig.class })
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 @DisplayName("Spring Data Teacher DAO")
-@Transactional
 public class SpringDataTeacherDaoTest {
     private static final String SMITH = "Smith";
     private static final String SNOW = "Snow";

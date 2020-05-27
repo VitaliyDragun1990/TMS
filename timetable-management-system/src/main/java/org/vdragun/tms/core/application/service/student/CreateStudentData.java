@@ -7,6 +7,8 @@ import javax.validation.constraints.PastOrPresent;
 
 import org.vdragun.tms.core.application.validation.PersonName;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * Contains necessary data to create new student
  * 
@@ -25,6 +27,7 @@ public class CreateStudentData {
 
     @NotNull
     @PastOrPresent
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate enrollmentDate;
 
     public CreateStudentData() {

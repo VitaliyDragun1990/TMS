@@ -19,22 +19,23 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Teacher;
+import org.vdragun.tms.ui.common.util.Constants.Attribute;
+import org.vdragun.tms.ui.common.util.Constants.Message;
+import org.vdragun.tms.ui.common.util.Constants.Page;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
-import org.vdragun.tms.ui.web.util.Constants.Attribute;
-import org.vdragun.tms.ui.web.util.Constants.Message;
-import org.vdragun.tms.ui.web.util.Constants.Page;
 
 /**
  * @author Vitaliy Dragun
  *
  */
 @WebMvcTest(controllers = SearchTeacherController.class)
-@Import({ WebMvcConfig.class, MessageProvider.class })
+@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
 @DisplayName("Search Teacher Controller")
 public class SearchTeacherControllerTest {
 
@@ -79,7 +80,7 @@ public class SearchTeacherControllerTest {
     void shouldShowNotFoundPageIfNoTeacherWithGivenIdentifier() throws Exception {
         Integer teacherId = 1;
         when(teacherServiceMock.findTeacherById(teacherId))
-                .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", teacherId));
+                .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", teacherId));
         
         mockMvc.perform(get("/teachers/{teacherId}", teacherId).locale(Locale.US))
                 .andExpect(status().isNotFound())

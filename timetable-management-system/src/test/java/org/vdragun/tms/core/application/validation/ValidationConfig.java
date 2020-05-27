@@ -1,8 +1,8 @@
 package org.vdragun.tms.core.application.validation;
 
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -11,7 +11,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
  * @author Vitaliy Dragun
  *
  */
-@Configuration
+@TestConfiguration
 public class ValidationConfig {
 
     @Bean

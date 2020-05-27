@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Course;
+import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.ClassroomDao;
@@ -56,7 +57,7 @@ public class TimetableServiceImpl implements TimetableService {
 
         Timetable timetable = new Timetable(
                 timetableData.getStartTime(),
-                timetableData.getDurationInMinutes(),
+                timetableData.getDuration(),
                 course,
                 classroom,
                 teacher);
@@ -74,7 +75,7 @@ public class TimetableServiceImpl implements TimetableService {
         Classroom classroom = getClassroom(timetableData.getClassroomId());
 
         timetable.setClassroom(classroom);
-        timetable.setDurationInMinutes(timetableData.getDurationInMinutes());
+        timetable.setDurationInMinutes(timetableData.getDuration());
         timetable.setStartTime(timetableData.getStartTime());
         timetableDao.update(timetable);
 
@@ -156,6 +157,7 @@ public class TimetableServiceImpl implements TimetableService {
             timetableDao.deleteById(timetableId);
         } else {
             throw new ResourceNotFoundException(
+                    Timetable.class,
                     "Fail to delete timetable: timetable with id=%d does not exist",
                     timetableId);
         }
@@ -163,13 +165,13 @@ public class TimetableServiceImpl implements TimetableService {
 
     private void assertTeacherExists(Integer teacherId) {
         if (!teacherDao.existsById(teacherId)) {
-            throw new ResourceNotFoundException("Teacher with id=%d does not exist", teacherId);
+            throw new ResourceNotFoundException(Teacher.class, "Teacher with id=%d does not exist", teacherId);
         }
     }
 
     private void assertStudentExists(Integer studentId) {
         if (!studentDao.existsById(studentId)) {
-            throw new ResourceNotFoundException("Student with id=%d does not exist", studentId);
+            throw new ResourceNotFoundException(Student.class, "Student with id=%d does not exist", studentId);
         }
     }
 
@@ -177,25 +179,31 @@ public class TimetableServiceImpl implements TimetableService {
     private Classroom getClassroom(Integer classroomId) {
         return classroomDao.findById(classroomId)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("Classroom with id=%d does not exist", classroomId));
+                        () -> 
+                        new ResourceNotFoundException(Classroom.class,
+                                "Classroom with id=%d does not exist", classroomId));
     }
 
     private Timetable getTimetable(Integer timetableId) {
         return timetableDao.findById(timetableId)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("Timetable with id=%d does not exist", timetableId));
+                        () -> 
+                        new ResourceNotFoundException(Timetable.class,
+                                "Timetable with id=%d does not exist", timetableId));
     }
     
     private Course getCourse(Integer courseId) {
         return courseDao.findById(courseId)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("Course with id=%d does not exist", courseId));
+                        () -> new ResourceNotFoundException(Course.class,
+                                "Course with id=%d does not exist", courseId));
     }
 
     private Teacher getTeacher(Integer teacherId) {
         return teacherDao.findById(teacherId)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("Teacher with id=%d does not exist", teacherId));
+                        () -> new ResourceNotFoundException(Teacher.class,
+                                "Teacher with id=%d does not exist", teacherId));
     }
 
 }

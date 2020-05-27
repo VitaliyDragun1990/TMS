@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.web.util;
+package org.vdragun.tms.ui.common.util;
 
 /**
  * Contains constant values used across web layer
@@ -21,6 +21,7 @@ public final class Constants {
         public static final String TIMETABLES_FOR_STUDENT = "msg.timetablesForStudent";
         public static final String DATE_FORMAT = "format.date";
         public static final String DATE_TIME_FORMAT = "format.datetime";
+        public static final String TIMESTAMP_FORMAT = "format.timestamp";
         public static final String REQUESTED_RESOURCE = "msg.requestedResource";
         public static final String TIMETABLE_DELETE_SUCCESS = "msg.timetableDeleteSuccess";
         public static final String STUDENT_DELETE_SUCCESS = "msg.studentDeleteSuccess";
@@ -31,6 +32,17 @@ public final class Constants {
         public static final String TIMETABLE_UPDATE_SUCCESS = "msg.timetableUpdateSuccess";
         public static final String TIMETABLE_REGISTER_SUCCESS = "msg.timetableRegisterSuccess";
         public static final String REQUIRED_REQUEST_PARAMETER = "msg.requiredRequestParameter";
+        public static final String MISSING_REQUIRED_PARAMETER = "msg.missingParameter";
+        public static final String UNSUPPORTED_MEDIA_TYPE = "msg.unsuportedMediaType";
+        public static final String VALIDATION_ERROR = "msg.validationError";
+        public static final String RESOURCE_NOT_FOUND = "msg.resourceNotFound";
+        public static final String MALFORMED_JSON_REQUEST = "msg.malformedJsonRequest";
+        public static final String MALFORMED_JSON_RESPONSE = "msg.malformedJsonResponse";
+        public static final String NO_HANDLER_FOUND = "msg.noHandlerFound";
+        public static final String DB_ERROR = "msg.dbError";
+        public static final String INTERNAL_SERVER_ERROR = "msg.internalServerError";
+        public static final String ARGUMENT_TYPE_MISSMATCH = "msg.argumentTypeMissmatch";
+        public static final String POSITIVE_ID = "Positive.id";
 
         private Message() {
         }

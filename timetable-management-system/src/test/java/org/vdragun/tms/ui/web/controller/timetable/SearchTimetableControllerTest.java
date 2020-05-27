@@ -26,6 +26,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
@@ -34,18 +35,18 @@ import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.ui.common.util.Constants.Attribute;
+import org.vdragun.tms.ui.common.util.Constants.Message;
+import org.vdragun.tms.ui.common.util.Constants.Page;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
-import org.vdragun.tms.ui.web.util.Constants.Attribute;
-import org.vdragun.tms.ui.web.util.Constants.Message;
-import org.vdragun.tms.ui.web.util.Constants.Page;
 
 /**
  * @author Vitaliy Dragun
  *
  */
 @WebMvcTest(controllers = SearchTimetableController.class)
-@Import({ WebMvcConfig.class, MessageProvider.class })
+@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
 @DisplayName("Search Timetable Controller")
 public class SearchTimetableControllerTest {
 
@@ -115,7 +116,8 @@ public class SearchTimetableControllerTest {
     void shouldShowNotFoundPageIfNoTimetableWithProvidedIdentifier() throws Exception {
         Integer timetableId = 1;
         when(timetableServiceMock.findTimetableById(timetableId))
-                .thenThrow(new ResourceNotFoundException("Timetable with id=%d not found", timetableId));
+                .thenThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found",
+                        timetableId));
 
         mockMvc.perform(get("/timetables/{timetableId}", timetableId).locale(Locale.US))
                 .andExpect(status().isNotFound())
@@ -166,7 +168,8 @@ public class SearchTimetableControllerTest {
     void shouldShowNotFoundPageWhenSearchDailyTimetablesForNonExistentTeacher() throws Exception {
         Integer nonExistentTeacherId = 1;
         when(timetableServiceMock.findDailyTimetablesForTeacher(eq(nonExistentTeacherId), any(LocalDate.class)))
-                .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", nonExistentTeacherId));
+                .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found",
+                        nonExistentTeacherId));
 
         mockMvc.perform(get("/timetables/teacher/{teacherId}/day", nonExistentTeacherId).locale(Locale.US)
                 .param("targetDate", formatDate(LocalDate.now())))
@@ -239,7 +242,8 @@ public class SearchTimetableControllerTest {
     void shouldShowNotFoundPageWhenSearchDailyTimetablesForNonExistentStudent() throws Exception {
         Integer nonExistentStudentId = 1;
         when(timetableServiceMock.findDailyTimetablesForStudent(eq(nonExistentStudentId), any(LocalDate.class)))
-                .thenThrow(new ResourceNotFoundException("Student with id=%d not found", nonExistentStudentId));
+                .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found",
+                        nonExistentStudentId));
 
         mockMvc.perform(get("/timetables/student/{studentId}/day", nonExistentStudentId).locale(Locale.US)
                 .param("targetDate", formatDate(LocalDate.now())))
@@ -312,7 +316,8 @@ public class SearchTimetableControllerTest {
     void shouldShowNotFoundPageWhenSearchMonthlyTimetablesForNonExistentTeacher() throws Exception {
         Integer nonExistentTeacherId = 1;
         when(timetableServiceMock.findMonthlyTimetablesForTeacher(eq(nonExistentTeacherId), any(Month.class)))
-                .thenThrow(new ResourceNotFoundException("Teacher with id=%d not found", nonExistentTeacherId));
+                .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found",
+                        nonExistentTeacherId));
 
         mockMvc.perform(get("/timetables/teacher/{teacherId}/month", nonExistentTeacherId).locale(Locale.US)
                 .param("targetDate", formatMonth(LocalDate.now().getMonth())))
@@ -385,7 +390,8 @@ public class SearchTimetableControllerTest {
     void shouldShowNotFoundPageWhenSearchMonthlyTimetablesForNonExistentStudent() throws Exception {
         Integer nonExistentStudentId = 1;
         when(timetableServiceMock.findMonthlyTimetablesForStudent(eq(nonExistentStudentId), any(Month.class)))
-                .thenThrow(new ResourceNotFoundException("Student with id=%d not found", nonExistentStudentId));
+                .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found",
+                        nonExistentStudentId));
 
         mockMvc.perform(get("/timetables/student/{studentId}/month", nonExistentStudentId).locale(Locale.US)
                 .param("targetDate", formatMonth(LocalDate.now().getMonth())))

@@ -35,6 +35,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.course.CourseService;
@@ -44,11 +45,11 @@ import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.ui.common.util.Constants.Attribute;
+import org.vdragun.tms.ui.common.util.Constants.Message;
+import org.vdragun.tms.ui.common.util.Constants.Page;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
-import org.vdragun.tms.ui.web.util.Constants.Attribute;
-import org.vdragun.tms.ui.web.util.Constants.Message;
-import org.vdragun.tms.ui.web.util.Constants.Page;
 
 import io.florianlopes.spring.test.web.servlet.request.MockMvcRequestBuilderUtils;
 
@@ -57,7 +58,7 @@ import io.florianlopes.spring.test.web.servlet.request.MockMvcRequestBuilderUtil
  *
  */
 @WebMvcTest(controllers = UpdateStudentController.class)
-@Import({ WebMvcConfig.class, MessageProvider.class })
+@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
 @DisplayName("Update Student Controller")
 public class UpdateStudentControllerTest {
 
@@ -107,7 +108,7 @@ public class UpdateStudentControllerTest {
     void shouldShowPageNotFoundIfTryToGetUpdateFormForNonExistingStudent() throws Exception {
         Integer studentId = 1;
         when(studentServiceMock.findStudentById(studentId))
-                .thenThrow(new ResourceNotFoundException("Student with id=%d not found", studentId));
+                .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", studentId));
 
         mockMvc.perform(get("/students/{studentId}/update", studentId).locale(Locale.US))
                 .andExpect(status().isNotFound())
@@ -174,7 +175,7 @@ public class UpdateStudentControllerTest {
         Integer nonExistingStudentId = 1;
         Integer groupId = 1;
         List<Integer> courseIds = asList(1);
-        doThrow(new ResourceNotFoundException("Student with id=%d not found", nonExistingStudentId))
+        doThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", nonExistingStudentId))
                 .when(studentServiceMock).updateExistingStudent(any(UpdateStudentData.class));
 
         UpdateStudentData updateData = new UpdateStudentData(nonExistingStudentId, groupId, "Jack", "Smith", courseIds);

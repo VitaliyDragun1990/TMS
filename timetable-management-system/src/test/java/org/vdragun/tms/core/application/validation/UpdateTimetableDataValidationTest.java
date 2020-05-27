@@ -94,7 +94,7 @@ public class UpdateTimetableDataValidationTest extends AbstractValidationTest {
 
         BindingResult result = dataBinder.getBindingResult();
         assertThat(result.getAllErrors().size(), equalTo(1));
-        assertFieldErrors(result, "durationInMinutes", "NotNull");
+        assertFieldErrors(result, "duration", "NotNull");
     }
 
     @ParameterizedTest
@@ -114,7 +114,7 @@ public class UpdateTimetableDataValidationTest extends AbstractValidationTest {
 
         BindingResult result = dataBinder.getBindingResult();
         assertThat(result.getAllErrors().size(), equalTo(1));
-        assertFieldErrors(result, "durationInMinutes", "TimetableDuration");
+        assertFieldErrors(result, "duration", "TimetableDuration");
     }
 
     @Test

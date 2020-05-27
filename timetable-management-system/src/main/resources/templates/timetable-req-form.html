@@ -34,11 +34,11 @@
         <div class="form-group row">
           <label for="durationInMinutes" class="col-sm-2 col-form-label" th:text="#{label.duration}">Duration (mins)</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" th:field="*{durationInMinutes}" th:errorclass="is-invalid"
-                   th:classappend="${isValidated && !#fields.hasErrors('durationInMinutes')} ? 'is-valid'">
+            <input type="number" class="form-control" th:field="*{duration}" th:errorclass="is-invalid"
+                   th:classappend="${isValidated && !#fields.hasErrors('duration')} ? 'is-valid'">
             <span class="invalid-feedback">
               <ul>
-                <li th:each="err : ${#fields.errors('durationInMinutes')}" th:text=${err}>Please provide duration</li>
+                <li th:each="err : ${#fields.errors('duration')}" th:text=${err}>Please provide duration</li>
               </ul>
             </span>
           </div>

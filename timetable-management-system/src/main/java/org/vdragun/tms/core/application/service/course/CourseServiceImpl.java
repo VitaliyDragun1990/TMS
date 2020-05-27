@@ -57,7 +57,8 @@ public class CourseServiceImpl implements CourseService {
         LOG.debug("Searching for course with id={}", courseId);
 
         return courseDao.findById(courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Course with id=%d not found", courseId));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(Course.class, "Course with id=%d not found", courseId));
     }
 
     @Override
@@ -85,7 +86,9 @@ public class CourseServiceImpl implements CourseService {
     private Teacher getTeacher(Integer teacherId) {
         Optional<Teacher> result = teacherDao.findById(teacherId);
         if (!result.isPresent()) {
-            throw new ResourceNotFoundException("Fail to register new course: teacher with id=%d does not exist",
+            throw new ResourceNotFoundException(
+                    Teacher.class,
+                    "Fail to register new course: teacher with id=%d does not exist",
                     teacherId);
         }
         return result.get();
@@ -94,7 +97,9 @@ public class CourseServiceImpl implements CourseService {
     private Category getCategory(Integer categoryId) {
         Optional<Category> result = categoryDao.findById(categoryId);
         if (!result.isPresent()) {
-            throw new ResourceNotFoundException("Fail to register new course: category with id=%d does not exist",
+            throw new ResourceNotFoundException(
+                    Category.class,
+                    "Fail to register new course: category with id=%d does not exist",
                     categoryId);
         }
         return result.get();

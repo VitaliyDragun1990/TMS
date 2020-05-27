@@ -35,6 +35,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.classroom.ClassroomService;
@@ -42,18 +43,18 @@ import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.ui.common.util.Constants.Attribute;
+import org.vdragun.tms.ui.common.util.Constants.Message;
+import org.vdragun.tms.ui.common.util.Constants.Page;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
-import org.vdragun.tms.ui.web.util.Constants.Attribute;
-import org.vdragun.tms.ui.web.util.Constants.Message;
-import org.vdragun.tms.ui.web.util.Constants.Page;
 
 /**
  * @author Vitaliy Dragun
  *
  */
 @WebMvcTest(controllers = UpdateTimetableController.class)
-@Import({ WebMvcConfig.class, MessageProvider.class })
+@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
 @DisplayName("Update Timetable Controller")
 public class UpdateTimetableControllerTest {
 
@@ -122,7 +123,8 @@ public class UpdateTimetableControllerTest {
     void shouldShowNotFoundPageIfNoTimetableToUpdateWithGivenIdentifier() throws Exception {
         Integer timetableId = 1;
         when(timetableServiceMock.findTimetableById(any(Integer.class)))
-                .thenThrow(new ResourceNotFoundException("Timetable with id=%d not found", timetableId));
+                .thenThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found",
+                        timetableId));
 
         mockMvc.perform(get("/timetables/{timetableId}/update", timetableId).locale(Locale.US))
                 .andExpect(status().isNotFound())
@@ -142,7 +144,7 @@ public class UpdateTimetableControllerTest {
         mockMvc.perform(post("/timetables/{timetableId}", timetableId).locale(Locale.US)
                 .param("timetableId", timetableId.toString())
                 .param("startTime", formatDateTime(startTime))
-                .param("durationInMinutes", duration.toString())
+                .param("duration", duration.toString())
                 .param("classroomId", classroomId.toString()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(Attribute.INFO_MESSAGE,
@@ -164,11 +166,11 @@ public class UpdateTimetableControllerTest {
         mockMvc.perform(post("/timetables/{timetableId}", timetableId).locale(Locale.US)
                 .param("timetableId", timetableId.toString())
                 .param("startTime", formatDateTime(pastStartTime))
-                .param("durationInMinutes", invalidDuration.toString())
+                .param("duration", invalidDuration.toString())
                 .param("classroomId", invalidClassroomId.toString()))
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(3))
-                .andExpect(model().attributeHasFieldErrors("timetable", "startTime", "durationInMinutes",
+                .andExpect(model().attributeHasFieldErrors("timetable", "startTime", "duration",
                         "classroomId"))
                 .andExpect(model().attribute(Attribute.VALIDATED, equalTo(true)))
                 .andExpect(view().name(Page.TIMETABLE_UPDATE_FORM));
@@ -182,13 +184,13 @@ public class UpdateTimetableControllerTest {
         LocalDateTime startTime = LocalDateTime.now().plusDays(3).truncatedTo(ChronoUnit.MINUTES);
         Integer duration = 60;
         Integer classroomId = 1;
-        doThrow(new ResourceNotFoundException("Timetable with id=%d not found", timetableId))
+        doThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found", timetableId))
                 .when(timetableServiceMock).updateExistingTimetable(any(UpdateTimetableData.class));
 
         mockMvc.perform(post("/timetables/{timetableId}", timetableId).locale(Locale.US)
                 .param("timetableId", timetableId.toString())
                 .param("startTime", formatDateTime(startTime))
-                .param("durationInMinutes", duration.toString())
+                .param("duration", duration.toString())
                 .param("classroomId", classroomId.toString()))
                 .andExpect(status().isNotFound())
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
@@ -211,7 +213,7 @@ public class UpdateTimetableControllerTest {
         mockMvc.perform(post("/timetables/{timetableId}", invalidTimetableId).locale(Locale.US)
                 .param("timetableId", invalidTimetableId.toString())
                 .param("startTime", formatDateTime(startTime))
-                .param("durationInMinutes", duration.toString())
+                .param("duration", duration.toString())
                 .param("classroomId", classroomId.toString()))
                 .andExpect(status().isBadRequest())
                 .andExpect(model().attributeExists(Attribute.ERROR, Attribute.MESSAGE))

@@ -8,6 +8,8 @@ import javax.validation.constraints.Positive;
 
 import org.vdragun.tms.core.application.validation.TimetableDuration;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * Contains necessary data to create new timetable
  * 
@@ -18,11 +20,12 @@ public class CreateTimetableData {
 
     @NotNull
     @Future
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm[:ss]")
     private LocalDateTime startTime;
 
     @NotNull
     @TimetableDuration
-    private Integer durationInMinutes;
+    private Integer duration;
 
     @NotNull
     @Positive
@@ -42,7 +45,7 @@ public class CreateTimetableData {
     public CreateTimetableData(LocalDateTime startTime, Integer durationInMinutes, Integer courseId,
             Integer classroomId, Integer teacherId) {
         this.startTime = startTime;
-        this.durationInMinutes = durationInMinutes;
+        this.duration = durationInMinutes;
         this.courseId = courseId;
         this.classroomId = classroomId;
         this.teacherId = teacherId;
@@ -56,12 +59,12 @@ public class CreateTimetableData {
         this.startTime = startTime;
     }
 
-    public Integer getDurationInMinutes() {
-        return durationInMinutes;
+    public Integer getDuration() {
+        return duration;
     }
 
-    public void setDurationInMinutes(Integer durationInMinutes) {
-        this.durationInMinutes = durationInMinutes;
+    public void setDuration(Integer durationInMinutes) {
+        this.duration = durationInMinutes;
     }
 
     public Integer getCourseId() {
@@ -90,7 +93,7 @@ public class CreateTimetableData {
 
     @Override
     public String toString() {
-        return "TimetableData [startTime=" + startTime + ", durationInMinutes=" + durationInMinutes + ", courseId="
+        return "TimetableData [startTime=" + startTime + ", durationInMinutes=" + duration + ", courseId="
                 + courseId + ", classroomId=" + classroomId + ", teacherId=" + teacherId + "]";
     }
 

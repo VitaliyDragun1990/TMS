@@ -49,7 +49,8 @@ public class TeacherServiceImpl implements TeacherService {
         LOG.debug("Searching for teacher with id={}", teacherId);
 
         return dao.findById(teacherId)
-                .orElseThrow(() -> new ResourceNotFoundException("Teacher with id=%d not found", teacherId));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", teacherId));
     }
 
     @Override
@@ -70,7 +71,7 @@ public class TeacherServiceImpl implements TeacherService {
 
         return dao.findForCourseWithId(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Teacher for course with id=%d not found: No course with such id", courseId));
+                        Teacher.class, "Teacher for course with id=%d not found: No course with such id", courseId));
     }
 
 }

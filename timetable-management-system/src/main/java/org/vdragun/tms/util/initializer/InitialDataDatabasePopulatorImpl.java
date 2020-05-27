@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.core.domain.Category;
@@ -41,6 +42,10 @@ import org.vdragun.tms.util.generator.TimetableGenerator;
  */
 @Component
 @Transactional
+@ConditionalOnProperty(
+        name = "tms.stage.development",
+        havingValue = "true",
+        matchIfMissing = true)
 public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopulator {
     
     private static final Logger LOG = LoggerFactory.getLogger(InitialDataDatabasePopulatorImpl.class);

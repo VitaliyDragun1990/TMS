@@ -30,22 +30,23 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.service.student.CreateStudentData;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.ui.common.util.Constants.Attribute;
+import org.vdragun.tms.ui.common.util.Constants.Message;
+import org.vdragun.tms.ui.common.util.Constants.Page;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
-import org.vdragun.tms.ui.web.util.Constants.Attribute;
-import org.vdragun.tms.ui.web.util.Constants.Message;
-import org.vdragun.tms.ui.web.util.Constants.Page;
 
 /**
  * @author Vitaliy Dragun
  *
  */
 @WebMvcTest(controllers = RegisterStudentController.class)
-@Import({ WebMvcConfig.class, MessageProvider.class })
+@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
 @DisplayName("Register Student Controller")
 public class RegisterStudentControllerTest {
 

@@ -23,9 +23,11 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.config.SpringDataDaoConfig;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Course;
@@ -36,9 +38,10 @@ import org.vdragun.tms.dao.DBTestHelper;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.dao.TimetableDao;
 
-@SpringJUnitConfig(classes = { SpringDataDaoConfig.class, DaoTestConfig.class })
+@DataJpaTest
+@Import({ SpringDataDaoConfig.class, DaoTestConfig.class })
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 @DisplayName("Spring Data Timetable DAO")
-@Transactional
 public class SpringDataTimetableDaoTest {
 
     private static final LocalDate MARCH_TEN = LocalDate.of(2020, 3, 10);

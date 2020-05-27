@@ -45,7 +45,8 @@ public class CategoryServiceImpl implements CategoryService {
         LOG.debug("Searching for category with id={}", categoryId);
 
         return dao.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category with id=%d not found", categoryId));
+                .orElseThrow(() -> 
+                new ResourceNotFoundException(Category.class, "Category with id=%d not found", categoryId));
     }
 
     @Override

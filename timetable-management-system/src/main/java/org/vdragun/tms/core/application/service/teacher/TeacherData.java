@@ -8,6 +8,8 @@ import javax.validation.constraints.PastOrPresent;
 import org.vdragun.tms.core.application.validation.PersonName;
 import org.vdragun.tms.core.domain.Title;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * Contains necessary data to create new teacher
  * 
@@ -26,6 +28,7 @@ public class TeacherData {
 
     @NotNull
     @PastOrPresent
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dateHired;
 
     @NotNull
@@ -34,7 +37,11 @@ public class TeacherData {
     public TeacherData() {
     }
 
-    public TeacherData(String firstName, String lastName, LocalDate dateHired, Title title) {
+    public TeacherData(
+            String firstName,
+            String lastName,
+            LocalDate dateHired,
+            Title title) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateHired = dateHired;

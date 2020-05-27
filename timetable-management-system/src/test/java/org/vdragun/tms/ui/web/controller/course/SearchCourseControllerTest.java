@@ -20,22 +20,23 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
+import org.vdragun.tms.ui.common.util.Constants.Attribute;
+import org.vdragun.tms.ui.common.util.Constants.Message;
+import org.vdragun.tms.ui.common.util.Constants.Page;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
-import org.vdragun.tms.ui.web.util.Constants.Attribute;
-import org.vdragun.tms.ui.web.util.Constants.Message;
-import org.vdragun.tms.ui.web.util.Constants.Page;
 
 /**
  * @author Vitaliy Dragun
  *
  */
 @WebMvcTest(controllers = SearchCourseController.class)
-@Import({ WebMvcConfig.class, MessageProvider.class })
+@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
 @DisplayName("Search Course Controller")
 public class SearchCourseControllerTest {
 
@@ -87,7 +88,7 @@ public class SearchCourseControllerTest {
     void shouldShowNotFoundPageIfNoCourseWithGivenIdentifier() throws Exception {
         Integer courseId = 10;
         when(courseServiceMock.findCourseById(courseId))
-                .thenThrow(new ResourceNotFoundException("Course with id=%d not found", courseId));
+                .thenThrow(new ResourceNotFoundException(Course.class, "Course with id=%d not found", courseId));
         
         mockMvc
                 .perform(get("/courses/{courseId}", courseId).locale(Locale.US))

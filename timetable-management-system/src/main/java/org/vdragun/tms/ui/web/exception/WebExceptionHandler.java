@@ -1,14 +1,10 @@
 package org.vdragun.tms.ui.web.exception;
 
-import java.util.Locale;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -18,24 +14,25 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
-import org.vdragun.tms.ui.web.util.Constants.Attribute;
-import org.vdragun.tms.ui.web.util.Constants.Message;
-import org.vdragun.tms.ui.web.util.Constants.Page;
+import org.vdragun.tms.ui.common.util.Constants.Attribute;
+import org.vdragun.tms.ui.common.util.Constants.Message;
+import org.vdragun.tms.ui.common.util.Constants.Page;
+import org.vdragun.tms.ui.common.util.Translator;
 
 /**
- * Responsible for handling application exceptions by forwarding to respectful
- * error pages
+ * Responsible for handling application exceptions in web layer by forwarding to
+ * respectful error pages
  * 
  * @author Vitaliy Dragun
  *
  */
 @ControllerAdvice(basePackages = "org.vdragun.tms.ui.web.controller")
-public class ApplicationExceptionHandler {
+public class WebExceptionHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ApplicationExceptionHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WebExceptionHandler.class);
 
     @Autowired
-    private MessageSource messageSource;
+    private Translator translator;
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({ ResourceNotFoundException.class })
@@ -107,8 +104,7 @@ public class ApplicationExceptionHandler {
     }
 
     private String getMessage(String code, Object... args) {
-        Locale locale = LocaleContextHolder.getLocale();
-        return messageSource.getMessage(code, args, locale);
+        return translator.getLocalizedMessage(code, args);
     }
 
     private String extractMessage(Exception rootException) {
