@@ -3,6 +3,7 @@ package org.vdragun.tms.ui.rest.resource.v1.teacher;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class TeacherResource extends AbstractResource {
             responseCode = "200",
             description = "successful operation",
             content = @Content(
-                    mediaType = "application/hal+json",
+                    mediaType = APPLICATION_HAL_JSON,
                     array = @ArraySchema(schema = @Schema(implementation = TeacherModel.class))))
     @GetMapping
     @ResponseStatus(OK)
@@ -82,19 +83,19 @@ public class TeacherResource extends AbstractResource {
             responseCode = "200",
             description = "successful operation",
             content = @Content(
-                    mediaType = "applicaiton/hal+json",
+                    mediaType = APPLICATION_HAL_JSON,
                     schema = @Schema(implementation = TeacherModel.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Teacher not found",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/{teacherId}")
     @ResponseStatus(OK)
@@ -111,13 +112,13 @@ public class TeacherResource extends AbstractResource {
             responseCode = "201",
             description = "Teacher registered",
             content = @Content(
-                    mediaType = "application/hal+json",
+                    mediaType = APPLICATION_HAL_JSON,
                     schema = @Schema(implementation = TeacherModel.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @PostMapping
     public ResponseEntity<TeacherModel> registerNewTeacher(

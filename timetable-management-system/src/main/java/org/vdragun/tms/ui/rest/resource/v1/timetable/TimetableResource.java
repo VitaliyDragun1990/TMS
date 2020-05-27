@@ -3,6 +3,7 @@ package org.vdragun.tms.ui.rest.resource.v1.timetable;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -70,7 +71,7 @@ public class TimetableResource extends AbstractResource {
             responseCode = "200",
             description = "successful operation",
             content = @Content(
-                    mediaType = AbstractResource.APPLICATION_HAL_JSON,
+                    mediaType = APPLICATION_HAL_JSON,
                     array = @ArraySchema(schema = @Schema(implementation = TimetableModel.class))))
     @GetMapping
     @ResponseStatus(OK)
@@ -91,19 +92,19 @@ public class TimetableResource extends AbstractResource {
             responseCode = "200",
             description = "successful operation",
             content = @Content(
-                    mediaType = AbstractResource.APPLICATION_HAL_JSON,
+                    mediaType = APPLICATION_HAL_JSON,
                     schema = @Schema(implementation = TimetableModel.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Timetable not found",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/{timetableId}")
     @ResponseStatus(OK)
@@ -122,19 +123,19 @@ public class TimetableResource extends AbstractResource {
             responseCode = "200",
             description = "successful operation",
             content = @Content(
-                    mediaType = AbstractResource.APPLICATION_HAL_JSON,
+                    mediaType = APPLICATION_HAL_JSON,
                     schema = @Schema(implementation = TimetableModel.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Teacher with provided ID not found",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/teacher/{teacherId}/day")
     @ResponseStatus(OK)
@@ -171,19 +172,19 @@ public class TimetableResource extends AbstractResource {
             responseCode = "200",
             description = "successful operation",
             content = @Content(
-                    mediaType = AbstractResource.APPLICATION_HAL_JSON,
+                    mediaType = APPLICATION_HAL_JSON,
                     schema = @Schema(implementation = TimetableModel.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Teacher with provided ID not found",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/teacher/{teacherId}/month")
     @ResponseStatus(OK)
@@ -220,19 +221,19 @@ public class TimetableResource extends AbstractResource {
             responseCode = "200",
             description = "successful operation",
             content = @Content(
-                    mediaType = AbstractResource.APPLICATION_HAL_JSON,
+                    mediaType = APPLICATION_HAL_JSON,
                     schema = @Schema(implementation = TimetableModel.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Student with provided ID not found",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/student/{studentId}/day")
     @ResponseStatus(OK)
@@ -269,19 +270,19 @@ public class TimetableResource extends AbstractResource {
             responseCode = "200",
             description = "successful operation",
             content = @Content(
-                    mediaType = AbstractResource.APPLICATION_HAL_JSON,
+                    mediaType = APPLICATION_HAL_JSON,
                     schema = @Schema(implementation = TimetableModel.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Student with provided ID not found",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/student/{studentId}/month")
     @ResponseStatus(OK)
@@ -316,13 +317,13 @@ public class TimetableResource extends AbstractResource {
             responseCode = "201",
             description = "Timetable registered",
             content = @Content(
-                    mediaType = AbstractResource.APPLICATION_HAL_JSON,
+                    mediaType = APPLICATION_HAL_JSON,
                     schema = @Schema(implementation = TimetableModel.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @PostMapping
     public ResponseEntity<TimetableModel> registerNewTimetable(
@@ -346,19 +347,19 @@ public class TimetableResource extends AbstractResource {
             responseCode = "200",
             description = "Timetable updated",
             content = @Content(
-                    mediaType = AbstractResource.APPLICATION_HAL_JSON,
+                    mediaType = APPLICATION_HAL_JSON,
                     schema = @Schema(implementation = TimetableModel.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Timetable record to update not found",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @PutMapping(path = "/{timetableId}")
     @ResponseStatus(OK)
@@ -386,13 +387,13 @@ public class TimetableResource extends AbstractResource {
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Timetable record to delete not found",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @DeleteMapping("/{timetableId}")
     @ResponseStatus(OK)

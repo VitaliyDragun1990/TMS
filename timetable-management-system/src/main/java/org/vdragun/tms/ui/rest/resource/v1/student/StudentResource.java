@@ -3,6 +3,7 @@ package org.vdragun.tms.ui.rest.resource.v1.student;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class StudentResource extends AbstractResource {
             responseCode = "200",
             description = "successful operation",
             content = @Content(
-                    mediaType = AbstractResource.APPLICATION_HAL_JSON,
+                    mediaType = APPLICATION_HAL_JSON,
                     array = @ArraySchema(schema = @Schema(implementation = StudentModel.class))))
     @GetMapping
     @ResponseStatus(OK)
@@ -85,19 +86,19 @@ public class StudentResource extends AbstractResource {
             responseCode = "200",
             description = "successful operation",
             content = @Content(
-                    mediaType = AbstractResource.APPLICATION_HAL_JSON,
+                    mediaType = APPLICATION_HAL_JSON,
                     schema = @Schema(implementation = StudentModel.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Student not found",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/{studentId}")
     @ResponseStatus(OK)
@@ -114,13 +115,13 @@ public class StudentResource extends AbstractResource {
             responseCode = "201",
             description = "Student registered",
             content = @Content(
-                    mediaType = AbstractResource.APPLICATION_HAL_JSON,
+                    mediaType = APPLICATION_HAL_JSON,
                     schema = @Schema(implementation = StudentModel.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @PostMapping
     public ResponseEntity<StudentModel> registerNewStudent(
@@ -144,19 +145,19 @@ public class StudentResource extends AbstractResource {
             responseCode = "200",
             description = "Student updated",
             content = @Content(
-                    mediaType = AbstractResource.APPLICATION_HAL_JSON,
+                    mediaType = APPLICATION_HAL_JSON,
                     schema = @Schema(implementation = StudentModel.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Student record to update not found",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @PutMapping(path = "/{studentId}")
     @ResponseStatus(OK)
@@ -184,13 +185,13 @@ public class StudentResource extends AbstractResource {
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Student record to delete not found",
             content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @DeleteMapping("/{studentId}")
     @ResponseStatus(OK)
