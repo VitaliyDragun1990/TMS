@@ -3,6 +3,7 @@ package org.vdragun.tms.ui.common.converter;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
 import org.springframework.context.MessageSource;
@@ -31,11 +32,21 @@ public class LocalDateCustomFormatter implements Formatter<LocalDate> {
 
     @Override
     public LocalDate parse(String text, Locale locale) throws ParseException {
-        return LocalDate.parse(text, getFormatter(locale));
+        try {
+            return LocalDate.parse(text, getFormatter(locale));
+        } catch (DateTimeParseException e) {
+            // Fallback to default formatter
+            return LocalDate.parse(text, getDefaultFormatter(locale));
+        }
     }
 
     private DateTimeFormatter getFormatter(Locale locale) {
         String pattern = messageSource.getMessage(Message.DATE_FORMAT, null, locale);
+        return DateTimeFormatter.ofPattern(pattern);
+    }
+
+    private DateTimeFormatter getDefaultFormatter(Locale locale) {
+        String pattern = messageSource.getMessage(Message.DATE_FORMAT_DEFAULT, null, locale);
         return DateTimeFormatter.ofPattern(pattern);
     }
 }

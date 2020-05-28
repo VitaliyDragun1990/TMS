@@ -3,8 +3,7 @@ package org.vdragun.tms.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
-import org.vdragun.tms.ui.common.converter.LocalDateCustomFormatter;
-import org.vdragun.tms.ui.common.converter.LocalDateTimeCustomFormatter;
+import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.api.v1.converter.CourseToCourseModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.converter.StudentToStudentModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.converter.TeacherToTeacherModelConverter;
@@ -27,19 +26,18 @@ public class WebRestConfig {
     }
 
     @Bean
-    public StudentToStudentModelConverter studentToStudentModelConverter(LocalDateCustomFormatter formatter) {
-        return new StudentToStudentModelConverter(courseToCourseModelConverter(), formatter);
+    public StudentToStudentModelConverter studentToStudentModelConverter(Translator translator) {
+        return new StudentToStudentModelConverter(courseToCourseModelConverter(), translator);
     }
 
     @Bean
-    public TeacherToTeacherModelConverter teacherToTeacherModelConverter(LocalDateCustomFormatter formatter) {
-        return new TeacherToTeacherModelConverter(courseToCourseModelConverter(), formatter);
+    public TeacherToTeacherModelConverter teacherToTeacherModelConverter(Translator translator) {
+        return new TeacherToTeacherModelConverter(courseToCourseModelConverter(), translator);
     }
 
     @Bean
-    public TimetableToTimetableModelConverter timetableToTimetableModelConverter(
-            LocalDateTimeCustomFormatter formatter) {
-        return new TimetableToTimetableModelConverter(courseToCourseModelConverter(), formatter);
+    public TimetableToTimetableModelConverter timetableToTimetableModelConverter(Translator translator) {
+        return new TimetableToTimetableModelConverter(courseToCourseModelConverter(), translator);
     }
 
     @Bean

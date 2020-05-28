@@ -20,8 +20,11 @@ public final class Constants {
         public static final String TIMETABLES_FOR_TEACHER = "msg.timetablesForTeacher";
         public static final String TIMETABLES_FOR_STUDENT = "msg.timetablesForStudent";
         public static final String DATE_FORMAT = "format.date";
+        public static final String DATE_FORMAT_DEFAULT = "format.date.default";
         public static final String DATE_TIME_FORMAT = "format.datetime";
+        public static final String DATE_TIME_FORMAT_DEFAULT = "format.datetime.default";
         public static final String TIMESTAMP_FORMAT = "format.timestamp";
+        public static final String TIMESTAMP_FORMAT_DEFAULT = "format.timestamp.default";
         public static final String REQUESTED_RESOURCE = "msg.requestedResource";
         public static final String TIMETABLE_DELETE_SUCCESS = "msg.timetableDeleteSuccess";
         public static final String STUDENT_DELETE_SUCCESS = "msg.studentDeleteSuccess";

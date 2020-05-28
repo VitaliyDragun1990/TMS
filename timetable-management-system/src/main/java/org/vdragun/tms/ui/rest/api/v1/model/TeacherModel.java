@@ -3,9 +3,13 @@ package org.vdragun.tms.ui.rest.api.v1.model;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.hateoas.Links;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 import org.vdragun.tms.core.domain.Teacher;
+
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Data transfer object with essential information for particular
@@ -15,13 +19,28 @@ import org.vdragun.tms.core.domain.Teacher;
  *
  */
 @Relation(collectionRelation = "teachers", itemRelation = "teacher")
+@Schema(description = "DTO containing essential information about particular teacher")
 public class TeacherModel extends RepresentationModel<TeacherModel> {
 
+    @Schema(description = "Unique identifier of the teacher", example = "1")
     private Integer id;
+
+    @Schema(description = "Teacher first name", example = "John")
     private String firstName;
+
+    @Schema(description = "Teacher last name", example = "Smith")
     private String lastName;
+
+    @Schema(
+            description = "Teacher title",
+            example = "INSTRUCTOR",
+            allowableValues = { "PROFESSOR", "ASSOCIATE_PROFESSOR", "INSTRUCTOR" })
     private String title;
+
+    @Schema(description = "Date when particular teacher was hired", example = "2020-05-22")
     private String dateHired;
+
+    @ArraySchema(schema = @Schema(implementation = CourseModel.class))
     private List<CourseModel> courses;
 
     public TeacherModel() {
@@ -90,6 +109,12 @@ public class TeacherModel extends RepresentationModel<TeacherModel> {
         this.courses = courses;
     }
 
+    @Schema(hidden = true)
+    @Override
+    public Links getLinks() {
+        return super.getLinks();
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -112,7 +137,7 @@ public class TeacherModel extends RepresentationModel<TeacherModel> {
 
     @Override
     public String toString() {
-        return "TeacherDTO [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", title=" + title
+        return "TeacherModel [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", title=" + title
                 + ", dateHired=" + dateHired + ", courses=" + courses + "]";
     }
 

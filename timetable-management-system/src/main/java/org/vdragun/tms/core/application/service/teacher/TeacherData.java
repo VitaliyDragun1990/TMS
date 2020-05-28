@@ -10,28 +10,55 @@ import org.vdragun.tms.core.domain.Title;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * Contains necessary data to create new teacher
  * 
  * @author Vitaliy Dragun
  *
  */
+@Schema(description = "DTO (input model) containing information necessary to register new teacher")
 public class TeacherData {
 
     @NotNull
     @PersonName
+    @Schema(
+            description = "Teacher first name",
+            pattern = "^[A-Z]{1}[a-z]+$",
+            minLength = 2,
+            maxLength = 50,
+            example = "John",
+            required = true)
     private String firstName;
 
     @NotNull
     @PersonName
+    @Schema(
+            description = "Teacher last name",
+            pattern = "^[A-Z]{1}[a-z]+$",
+            minLength = 2,
+            maxLength = 50,
+            example = "Smith",
+            required = true)
     private String lastName;
 
     @NotNull
     @PastOrPresent
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Schema(
+            description = "Date when particular teacher was hired (past or present only)",
+            pattern = "yyyy-MM-dd",
+            example = "2020-05-22",
+            required = true)
     private LocalDate dateHired;
 
     @NotNull
+    @Schema(
+            description = "Teacher title",
+            example = "INSTRUCTOR",
+            allowableValues = { "PROFESSOR", "ASSOCIATE_PROFESSOR", "INSTRUCTOR" },
+            required = true)
     private Title title;
 
     public TeacherData() {

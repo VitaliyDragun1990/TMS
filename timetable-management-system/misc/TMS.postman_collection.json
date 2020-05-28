@@ -143,7 +143,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"firstName\": \"Anna\",\r\n  \"lastName\": \"Martines\",\r\n  \"dateHired\": \"24/04/2020\",\r\n  \"title\": \"INSTRUCTOR\"\r\n}",
+					"raw": "{\r\n  \"firstName\": \"Anna\",\r\n  \"lastName\": \"Martines\",\r\n  \"dateHired\": \"2020-04-24\",\r\n  \"title\": \"INSTRUCTOR\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -223,7 +223,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"firstName\": \"Anna\",\r\n  \"lastName\": \"Martines\",\r\n  \"enrollmentDate\": \"24/04/2020\"\r\n}",
+					"raw": "{\r\n  \"firstName\": \"Anna\",\r\n  \"lastName\": \"Martines\",\r\n  \"enrollmentDate\": \"2020-04-24\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -355,7 +355,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/timetables/student/2/day?targetDate=27/05/2020",
+					"raw": "http://localhost:8080/api/v1/timetables/student/2/day?targetDate=2020-05-27",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -372,7 +372,7 @@
 					"query": [
 						{
 							"key": "targetDate",
-							"value": "27/05/2020"
+							"value": "2020-05-27"
 						}
 					]
 				}
@@ -385,7 +385,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/timetables/teacher/2/day?targetDate=26/05/2020",
+					"raw": "http://localhost:8080/api/v1/timetables/teacher/2/day?targetDate=2020-05-26",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -402,7 +402,7 @@
 					"query": [
 						{
 							"key": "targetDate",
-							"value": "26/05/2020"
+							"value": "2020-05-26"
 						}
 					]
 				}
@@ -483,7 +483,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"startTime\": \"06/06/2020 14:30\",\r\n  \"duration\": 60,\r\n  \"courseId\": 1,\r\n  \"teacherId\": 1,\r\n  \"classroomId\": 1\r\n}",
+					"raw": "{\r\n  \"startTime\": \"2020-06-06 14:30\",\r\n  \"duration\": 60,\r\n  \"courseId\": 1,\r\n  \"teacherId\": 1,\r\n  \"classroomId\": 1\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -520,7 +520,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"timetableId\": 1,\r\n  \"startTime\": \"29/06/2020 14:30\",\r\n  \"duration\": 70,\r\n  \"classroomId\": 2\r\n}",
+					"raw": "{\r\n  \"timetableId\": 1,\r\n  \"startTime\": \"2020-06-29 14:30\",\r\n  \"duration\": 70,\r\n  \"classroomId\": 2\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

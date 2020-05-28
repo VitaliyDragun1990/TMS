@@ -6,11 +6,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
 
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.convert.converter.Converter;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
-import org.vdragun.tms.ui.common.converter.LocalDateCustomFormatter;
+import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.api.v1.model.TeacherModel;
 import org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource;
@@ -25,14 +24,12 @@ import org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource;
 public class TeacherToTeacherModelConverter implements Converter<Teacher, TeacherModel> {
 
     private CourseToCourseModelConverter courseConverter;
-    private LocalDateCustomFormatter dateFormatter;
+    private Translator translator;
 
 
-    public TeacherToTeacherModelConverter(
-            CourseToCourseModelConverter courseConverter,
-            LocalDateCustomFormatter dateFormatter) {
+    public TeacherToTeacherModelConverter(CourseToCourseModelConverter courseConverter, Translator translator) {
         this.courseConverter = courseConverter;
-        this.dateFormatter = dateFormatter;
+        this.translator = translator;
     }
 
     @Override
@@ -42,7 +39,8 @@ public class TeacherToTeacherModelConverter implements Converter<Teacher, Teache
                 teacher.getFirstName(),
                 teacher.getLastName(),
                 teacher.getTitle().name(),
-                dateFormatter.print(teacher.getDateHired(), LocaleContextHolder.getLocale()),
+                translator.formatDateDefault(teacher
+                        .getDateHired()),
                 convertToDTO(teacher.getCourses()));
 
         model.add(

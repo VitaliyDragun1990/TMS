@@ -23,6 +23,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * Class representing any API error. Contains relevant information about errors
  * that happen during REST calls.
@@ -30,14 +33,24 @@ import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
  * @author Vitaliy Dragun
  *
  */
-@JsonTypeInfo(include = As.WRAPPER_OBJECT, use = Id.CUSTOM, property = "error", visible = true)
+@JsonTypeInfo(include = As.WRAPPER_OBJECT, use = Id.CUSTOM)
 @JsonTypeIdResolver(LowerCaseClassNameResolver.class)
+@Schema(description = "DTO containing essential information about API error")
 public class ApiError {
 
+    @Schema(description = "HTTP statuis code of the error", example = "BAD_REQUEST")
     private HttpStatus status;
+
+    @Schema(description = "Timestamp when error occurred", example = "2020-05-24 12:30:48.356")
     private LocalDateTime timestamp;
+
+    @Schema(description = "Error message", example = "Provided identifier is invalid")
     private String message;
+
+    @Schema(description = "Debug message with detailed information about error cause", hidden = true)
     private String debugMessage;
+
+    @ArraySchema(schema = @Schema(implementation = ApiSubError.class))
     private List<ApiSubError> subErrors;
 
     public ApiError() {

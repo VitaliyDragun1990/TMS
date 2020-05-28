@@ -17,9 +17,15 @@ public interface Translator {
 
     String formatDate(LocalDate date);
 
+    String formatDateDefault(LocalDate date);
+
     String formatDateTime(LocalDateTime dateTime);
 
+    String formatDateTimeDefault(LocalDateTime dateTime);
+
     String formatTimestamp(LocalDateTime timestamp);
+
+    String formatTimestampDefault(LocalDateTime timestamp);
 
     String formatMonth(Month month);
 }

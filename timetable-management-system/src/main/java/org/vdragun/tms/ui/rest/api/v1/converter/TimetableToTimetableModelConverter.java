@@ -3,10 +3,9 @@ package org.vdragun.tms.ui.rest.api.v1.converter;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.convert.converter.Converter;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.ui.common.converter.LocalDateTimeCustomFormatter;
+import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource;
 
@@ -20,20 +19,18 @@ import org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource;
 public class TimetableToTimetableModelConverter implements Converter<Timetable, TimetableModel> {
 
     private CourseToCourseModelConverter courseConverter;
-    private LocalDateTimeCustomFormatter dateTimeFormatter;
+    private Translator translator;
 
-    public TimetableToTimetableModelConverter(
-            CourseToCourseModelConverter courseConverter,
-            LocalDateTimeCustomFormatter dateTimeFormatter) {
+    public TimetableToTimetableModelConverter(CourseToCourseModelConverter courseConverter, Translator translator) {
         this.courseConverter = courseConverter;
-        this.dateTimeFormatter = dateTimeFormatter;
+        this.translator = translator;
     }
 
     @Override
     public TimetableModel convert(Timetable timetable) {
         TimetableModel model = new TimetableModel(
                 timetable.getId(),
-                dateTimeFormatter.print(timetable.getStartTime(), LocaleContextHolder.getLocale()),
+                translator.formatDateTimeDefault(timetable.getStartTime()),
                 timetable.getDurationInMinutes(),
                 courseConverter.convert(timetable.getCourse()),
                 timetable.getClassroom().getId(),
