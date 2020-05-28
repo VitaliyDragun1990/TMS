@@ -31,11 +31,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.core.application.service.teacher.TeacherData;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Title;
-import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
@@ -45,7 +45,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
-@Import({ DaoTestConfig.class, JsonVerifier.class })
+@Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
 @DisplayName("Teacher Resource Register Functionality Integration Test")
 public class RegisterTeacherResourceTest {
 

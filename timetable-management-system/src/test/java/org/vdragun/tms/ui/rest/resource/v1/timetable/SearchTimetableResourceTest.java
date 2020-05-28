@@ -25,11 +25,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
+import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
@@ -38,7 +38,7 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
-@Import({ DaoTestConfig.class, JsonVerifier.class })
+@Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
 @DisplayName("Timetable Resource Search Functionality Integration Test")
 public class SearchTimetableResourceTest {
 
