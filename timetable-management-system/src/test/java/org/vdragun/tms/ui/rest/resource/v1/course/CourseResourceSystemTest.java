@@ -1,14 +1,12 @@
 package org.vdragun.tms.ui.rest.resource.v1.course;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
 import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL;
+
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,8 +35,8 @@ import com.github.database.rider.junit5.api.DBRider;
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
 @Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
-@DisplayName("Course Resource Register Functionality System Test")
-public class RegisterCourseResourceSystemTest {
+@DisplayName("Course Resource System Test")
+public class CourseResourceSystemTest {
 
     @Autowired
     private ObjectMapper mapper;
@@ -70,14 +68,33 @@ public class RegisterCourseResourceSystemTest {
                 request,
                 String.class);
 
-        assertThat(response.getStatusCode(), equalTo(CREATED));
-        String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
-
         assertThat(courseDao.findAll(), hasSize(1));
         Course registeredCourse = courseDao.findAll().get(0);
         jsonVerifier.verifyCourseJson(response.getBody(), registeredCourse);
+    }
 
+    @Test
+    @DataSet(value = "two-courses.yml", cleanAfter = true, disableConstraints = true)
+    void shouldReturnAllAvailableCoursesFromDatabase() throws Exception {
+        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL, String.class);
+
+        jsonVerifier.verifyJson(response.getBody(), "$._embedded.courses", hasSize(2));
+
+        List<Course> expectedCourses = courseDao.findAll();
+        jsonVerifier.verifyCourseJson(response.getBody(), expectedCourses);
+    }
+
+    @Test
+    @DataSet(value = "two-courses.yml", cleanAfter = true, disableConstraints = true)
+    void shouldReturnCourseByGivenIdentifierFromDatabase() throws Exception {
+        int courseId = 1;
+        ResponseEntity<String> response = restTemplate.getForEntity(
+                BASE_URL + "/{courseId}",
+                String.class,
+                courseId);
+
+        Course expectedCourse = courseDao.findAll().get(0);
+        jsonVerifier.verifyCourseJson(response.getBody(), expectedCourse);
     }
 
 }

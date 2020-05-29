@@ -1,14 +1,16 @@
 package org.vdragun.tms.ui.rest.resource.v1.timetable;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.http.HttpStatus.OK;
-import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource.BASE_URL;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
@@ -19,15 +21,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
+import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
+import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.TimetableDao;
 import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 
 @DBRider
@@ -36,17 +44,33 @@ import com.github.database.rider.junit5.api.DBRider;
         properties = "tms.stage.development=false")
 @Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
 @Transactional
-@DisplayName("Timetable Resource Search Functionality Integration Test")
-public class SearchTimetableResourceSystemTest {
+@DisplayName("Timetable Resource System Test")
+public class TimetableResourceSystemTest {
 
-    private static final Integer TEACHER_ID = 1;
+    private static final LocalDateTime REGISTER_TIMETABLE_START_TIME = LocalDateTime.now()
+            .plusDays(1)
+            .withHour(10)
+            .withMinute(0)
+            .truncatedTo(MINUTES);
+    private static final LocalDateTime UPDATE_TIMETABLE_START_TIME = LocalDateTime.now()
+            .plusDays(2)
+            .withHour(11)
+            .withMinute(0)
+            .truncatedTo(MINUTES);
+    private static final Integer TIMETABLE_ID = 1;
     private static final Integer STUDENT_ID = 1;
+    private static final Integer TEACHER_ID = 1;
+    private static final Integer CLASSROOM_ID_ONE = 1;
+    private static final Integer CLASSROOM_ID_TWO = 2;
+    private static final Integer COURSE_ID = 1;
+    private static final int DURATION_SIXTY = 60;
+    private static final int DURATION_SEVENTY = 70;
 
     @Autowired
     private TimetableDao timetableDao;
 
     @Autowired
-    private Translator translator;
+    private ObjectMapper mapper;
 
     @Autowired
     private JsonVerifier jsonVerifier;
@@ -54,14 +78,42 @@ public class SearchTimetableResourceSystemTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private Translator translator;
+
+    private HttpHeaders headers = new HttpHeaders();
+
+    @Test
+    @DataSet(value = "no-timetables.yml", cleanAfter = true, disableConstraints = true)
+    @ExpectedDataSet("one-timetable.yml")
+    void shouldRegisterNewTimetableInDatabase() throws Exception {
+        assertThat(timetableDao.findAll(), hasSize(0));
+
+        CreateTimetableData registerData = new CreateTimetableData(
+                REGISTER_TIMETABLE_START_TIME,
+                DURATION_SIXTY,
+                COURSE_ID,
+                CLASSROOM_ID_ONE,
+                TEACHER_ID);
+
+        headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(registerData), headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                BASE_URL,
+                request,
+                String.class);
+
+        List<Timetable> allTimetables = timetableDao.findAll();
+        assertThat(allTimetables, hasSize(1));
+        jsonVerifier.verifyTimetableJson(response.getBody(), allTimetables.get(0));
+    }
+    
     @Test
     @DataSet(value = "two-timetables.yml", cleanAfter = true, disableConstraints = true)
-    void shouldReturnAllAvailableTimetables() throws Exception {
+    void shouldReturnAllAvailableTimetablesFromDatabase() throws Exception {
         ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL, String.class);
 
-        assertThat(response.getStatusCode(), equalTo(OK));
-        String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(2));
 
         List<Timetable> expectedTimetables = timetableDao.findAll();
@@ -70,14 +122,11 @@ public class SearchTimetableResourceSystemTest {
 
     @Test
     @DataSet(value = "one-timetable.yml", cleanAfter = true, disableConstraints = true)
-    void shouldReturnTimetableByGivenIdentifier() throws Exception {
-        Integer timetableId = 1;
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{timetableId}", String.class,
-                timetableId);
-
-        assertThat(response.getStatusCode(), equalTo(OK));
-        String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+    void shouldReturnTimetableByGivenIdentifierFromDatabase() throws Exception {
+        ResponseEntity<String> response = restTemplate.getForEntity(
+                BASE_URL + "/{timetableId}",
+                String.class,
+                TIMETABLE_ID);
 
         Timetable expectedTimetable = timetableDao.findAll().get(0);
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetable);
@@ -85,17 +134,13 @@ public class SearchTimetableResourceSystemTest {
 
     @Test
     @DataSet(value = "two-timetables.yml", cleanAfter = true, disableConstraints = true)
-    void shouldReturnDailyTimetablesForTeacher() throws Exception {
+    void shouldReturnDailyTimetablesForTeacherFromDatabase() throws Exception {
         LocalDate targetDate = LocalDate.now().plusDays(1);
-        
+
         ResponseEntity<String> response = restTemplate.getForEntity(
                 BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDateDefault(targetDate),
                 String.class,
                 TEACHER_ID);
-
-        assertThat(response.getStatusCode(), equalTo(OK));
-        String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
 
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(1));
         List<Timetable> expectedTimetables = timetableDao.findDailyForTeacher(TEACHER_ID, targetDate);
@@ -104,7 +149,7 @@ public class SearchTimetableResourceSystemTest {
 
     @Test
     @DataSet(value = "two-timetables-for-student.yml", cleanAfter = true, disableConstraints = true)
-    void shouldReturnDailyTimetablesForStudent() throws Exception {
+    void shouldReturnDailyTimetablesForStudentFromDatabase() throws Exception {
         LocalDate targetDate = LocalDate.now().plusDays(1);
 
         ResponseEntity<String> response = restTemplate.getForEntity(
@@ -112,51 +157,82 @@ public class SearchTimetableResourceSystemTest {
                 String.class,
                 STUDENT_ID);
 
-        assertThat(response.getStatusCode(), equalTo(OK));
-        String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
-
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(2));
         List<Timetable> expectedTimetables = timetableDao.findDailyForStudent(STUDENT_ID, targetDate);
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
-    
+
     @Test
     @DataSet(value = "two-timetables.yml", cleanAfter = true, disableConstraints = true)
-    void shouldReturnMonthlyTimetablesForTeacher() throws Exception {
+    void shouldReturnMonthlyTimetablesForTeacherFromDatabase() throws Exception {
         Month targetMonth = LocalDate.now().getMonth();
-        
+
         ResponseEntity<String> response = restTemplate.getForEntity(
                 BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + translator.formatMonth(targetMonth),
                 String.class,
                 TEACHER_ID);
 
-        assertThat(response.getStatusCode(), equalTo(OK));
-        String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
-
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(1));
         List<Timetable> expectedTimetables = timetableDao.findMonthlyForTeacher(TEACHER_ID, targetMonth);
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
-    
+
     @Test
     @DataSet(value = "two-timetables-for-student.yml", cleanAfter = true, disableConstraints = true)
-    void shouldReturnMonthlyTimetablesForStudent() throws Exception {
+    void shouldReturnMonthlyTimetablesForStudentFromDatabase() throws Exception {
         Month targetMonth = LocalDate.now().getMonth();
-        
+
         ResponseEntity<String> response = restTemplate.getForEntity(
                 BASE_URL + "/student/{studentId}/month?targetMonth=" + translator.formatMonth(targetMonth),
                 String.class,
                 STUDENT_ID);
 
-        assertThat(response.getStatusCode(), equalTo(OK));
-        String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
-
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(2));
         List<Timetable> expectedTimetables = timetableDao.findMonthlyForStudent(STUDENT_ID, targetMonth);
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
+    }
+
+    @Test
+    @DataSet(value = "one-timetable.yml", cleanAfter = true, disableConstraints = true)
+    @ExpectedDataSet("one-timetable-updated.yml")
+    void shouldUpdateExistingTimetableInDatabase() throws Exception {
+        UpdateTimetableData updateData = new UpdateTimetableData(
+                TIMETABLE_ID,
+                UPDATE_TIMETABLE_START_TIME,
+                DURATION_SEVENTY,
+                CLASSROOM_ID_TWO);
+
+        headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{timetableId}",
+                PUT,
+                request,
+                String.class,
+                TIMETABLE_ID);
+
+        Timetable updatedTimetable = timetableDao.findById(TIMETABLE_ID).get();
+        jsonVerifier.verifyTimetableJson(response.getBody(), updatedTimetable);
+    }
+
+    @Test
+    @DataSet(value = "one-timetable.yml", cleanAfter = true, disableConstraints = true)
+    @ExpectedDataSet("no-timetables.yml")
+    void shouldDeleteTimetableByIdFromDatabase() throws Exception {
+        assertThat(timetableDao.findAll(), hasSize(1));
+
+        headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
+
+        restTemplate.exchange(
+                BASE_URL + "/{timetableId}",
+                DELETE,
+                request,
+                Void.class,
+                TIMETABLE_ID);
+
+        assertThat(timetableDao.findAll(), hasSize(0));
     }
 
 }
