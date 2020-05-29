@@ -6,15 +6,15 @@
         </encoder>
     </appender>
 
-    <logger name="org.vdragun.tms" level="info" additivity="false">
+    <logger name="org.vdragun.tms" level="trace" additivity="false">
         <appender-ref ref="CONSOLE" />
     </logger>
     
-    <logger name="org.springframework" level="warn" additivity="false">
+    <logger name="org.springframework" level="info" additivity="false">
         <appender-ref ref="CONSOLE" />
     </logger>
 
-    <root level="error">
+    <root level="info">
         <appender-ref ref="CONSOLE" />
     </root>
 

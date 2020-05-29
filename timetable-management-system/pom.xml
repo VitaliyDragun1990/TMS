@@ -22,6 +22,7 @@
         <springdoc.version>1.3.9</springdoc.version>
 
         <rider-junit5.version>1.13.1</rider-junit5.version>
+        <dbunit.version>2.7.0</dbunit.version>
         <junit-pioneer.version>0.5.3</junit-pioneer.version>
     </properties>
 
@@ -85,6 +86,10 @@
                 <version>${rider-junit5.version}</version>
                 <exclusions>
                     <exclusion>
+                        <groupId>org.dbunit</groupId>
+                        <artifactId>dbunit</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>org.junit.jupiter</groupId>
                         <artifactId>junit-jupiter-api</artifactId>
                     </exclusion>
@@ -101,6 +106,11 @@
                         <artifactId>junit</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.dbunit</groupId>
+                <artifactId>dbunit</artifactId>
+                <version>${dbunit.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -155,6 +165,11 @@
         <dependency>
             <groupId>com.github.database-rider</groupId>
             <artifactId>rider-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
             <scope>test</scope>
         </dependency>
 
