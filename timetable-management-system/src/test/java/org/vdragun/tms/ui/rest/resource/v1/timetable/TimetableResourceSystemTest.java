@@ -165,7 +165,7 @@ public class TimetableResourceSystemTest {
     @Test
     @DataSet(value = "two-timetables.yml", cleanAfter = true, disableConstraints = true)
     void shouldReturnMonthlyTimetablesForTeacherFromDatabase() throws Exception {
-        Month targetMonth = LocalDate.now().getMonth();
+        Month targetMonth = LocalDate.now().plusDays(1).getMonth();
 
         ResponseEntity<String> response = restTemplate.getForEntity(
                 BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + translator.formatMonth(targetMonth),
@@ -180,7 +180,7 @@ public class TimetableResourceSystemTest {
     @Test
     @DataSet(value = "two-timetables-for-student.yml", cleanAfter = true, disableConstraints = true)
     void shouldReturnMonthlyTimetablesForStudentFromDatabase() throws Exception {
-        Month targetMonth = LocalDate.now().getMonth();
+        Month targetMonth = LocalDate.now().plusDays(1).getMonth();
 
         ResponseEntity<String> response = restTemplate.getForEntity(
                 BASE_URL + "/student/{studentId}/month?targetMonth=" + translator.formatMonth(targetMonth),
