@@ -12,9 +12,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -361,7 +361,7 @@ public class SpringDataStudentDaoTest {
         assertThat(actual.getFirstName(), equalTo(expected.getFirstName()));
         assertThat(actual.getLastName(), equalTo(expected.getLastName()));
         if (expected.getGroup() == null) {
-            assertNull("Student in database should not have group assigned", actual.getGroup());
+            assertNull(actual.getGroup(), "Student in database should not have group assigned");
         } else {
             assertThat(actual.getGroup(), equalTo(expected.getGroup()));
         }

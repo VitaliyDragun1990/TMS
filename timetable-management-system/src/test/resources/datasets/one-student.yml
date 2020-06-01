@@ -1,0 +1,5 @@
+students:
+  - student_id: 1
+    s_first_name: "Jack"
+    s_last_name: "Smith"
+    enrollment_date: "2020-05-09"

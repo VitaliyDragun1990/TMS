@@ -1,0 +1,40 @@
+categories:
+  - category_id: 1
+    category_code: "ART"
+    category_description: "Art"
+  - category_id: 2
+    category_code: "BIO"
+    category_description: "Biology"
+  - category_id: 3
+    category_code: "HIS"
+    category_description: "History"
+
+teachers:
+  - teacher_id: 1
+    t_first_name: "Jack"
+    t_last_name: "Smith"
+    title: "Professor"
+    date_hired: "2020-05-09"
+  - teacher_id: 2
+    t_first_name: "Anna"
+    t_last_name: "Porter"
+    title: "Instructor"
+    date_hired: "2019-12-10"
+    
+courses:
+  - course_id: 1
+    course_name: "Advanced Biology"
+    course_description: "Amazing course"
+    category_id: 2
+    teacher_id: 1
+  - course_id: 2
+    course_name: "Core History"
+    course_description: "Amazing course"
+    category_id: 3
+    teacher_id: 2
+    
+classrooms:
+  - classroom_id: 1
+    capacity: 60
+  - classroom_id: 2
+    capacity: 60

@@ -1,0 +1,11 @@
+teachers:
+  - teacher_id: 1
+    t_first_name: "Jack"
+    t_last_name: "Smith"
+    title: "Professor"
+    date_hired: CURRENT_DATE
+  - teacher_id: 2
+    t_first_name: "Anna"
+    t_last_name: "Porter"
+    title: "Instructor"
+    date_hired: CURRENT_DATE

@@ -1,0 +1,11 @@
+categories:
+  - category_id: 1
+    category_code: "ART"
+    category_description: "Art"
+  - category_id: 2
+    category_code: "BIO"
+    category_description: "Biology"
+  - category_id: 3
+    category_code: "HIS"
+    category_description: "History"
+  

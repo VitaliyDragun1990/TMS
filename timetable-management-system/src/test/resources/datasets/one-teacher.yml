@@ -1,0 +1,6 @@
+teachers:
+  - teacher_id: 1
+    t_first_name: "Jack"
+    t_last_name: "Smith"
+    title: "Professor"
+    date_hired: "2020-05-09"
