@@ -2,6 +2,7 @@ package org.vdragun.tms.core.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.AttributeOverride;
@@ -47,19 +48,10 @@ public class Teacher extends Person {
     private List<Course> courses = new ArrayList<>();
 
     protected Teacher() {
-        this(null, null, null);
-    }
-
-    public Teacher(String firstName, String lastName, Title title) {
-        this(null, firstName, lastName, title);
     }
 
     public Teacher(String firstName, String lastName, Title title, LocalDate dateHired) {
         this(null, firstName, lastName, title, dateHired);
-    }
-
-    public Teacher(Integer id, String firstName, String lastName, Title title) {
-        this(id, firstName, lastName, title, LocalDate.now());
     }
 
     public Teacher(Integer id, String firstName, String lastName, Title title, LocalDate dateHired) {
@@ -67,7 +59,6 @@ public class Teacher extends Person {
         this.id = id;
         this.dateHired = dateHired;
         this.title = title;
-        courses = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -91,11 +82,7 @@ public class Teacher extends Person {
     }
 
     public List<Course> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
+        return Collections.unmodifiableList(courses);
     }
 
     public void addCourse(Course course) {

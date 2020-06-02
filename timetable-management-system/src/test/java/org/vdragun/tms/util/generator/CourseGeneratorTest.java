@@ -14,6 +14,7 @@ import static org.vdragun.tms.core.domain.Title.ASSOCIATE_PROFESSOR;
 import static org.vdragun.tms.core.domain.Title.INSTRUCTOR;
 import static org.vdragun.tms.core.domain.Title.PROFESSOR;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.hamcrest.Description;
@@ -38,9 +39,9 @@ public class CourseGeneratorTest {
             new Category("HIS", "History"),
             new Category("ENG", "English"));
     private static final List<Teacher> TEACHERS = asList(
-            new Teacher("Jack", "Smith", ASSOCIATE_PROFESSOR),
-            new Teacher("Anna", "Snow", PROFESSOR),
-            new Teacher("Maria", "Porter", INSTRUCTOR));
+            new Teacher("Jack", "Smith", ASSOCIATE_PROFESSOR, LocalDate.now()),
+            new Teacher("Anna", "Snow", PROFESSOR, LocalDate.now()),
+            new Teacher("Maria", "Porter", INSTRUCTOR, LocalDate.now()));
 
     private CourseGenerator generator;
 
