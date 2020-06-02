@@ -261,7 +261,7 @@ public class StudentServiceImplTest {
     }
 
     private Group groupStub() {
-        return new Group(GROUP_ID);
+        return new Group(GROUP_ID, "st-25");
     }
 
     private Course courseStab() {
