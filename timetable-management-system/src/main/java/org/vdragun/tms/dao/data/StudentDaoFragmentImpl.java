@@ -33,7 +33,7 @@ public class StudentDaoFragmentImpl implements StudentDaoFragment {
     public void removeFromCourse(Integer studentId, Integer courseId) {
         LOG.debug("Removing student with id={} from course with id={} in the database", studentId, courseId);
         Student student = entityManager.find(Student.class, studentId);
-        student.removeCourse(new Course(courseId));
+        student.removeCourse(entityManager.find(Course.class, courseId));
     }
 
     @Override
