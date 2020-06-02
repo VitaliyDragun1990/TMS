@@ -1,6 +1,7 @@
 package org.vdragun.tms.core.domain;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,26 +56,16 @@ public class Student extends Person {
     private Set<Course> courses = new HashSet<>();
 
     protected Student() {
-        this(null, null);
-    }
-
-    public Student(String firstName, String lastName) {
-        this(null, firstName, lastName);
     }
 
     public Student(String firstName, String lastName, LocalDate enrollmentDate) {
         this(null, firstName, lastName, enrollmentDate);
     }
 
-    public Student(Integer id, String firstName, String lastName) {
-        this(id, firstName, lastName, LocalDate.now());
-    }
-
     public Student(Integer id, String firstName, String lastName, LocalDate enrollmentDate) {
         super(firstName, lastName);
         this.id = id;
         this.enrollmentDate = enrollmentDate;
-        courses = new HashSet<>();
     }
 
     public Integer getId() {
@@ -98,11 +89,11 @@ public class Student extends Person {
     }
 
     public Set<Course> getCourses() {
-        return courses;
+        return Collections.unmodifiableSet(courses);
     }
 
     public void setCourses(Set<Course> courses) {
-        this.courses = courses;
+        courses.forEach(this::addCourse);
     }
 
     public void addCourse(Course course) {
