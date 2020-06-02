@@ -54,7 +54,7 @@ public class TestDataGenerator {
                     return new Course(
                             id,
                             "course-" + id,
-                            new Category(id, "CAT"),
+                            new Category(id, "CAT", null),
                             "course-" + id,
                             new Teacher("fname-" + id, "lname-" + id, Title.PROFESSOR, LocalDate.now()));
                 })

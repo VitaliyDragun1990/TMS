@@ -31,19 +31,10 @@ public class Category {
     private String description;
 
     protected Category() {
-        this(null);
-    }
-
-    public Category(String code) {
-        this(code, null);
     }
 
     public Category(String code, String description) {
         this(null, code, description);
-    }
-
-    public Category(Integer id, String code) {
-        this(id, code, null);
     }
 
     public Category(Integer id, String code, String description) {
@@ -54,10 +45,6 @@ public class Category {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getCode() {
