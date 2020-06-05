@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +35,7 @@ public class TimetableGeneratorTest {
     private static final int CLASS_DURATION_MINUTES = 60;
     private static final int MAX_CLASSES_PER_WEEK = 3;
 
-    private static final Teacher TEACHER = new Teacher(1, "John", "Doe", Title.PROFESSOR);
+    private static final Teacher TEACHER = new Teacher(1, "John", "Doe", Title.PROFESSOR, LocalDate.now());
     private static final Category CATEGORY = new Category(1, "ART", "Art");
 
     private static final List<Classroom> CLASSROOMS = Arrays.asList(

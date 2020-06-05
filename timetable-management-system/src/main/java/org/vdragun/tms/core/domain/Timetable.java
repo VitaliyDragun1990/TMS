@@ -48,15 +48,23 @@ public class Timetable {
     private Teacher teacher;
 
     protected Timetable() {
-        this(null, 0, null, null, null);
     }
 
-    public Timetable(LocalDateTime startTime, int durationInMinutes, Course course, Classroom classRoom,
+    public Timetable(
+            LocalDateTime startTime,
+            int durationInMinutes,
+            Course course,
+            Classroom classroom,
             Teacher teacher) {
-        this(null, startTime, durationInMinutes, course, classRoom, teacher);
+        this(null, startTime, durationInMinutes, course, classroom, teacher);
     }
 
-    public Timetable(Integer id, LocalDateTime startTime, int durationInMinutes, Course course, Classroom classroom,
+    public Timetable(
+            Integer id,
+            LocalDateTime startTime,
+            int durationInMinutes,
+            Course course,
+            Classroom classroom,
             Teacher teacher) {
         this.id = id;
         this.startTime = startTime;
@@ -68,10 +76,6 @@ public class Timetable {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public LocalDateTime getStartTime() {
@@ -136,10 +140,7 @@ public class Timetable {
 
     @Override
     public String toString() {
-        return "TimeTable [id=" + id + ", startTime=" + startTime + ", durationInMinutes=" + durationInMinutes
-                + ", course=" + course + ", classRoom=" + classroom
-                + ", teacher=" + teacher.getFirstName() + " " + teacher.getLastName()
-                + "]";
+        return "TimeTable [id=" + id + ", startTime=" + startTime + ", durationInMinutes=" + durationInMinutes + "]";
     }
 
 }

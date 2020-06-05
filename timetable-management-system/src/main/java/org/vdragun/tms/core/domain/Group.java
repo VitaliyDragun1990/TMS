@@ -28,11 +28,6 @@ public class Group {
     private String name;
 
     protected Group() {
-        this((Integer) null);
-    }
-
-    public Group(Integer id) {
-        this(id, null);
     }
 
     public Group(String name) {
@@ -46,10 +41,6 @@ public class Group {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {

@@ -1,37 +1,25 @@
 package org.vdragun.tms.core.domain;
 
+import javax.persistence.MappedSuperclass;
+
 /**
  * Abstract class with common properties that represents person
  * 
  * @author Vitaliy Dragun
  *
  */
+@MappedSuperclass
 abstract class Person {
 
-    protected Integer id;
     protected String firstName;
     protected String lastName;
-
-    public Person(Integer id, String firstName, String lastName) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
 
     public Person(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public Person() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    protected Person() {
     }
 
     public String getFirstName() {
@@ -48,26 +36,6 @@ abstract class Person {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    @Override
-    public int hashCode() {
-        return 2021;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Person other = (Person) obj;
-        return id != null && id.equals(other.id);
     }
     
 }

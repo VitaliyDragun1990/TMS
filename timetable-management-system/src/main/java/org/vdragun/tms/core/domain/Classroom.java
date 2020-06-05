@@ -28,7 +28,6 @@ public class Classroom {
     private int capacity;
 
     protected Classroom() {
-        this(0);
     }
 
     public Classroom(int capacity) {
@@ -42,10 +41,6 @@ public class Classroom {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public int getCapacity() {

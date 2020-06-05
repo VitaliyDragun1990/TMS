@@ -15,6 +15,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.vdragun.tms.core.domain.Title.PROFESSOR;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,9 +32,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
+import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.dao.CourseDao;
 import org.vdragun.tms.dao.GroupDao;
 import org.vdragun.tms.dao.StudentDao;
@@ -261,11 +264,15 @@ public class StudentServiceImplTest {
     }
 
     private Group groupStub() {
-        return new Group(GROUP_ID);
+        return new Group(GROUP_ID, "st-25");
     }
 
     private Course courseStab() {
-        return new Course(COURSE_ID);
+        return new Course(
+                COURSE_ID,
+                "English",
+                new Category(1, "ENG", "Description"),
+                new Teacher(1, "Anna", "Smith", PROFESSOR, LocalDate.now()));
     }
 
 }

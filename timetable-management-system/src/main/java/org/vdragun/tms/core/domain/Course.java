@@ -44,10 +44,6 @@ public class Course {
     protected Course() {
     }
 
-    public Course(Integer id) {
-        this.id = id;
-    }
-
     public Course(String name, Category category, Teacher teacher) {
         this(name, null, category, teacher);
     }
@@ -71,10 +67,6 @@ public class Course {
 
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -131,7 +123,7 @@ public class Course {
 
     @Override
     public String toString() {
-        return "Course [id=" + id + ", name=" + name + ", description=" + description + ", category=" + category + "]";
+        return "Course [id=" + id + ", name=" + name + ", description=" + description + "]";
     }
 
 }
