@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -54,7 +55,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
  *
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(basePackages = "org.vdragun.tms.ui.rest.resource")
+@RestControllerAdvice(basePackages = { "org.vdragun.tms.ui.rest.resource", "org.vdragun.tms.security.rest.resource" })
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -246,6 +247,19 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         apiError.setMessage(errorMsg);
         apiError.setDebugMessage(ex.getMessage());
 
+        return buildResponseEntity(apiError);
+    }
+
+    /**
+     * Handles {@link BadCredentialsException}. Triggered when fail to authenticate
+     * user
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
+        LOG.warn("Handling bad credentials exception", ex);
+
+        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED);
+        apiError.setMessage(ex.getMessage());
         return buildResponseEntity(apiError);
     }
 
