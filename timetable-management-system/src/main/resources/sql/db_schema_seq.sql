@@ -14,6 +14,12 @@ DROP SEQUENCE IF EXISTS classrooms_classroom_id_seq;
 DROP SEQUENCE IF EXISTS categories_category_id_seq;
 DROP SEQUENCE IF EXISTS groups_group_id_seq;
 
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS roles;
+DROP SEQUENCE IF EXISTS users_user_id_seq;
+DROP SEQUENCE IF EXISTS roles_role_id_seq;
+
 CREATE SEQUENCE groups_group_id_seq;
 
 CREATE TABLE groups (
@@ -90,3 +96,48 @@ CREATE TABLE student_courses (
     FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE RESTRICT,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE RESTRICT
 );
+
+CREATE SEQUENCE roles_role_id_seq;
+
+CREATE TABLE roles (
+	role_id INTEGER DEFAULT nextval('roles_role_id_seq') PRIMARY KEY,
+	role_name VARCHAR(50) NOT NULL,
+	created TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
+	updated TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
+	status VARCHAR(25) NOT NULL DEFAULT 'ACTIVE',
+	UNIQUE (role_name)
+);
+
+CREATE SEQUENCE users_user_id_seq;
+
+CREATE TABLE users (
+	user_id INTEGER DEFAULT nextval('users_user_id_seq') PRIMARY KEY,
+	username VARCHAR(50) NOT NULL,
+	first_name VARCHAR(50) NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+	email VARCHAR(100) NOT NULL,
+	password VARCHAR(100) NOT NULL,
+	created TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
+	updated TIMESTAMP NOT NULL DEFAULT LOCALTIMESTAMP,
+	status VARCHAR(25) NOT NULL DEFAULT 'ACTIVE',
+	UNIQUE (username),
+	UNIQUE (email)
+);
+
+CREATE TABLE user_roles (
+	user_id INTEGER NOT NULL,
+	role_id INTEGER NOT NULL,
+	PRIMARY KEY (user_id, role_id),
+	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+	FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE CASCADE
+);
+
+INSERT INTO roles (role_name) VALUES ('ROLE_ADMIN'), ('ROLE_USER');
+
+INSERT INTO USERS (username, first_name, last_name, email, password)
+VALUES 
+    ('admin', 'Admin', 'Superuser', 'admin@gmail.com', '$2y$04$bwzG1HjLiH5hVJtEaS3Wz.HNx4a6fbLeO0txIVpcNytdqaIFaeETO'),
+    ('user', 'User', 'Plainuser', 'user@gmail.com', '$2y$04$bwzG1HjLiH5hVJtEaS3Wz.HNx4a6fbLeO0txIVpcNytdqaIFaeETO');
+    
+INSERT INTO user_roles (user_id, role_id) VALUES (1, 1), (2, 2);
+
