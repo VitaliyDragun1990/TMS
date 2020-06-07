@@ -1,0 +1,36 @@
+roles:
+ - role_id: 100000
+   role_name: "ROLE_ADMIN"
+ - role_id: 100001
+   role_name: "ROLE_STUDENT"
+ - role_id: 100002
+   role_name: "ROLE_TEACHER"
+
+users:
+ - user_id: 100000
+   username: "admin"
+   first_name: "Admin"
+   last_name: "Admin"
+   email: "admin@gmail.com"
+   password: "$2y$04$bwzG1HjLiH5hVJtEaS3Wz.HNx4a6fbLeO0txIVpcNytdqaIFaeETO"#'password'
+ - user_id: 100001
+   username: "student"
+   first_name: "Student"
+   last_name: "Student"
+   email: "student@gmail.com"
+   password: "$2y$04$bwzG1HjLiH5hVJtEaS3Wz.HNx4a6fbLeO0txIVpcNytdqaIFaeETO"#'password'
+ - user_id: 100002
+   username: "teacher"
+   first_name: "Teacher"
+   last_name: "Teacher"
+   email: "teacher@gmail.com"
+   password: "$2y$04$bwzG1HjLiH5hVJtEaS3Wz.HNx4a6fbLeO0txIVpcNytdqaIFaeETO"#'password'
+   
+user_roles:
+ - user_id: 100000
+   role_id: 100000
+ - user_id: 100001
+   role_id: 100001
+ - user_id: 100002
+   role_id: 100002
+  

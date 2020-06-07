@@ -2,12 +2,14 @@ package org.vdragun.tms.ui.rest.resource.v1.course;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
@@ -24,6 +27,8 @@ import org.vdragun.tms.core.application.service.course.CourseData;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.dao.CourseDao;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
+import org.vdragun.tms.ui.rest.resource.v1.TestTokenGenerator;
+import org.vdragun.tms.util.Constants.Roles;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
@@ -34,9 +39,18 @@ import com.github.database.rider.junit5.api.DBRider;
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
-@Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
+@Import({
+        EmbeddedDataSourceConfig.class,
+        JsonVerifier.class,
+        TestTokenGenerator.class
+})
 @DisplayName("Course Resource System Test")
 public class CourseResourceSystemTest {
+
+    private static final String BEARER = "Bearer_";
+    private static final String ADMIN = "admin";
+
+    private String authToken;
 
     @Autowired
     private ObjectMapper mapper;
@@ -50,17 +64,26 @@ public class CourseResourceSystemTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private TestTokenGenerator tokenGenerator;
+
     private HttpHeaders headers = new HttpHeaders();
+
+    @BeforeEach
+    void generateAuthToken() {
+        authToken = tokenGenerator.generateToken(ADMIN, Roles.ADMIN);
+    }
 
     @Test
     @Transactional
-    @DataSet(value = "empty-courses.yml", cleanAfter = true, disableConstraints = true)
+    @DataSet(value = { "empty-courses.yml", "three-users.yml" }, cleanAfter = true, disableConstraints = true)
     @ExpectedDataSet("one-course.yml")
     void shouldRegisterNewCourseInTheDatabase() throws Exception {
         assertThat(courseDao.findAll(), hasSize(0));
         CourseData registerData = new CourseData("New Art", "Amazing course", 1, 1);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(AUTHORIZATION, BEARER + authToken);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(registerData), headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(
@@ -74,9 +97,15 @@ public class CourseResourceSystemTest {
     }
 
     @Test
-    @DataSet(value = "two-courses.yml", cleanAfter = true, disableConstraints = true)
+    @DataSet(value = { "two-courses.yml", "three-users.yml" }, cleanAfter = true, disableConstraints = true)
     void shouldReturnAllAvailableCoursesFromDatabase() throws Exception {
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL, String.class);
+        headers.add(AUTHORIZATION, BEARER + authToken);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL,
+                HttpMethod.GET,
+                request,
+                String.class);
 
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.courses", hasSize(2));
 
@@ -85,11 +114,16 @@ public class CourseResourceSystemTest {
     }
 
     @Test
-    @DataSet(value = "two-courses.yml", cleanAfter = true, disableConstraints = true)
+    @DataSet(value = { "two-courses.yml", "three-users.yml" }, cleanAfter = true, disableConstraints = true)
     void shouldReturnCourseByGivenIdentifierFromDatabase() throws Exception {
         int courseId = 1;
-        ResponseEntity<String> response = restTemplate.getForEntity(
+
+        headers.add(AUTHORIZATION, BEARER + authToken);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/{courseId}",
+                HttpMethod.GET,
+                request,
                 String.class,
                 courseId);
 

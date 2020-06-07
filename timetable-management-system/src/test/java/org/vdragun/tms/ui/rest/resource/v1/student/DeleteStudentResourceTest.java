@@ -27,17 +27,20 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.test.context.ActiveProfiles;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.domain.Student;
-import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
+import org.vdragun.tms.util.Constants.Message;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
 @Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
+@ActiveProfiles("test")
 @DisplayName("Student Resource Delete Functionality Integration Test")
 public class DeleteStudentResourceTest {
 
@@ -51,6 +54,9 @@ public class DeleteStudentResourceTest {
 
     @MockBean
     private StudentService studentServiceMock;
+
+    @MockBean
+    private AuthenticationManager authManagerMock;
 
     private HttpHeaders headers = new HttpHeaders();
 

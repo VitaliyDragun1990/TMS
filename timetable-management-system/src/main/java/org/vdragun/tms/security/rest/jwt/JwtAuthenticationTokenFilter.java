@@ -39,6 +39,7 @@ public class JwtAuthenticationTokenFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+        LOG.debug("IN doFilter - Looking for JWT token in current reqeust...");
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
 
         try {
@@ -46,8 +47,10 @@ public class JwtAuthenticationTokenFilter extends GenericFilterBean {
                 jwtTokenProvider.validateToken(token);
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                LOG.debug("IN doFilter - Successfully authenticated user with username: {}",
+                LOG.debug("IN doFilter - JWT token found: successfully authenticated user with username: {}",
                         authentication.getName());
+            } else {
+              LOG.debug("IN doFilter - Current request does not contain JWT token");  
             }
             chain.doFilter(request, response);
         } catch (AuthenticationException ex) {

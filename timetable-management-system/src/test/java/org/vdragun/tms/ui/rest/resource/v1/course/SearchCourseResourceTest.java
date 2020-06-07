@@ -23,18 +23,21 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.test.context.ActiveProfiles;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
-import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
+import org.vdragun.tms.util.Constants.Message;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
 @Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
+@ActiveProfiles("test")
 @DisplayName("Course Resource Search Functionality Integration Test")
 public class SearchCourseResourceTest {
 
@@ -48,6 +51,9 @@ public class SearchCourseResourceTest {
 
     @MockBean
     private CourseService courseServiceMock;
+
+    @MockBean
+    private AuthenticationManager authManagerMock;
 
     private EntityGenerator generator = new EntityGenerator();
 
