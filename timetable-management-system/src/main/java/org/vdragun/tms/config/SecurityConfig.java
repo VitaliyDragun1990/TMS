@@ -5,6 +5,8 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+import static org.vdragun.tms.util.Constants.Roles.ADMIN;
+import static org.vdragun.tms.util.Constants.Roles.TEACHER;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -63,20 +65,20 @@ public class SecurityConfig {
                     .antMatchers(REGISTER_ENDPOINT, LOGIN_ENDPOINT).permitAll()
                     // courses
                     .antMatchers(GET, "/api/v1/courses", "/api/v1/courses/**").authenticated()
-                    .antMatchers(POST, "/api/v1/courses").hasRole("ADMIN")
+                    .antMatchers(POST, "/api/v1/courses").hasAuthority(ADMIN)
                     // students
-                    .antMatchers(GET, "/api/v1/students", "/api/v1/students/**").hasAnyRole("ADMIN", "TEACHER")
-                    .antMatchers(POST, "/api/v1/students").hasRole("ADMIN")
-                    .antMatchers(PUT, "/api/v1/students/**").hasRole("ADMIN")
-                    .antMatchers(DELETE, "/api/v1/students/**").hasRole("ADMIN")
+                    .antMatchers(GET, "/api/v1/students", "/api/v1/students/**").hasAnyAuthority(ADMIN, TEACHER)
+                    .antMatchers(POST, "/api/v1/students").hasAuthority(ADMIN)
+                    .antMatchers(PUT, "/api/v1/students/**").hasAuthority(ADMIN)
+                    .antMatchers(DELETE, "/api/v1/students/**").hasAuthority(ADMIN)
                     // teachers
-                    .antMatchers(GET, "/api/v1/teachers", "/api/v1/teachers/**").hasAnyRole("ADMIN", "TEACHER")
-                    .antMatchers(POST, "/api/v1/teachers").hasRole("ADMIN")
+                    .antMatchers(GET, "/api/v1/teachers", "/api/v1/teachers/**").hasAnyAuthority(ADMIN, TEACHER)
+                    .antMatchers(POST, "/api/v1/teachers").hasAuthority(ADMIN)
                     // timetables
                     .antMatchers(GET, "/api/v1/timetables", "/api/v1/timetables/**").authenticated()
-                    .antMatchers(POST, "/api/v1/timetables").hasRole("ADMIN")
-                    .antMatchers(PUT, "/api/v1/timetables/**").hasRole("ADMIN")
-                    .antMatchers(DELETE, "/api/v1/timetables/**").hasRole("ADMIN")
+                    .antMatchers(POST, "/api/v1/timetables").hasAuthority(ADMIN)
+                    .antMatchers(PUT, "/api/v1/timetables/**").hasAuthority(ADMIN)
+                    .antMatchers(DELETE, "/api/v1/timetables/**").hasAuthority(ADMIN)
                      // other
                     .anyRequest().authenticated()
                     .and().exceptionHandling()
