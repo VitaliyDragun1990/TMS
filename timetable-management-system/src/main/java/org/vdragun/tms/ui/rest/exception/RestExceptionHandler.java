@@ -40,8 +40,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
-import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.util.translator.Translator;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -258,8 +258,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
         LOG.warn("Handling bad credentials exception", ex);
 
+        String errorMsg = translator.getLocalizedMessage(Message.BAD_CREDENTIALS);
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED);
-        apiError.setMessage(ex.getMessage());
+        apiError.setMessage(errorMsg);
         return buildResponseEntity(apiError);
     }
 

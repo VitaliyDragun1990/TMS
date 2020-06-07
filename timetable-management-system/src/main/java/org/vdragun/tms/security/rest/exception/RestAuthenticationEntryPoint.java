@@ -13,11 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import org.vdragun.tms.security.rest.jwt.JwtAuthenticationException;
 import org.vdragun.tms.ui.rest.exception.ApiError;
+import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.util.translator.Translator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
+ * Custom implementation of {@link AuthenticationEntryPoint} for handling
+ * {@link AuthenticationException}
+ * 
  * @author Vitaliy Dragun
  *
  */
@@ -25,9 +31,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private ObjectMapper mapper;
+    private Translator translator;
 
-    public RestAuthenticationEntryPoint(ObjectMapper mapper) {
+    public RestAuthenticationEntryPoint(ObjectMapper mapper, Translator translator) {
         this.mapper = mapper;
+        this.translator = translator;
     }
 
     @Override
@@ -35,8 +43,9 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
             HttpServletRequest request,
             HttpServletResponse response,
             AuthenticationException ex) throws IOException, ServletException {
+        String errorMsg = getMessage(ex);
         ApiError error = new ApiError(UNAUTHORIZED);
-        error.setMessage(ex.getMessage());
+        error.setMessage(errorMsg);
 
         response.setContentType("application/json");
         response.setStatus(SC_UNAUTHORIZED);
@@ -44,6 +53,13 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         ServletOutputStream out = response.getOutputStream();
         mapper.writeValue(out, error);
         out.flush();
+    }
+
+    private String getMessage(AuthenticationException ex) {
+        if (ex instanceof JwtAuthenticationException) {
+            return translator.getLocalizedMessage(Message.INVALID_JWT_TOKEN);
+        }
+        return translator.getLocalizedMessage(Message.AUTHENTICATION_REQUIRED);
     }
 
 }

@@ -46,6 +46,10 @@ public final class Constants {
         public static final String INTERNAL_SERVER_ERROR = "msg.internalServerError";
         public static final String ARGUMENT_TYPE_MISSMATCH = "msg.argumentTypeMissmatch";
         public static final String POSITIVE_ID = "Positive.id";
+        public static final String BAD_CREDENTIALS = "msg.badCredentials";
+        public static final String ACCESS_DENIED = "msg.accessDenied";
+        public static final String AUTHENTICATION_REQUIRED = "msg.authenticationRequired";
+        public static final String INVALID_JWT_TOKEN = "msg.invalidJwtToken";
 
         private Message() {
         }

@@ -39,7 +39,7 @@ public class JwtAuthenticationTokenFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        LOG.debug("IN doFilter - Looking for JWT token in current reqeust...");
+        LOG.debug("IN doFilter - Looking for JWT token in current request...");
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
 
         try {
