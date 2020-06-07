@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.common.util;
+package org.vdragun.tms.util;
 
 /**
  * Contains constant values used across web layer
@@ -98,5 +98,12 @@ public final class Constants {
 
         private Attribute() {
         }
+    }
+
+    public static final class Roles {
+
+        public static final String ADMIN = "ROLE_ADMIN";
+        public static final String STUDENT = "ROLE_STUDENT";
+        public static final String TEACHER = "ROLE_TEACHER";
     }
 }
