@@ -19,10 +19,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
 import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.translator.Translator;
 
 /**
  * Application error controller

@@ -5,9 +5,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.core.convert.converter.Converter;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource;
+import org.vdragun.tms.util.translator.Translator;
 
 /**
  * Custom converter to convert {@link Timetable} domain entity into

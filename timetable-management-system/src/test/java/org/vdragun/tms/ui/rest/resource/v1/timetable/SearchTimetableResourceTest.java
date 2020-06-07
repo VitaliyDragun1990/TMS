@@ -32,10 +32,10 @@ import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.util.translator.Translator;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,

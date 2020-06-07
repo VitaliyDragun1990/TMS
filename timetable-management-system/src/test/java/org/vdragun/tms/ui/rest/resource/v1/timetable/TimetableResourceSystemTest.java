@@ -33,10 +33,10 @@ import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.TimetableDao;
-import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.rest.resource.v1.TestTokenGenerator;
 import org.vdragun.tms.util.Constants.Roles;
+import org.vdragun.tms.util.translator.Translator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;

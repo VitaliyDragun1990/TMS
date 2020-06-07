@@ -3,13 +3,13 @@ package org.vdragun.tms.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
-import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.api.v1.converter.CourseToCourseModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.converter.StudentToStudentModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.converter.TeacherToTeacherModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.converter.TimetableToTimetableModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.DefaultModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
+import org.vdragun.tms.util.translator.Translator;
 
 /**
  * Contains configuration specific to RESTful resources

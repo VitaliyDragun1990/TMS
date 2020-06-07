@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.common.util;
+package org.vdragun.tms.util.translator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

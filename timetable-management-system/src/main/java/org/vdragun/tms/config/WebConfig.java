@@ -11,8 +11,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.vdragun.tms.ui.common.converter.LocalDateCustomFormatter;
 import org.vdragun.tms.ui.common.converter.LocalDateTimeCustomFormatter;
-import org.vdragun.tms.ui.common.util.DefaultTranslator;
-import org.vdragun.tms.ui.common.util.Translator;
+import org.vdragun.tms.util.translator.DefaultTranslator;
+import org.vdragun.tms.util.translator.Translator;
 
 /**
  * Contains common configuration for UI layer.

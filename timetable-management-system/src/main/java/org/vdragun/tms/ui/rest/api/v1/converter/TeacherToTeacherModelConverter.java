@@ -9,10 +9,10 @@ import java.util.List;
 import org.springframework.core.convert.converter.Converter;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
-import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.api.v1.model.TeacherModel;
 import org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource;
+import org.vdragun.tms.util.translator.Translator;
 
 /**
  * Custom converter to convert {@link Teacher} domain entity into

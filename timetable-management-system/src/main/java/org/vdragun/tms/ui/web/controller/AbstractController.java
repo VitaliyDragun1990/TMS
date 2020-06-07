@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.vdragun.tms.ui.common.util.Translator;
+import org.vdragun.tms.util.translator.Translator;
 
 /**
  * Parent class with common functionality for all application controllers.
