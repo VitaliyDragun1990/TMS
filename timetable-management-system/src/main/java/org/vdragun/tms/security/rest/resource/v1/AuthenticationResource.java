@@ -1,5 +1,6 @@
 package org.vdragun.tms.security.rest.resource.v1;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 import org.slf4j.Logger;
@@ -14,6 +15,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.vdragun.tms.security.rest.service.AuthenticationService;
 import org.vdragun.tms.security.rest.service.SigninRequest;
 import org.vdragun.tms.security.rest.service.SigninResponse;
+import org.vdragun.tms.security.rest.service.SignupRequest;
+import org.vdragun.tms.security.rest.service.SignupResponse;
 
 /**
  * RESTful resource responsible for authentication application user
@@ -42,6 +45,15 @@ public class AuthenticationResource {
                 request.getUsername(), getRequestUri());
 
         return authService.processSignInRequest(request);
+    }
+
+    @PostMapping("/signup")
+    @ResponseStatus(CREATED)
+    public SignupResponse signup(@RequestBody SignupRequest request) {
+        LOG.trace("IN signup - Received POST request to sign up new user with data: {}, URL: {}",
+                request, getRequestUri());
+
+        return authService.processSignUpRequest(request);
     }
 
     private String getRequestUri() {

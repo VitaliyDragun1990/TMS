@@ -7,9 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.vdragun.tms.security.dao.RoleDao;
 import org.vdragun.tms.security.dao.UserDao;
-import org.vdragun.tms.security.model.Role;
 import org.vdragun.tms.security.model.Status;
 import org.vdragun.tms.security.model.User;
 
@@ -25,21 +23,16 @@ public class UserServiceImpl implements UserService {
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private UserDao userDao;
-    private RoleDao roleDao;
     private PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserDao userDao, RoleDao roleDao, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
-        this.roleDao = roleDao;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     @Override
     public User register(User user) {
-        Role roleUser = roleDao.findByName("ROLE_USER");
-        user.addRole(roleUser);
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(Status.ACTIVE);
 
