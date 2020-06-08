@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.rest.resource.v1.student;
+package org.vdragun.tms.system;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,7 +25,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.core.application.service.student.CreateStudentData;
 import org.vdragun.tms.core.application.service.student.UpdateStudentData;
@@ -36,11 +35,13 @@ import org.vdragun.tms.ui.rest.resource.v1.TestTokenGenerator;
 import org.vdragun.tms.util.Constants.Roles;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 
 @DBRider
+@DBUnit(schema = "PUBLIC")
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
@@ -88,7 +89,6 @@ public class StudentResourceSystemTest {
     }
 
     @Test
-    @Transactional
     @DataSet({ "three-users.yml" })
     @ExpectedDataSet("one-student.yml")
     void shouldRegisterNewStudentInDatabase() throws Exception {

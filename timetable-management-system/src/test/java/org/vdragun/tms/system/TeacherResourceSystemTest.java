@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.rest.resource.v1.teacher;
+package org.vdragun.tms.system;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -22,7 +22,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.core.application.service.teacher.TeacherData;
 import org.vdragun.tms.core.domain.Teacher;
@@ -33,11 +32,13 @@ import org.vdragun.tms.ui.rest.resource.v1.TestTokenGenerator;
 import org.vdragun.tms.util.Constants.Roles;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 
 @DBRider
+@DBUnit(schema = "PUBLIC")
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
@@ -46,7 +47,6 @@ import com.github.database.rider.junit5.api.DBRider;
         JsonVerifier.class,
         TestTokenGenerator.class
 })
-@Transactional
 @DisplayName("Teacher Resource System Test")
 public class TeacherResourceSystemTest {
 

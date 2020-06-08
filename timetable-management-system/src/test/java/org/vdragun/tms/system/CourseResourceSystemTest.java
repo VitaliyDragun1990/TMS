@@ -1,4 +1,4 @@
-package org.vdragun.tms.ui.rest.resource.v1.course;
+package org.vdragun.tms.system;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -21,7 +21,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.core.application.service.course.CourseData;
 import org.vdragun.tms.core.domain.Course;
@@ -75,7 +74,6 @@ public class CourseResourceSystemTest {
     }
 
     @Test
-    @Transactional
     @DataSet(value = { "empty-courses.yml", "three-users.yml" }, cleanAfter = true, disableConstraints = true)
     @ExpectedDataSet("one-course.yml")
     void shouldRegisterNewCourseInTheDatabase() throws Exception {

@@ -261,6 +261,10 @@ public class JsonVerifier {
         jPath(expression).assertValue(body, matcher);
     }
 
+    public String getValueByExpression(String body, String expression) {
+        return String.valueOf(jPath(expression).evaluateJsonPath(body));
+    }
+
     private JsonPathExpectationsHelper jPath(String expression) {
         return new JsonPathExpectationsHelper(expression);
     }
