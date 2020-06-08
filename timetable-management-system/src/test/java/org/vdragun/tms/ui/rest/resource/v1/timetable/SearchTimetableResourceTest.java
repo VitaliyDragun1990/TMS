@@ -35,7 +35,7 @@ import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.translator.Translator;
+import org.vdragun.tms.util.localizer.TemporalLocalizer;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
@@ -51,7 +51,7 @@ public class SearchTimetableResourceTest {
     private static final Integer STUDENT_ID = 1;
 
     @Autowired
-    private Translator translator;
+    private TemporalLocalizer temporalLocalizer;
 
     @Autowired
     private JsonVerifier jsonVerifier;
@@ -102,7 +102,7 @@ public class SearchTimetableResourceTest {
         when(timetableServiceMock.findDailyTimetablesForTeacher(TEACHER_ID, targetDate)).thenReturn(expectedTimetables);
         
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDateDefault(targetDate),
+                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
                 String.class,
                 TEACHER_ID);
 
@@ -120,7 +120,7 @@ public class SearchTimetableResourceTest {
         when(timetableServiceMock.findDailyTimetablesForStudent(STUDENT_ID, targetDate)).thenReturn(expectedTimetables);
 
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/student/{studentId}/day?targetDate=" + translator.formatDateDefault(targetDate),
+                BASE_URL + "/student/{studentId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
                 String.class,
                 STUDENT_ID);
 
@@ -139,7 +139,7 @@ public class SearchTimetableResourceTest {
                 .thenReturn(expectedTimetables);
         
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + translator.formatMonth(targetMonth),
+                BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
                 String.class,
                 TEACHER_ID);
 
@@ -158,7 +158,7 @@ public class SearchTimetableResourceTest {
                 .thenReturn(expectedTimetables);
         
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/student/{studentId}/month?targetMonth=" + translator.formatMonth(targetMonth),
+                BASE_URL + "/student/{studentId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
                 String.class,
                 STUDENT_ID);
 
@@ -224,7 +224,7 @@ public class SearchTimetableResourceTest {
         LocalDate targetDate = LocalDate.now();
 
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDateDefault(targetDate),
+                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
                 String.class,
                 invalidId);
 
@@ -244,7 +244,7 @@ public class SearchTimetableResourceTest {
                 .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", TEACHER_ID));
 
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDateDefault(targetDate),
+                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
                 String.class,
                 TEACHER_ID);
 
@@ -263,7 +263,7 @@ public class SearchTimetableResourceTest {
         LocalDate targetDate = LocalDate.now();
 
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDateDefault(targetDate),
+                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
                 String.class,
                 negativeId);
 
@@ -313,7 +313,7 @@ public class SearchTimetableResourceTest {
         Month targetMonth = Month.MAY;
 
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + translator.formatMonth(targetMonth),
+                BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
                 String.class,
                 invalidId);
 
@@ -333,7 +333,7 @@ public class SearchTimetableResourceTest {
                 .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", TEACHER_ID));
 
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + translator.formatMonth(targetMonth),
+                BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
                 String.class,
                 TEACHER_ID);
 
@@ -352,7 +352,7 @@ public class SearchTimetableResourceTest {
         Month targetMonth = Month.MAY;
 
         ResponseEntity<String> response = restTemplate.getForEntity(
-                BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + translator.formatMonth(targetMonth),
+                BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
                 String.class,
                 negativeId);
 

@@ -13,7 +13,7 @@ import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.resource.v1.student.StudentResource;
-import org.vdragun.tms.util.translator.Translator;
+import org.vdragun.tms.util.localizer.TemporalLocalizer;
 
 /**
  * Custom converter to convert {@link Student} domain entity into
@@ -25,11 +25,12 @@ import org.vdragun.tms.util.translator.Translator;
 public class StudentToStudentModelConverter implements Converter<Student, StudentModel> {
 
     private CourseToCourseModelConverter courseConverter;
-    private Translator translator;
+    private TemporalLocalizer temporalLocalizer;
 
-    public StudentToStudentModelConverter(CourseToCourseModelConverter courseConverter, Translator translator) {
+    public StudentToStudentModelConverter(CourseToCourseModelConverter courseConverter,
+            TemporalLocalizer temporalLocalizer) {
         this.courseConverter = courseConverter;
-        this.translator = translator;
+        this.temporalLocalizer = temporalLocalizer;
     }
 
     @Override
@@ -39,7 +40,8 @@ public class StudentToStudentModelConverter implements Converter<Student, Studen
                 student.getFirstName(),
                 student.getLastName(),
                 student.getGroup() != null ? student.getGroup().getName() : null,
-                translator.formatDateDefault(student.getEnrollmentDate()),
+                temporalLocalizer.localizeDateDefault(student
+                        .getEnrollmentDate()),
                 convertToDTO(student.getCourses()));
 
         model.add(

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
 import org.vdragun.tms.util.Constants.Page;
-import org.vdragun.tms.util.translator.Translator;
+import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 /**
  * Application error controller
@@ -36,7 +36,7 @@ public class GlobalErrorController extends AbstractErrorController {
     private static final Logger log = LoggerFactory.getLogger(GlobalErrorController.class);
 
     @Autowired
-    private Translator translator;
+    private MessageLocalizer messageLocalizer;
 
     public GlobalErrorController(ErrorAttributes errorAttributes, List<ErrorViewResolver> errorViewResolvers) {
         super(errorAttributes, errorViewResolvers);
@@ -84,7 +84,7 @@ public class GlobalErrorController extends AbstractErrorController {
     }
 
     private String getMessage(String code, Object... args) {
-        return translator.getLocalizedMessage(code, args);
+        return messageLocalizer.getLocalizedMessage(code, args);
     }
 
 }

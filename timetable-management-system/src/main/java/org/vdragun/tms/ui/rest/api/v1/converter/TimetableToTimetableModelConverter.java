@@ -7,7 +7,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource;
-import org.vdragun.tms.util.translator.Translator;
+import org.vdragun.tms.util.localizer.TemporalLocalizer;
 
 /**
  * Custom converter to convert {@link Timetable} domain entity into
@@ -19,18 +19,19 @@ import org.vdragun.tms.util.translator.Translator;
 public class TimetableToTimetableModelConverter implements Converter<Timetable, TimetableModel> {
 
     private CourseToCourseModelConverter courseConverter;
-    private Translator translator;
+    private TemporalLocalizer temporalLocalizer;
 
-    public TimetableToTimetableModelConverter(CourseToCourseModelConverter courseConverter, Translator translator) {
+    public TimetableToTimetableModelConverter(CourseToCourseModelConverter courseConverter,
+            TemporalLocalizer temporalLocalizer) {
         this.courseConverter = courseConverter;
-        this.translator = translator;
+        this.temporalLocalizer = temporalLocalizer;
     }
 
     @Override
     public TimetableModel convert(Timetable timetable) {
         TimetableModel model = new TimetableModel(
                 timetable.getId(),
-                translator.formatDateTimeDefault(timetable.getStartTime()),
+                temporalLocalizer.localizeDateTimeDefault(timetable.getStartTime()),
                 timetable.getDurationInMinutes(),
                 courseConverter.convert(timetable.getCourse()),
                 timetable.getClassroom().getId(),

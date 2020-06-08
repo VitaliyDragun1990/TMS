@@ -41,7 +41,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.translator.Translator;
+import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -62,7 +62,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(RestExceptionHandler.class);
 
     @Autowired
-    private Translator translator;
+    private MessageLocalizer messageLocalizer;
 
     @Autowired
     private MessageSource messageSource;
@@ -79,7 +79,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest request) {
         LOG.warn("Handling missing request parameter exception for parameter: [{}]", ex.getParameterName());
 
-        String errorMsg = translator.getLocalizedMessage(Message.MISSING_REQUIRED_PARAMETER, ex.getParameterName());
+        String errorMsg = messageLocalizer.getLocalizedMessage(Message.MISSING_REQUIRED_PARAMETER,
+                ex.getParameterName());
         return buildResponseEntity(new ApiError(BAD_REQUEST, errorMsg, ex));
     }
 
@@ -103,7 +104,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         String supportedTypes = mediaTypes.stream()
                 .map(MediaType::toString)
                 .collect(joining(", "));
-        String errorMsg = translator.getLocalizedMessage(Message.UNSUPPORTED_MEDIA_TYPE, supportedTypes);
+        String errorMsg = messageLocalizer.getLocalizedMessage(Message.UNSUPPORTED_MEDIA_TYPE, supportedTypes);
 
         return buildResponseEntity(new ApiError(UNSUPPORTED_MEDIA_TYPE, errorMsg, ex), headers);
     }
@@ -121,7 +122,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         LOG.warn("Handling method argument not valid exception", ex);
 
         ApiError apiError = new ApiError(BAD_REQUEST);
-        apiError.setMessage(translator.getLocalizedMessage(Message.VALIDATION_ERROR));
+        apiError.setMessage(messageLocalizer.getLocalizedMessage(Message.VALIDATION_ERROR));
         apiError.addFieldValidationErrors(ex.getBindingResult().getFieldErrors(), messageSource);
         apiError.addGlobalValidationErrors(ex.getBindingResult().getGlobalErrors(), messageSource);
         return buildResponseEntity(apiError);
@@ -136,7 +137,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         LOG.warn("Handling constraint violation exception", ex);
 
         ApiError apiError = new ApiError(BAD_REQUEST);
-        apiError.setMessage(translator.getLocalizedMessage(Message.VALIDATION_ERROR));
+        apiError.setMessage(messageLocalizer.getLocalizedMessage(Message.VALIDATION_ERROR));
         apiError.addValidationErrors(ex.getConstraintViolations(), messageSource);
         return buildResponseEntity(apiError);
     }
@@ -150,7 +151,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         LOG.warn("Handling resource not found exception", ex);
 
         ApiError apiError = new ApiError(NOT_FOUND);
-        apiError.setMessage(translator.getLocalizedMessage(Message.RESOURCE_NOT_FOUND,
+        apiError.setMessage(messageLocalizer.getLocalizedMessage(
+                Message.RESOURCE_NOT_FOUND,
                 ex.getResourceClass().getSimpleName()));
         return buildResponseEntity(apiError);
     }
@@ -169,7 +171,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         LOG.warn("Handling HTTP message not readable exception: {} to {}",
                 webRequest.getHttpMethod(), webRequest.getRequest().getServletPath(), ex);
 
-        String errorMsg = translator.getLocalizedMessage(Message.MALFORMED_JSON_REQUEST);
+        String errorMsg = messageLocalizer.getLocalizedMessage(Message.MALFORMED_JSON_REQUEST);
         return buildResponseEntity(new ApiError(BAD_REQUEST, errorMsg, ex));
     }
 
@@ -184,7 +186,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest request) {
         LOG.error("Handling HTTP message not writable exception", ex);
 
-        String errorMsg = translator.getLocalizedMessage(Message.MALFORMED_JSON_RESPONSE);
+        String errorMsg = messageLocalizer.getLocalizedMessage(Message.MALFORMED_JSON_RESPONSE);
         return buildResponseEntity(new ApiError(INTERNAL_SERVER_ERROR, errorMsg, ex));
     }
 
@@ -202,7 +204,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getHttpMethod(), ex.getRequestURL(), ex);
 
         ApiError apiError = new ApiError(BAD_REQUEST);
-        apiError.setMessage(translator.getLocalizedMessage(Message.NO_HANDLER_FOUND,
+        apiError.setMessage(messageLocalizer.getLocalizedMessage(
+                Message.NO_HANDLER_FOUND,
                 ex.getHttpMethod(), ex.getRequestURL()));
         apiError.setDebugMessage(ex.getMessage());
         return buildResponseEntity(apiError);
@@ -219,12 +222,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         if (ex.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
             LOG.warn("Handling DB Constraint violation exception", ex.getCause());
             
-            String errorMsg = translator.getLocalizedMessage(Message.DB_ERROR);
+            String errorMsg = messageLocalizer.getLocalizedMessage(Message.DB_ERROR);
             return buildResponseEntity(new ApiError(HttpStatus.CONFLICT, errorMsg, ex.getCause()));
         }
         LOG.error("Handling data integrity violation exception", ex);
 
-        String errorMsg = translator.getLocalizedMessage(Message.INTERNAL_SERVER_ERROR);
+        String errorMsg = messageLocalizer.getLocalizedMessage(Message.INTERNAL_SERVER_ERROR);
         return buildResponseEntity(new ApiError(INTERNAL_SERVER_ERROR, errorMsg, ex));
     }
 
@@ -241,7 +244,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         Object offendingValue = ex.getValue();
         Class<?> requiredType = ex.getRequiredType();
         
-        String errorMsg = translator.getLocalizedMessage(Message.ARGUMENT_TYPE_MISSMATCH,
+        String errorMsg = messageLocalizer.getLocalizedMessage(
+                Message.ARGUMENT_TYPE_MISSMATCH,
                 argumentName, offendingValue, requiredType);
         ApiError apiError = new ApiError(BAD_REQUEST);
         apiError.setMessage(errorMsg);
@@ -258,7 +262,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex) {
         LOG.warn("Handling bad credentials exception", ex);
 
-        String errorMsg = translator.getLocalizedMessage(Message.BAD_CREDENTIALS);
+        String errorMsg = messageLocalizer.getLocalizedMessage(Message.BAD_CREDENTIALS);
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED);
         apiError.setMessage(errorMsg);
         return buildResponseEntity(apiError);
@@ -278,7 +282,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleApplicationException(Exception ex) {
         LOG.error("Handling application exception", ex);
 
-        String errorMsg = translator.getLocalizedMessage(Message.INTERNAL_SERVER_ERROR);
+        String errorMsg = messageLocalizer.getLocalizedMessage(Message.INTERNAL_SERVER_ERROR);
         return buildResponseEntity(new ApiError(INTERNAL_SERVER_ERROR, errorMsg, ex));
     }
 

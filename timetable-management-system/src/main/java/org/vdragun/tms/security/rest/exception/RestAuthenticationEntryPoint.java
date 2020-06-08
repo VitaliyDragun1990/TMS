@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.vdragun.tms.security.rest.jwt.JwtAuthenticationException;
 import org.vdragun.tms.ui.rest.exception.ApiError;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.translator.Translator;
+import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,11 +31,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private ObjectMapper mapper;
-    private Translator translator;
+    private MessageLocalizer messageLocalizer;
 
-    public RestAuthenticationEntryPoint(ObjectMapper mapper, Translator translator) {
+    public RestAuthenticationEntryPoint(ObjectMapper mapper, MessageLocalizer messageLocalizer) {
         this.mapper = mapper;
-        this.translator = translator;
+        this.messageLocalizer = messageLocalizer;
     }
 
     @Override
@@ -57,9 +57,9 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private String getMessage(AuthenticationException ex) {
         if (ex instanceof JwtAuthenticationException) {
-            return translator.getLocalizedMessage(Message.INVALID_JWT_TOKEN);
+            return messageLocalizer.getLocalizedMessage(Message.INVALID_JWT_TOKEN);
         }
-        return translator.getLocalizedMessage(Message.AUTHENTICATION_REQUIRED);
+        return messageLocalizer.getLocalizedMessage(Message.AUTHENTICATION_REQUIRED);
     }
 
 }

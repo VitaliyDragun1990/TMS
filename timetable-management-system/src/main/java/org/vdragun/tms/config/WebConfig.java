@@ -11,8 +11,10 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.vdragun.tms.ui.common.converter.LocalDateCustomFormatter;
 import org.vdragun.tms.ui.common.converter.LocalDateTimeCustomFormatter;
-import org.vdragun.tms.util.translator.DefaultTranslator;
-import org.vdragun.tms.util.translator.Translator;
+import org.vdragun.tms.util.localizer.MessageLocalizer;
+import org.vdragun.tms.util.localizer.TemporalLocalizer;
+import org.vdragun.tms.util.localizer.UserLocaleMessageLocalizer;
+import org.vdragun.tms.util.localizer.UserLocaleTemporalLocalizer;
 
 /**
  * Contains common configuration for UI layer.
@@ -40,8 +42,13 @@ public class WebConfig {
     }
 
     @Bean
-    public Translator translator() {
-        return new DefaultTranslator(messageSource);
+    public MessageLocalizer messageLocalizer() {
+        return new UserLocaleMessageLocalizer(messageSource);
+    }
+
+    @Bean
+    public TemporalLocalizer temporalLocalizer() {
+        return new UserLocaleTemporalLocalizer(messageSource);
     }
 
     @Bean

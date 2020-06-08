@@ -36,7 +36,7 @@ import org.vdragun.tms.dao.TimetableDao;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.rest.resource.v1.TestTokenGenerator;
 import org.vdragun.tms.util.Constants.Roles;
-import org.vdragun.tms.util.translator.Translator;
+import org.vdragun.tms.util.localizer.TemporalLocalizer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
@@ -93,7 +93,7 @@ public class TimetableResourceSystemTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private Translator translator;
+    private TemporalLocalizer temporalLocalizer;
 
     @Autowired
     private TestTokenGenerator tokenGenerator;
@@ -173,7 +173,7 @@ public class TimetableResourceSystemTest {
         headers.add(AUTHORIZATION, BEARER + authToken);
         HttpEntity<?> request = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(
-                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + translator.formatDateDefault(targetDate),
+                BASE_URL + "/teacher/{teacherId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
                 HttpMethod.GET,
                 request,
                 String.class,
@@ -195,7 +195,7 @@ public class TimetableResourceSystemTest {
         headers.add(AUTHORIZATION, BEARER + authToken);
         HttpEntity<?> request = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(
-                BASE_URL + "/student/{studentId}/day?targetDate=" + translator.formatDateDefault(targetDate),
+                BASE_URL + "/student/{studentId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
                 HttpMethod.GET,
                 request,
                 String.class,
@@ -215,7 +215,7 @@ public class TimetableResourceSystemTest {
         HttpEntity<?> request = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate
                 .exchange(
-                BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + translator.formatMonth(targetMonth),
+                BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
                         HttpMethod.GET,
                         request,
                 String.class,
@@ -237,7 +237,7 @@ public class TimetableResourceSystemTest {
         headers.add(AUTHORIZATION, BEARER + authToken);
         HttpEntity<?> request = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(
-                BASE_URL + "/student/{studentId}/month?targetMonth=" + translator.formatMonth(targetMonth),
+                BASE_URL + "/student/{studentId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
                 HttpMethod.GET,
                 request,
                 String.class,

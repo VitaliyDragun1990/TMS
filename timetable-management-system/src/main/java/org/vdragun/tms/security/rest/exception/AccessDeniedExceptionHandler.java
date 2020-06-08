@@ -15,7 +15,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 import org.vdragun.tms.ui.rest.exception.ApiError;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.translator.Translator;
+import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,11 +30,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class AccessDeniedExceptionHandler implements AccessDeniedHandler {
 
     private ObjectMapper mapper;
-    private Translator translator;
+    private MessageLocalizer messageLocalizer;
 
-    public AccessDeniedExceptionHandler(ObjectMapper mapper, Translator translator) {
+    public AccessDeniedExceptionHandler(ObjectMapper mapper, MessageLocalizer messageLocalizer) {
         this.mapper = mapper;
-        this.translator = translator;
+        this.messageLocalizer = messageLocalizer;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class AccessDeniedExceptionHandler implements AccessDeniedHandler {
             HttpServletRequest request,
             HttpServletResponse response,
             AccessDeniedException ex) throws IOException, ServletException {
-        String errorMsg = translator.getLocalizedMessage(Message.ACCESS_DENIED);
+        String errorMsg = messageLocalizer.getLocalizedMessage(Message.ACCESS_DENIED);
         ApiError error = new ApiError(FORBIDDEN);
         error.setMessage(errorMsg);
 

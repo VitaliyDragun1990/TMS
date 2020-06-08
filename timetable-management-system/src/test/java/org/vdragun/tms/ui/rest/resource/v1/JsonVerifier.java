@@ -20,7 +20,7 @@ import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.api.v1.model.TeacherModel;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
-import org.vdragun.tms.util.translator.Translator;
+import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 /**
  * Contains convenient methods to facilitate testing JSON structure in tests
@@ -32,15 +32,15 @@ import org.vdragun.tms.util.translator.Translator;
 public class JsonVerifier {
 
     private ModelConverter modelConverter;
-    private Translator translator;
+    private MessageLocalizer messageLocalizer;
 
-    public JsonVerifier(ModelConverter modelConverter, Translator translator) {
+    public JsonVerifier(ModelConverter modelConverter, MessageLocalizer messageLocalizer) {
         this.modelConverter = modelConverter;
-        this.translator = translator;
+        this.messageLocalizer = messageLocalizer;
     }
 
     public void verifyErrorMessage(String json, String msgCode, Object... msgArgs) throws Exception {
-        String expectedMessage = translator.getLocalizedMessage(msgCode, msgArgs);
+        String expectedMessage = messageLocalizer.getLocalizedMessage(msgCode, msgArgs);
         jPath("$.apierror.message").assertValue(json, equalTo(expectedMessage));
     }
 
@@ -49,7 +49,7 @@ public class JsonVerifier {
             String propertyName,
             String msgCode,
             Object... msgArgs) throws Exception {
-        String expectedMessage = translator.getLocalizedMessage(msgCode, msgArgs);
+        String expectedMessage = messageLocalizer.getLocalizedMessage(msgCode, msgArgs);
         jPath("$.apierror.subErrors").assertValue(json, hasItem(
                 allOf(
                         hasEntry("field", propertyName),
