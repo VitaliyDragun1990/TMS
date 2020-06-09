@@ -37,7 +37,9 @@ import com.github.database.rider.junit5.api.DBRider;
 @DBRider
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
-        properties = "tms.stage.development=false")
+        properties = {
+                "jndi.datasource=false",
+                "startup.data.initialize=false" })
 @Import({
         EmbeddedDataSourceConfig.class,
         JsonVerifier.class,

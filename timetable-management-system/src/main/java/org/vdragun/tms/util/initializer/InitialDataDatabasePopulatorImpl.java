@@ -47,7 +47,7 @@ import org.vdragun.tms.util.generator.TimetableGenerator;
 @Component
 @Transactional
 @ConditionalOnProperty(
-        name = "tms.stage.development",
+        name = "startup.data.initialize",
         havingValue = "true",
         matchIfMissing = true)
 public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopulator {

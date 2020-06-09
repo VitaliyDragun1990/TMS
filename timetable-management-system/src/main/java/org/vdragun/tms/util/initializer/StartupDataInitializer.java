@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 @PropertySource("classpath:generator.properties")
 @ConditionalOnProperty(
-        name = "tms.stage.development",
+        name = "startup.data.initialize",
         havingValue = "true",
         matchIfMissing = true)
 public class StartupDataInitializer {

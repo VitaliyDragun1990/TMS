@@ -28,7 +28,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.test.context.TestPropertySource;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
@@ -38,9 +37,11 @@ import org.vdragun.tms.util.Constants.Message;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
-        properties = "tms.stage.development=false")
+        properties = {
+                "jndi.datasource=false",
+                "startup.data.initialize=false",
+                "secured.rest=false" })
 @Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
-@TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Timetable Resource Delete Functionality Integration Test")
 public class DeleteTimetableResourceTest {
 

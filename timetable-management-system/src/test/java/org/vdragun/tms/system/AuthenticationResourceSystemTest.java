@@ -36,7 +36,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
-        properties = "tms.stage.development=false")
+        properties = {
+                "jndi.datasource=false",
+                "startup.data.initialize=false" })
 @Import({
         EmbeddedDataSourceConfig.class,
         JsonVerifier.class
