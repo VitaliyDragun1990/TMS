@@ -70,7 +70,7 @@ public class AuthenticationResourceSystemTest {
                 "Jack",
                 "Smith",
                 "jack125@gmail.com",
-                "password",
+                "Password12",
                 asList("ROLE_STUDENT", "ROLE_TEACHER"));
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);

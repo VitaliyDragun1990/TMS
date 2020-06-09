@@ -9,9 +9,9 @@ import static org.vdragun.tms.util.Constants.Roles.ADMIN;
 import static org.vdragun.tms.util.Constants.Roles.TEACHER;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,7 +34,10 @@ public class SecurityConfig {
 
     @Configuration
     @Order(1)
-    @Profile("!test")
+    @ConditionalOnProperty(
+            name = "secured.rest",
+            havingValue = "true",
+            matchIfMissing = true)
     public static class RestWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         private static final String LOGIN_ENDPOINT = "/api/v1/auth/signin";
@@ -90,6 +93,10 @@ public class SecurityConfig {
     }
 
     @Configuration
+    @ConditionalOnProperty(
+            name = "secured.web",
+            havingValue = "true",
+            matchIfMissing = true)
     @Order(2)
     public static class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 

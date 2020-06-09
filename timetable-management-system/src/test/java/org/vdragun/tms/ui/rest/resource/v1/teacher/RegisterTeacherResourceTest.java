@@ -32,7 +32,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.core.application.service.teacher.TeacherData;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
@@ -48,7 +48,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
         webEnvironment = WebEnvironment.RANDOM_PORT,
         properties = "tms.stage.development=false")
 @Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
-@ActiveProfiles("test")
+@TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Teacher Resource Register Functionality Integration Test")
 public class RegisterTeacherResourceTest {
 
