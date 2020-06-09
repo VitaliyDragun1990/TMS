@@ -1,12 +1,17 @@
 package org.vdragun.tms.system;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.vdragun.tms.security.rest.resource.v1.AuthenticationResource.BASE_URL;
 
@@ -20,7 +25,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
@@ -45,6 +49,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 })
 @DisplayName("Authentication Resource System Test")
 public class AuthenticationResourceSystemTest {
+
+    private static final String CONTENT_TYPE_JSON = "application/json";
 
     @Autowired
     private ObjectMapper mapper;
@@ -84,6 +90,7 @@ public class AuthenticationResourceSystemTest {
                         request,
                         String.class);
 
+        assertThat(response.getStatusCode(), equalTo(CREATED));
         jsonVerifier.verifyJson(response.getBody(), "$.username", equalTo("jack125"));
         String token = jsonVerifier.getValueByExpression(response.getBody(), "$.token");
         assertTokenValid(token);
@@ -104,6 +111,7 @@ public class AuthenticationResourceSystemTest {
                         request,
                         String.class);
 
+        assertThat(response.getStatusCode(), equalTo(OK));
         jsonVerifier.verifyJson(response.getBody(), "$.username", equalTo("admin"));
         String token = jsonVerifier.getValueByExpression(response.getBody(), "$.token");
         assertTokenValid(token);
@@ -112,7 +120,7 @@ public class AuthenticationResourceSystemTest {
     @Test
     @Rollback
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/three_users.sql" })
-    void shouldReturnStatusUnauthorizedIfProvidedCredentialsInInalid() throws Exception {
+    void shouldReturnStatusUnauthorizedIfProvidedCredentialsInalid() throws Exception {
         SigninRequest requestData = new SigninRequest("invalid", "password");
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(requestData), headers);
@@ -124,8 +132,100 @@ public class AuthenticationResourceSystemTest {
                         request,
                         String.class);
 
-        assertThat(response.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED));
+        assertThat(response.getStatusCode(), equalTo(UNAUTHORIZED));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.BAD_CREDENTIALS);
+    }
+
+    @Test
+    void shouldReturnStatusBadRequestIfProvidedSignInDataInvalid() throws Exception {
+        String invalidUsername = "jack-123_";
+        String blankPassword = "    ";
+        SigninRequest invalidData = new SigninRequest(invalidUsername, blankPassword);
+
+        headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(invalidData), headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                BASE_URL + "/signin",
+                request,
+                String.class);
+
+        assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
+        String contentType = response.getHeaders().getContentType().toString();
+        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
+        jsonVerifier.verifyValidationError(response.getBody(), "username", "Username");
+        jsonVerifier.verifyValidationError(response.getBody(), "password", "NotBlank.password");
+    }
+
+    @Test
+    @Rollback
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/three_roles.sql" })
+    void shouldReturnStatusBadRequestIfProvidedSignUpDataInvalid() throws Exception {
+        String invalidUsername = "jack-123_";
+        String nonLatinFirstName = "Джек";
+        String lastNameWithNumbers = "Smith123";
+        String invalidEmail = "jack.gmail.com";
+        String tooWeakPassword = "jack123";
+        String nonExistingRole = "ROLE_USER";
+        String invalidRoleName = "admin";
+        SignupRequest invalidData = new SignupRequest(
+                invalidUsername,
+                nonLatinFirstName,
+                lastNameWithNumbers,
+                invalidEmail,
+                tooWeakPassword,
+                asList(nonExistingRole, invalidRoleName));
+
+        headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(invalidData), headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                BASE_URL + "/signup",
+                request,
+                String.class);
+
+        assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
+        String contentType = response.getHeaders().getContentType().toString();
+        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
+        jsonVerifier.verifyValidationError(response.getBody(), "username", "Username");
+        jsonVerifier.verifyValidationError(response.getBody(), "firstName", "PersonName");
+        jsonVerifier.verifyValidationError(response.getBody(), "lastName", "PersonName");
+        jsonVerifier.verifyValidationError(response.getBody(), "email", "Email");
+        jsonVerifier.verifyValidationError(response.getBody(), "password", "Password");
+
+        jsonVerifier.verifyValidationError(response.getBody(), "roles[0]", "ValidRole");
+        jsonVerifier.verifyValidationError(response.getBody(), "roles[1]", "ValidRole");
+    }
+
+    @Test
+    @Rollback
+    @Sql(scripts = { "/sql/clear_database.sql", "/sql/three_users.sql" })
+    void shouldReturnStatusBadRequestIfUsernameInSignupDataAlreadyTaken() throws Exception {
+        String alreadyTakenUsername = "student";
+        SignupRequest invalidData = new SignupRequest(
+                alreadyTakenUsername,
+                "Jack",
+                "Smith",
+                "jack@gmail.com",
+                "Password123",
+                asList("ROLE_STUDENT"));
+
+        headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(invalidData), headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                BASE_URL + "/signup",
+                request,
+                String.class);
+
+        assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
+        String contentType = response.getHeaders().getContentType().toString();
+        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
+        jsonVerifier.verifyValidationError(response.getBody(), "username", "UniqueUsername");
+        jsonVerifier.verifyValidationErrorsCount(response.getBody(), 1);
     }
 
     private void assertTokenValid(String token) {

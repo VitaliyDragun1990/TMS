@@ -3,6 +3,16 @@ package org.vdragun.tms.security.rest.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.vdragun.tms.core.application.validation.PersonName;
+import org.vdragun.tms.security.rest.validation.Password;
+import org.vdragun.tms.security.rest.validation.UniqueUsername;
+import org.vdragun.tms.security.rest.validation.Username;
+import org.vdragun.tms.security.rest.validation.ValidRole;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,12 +25,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class SignupRequest {
 
+    @NotNull
+    @Username
+    @UniqueUsername
     private String username;
+
+    @NotNull
+    @PersonName
     private String firstName;
+
+    @NotNull
+    @PersonName
     private String lastName;
+
+    @NotNull
+    @Email
     private String email;
+
+    @NotNull
+    @Password
     private String password;
-    private List<String> roles = new ArrayList<>();
+
+    @NotEmpty
+    private List<@NotNull @ValidRole String> roles = new ArrayList<>();
 
     @JsonCreator(mode = Mode.PROPERTIES)
     public SignupRequest(

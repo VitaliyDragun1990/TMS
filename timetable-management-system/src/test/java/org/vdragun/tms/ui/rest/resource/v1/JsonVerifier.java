@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
 
 import java.util.List;
 
@@ -54,6 +55,12 @@ public class JsonVerifier {
                 allOf(
                         hasEntry("field", propertyName),
                         hasEntry("message", expectedMessage))));
+    }
+
+    public void verifyValidationErrorsCount(
+            String json,
+            int expectedCount) throws Exception {
+        jPath("$.apierror.subErrors").assertValue(json, hasSize(expectedCount));
     }
 
     public void verifyTimetableJson(String json, List<Timetable> expectedContent) throws Exception {

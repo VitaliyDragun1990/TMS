@@ -3,6 +3,8 @@ package org.vdragun.tms.security.rest.resource.v1;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -40,7 +42,7 @@ public class AuthenticationResource {
 
     @PostMapping("/signin")
     @ResponseStatus(OK)
-    public SigninResponse signin(@RequestBody SigninRequest request) {
+    public SigninResponse signin(@Valid @RequestBody SigninRequest request) {
         LOG.trace("IN signin - Received POST request to sign in user with username: {}, URL: {}",
                 request.getUsername(), getRequestUri());
 
@@ -49,7 +51,7 @@ public class AuthenticationResource {
 
     @PostMapping("/signup")
     @ResponseStatus(CREATED)
-    public SignupResponse signup(@RequestBody SignupRequest request) {
+    public SignupResponse signup(@Valid @RequestBody SignupRequest request) {
         LOG.trace("IN signup - Received POST request to sign up new user with data: {}, URL: {}",
                 request, getRequestUri());
 
