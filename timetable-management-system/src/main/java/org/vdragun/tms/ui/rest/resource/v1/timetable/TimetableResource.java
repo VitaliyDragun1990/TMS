@@ -43,7 +43,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -69,8 +68,7 @@ public class TimetableResource extends AbstractResource {
 
     @Operation(
             summary = "Find all timetables available",
-            tags = { "timetable" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -94,8 +92,7 @@ public class TimetableResource extends AbstractResource {
     @Operation(
             summary = "Find timetable by ID",
             description = "Returns a single timetable",
-            tags = { "timetable" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -127,8 +124,7 @@ public class TimetableResource extends AbstractResource {
     @Operation(
             summary = "Find daily timetables for teacher",
             description = "Returns 0 or more timetables",
-            tags = { "timetable" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -178,8 +174,7 @@ public class TimetableResource extends AbstractResource {
     @Operation(
             summary = "Find monthly timetables for teacher",
             description = "Returns 0 or more timetables",
-            tags = { "timetable" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -229,8 +224,7 @@ public class TimetableResource extends AbstractResource {
     @Operation(
             summary = "Find daily timetables for student",
             description = "Returns 0 or more timetables",
-            tags = { "timetable" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -280,8 +274,7 @@ public class TimetableResource extends AbstractResource {
     @Operation(
             summary = "Find monthly timetables for student",
             description = "Returns 0 or more timetables",
-            tags = { "timetable" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -330,8 +323,7 @@ public class TimetableResource extends AbstractResource {
 
     @Operation(
             summary = "Register new timetable record",
-            tags = { "timetable" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "201",
             description = "Timetable registered",
@@ -363,8 +355,7 @@ public class TimetableResource extends AbstractResource {
 
     @Operation(
             summary = "Update existing timetable record",
-            tags = { "timetable" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "Timetable updated",
@@ -403,8 +394,7 @@ public class TimetableResource extends AbstractResource {
 
     @Operation(
             summary = "Delete existing timetable record",
-            tags = { "timetable" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "Timetable deleted")

@@ -37,7 +37,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -63,8 +62,7 @@ public class CourseResource extends AbstractResource {
 
     @Operation(
             summary = "Find all courses available",
-            tags = { "course" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "course" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -85,8 +83,7 @@ public class CourseResource extends AbstractResource {
     @Operation(
             summary = "Find course by ID",
             description = "Returns a single course",
-            tags = { "course" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "course" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -116,8 +113,7 @@ public class CourseResource extends AbstractResource {
 
     @Operation(
             summary = "Register new course record",
-            tags = { "course" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "course" })
     @ApiResponse(
             responseCode = "201",
             description = "Course registered",

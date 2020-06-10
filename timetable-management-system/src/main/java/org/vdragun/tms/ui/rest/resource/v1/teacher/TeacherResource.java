@@ -37,7 +37,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -63,8 +62,7 @@ public class TeacherResource extends AbstractResource {
 
     @Operation(
             summary = "Find all teachers available",
-            tags = { "teacher" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "teacher" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -85,8 +83,7 @@ public class TeacherResource extends AbstractResource {
     @Operation(
             summary = "Find teacher by ID",
             description = "Returns a single teacher",
-            tags = { "teacher" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "teacher" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -117,8 +114,7 @@ public class TeacherResource extends AbstractResource {
 
     @Operation(
             summary = "Register new teacher record",
-            tags = { "teacher" },
-            security = { @SecurityRequirement(name = "bearer-jwt") })
+            tags = { "teacher" })
     @ApiResponse(
             responseCode = "201",
             description = "Teacher registered",

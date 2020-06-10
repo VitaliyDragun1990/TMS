@@ -267,13 +267,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * Handles other exceptions.
      */
     @ExceptionHandler(Exception.class)
-//    @ResponseStatus(INTERNAL_SERVER_ERROR)
-//    @ApiResponse(
-//            responseCode = "500",
-//            description = "Internal Server Error",
-//            content = @Content(
-//                    mediaType = "application/json",
-//                    schema = @Schema(implementation = ApiError.class)))
     protected ResponseEntity<Object> handleApplicationException(Exception ex) {
         LOG.error("Handling application exception", ex);
 

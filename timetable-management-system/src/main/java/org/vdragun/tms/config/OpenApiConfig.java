@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springdoc.core.customizers.OpenApiCustomiser;
@@ -25,6 +26,7 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
@@ -51,7 +53,8 @@ public class OpenApiConfig {
                         .title("TMS API")
                         .description("Timetable Management Application")
                         .version("v1.0")
-                        .license(new License().name("Apache 2.0").url("http://google.com")));
+                        .license(new License().name("Apache 2.0").url("http://google.com")))
+                .addSecurityItem(new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")));
 
     }
 

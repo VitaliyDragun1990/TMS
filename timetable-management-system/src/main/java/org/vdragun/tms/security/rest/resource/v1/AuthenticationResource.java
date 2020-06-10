@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -50,6 +51,7 @@ public class AuthenticationResource {
         this.authService = authService;
     }
 
+    @SecurityRequirements
     @Operation(summary = "Login exiting user", tags = { "user" })
     @ApiResponse(
             responseCode = "200",
@@ -77,6 +79,7 @@ public class AuthenticationResource {
         return authService.processSignInRequest(request);
     }
 
+    @SecurityRequirements
     @Operation(summary = "Register new user", tags = { "user" })
     @ApiResponse(
             responseCode = "201",
