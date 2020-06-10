@@ -33,20 +33,24 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 import org.vdragun.tms.core.domain.Student;
-import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
+import org.vdragun.tms.util.Constants.Message;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
-        properties = "tms.stage.development=false")
+        properties = {
+                "jndi.datasource=false",
+                "startup.data.initialize=false",
+                "secured.rest=false" })
 @Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
 @DisplayName("Student Resource Update Functionality Integration Test")
 public class UpdateStudentResourceTest {
@@ -67,8 +71,12 @@ public class UpdateStudentResourceTest {
     @MockBean
     private StudentService studentServiceMock;
 
+    @MockBean
+    private AuthenticationManager authManagerMock;
+
     @Captor
     private ArgumentCaptor<UpdateStudentData> captor;
+
 
     private EntityGenerator generator = new EntityGenerator();
 

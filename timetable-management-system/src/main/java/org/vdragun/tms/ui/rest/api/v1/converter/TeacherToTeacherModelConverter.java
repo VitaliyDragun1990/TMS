@@ -9,10 +9,10 @@ import java.util.List;
 import org.springframework.core.convert.converter.Converter;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
-import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.api.v1.model.TeacherModel;
 import org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource;
+import org.vdragun.tms.util.localizer.TemporalLocalizer;
 
 /**
  * Custom converter to convert {@link Teacher} domain entity into
@@ -24,12 +24,12 @@ import org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource;
 public class TeacherToTeacherModelConverter implements Converter<Teacher, TeacherModel> {
 
     private CourseToCourseModelConverter courseConverter;
-    private Translator translator;
+    private TemporalLocalizer temporalLocalizer;
 
-
-    public TeacherToTeacherModelConverter(CourseToCourseModelConverter courseConverter, Translator translator) {
+    public TeacherToTeacherModelConverter(CourseToCourseModelConverter courseConverter,
+            TemporalLocalizer temporalLocalizer) {
         this.courseConverter = courseConverter;
-        this.translator = translator;
+        this.temporalLocalizer = temporalLocalizer;
     }
 
     @Override
@@ -39,8 +39,7 @@ public class TeacherToTeacherModelConverter implements Converter<Teacher, Teache
                 teacher.getFirstName(),
                 teacher.getLastName(),
                 teacher.getTitle().name(),
-                translator.formatDateDefault(teacher
-                        .getDateHired()),
+                temporalLocalizer.localizeDateDefault(teacher.getDateHired()),
                 convertToDTO(teacher.getCourses()));
 
         model.add(

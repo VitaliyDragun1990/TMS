@@ -19,10 +19,10 @@ import org.vdragun.tms.core.application.service.course.CourseData;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Course;
-import org.vdragun.tms.ui.common.util.Constants.Attribute;
-import org.vdragun.tms.ui.common.util.Constants.Message;
-import org.vdragun.tms.ui.common.util.Constants.Page;
 import org.vdragun.tms.ui.web.controller.AbstractController;
+import org.vdragun.tms.util.Constants.Attribute;
+import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.util.Constants.Page;
 
 /**
  * Processes course registration requests

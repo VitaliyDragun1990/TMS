@@ -7,7 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.vdragun.tms.ui.common.util.Translator;
+import org.vdragun.tms.util.localizer.MessageLocalizer;
+import org.vdragun.tms.util.localizer.TemporalLocalizer;
 
 /**
  * Parent class with common functionality for all application controllers.
@@ -20,18 +21,21 @@ public abstract class AbstractController {
     protected Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private Translator translator;
+    private MessageLocalizer messageLocalizer;
+
+    @Autowired
+    private TemporalLocalizer temporalLocalizer;
 
     protected String getMessage(String code, Object... args) {
-        return translator.getLocalizedMessage(code, args);
+        return messageLocalizer.getLocalizedMessage(code, args);
     }
 
     protected String formatDate(LocalDate date) {
-        return translator.formatDate(date);
+        return temporalLocalizer.localizeDate(date);
     }
 
     protected String formatMonth(Month month) {
-        return translator.formatMonth(month);
+        return temporalLocalizer.localizeMonth(month);
     }
 
     protected String getRequestUri() {

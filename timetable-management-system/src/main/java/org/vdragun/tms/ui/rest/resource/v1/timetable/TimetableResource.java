@@ -31,11 +31,11 @@ import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.exception.ApiError;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
+import org.vdragun.tms.util.Constants.Message;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -66,7 +66,9 @@ public class TimetableResource extends AbstractResource {
         super(converter);
     }
 
-    @Operation(summary = "Find all timetables available", tags = { "timetable" })
+    @Operation(
+            summary = "Find all timetables available",
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -87,7 +89,10 @@ public class TimetableResource extends AbstractResource {
                 linkTo(methodOn(TimetableResource.class).getAllTimetables()).withSelfRel());
     }
 
-    @Operation(summary = "Find timetable by ID", description = "Returns a single timetable", tags = { "timetable" })
+    @Operation(
+            summary = "Find timetable by ID",
+            description = "Returns a single timetable",
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -118,7 +123,8 @@ public class TimetableResource extends AbstractResource {
 
     @Operation(
             summary = "Find daily timetables for teacher",
-            description = "Returns 0 or more timetables", tags = { "timetable" })
+            description = "Returns 0 or more timetables",
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -167,7 +173,8 @@ public class TimetableResource extends AbstractResource {
 
     @Operation(
             summary = "Find monthly timetables for teacher",
-            description = "Returns 0 or more timetables", tags = { "timetable" })
+            description = "Returns 0 or more timetables",
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -216,7 +223,8 @@ public class TimetableResource extends AbstractResource {
 
     @Operation(
             summary = "Find daily timetables for student",
-            description = "Returns 0 or more timetables", tags = { "timetable" })
+            description = "Returns 0 or more timetables",
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -265,7 +273,8 @@ public class TimetableResource extends AbstractResource {
 
     @Operation(
             summary = "Find monthly timetables for student",
-            description = "Returns 0 or more timetables", tags = { "timetable" })
+            description = "Returns 0 or more timetables",
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -312,7 +321,9 @@ public class TimetableResource extends AbstractResource {
                         .withSelfRel());
     }
 
-    @Operation(summary = "Register new timetable record", tags = { "timetable" })
+    @Operation(
+            summary = "Register new timetable record",
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "201",
             description = "Timetable registered",
@@ -342,7 +353,9 @@ public class TimetableResource extends AbstractResource {
                 .body(timetableModel);
     }
 
-    @Operation(summary = "Update existing timetable record", tags = { "timetable" })
+    @Operation(
+            summary = "Update existing timetable record",
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "Timetable updated",
@@ -379,7 +392,9 @@ public class TimetableResource extends AbstractResource {
         return convert(timetable, TimetableModel.class);
     }
 
-    @Operation(summary = "Delete existing timetable record", tags = { "timetable" })
+    @Operation(
+            summary = "Delete existing timetable record",
+            tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
             description = "Timetable deleted")

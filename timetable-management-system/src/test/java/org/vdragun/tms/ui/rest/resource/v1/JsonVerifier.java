@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
 
 import java.util.List;
 
@@ -15,12 +16,12 @@ import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.ui.common.util.Translator;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.api.v1.model.TeacherModel;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
+import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 /**
  * Contains convenient methods to facilitate testing JSON structure in tests
@@ -32,15 +33,15 @@ import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 public class JsonVerifier {
 
     private ModelConverter modelConverter;
-    private Translator translator;
+    private MessageLocalizer messageLocalizer;
 
-    public JsonVerifier(ModelConverter modelConverter, Translator translator) {
+    public JsonVerifier(ModelConverter modelConverter, MessageLocalizer messageLocalizer) {
         this.modelConverter = modelConverter;
-        this.translator = translator;
+        this.messageLocalizer = messageLocalizer;
     }
 
     public void verifyErrorMessage(String json, String msgCode, Object... msgArgs) throws Exception {
-        String expectedMessage = translator.getLocalizedMessage(msgCode, msgArgs);
+        String expectedMessage = messageLocalizer.getLocalizedMessage(msgCode, msgArgs);
         jPath("$.apierror.message").assertValue(json, equalTo(expectedMessage));
     }
 
@@ -49,11 +50,17 @@ public class JsonVerifier {
             String propertyName,
             String msgCode,
             Object... msgArgs) throws Exception {
-        String expectedMessage = translator.getLocalizedMessage(msgCode, msgArgs);
+        String expectedMessage = messageLocalizer.getLocalizedMessage(msgCode, msgArgs);
         jPath("$.apierror.subErrors").assertValue(json, hasItem(
                 allOf(
                         hasEntry("field", propertyName),
                         hasEntry("message", expectedMessage))));
+    }
+
+    public void verifyValidationErrorsCount(
+            String json,
+            int expectedCount) throws Exception {
+        jPath("$.apierror.subErrors").assertValue(json, hasSize(expectedCount));
     }
 
     public void verifyTimetableJson(String json, List<Timetable> expectedContent) throws Exception {
@@ -259,6 +266,10 @@ public class JsonVerifier {
 
     public void verifyJson(String body, String expression, Matcher<?> matcher) {
         jPath(expression).assertValue(body, matcher);
+    }
+
+    public String getValueByExpression(String body, String expression) {
+        return String.valueOf(jPath(expression).evaluateJsonPath(body));
     }
 
     private JsonPathExpectationsHelper jPath(String expression) {

@@ -1,0 +1,392 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+                      
+    <changeSet id="drom_create_tables" author="vitalii.drahun" runAlways="true">
+        <sql splitStatements="true">
+            DROP TABLE IF EXISTS user_roles;
+            DROP TABLE IF EXISTS users;
+            DROP TABLE IF EXISTS roles;
+            DROP TABLE IF EXISTS student_courses;
+            DROP TABLE IF EXISTS timetables;
+            DROP TABLE IF EXISTS courses;
+            DROP TABLE IF EXISTS teachers;
+            DROP TABLE IF EXISTS students;
+            DROP TABLE IF EXISTS classrooms;
+            DROP TABLE IF EXISTS categories;
+            DROP TABLE IF EXISTS groups;
+            DROP SEQUENCE IF EXISTS students_student_id_seq;
+            DROP SEQUENCE IF EXISTS timetables_timetable_id_seq;
+            DROP SEQUENCE IF EXISTS courses_course_id_seq;
+            DROP SEQUENCE IF EXISTS teachers_teacher_id_seq;
+            DROP SEQUENCE IF EXISTS classrooms_classroom_id_seq;
+            DROP SEQUENCE IF EXISTS categories_category_id_seq;
+            DROP SEQUENCE IF EXISTS groups_group_id_seq;
+            DROP SEQUENCE IF EXISTS users_user_id_seq;
+            DROP SEQUENCE IF EXISTS roles_role_id_seq;
+        </sql>
+    </changeSet>
+
+    <changeSet id="add_groups_sequence"
+        author="vitalii.drahun" runAlways="true">
+        <createSequence
+            sequenceName="groups_group_id_seq" cycle="false"
+            minValue="1" maxValue="9223372036854775807" startValue="1"
+            incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="create_groups_table"
+        author="vitalii.drahun" runAlways="true">
+        <createTable tableName="groups">
+            <column name="group_id" type="integer"
+                defaultValueComputed="nextval('groups_group_id_seq')">
+                <constraints primaryKey="true" unique="true" />
+            </column>
+            <column name="group_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_categories_sequence"
+        author="vitalii.drahun" runAlways="true">
+        <createSequence
+            sequenceName="categories_category_id_seq" cycle="false"
+            minValue="1" maxValue="9223372036854775807" startValue="1"
+            incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="create_categories_table"
+        author="vitalii.drahun" runAlways="true">
+        <createTable tableName="categories">
+            <column name="category_id" type="integer"
+                defaultValueComputed="nextval('categories_category_id_seq')">
+                <constraints primaryKey="true" unique="true" />
+            </column>
+            <column name="category_code" type="varchar(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="category_description"
+                type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_classrooms_sequence"
+        author="vitalii.drahun" runAlways="true">
+        <createSequence
+            sequenceName="classrooms_classroom_id_seq" cycle="false"
+            minValue="1" maxValue="9223372036854775807" startValue="1"
+            incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="create_classrooms_table"
+        author="vitalii.drahun" runAlways="true">
+        <createTable tableName="classrooms">
+            <column name="classroom_id" type="integer"
+                defaultValueComputed="nextval('classrooms_classroom_id_seq')">
+                <constraints primaryKey="true" unique="true" />
+            </column>
+            <column name="capacity" type="integer">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_teachers_sequence"
+        author="vitalii.drahun" runAlways="true">
+        <createSequence
+            sequenceName="teachers_teacher_id_seq" cycle="false"
+            minValue="1" maxValue="9223372036854775807" startValue="1"
+            incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="create_teachers_table"
+        author="vitalii.drahun" runAlways="true">
+        <createTable tableName="teachers">
+            <column name="teacher_id" type="integer"
+                defaultValueComputed="nextval('teachers_teacher_id_seq')">
+                <constraints primaryKey="true" unique="true" />
+            </column>
+            <column name="t_first_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="t_last_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="title" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_hired" type="date">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_courses_sequence"
+        author="vitalii.drahun" runAlways="true">
+        <createSequence
+            sequenceName="courses_course_id_seq" cycle="false"
+            minValue="1" maxValue="9223372036854775807" startValue="1"
+            incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="create_courses_table"
+        author="vitalii.drahun" runAlways="true">
+
+        <createTable tableName="courses">
+            <column name="course_id" type="integer"
+                defaultValueComputed="nextval('courses_course_id_seq')">
+                <constraints primaryKey="true" unique="true" />
+            </column>
+            <column name="course_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="course_description" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="category_id" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="teacher_id" type="integer">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseColumnNames="category_id" baseTableName="courses"
+            constraintName="fk_course_category" onDelete="RESTRICT"
+            referencedColumnNames="category_id"
+            referencedTableName="categories" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="teacher_id" baseTableName="courses"
+            constraintName="fk_course_teacher" onDelete="RESTRICT"
+            referencedColumnNames="teacher_id"
+            referencedTableName="teachers" />
+    </changeSet>
+
+    <changeSet id="add_timetables_sequence"
+        author="vitalii.drahun" runAlways="true">
+        <createSequence
+            sequenceName="timetables_timetable_id_seq" cycle="false"
+            minValue="1" maxValue="9223372036854775807" startValue="1"
+            incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="create_timetables_table"
+        author="vitalii.drahun" runAlways="true">
+
+        <createTable tableName="timetables">
+            <column name="timetable_id" type="integer"
+                defaultValueComputed="nextval('timetables_timetable_id_seq')">
+                <constraints primaryKey="true" unique="true" />
+            </column>
+            <column name="start_date_time" type="timestamp">
+                <constraints nullable="true" />
+            </column>
+            <column name="duration" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="classroom_id" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="course_id" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="teacher_id" type="integer">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseColumnNames="classroom_id" baseTableName="timetables"
+            constraintName="fk_timetable_classroom" onDelete="RESTRICT"
+            referencedColumnNames="classroom_id"
+            referencedTableName="classrooms" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="course_id" baseTableName="timetables"
+            constraintName="fk_timetable_course" onDelete="RESTRICT"
+            referencedColumnNames="course_id"
+            referencedTableName="courses" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="teacher_id" baseTableName="timetables"
+            constraintName="fk_timetable_teacher" onDelete="RESTRICT"
+            referencedColumnNames="teacher_id"
+            referencedTableName="teachers" />
+    </changeSet>
+
+    <changeSet id="add_students_sequence"
+        author="vitalii.drahun" runAlways="true">
+        <createSequence
+            sequenceName="students_student_id_seq" cycle="false"
+            minValue="1" maxValue="9223372036854775807" startValue="1"
+            incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="create_students_table"
+        author="vitalii.drahun" runAlways="true">
+
+        <createTable tableName="students">
+            <column name="student_id" type="integer"
+                defaultValueComputed="nextval('students_student_id_seq')">
+                <constraints primaryKey="true" unique="true" />
+            </column>
+            <column name="s_first_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="s_last_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="enrollment_date" type="date">
+                <constraints nullable="true" />
+            </column>
+            <column name="group_id" type="integer">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseColumnNames="group_id" baseTableName="students"
+            constraintName="fk_student_group" onDelete="RESTRICT"
+            referencedColumnNames="group_id"
+            referencedTableName="groups" />
+    </changeSet>
+
+    <changeSet id="create_student_courses_table"
+        author="vitalii.drahun" runAlways="true">
+
+        <createTable tableName="student_courses">
+            <column name="student_id" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="course_id" type="integer">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="student_id, course_id"
+            constraintName="pk_student_courses"
+            tableName="student_courses" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="student_id" baseTableName="student_courses"
+            constraintName="fk_student_courses_student"
+            onDelete="RESTRICT" referencedColumnNames="student_id"
+            referencedTableName="students" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="course_id" baseTableName="student_courses"
+            constraintName="fk_student_courses_course"
+            onDelete="RESTRICT" referencedColumnNames="course_id"
+            referencedTableName="courses" />
+    </changeSet>
+    
+    <changeSet id="add_roles_sequence"
+        author="vitalii.drahun" runAlways="true">
+        <createSequence
+            sequenceName="roles_role_id_seq" cycle="false"
+            minValue="1" maxValue="9223372036854775807" startValue="1"
+            incrementBy="1" />
+    </changeSet>
+    
+    <changeSet id="create_roles_table"
+        author="vitalii.drahun" runAlways="true">
+        <createTable tableName="roles">
+            <column name="role_id" type="integer"
+                defaultValueComputed="nextval('roles_role_id_seq')">
+                <constraints primaryKey="true" unique="true" />
+            </column>
+            <column name="role_name" type="varchar(50)">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="created" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" type="varchar(25)" defaultValue="ACTIVE">
+                <constraints nullable="false" />
+            </column>            
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="add_users_sequence"
+        author="vitalii.drahun" runAlways="true">
+        <createSequence
+            sequenceName="users_user_id_seq" cycle="false"
+            minValue="1" maxValue="9223372036854775807" startValue="1"
+            incrementBy="1" />
+    </changeSet>
+    
+    <changeSet id="create_users_table"
+        author="vitalii.drahun" runAlways="true">
+
+        <createTable tableName="users">
+            <column name="user_id" type="integer"
+                defaultValueComputed="nextval('users_user_id_seq')">
+                <constraints primaryKey="true" unique="true" />
+            </column>
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="first_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="password" type="varchar(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="created" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="status" type="varchar(25)" defaultValue="ACTIVE">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    
+   <changeSet id="create_user_roles_table"
+        author="vitalii.drahun" runAlways="true">
+
+        <createTable tableName="user_roles">
+            <column name="user_id" type="integer">
+                <constraints nullable="false" />
+            </column>
+            <column name="role_id" type="integer">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="user_id, role_id"
+            constraintName="pk_user_roles"
+            tableName="user_roles" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="user_id" baseTableName="user_roles"
+            constraintName="fk_user_roles_user"
+            onDelete="CASCADE" referencedColumnNames="user_id"
+            referencedTableName="users" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="role_id" baseTableName="user_roles"
+            constraintName="fk_user_roles_role"
+            onDelete="CASCADE" referencedColumnNames="role_id"
+            referencedTableName="roles" />
+    </changeSet>
+    
+</databaseChangeLog>

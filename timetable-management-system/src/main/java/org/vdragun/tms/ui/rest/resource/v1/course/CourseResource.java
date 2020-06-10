@@ -25,11 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.course.CourseData;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
-import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.exception.ApiError;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
+import org.vdragun.tms.util.Constants.Message;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -60,7 +60,9 @@ public class CourseResource extends AbstractResource {
         super(modelConverter);
     }
 
-    @Operation(summary = "Find all courses available", tags = { "course" })
+    @Operation(
+            summary = "Find all courses available",
+            tags = { "course" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -78,7 +80,10 @@ public class CourseResource extends AbstractResource {
                 linkTo(methodOn(CourseResource.class).getAllCourses()).withSelfRel());
     }
 
-    @Operation(summary = "Find course by ID", description = "Returns a single course", tags = { "course" })
+    @Operation(
+            summary = "Find course by ID",
+            description = "Returns a single course",
+            tags = { "course" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -106,7 +111,9 @@ public class CourseResource extends AbstractResource {
         return convert(courseService.findCourseById(courseId), CourseModel.class);
     }
 
-    @Operation(summary = "Register new course record", tags = { "course" })
+    @Operation(
+            summary = "Register new course record",
+            tags = { "course" })
     @ApiResponse(
             responseCode = "201",
             description = "Course registered",

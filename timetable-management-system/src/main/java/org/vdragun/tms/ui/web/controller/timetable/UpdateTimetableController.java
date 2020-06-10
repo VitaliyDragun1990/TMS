@@ -19,10 +19,10 @@ import org.vdragun.tms.core.application.service.classroom.ClassroomService;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Classroom;
-import org.vdragun.tms.ui.common.util.Constants.Attribute;
-import org.vdragun.tms.ui.common.util.Constants.Message;
-import org.vdragun.tms.ui.common.util.Constants.Page;
 import org.vdragun.tms.ui.web.controller.AbstractController;
+import org.vdragun.tms.util.Constants.Attribute;
+import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.util.Constants.Page;
 
 /**
  * Processes timetable update requests

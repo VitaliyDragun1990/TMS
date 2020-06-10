@@ -1,8 +1,9 @@
-package org.vdragun.tms.ui.rest.resource.v1.student;
+package org.vdragun.tms.system;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.PUT;
@@ -12,6 +13,7 @@ import static org.vdragun.tms.ui.rest.resource.v1.student.StudentResource.BASE_U
 import java.time.LocalDate;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,27 +23,40 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.core.application.service.student.CreateStudentData;
 import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.dao.StudentDao;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
+import org.vdragun.tms.ui.rest.resource.v1.TestTokenGenerator;
+import org.vdragun.tms.util.Constants.Roles;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 
 @DBRider
+@DBUnit(schema = "PUBLIC")
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
-        properties = "tms.stage.development=false")
-@Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
+        properties = {
+                "jndi.datasource=false",
+                "startup.data.initialize=false" })
+@Import({
+        EmbeddedDataSourceConfig.class,
+        JsonVerifier.class,
+        TestTokenGenerator.class
+})
 @DisplayName("Student Resource System Test")
 public class StudentResourceSystemTest {
+
+    private static final String BEARER = "Bearer_";
+    private static final String ADMIN = "admin";
 
     private static final int NUMBER_OF_STUDENTS = 2;
     private static final int NUMBER_OF_COURSES_PER_STUDENT = 1;
@@ -50,6 +65,8 @@ public class StudentResourceSystemTest {
     private static final Integer GROUP_ID = 1;
     private static final Integer COURSE_A_ID = 1;
     private static final Integer COURSE_B_ID = 2;
+
+    private String authToken;
 
     @Autowired
     private StudentDao studentDao;
@@ -63,15 +80,24 @@ public class StudentResourceSystemTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private TestTokenGenerator tokenGenerator;
+
     private HttpHeaders headers = new HttpHeaders();
 
+    @BeforeEach
+    void generateAuthToken() {
+        authToken = tokenGenerator.generateToken(ADMIN, Roles.ADMIN);
+    }
+
     @Test
-    @Transactional
+    @DataSet({ "three-users.yml" })
     @ExpectedDataSet("one-student.yml")
     void shouldRegisterNewStudentInDatabase() throws Exception {
         CreateStudentData registerData = new CreateStudentData("Jack", "Smith", LocalDate.of(2020, 5, 9));
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(AUTHORIZATION, BEARER + authToken);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(registerData), headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(
@@ -84,9 +110,15 @@ public class StudentResourceSystemTest {
     }
 
     @Test
-    @DataSet(value = "two-students.yml", cleanAfter = true, disableConstraints = true)
+    @DataSet(value = { "two-students.yml", "three-users.yml" }, cleanAfter = true, disableConstraints = true)
     void shouldReturnAllAvailableStudentsFromDatabase() throws Exception {
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL, String.class);
+        headers.add(AUTHORIZATION, BEARER + authToken);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL,
+                HttpMethod.GET,
+                request,
+                String.class);
 
         jsonVerifier.verifyJson(response.getBody(),
                 "$._embedded.students", hasSize(NUMBER_OF_STUDENTS));
@@ -100,10 +132,14 @@ public class StudentResourceSystemTest {
     }
 
     @Test
-    @DataSet(value = "one-student.yml", cleanAfter = true, disableConstraints = true)
+    @DataSet(value = { "one-student.yml", "three-users.yml" }, cleanAfter = true, disableConstraints = true)
     void shouldReturnStudentByGivenIdentifierFromDatabase() throws Exception {
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        headers.add(AUTHORIZATION, BEARER + authToken);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/{studentId}",
+                HttpMethod.GET,
+                request,
                 String.class,
                 STUDENT_ID);
 
@@ -112,7 +148,7 @@ public class StudentResourceSystemTest {
     }
 
     @Test
-    @DataSet(value = "student-before-update.yml", cleanAfter = true, disableConstraints = true)
+    @DataSet(value = { "student-before-update.yml", "three-users.yml" }, cleanAfter = true, disableConstraints = true)
     @ExpectedDataSet("student-after-update.yml")
     void shouldUpdateExistingStudentInTheDatabase() throws Exception {
         UpdateStudentData updateData = new UpdateStudentData(
@@ -123,6 +159,7 @@ public class StudentResourceSystemTest {
                 asList(COURSE_A_ID, COURSE_B_ID));
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(AUTHORIZATION, BEARER + authToken);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -137,12 +174,16 @@ public class StudentResourceSystemTest {
     }
 
     @Test
-    @DataSet(value = "two-students-before-delete.yml", cleanAfter = true, disableConstraints = true)
+    @DataSet(
+            value = { "two-students-before-delete.yml", "three-users.yml" },
+            cleanAfter = true,
+            disableConstraints = true)
     @ExpectedDataSet("one-student-after-delete.yml")
     void shouldDeleteStudentByGivenIdentifierFromTheDatabase() throws Exception {
         assertThat(studentDao.findAll(), hasSize(2));
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(AUTHORIZATION, BEARER + authToken);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         restTemplate.exchange(

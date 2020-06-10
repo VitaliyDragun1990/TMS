@@ -18,6 +18,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
@@ -35,6 +37,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @JsonTypeInfo(include = As.WRAPPER_OBJECT, use = Id.CUSTOM)
 @JsonTypeIdResolver(LowerCaseClassNameResolver.class)
+@JsonInclude(Include.NON_EMPTY)
 @Schema(description = "DTO containing essential information about API error")
 public class ApiError {
 

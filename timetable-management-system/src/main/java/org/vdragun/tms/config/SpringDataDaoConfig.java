@@ -28,7 +28,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource({ "classpath:hibernate.properties" })
 @EnableAspectJAutoProxy
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = { "org.vdragun.tms.dao.data" })
+@EnableJpaRepositories(
+        basePackages = {
+                "org.vdragun.tms.dao.data",
+                "org.vdragun.tms.security.dao" })
 public class SpringDataDaoConfig {
 
     @Autowired
@@ -38,7 +41,7 @@ public class SpringDataDaoConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactory.setDataSource(dataSource);
-        entityManagerFactory.setPackagesToScan("org.vdragun.tms.core.domain");
+        entityManagerFactory.setPackagesToScan("org.vdragun.tms.core.domain", "org.vdragun.tms.security.model");
         entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         entityManagerFactory.setJpaProperties(hibernateProperties());
 

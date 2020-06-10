@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
-import org.vdragun.tms.ui.common.util.Constants.Attribute;
-import org.vdragun.tms.ui.common.util.Constants.Message;
-import org.vdragun.tms.ui.common.util.Constants.Page;
-import org.vdragun.tms.ui.common.util.Translator;
+import org.vdragun.tms.util.Constants.Attribute;
+import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 /**
  * Responsible for handling application exceptions in web layer by forwarding to
@@ -32,7 +32,7 @@ public class WebExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(WebExceptionHandler.class);
 
     @Autowired
-    private Translator translator;
+    private MessageLocalizer messageLocalizer;
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({ ResourceNotFoundException.class })
@@ -104,7 +104,7 @@ public class WebExceptionHandler {
     }
 
     private String getMessage(String code, Object... args) {
-        return translator.getLocalizedMessage(code, args);
+        return messageLocalizer.getLocalizedMessage(code, args);
     }
 
     private String extractMessage(Exception rootException) {

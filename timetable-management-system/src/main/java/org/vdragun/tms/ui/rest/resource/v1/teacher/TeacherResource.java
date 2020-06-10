@@ -25,11 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.teacher.TeacherData;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Teacher;
-import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.TeacherModel;
 import org.vdragun.tms.ui.rest.exception.ApiError;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
+import org.vdragun.tms.util.Constants.Message;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -60,7 +60,9 @@ public class TeacherResource extends AbstractResource {
         super(converter);
     }
 
-    @Operation(summary = "Find all teachers available", tags = { "teacher" })
+    @Operation(
+            summary = "Find all teachers available",
+            tags = { "teacher" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -78,7 +80,10 @@ public class TeacherResource extends AbstractResource {
                 linkTo(methodOn(TeacherResource.class).getAllTeachers()).withSelfRel());
     }
 
-    @Operation(summary = "Find teacher by ID", description = "Returns a single teacher", tags = { "teacher" })
+    @Operation(
+            summary = "Find teacher by ID",
+            description = "Returns a single teacher",
+            tags = { "teacher" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -107,7 +112,9 @@ public class TeacherResource extends AbstractResource {
         return convert(teacherService.findTeacherById(teacherId), TeacherModel.class);
     }
 
-    @Operation(summary = "Register new teacher record", tags = { "teacher" })
+    @Operation(
+            summary = "Register new teacher record",
+            tags = { "teacher" })
     @ApiResponse(
             responseCode = "201",
             description = "Teacher registered",

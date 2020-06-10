@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
@@ -38,11 +39,11 @@ import org.vdragun.tms.core.application.service.teacher.TeacherData;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Title;
-import org.vdragun.tms.ui.common.util.Constants.Attribute;
-import org.vdragun.tms.ui.common.util.Constants.Message;
-import org.vdragun.tms.ui.common.util.Constants.Page;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
+import org.vdragun.tms.util.Constants.Attribute;
+import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.util.Constants.Page;
 
 /**
  * @author Vitaliy Dragun
@@ -50,6 +51,7 @@ import org.vdragun.tms.ui.web.controller.MessageProvider;
  */
 @WebMvcTest(controllers = RegisterTeacherController.class)
 @Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
+@TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Register Teacher Controller")
 public class RegisterTeacherControllerTest {
 

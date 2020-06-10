@@ -6,3 +6,6 @@ DELETE FROM students;
 DELETE FROM classrooms;
 DELETE FROM categories;
 DELETE FROM groups;
+DELETE FROM user_roles;
+DELETE FROM users;
+DELETE FROM roles;

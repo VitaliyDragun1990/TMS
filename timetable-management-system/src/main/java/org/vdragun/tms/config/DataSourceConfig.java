@@ -23,7 +23,7 @@ public class DataSourceConfig {
     }
 
     @ConditionalOnProperty(
-            name = "tms.stage.development",
+            name = "jndi.datasource",
             havingValue = "true",
             matchIfMissing = true)
     @Bean(destroyMethod = "")

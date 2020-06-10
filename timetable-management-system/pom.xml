@@ -20,6 +20,7 @@
         <webjars-fontawesome.version>5.13.0</webjars-fontawesome.version>
         <spring-mvc-test-utils.version>2.2.1</spring-mvc-test-utils.version>
         <springdoc.version>1.3.9</springdoc.version>
+        <jjwt.version>0.9.1</jjwt.version>
 
         <rider-junit5.version>1.13.1</rider-junit5.version>
         <dbunit.version>2.7.0</dbunit.version>
@@ -78,6 +79,17 @@
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-security</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
             </dependency>
 
             <dependency>
@@ -141,6 +153,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-hateoas</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -158,6 +178,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>io.florianlopes</groupId>
             <artifactId>spring-mvc-test-utils</artifactId>
             <scope>test</scope>
@@ -170,6 +195,14 @@
         <dependency>
             <groupId>org.dbunit</groupId>
             <artifactId>dbunit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Need this in order to TestRestTemplate work properly with spring 
+            security errors -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -221,6 +254,10 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-security</artifactId>
         </dependency>
     </dependencies>
 

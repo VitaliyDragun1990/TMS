@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ConditionalOnProperty(
-        name = "tms.stage.development",
+        name = "startup.data.initialize",
         havingValue = "true",
         matchIfMissing = true)
 public class DatabaseSchemaCreatorImpl implements DatabaseSchemaCreator {

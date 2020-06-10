@@ -28,11 +28,11 @@ import org.vdragun.tms.core.application.service.student.CreateStudentData;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 import org.vdragun.tms.core.domain.Student;
-import org.vdragun.tms.ui.common.util.Constants.Message;
 import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.exception.ApiError;
 import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
+import org.vdragun.tms.util.Constants.Message;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -63,7 +63,9 @@ public class StudentResource extends AbstractResource {
         super(converter);
     }
 
-    @Operation(summary = "Find all students available", tags = { "student" })
+    @Operation(
+            summary = "Find all students available",
+            tags = { "student" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -81,7 +83,10 @@ public class StudentResource extends AbstractResource {
                 linkTo(methodOn(StudentResource.class).getAllStudents()).withSelfRel());
     }
 
-    @Operation(summary = "Find student by ID", description = "Returns a single student", tags = { "student" })
+    @Operation(
+            summary = "Find student by ID",
+            description = "Returns a single student",
+            tags = { "student" })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -110,7 +115,9 @@ public class StudentResource extends AbstractResource {
         return convert(studentService.findStudentById(studentId), StudentModel.class);
     }
 
-    @Operation(summary = "Register new student record", tags = { "student" })
+    @Operation(
+            summary = "Register new student record",
+            tags = { "student" })
     @ApiResponse(
             responseCode = "201",
             description = "Student registered",
@@ -140,7 +147,9 @@ public class StudentResource extends AbstractResource {
                 .body(studentModel);
     }
 
-    @Operation(summary = "Update existing student record", tags = { "student" })
+    @Operation(
+            summary = "Update existing student record",
+            tags = { "student" })
     @ApiResponse(
             responseCode = "200",
             description = "Student updated",
@@ -177,7 +186,9 @@ public class StudentResource extends AbstractResource {
         return convert(student, StudentModel.class);
     }
 
-    @Operation(summary = "Delete existing student record", tags = { "student" })
+    @Operation(
+            summary = "Delete existing student record",
+            tags = { "student" })
     @ApiResponse(
             responseCode = "200",
             description = "Student deleted")

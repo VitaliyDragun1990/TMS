@@ -8,7 +8,7 @@ import java.util.Locale;
 
 import org.springframework.context.MessageSource;
 import org.springframework.format.Formatter;
-import org.vdragun.tms.ui.common.util.Constants.Message;
+import org.vdragun.tms.util.Constants.Message;
 
 /**
  * Responsible for converting string values into {@link LocalDate} instances and
