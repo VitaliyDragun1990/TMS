@@ -37,6 +37,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -60,7 +61,10 @@ public class TeacherResource extends AbstractResource {
         super(converter);
     }
 
-    @Operation(summary = "Find all teachers available", tags = { "teacher" })
+    @Operation(
+            summary = "Find all teachers available",
+            tags = { "teacher" },
+            security = { @SecurityRequirement(name = "bearer-jwt") })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -78,7 +82,11 @@ public class TeacherResource extends AbstractResource {
                 linkTo(methodOn(TeacherResource.class).getAllTeachers()).withSelfRel());
     }
 
-    @Operation(summary = "Find teacher by ID", description = "Returns a single teacher", tags = { "teacher" })
+    @Operation(
+            summary = "Find teacher by ID",
+            description = "Returns a single teacher",
+            tags = { "teacher" },
+            security = { @SecurityRequirement(name = "bearer-jwt") })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -107,7 +115,10 @@ public class TeacherResource extends AbstractResource {
         return convert(teacherService.findTeacherById(teacherId), TeacherModel.class);
     }
 
-    @Operation(summary = "Register new teacher record", tags = { "teacher" })
+    @Operation(
+            summary = "Register new teacher record",
+            tags = { "teacher" },
+            security = { @SecurityRequirement(name = "bearer-jwt") })
     @ApiResponse(
             responseCode = "201",
             description = "Teacher registered",

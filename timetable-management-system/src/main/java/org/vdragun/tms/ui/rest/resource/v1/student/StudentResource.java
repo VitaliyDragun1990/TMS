@@ -40,6 +40,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -63,7 +64,10 @@ public class StudentResource extends AbstractResource {
         super(converter);
     }
 
-    @Operation(summary = "Find all students available", tags = { "student" })
+    @Operation(
+            summary = "Find all students available",
+            tags = { "student" },
+            security = { @SecurityRequirement(name = "bearer-jwt") })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -81,7 +85,11 @@ public class StudentResource extends AbstractResource {
                 linkTo(methodOn(StudentResource.class).getAllStudents()).withSelfRel());
     }
 
-    @Operation(summary = "Find student by ID", description = "Returns a single student", tags = { "student" })
+    @Operation(
+            summary = "Find student by ID",
+            description = "Returns a single student",
+            tags = { "student" },
+            security = { @SecurityRequirement(name = "bearer-jwt") })
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
@@ -110,7 +118,10 @@ public class StudentResource extends AbstractResource {
         return convert(studentService.findStudentById(studentId), StudentModel.class);
     }
 
-    @Operation(summary = "Register new student record", tags = { "student" })
+    @Operation(
+            summary = "Register new student record",
+            tags = { "student" },
+            security = { @SecurityRequirement(name = "bearer-jwt") })
     @ApiResponse(
             responseCode = "201",
             description = "Student registered",
@@ -140,7 +151,10 @@ public class StudentResource extends AbstractResource {
                 .body(studentModel);
     }
 
-    @Operation(summary = "Update existing student record", tags = { "student" })
+    @Operation(
+            summary = "Update existing student record",
+            tags = { "student" },
+            security = { @SecurityRequirement(name = "bearer-jwt") })
     @ApiResponse(
             responseCode = "200",
             description = "Student updated",
@@ -177,7 +191,10 @@ public class StudentResource extends AbstractResource {
         return convert(student, StudentModel.class);
     }
 
-    @Operation(summary = "Delete existing student record", tags = { "student" })
+    @Operation(
+            summary = "Delete existing student record",
+            tags = { "student" },
+            security = { @SecurityRequirement(name = "bearer-jwt") })
     @ApiResponse(
             responseCode = "200",
             description = "Student deleted")

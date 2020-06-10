@@ -80,6 +80,11 @@
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>${springdoc.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-security</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
@@ -193,7 +198,8 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Need this in order to TestRestTemplate work properly with spring security errors -->
+        <!-- Need this in order to TestRestTemplate work properly with spring 
+            security errors -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -248,6 +254,10 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-security</artifactId>
         </dependency>
     </dependencies>
 

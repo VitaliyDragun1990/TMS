@@ -32,7 +32,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -42,10 +41,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.util.Constants.Message;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
-
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * Responsible for handling application exceptions in RESTful resources by
@@ -272,13 +267,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * Handles other exceptions.
      */
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(INTERNAL_SERVER_ERROR)
-    @ApiResponse(
-            responseCode = "500",
-            description = "Internal Server Error",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = ApiError.class)))
+//    @ResponseStatus(INTERNAL_SERVER_ERROR)
+//    @ApiResponse(
+//            responseCode = "500",
+//            description = "Internal Server Error",
+//            content = @Content(
+//                    mediaType = "application/json",
+//                    schema = @Schema(implementation = ApiError.class)))
     protected ResponseEntity<Object> handleApplicationException(Exception ex) {
         LOG.error("Handling application exception", ex);
 

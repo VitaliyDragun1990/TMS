@@ -37,7 +37,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @JsonTypeInfo(include = As.WRAPPER_OBJECT, use = Id.CUSTOM)
 @JsonTypeIdResolver(LowerCaseClassNameResolver.class)
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(Include.NON_EMPTY)
 @Schema(description = "DTO containing essential information about API error")
 public class ApiError {
 

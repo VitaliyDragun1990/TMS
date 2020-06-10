@@ -85,7 +85,7 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
+        if (bearerToken != null && (bearerToken.startsWith("Bearer_") || bearerToken.startsWith("Bearer "))) {
             String token = bearerToken.substring(7);
 
             LOG.debug("IN resolveToken - JWT token [{}] resolved successfully from request", token);
