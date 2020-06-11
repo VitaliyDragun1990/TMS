@@ -15,7 +15,7 @@
     
       <h3 class="mb-5" th:text="#{title.studentInfo}">Student Info</h3>
 
-      <form id="studentForm" th:object="${student}">
+      <form id="studentForm" th:object="${student}" th:attr="data-student-id=${student.id}">
 
         <div class="form-group row">
           <label for="firstName" class="col-sm-2 col-form-label" th:text="#{label.fname}">First name</label>

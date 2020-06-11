@@ -24,7 +24,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr th:each="student,iterStat : ${students}" th:object="${student}">
+        <tr th:each="student,iterStat : ${students}" th:object="${student}" th:id="|row-${student.id}|">
           <th scope="row" th:text="${iterStat.count}">1</th>
           <td>
             <a class="btn btn-link" href="#" th:href="@{/students/{studentId}(studentId=*{id})}"
