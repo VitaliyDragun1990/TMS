@@ -13,7 +13,7 @@
   
     <h4 class="mb-3" th:text="${msg}">Students</h4>
     
-    <table class="table table-striped" th:unless="${#lists.isEmpty(students)}">
+    <table id="studentsTable" class="table table-striped" th:unless="${#lists.isEmpty(students)}">
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>

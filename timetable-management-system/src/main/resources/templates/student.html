@@ -52,7 +52,7 @@
         <fieldset class="form-group">
           <div class="row">
             <legend class="col-form-label col-sm-2 pt-0" th:text="#{label.courses}">Courses</legend>
-            <div class="col-sm-4">
+            <div class="col-sm-4" id="studentCourses">
                 <div class="form-check" th:each="course : ${student.courses}" th:object="${course}">
                   <input class="form-check-input" type="checkbox" th:name="|course-*{id}|" th:id="*{name}" th:value="*{id}" 
                          checked disabled>
@@ -63,11 +63,11 @@
         </fieldset>
         
         <div class="row">
-          <a href="#" th:href="@{/students/{id}/update(id=${student.id})}" class="btn btn-info mb-3 mr-3" 
+          <a href="#" th:href="@{/students/{id}/update(id=${student.id})}" class="btn btn-info mb-3 mr-3 updateBtn" 
              th:text="#{label.updateStudent}">
             Update Student
           </a>
-          <button type="button" id="deleteDialogBtn" class="btn btn-danger mb-3" th:text="#{label.deleteStudent}">
+          <button type="button" id="deleteDialogBtn" class="btn btn-danger mb-3 deleteBtn" th:text="#{label.deleteStudent}">
             Delete Student
           </button>
         </div>

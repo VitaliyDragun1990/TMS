@@ -18,9 +18,9 @@
         <appender-ref ref="CONSOLE" />
     </logger> -->
     
-    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace" additivity="false">
+<!--     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace" additivity="false">
         <appender-ref ref="CONSOLE" />
-    </logger>
+    </logger> -->
 
     <root level="info">
         <appender-ref ref="CONSOLE" />

@@ -23,6 +23,7 @@ INSERT INTO students (student_id, s_first_name, s_last_name, enrollment_date, gr
 INSERT INTO students (student_id, s_first_name, s_last_name, enrollment_date, group_id) VALUES (1001, 'Amanda', 'Doe', '2020-04-30', 1);
 
 -- Student courses
+--INSERT INTO student_courses (student_id, course_id) VALUES (1000, 1000); -- Art for John
 INSERT INTO student_courses (student_id, course_id) VALUES (1000, 1000); -- Art for John
 INSERT INTO student_courses (student_id, course_id) VALUES (1001, 1001); -- History for Amanda
 
