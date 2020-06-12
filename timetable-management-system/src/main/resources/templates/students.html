@@ -13,7 +13,7 @@
   
     <h4 class="mb-3" th:text="${msg}">Students</h4>
     
-    <table class="table table-striped" th:unless="${#lists.isEmpty(students)}">
+    <table id="studentsTable" class="table table-striped" th:unless="${#lists.isEmpty(students)}">
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>
@@ -24,7 +24,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr th:each="student,iterStat : ${students}" th:object="${student}">
+        <tr th:each="student,iterStat : ${students}" th:object="${student}" th:id="|row-${student.id}|">
           <th scope="row" th:text="${iterStat.count}">1</th>
           <td>
             <a class="btn btn-link" href="#" th:href="@{/students/{studentId}(studentId=*{id})}"

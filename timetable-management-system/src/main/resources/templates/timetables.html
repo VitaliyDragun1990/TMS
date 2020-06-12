@@ -11,9 +11,9 @@
     <div th:replace="fragments/info-message :: message (${infoMsg})">
     </div>
     
-    <h4 th:text="${msg}" class="mb-3">Timetables</h4>
+    <h4 th:text="${msg}" class="mb-3" id="headerMsg">Timetables</h4>
     
-    <table class="table table-striped" th:unless="${#lists.isEmpty(timetables)}">
+    <table id="timetablesTable" class="table table-striped" th:unless="${#lists.isEmpty(timetables)}">
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>

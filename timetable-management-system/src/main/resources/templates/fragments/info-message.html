@@ -8,7 +8,7 @@
   <div th:fragment="message (infoMsg)">
   
     <div th:if="${infoMsg}" class="alert alert-info alert-dismissible fade show mb-3" role="alert">
-      <strong th:text="${infoMsg}">Information message</strong>
+      <strong th:text="${infoMsg}" id="infoMsgText">Information message</strong>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
