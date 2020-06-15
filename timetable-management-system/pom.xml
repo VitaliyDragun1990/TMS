@@ -25,6 +25,7 @@
         <rider-junit5.version>1.13.1</rider-junit5.version>
         <dbunit.version>2.7.0</dbunit.version>
         <selenide.version>5.12.2</selenide.version>
+        <jbehave.version>4.6.3</jbehave.version>
         <junit-pioneer.version>0.5.3</junit-pioneer.version>
     </properties>
 
@@ -130,6 +131,16 @@
                 <artifactId>selenide</artifactId>
                 <version>${selenide.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jbehave</groupId>
+                <artifactId>jbehave-core</artifactId>
+                <version>${jbehave.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jbehave</groupId>
+                <artifactId>jbehave-spring</artifactId>
+                <version>${jbehave.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -216,6 +227,18 @@
         <dependency>
             <groupId>com.codeborne</groupId>
             <artifactId>selenide</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JBehave -->
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-spring</artifactId>
             <scope>test</scope>
         </dependency>
 
