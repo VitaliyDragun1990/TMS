@@ -4,14 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.core.domain.Category;
@@ -117,9 +113,6 @@ public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopu
     @Value("${generator.timetable.maxClassesPerWeek}")
     private Integer maxClassesPerWeek;
 
-    @Value("${generator.initDataScript}")
-    private String initDataScript;
-
     private ClassroomDao classroomDao;
 
     private CategoryDao categoryDao;
@@ -134,8 +127,6 @@ public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopu
 
     private TimetableDao timetableDao;
 
-    private DataSource dataSource;
-
     public InitialDataDatabasePopulatorImpl(
             ClassroomDao classroomDao,
             CategoryDao categoryDao,
@@ -143,8 +134,7 @@ public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopu
             TeacherDao teacherDao,
             StudentDao studentDao,
             CourseDao courseDao,
-            TimetableDao timetableDao,
-            DataSource dataSource) {
+            TimetableDao timetableDao) {
         this.classroomDao = classroomDao;
         this.categoryDao = categoryDao;
         this.groupDao = groupDao;
@@ -152,7 +142,6 @@ public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopu
         this.studentDao = studentDao;
         this.courseDao = courseDao;
         this.timetableDao = timetableDao;
-        this.dataSource = dataSource;
     }
 
 
@@ -160,7 +149,6 @@ public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopu
     public void populateDatabaseWithInitialData() {
         LOG.info("Populating database with init data");
 
-        populateDatabaseFromScript();
         populateDatabaseWithGeneratedData();
     }
 
@@ -213,14 +201,6 @@ public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopu
 
         coursesRandomDistributor.assignStudentsToCourses(students, courses, maxCoursesPerStudent);
         persistStudentWithCoursesInDatabase(students);
-    }
-
-    private void populateDatabaseFromScript() {
-        LOG.info("Populating database with data from script: {}", initDataScript);
-
-        ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-        databasePopulator.addScript(new ClassPathResource(initDataScript));
-        databasePopulator.execute(dataSource);
     }
 
     private void persistStudentWithCoursesInDatabase(List<Student> students) {

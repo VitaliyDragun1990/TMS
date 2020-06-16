@@ -21,14 +21,4 @@ public class EmbeddedDataSourceConfig {
                 .build();
     }
 
-//    @Bean
-//    public DataSource dataSource() {
-//        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-//        dataSourceBuilder.driverClassName("org.h2.Driver");
-//        dataSourceBuilder.url(
-//                "jdbc:h2:mem:test_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=RUNSCRIPT FROM 'classpath:/sql/db_schema_seq.sql'");
-//        dataSourceBuilder.username("");
-//        dataSourceBuilder.password("");
-//        return dataSourceBuilder.build();
-//    }
 }
