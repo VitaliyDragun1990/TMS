@@ -1,12 +1,9 @@
 package org.vdragun.tms.util.initializer;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +34,8 @@ import org.vdragun.tms.util.generator.TeacherGenerator;
 import org.vdragun.tms.util.generator.TimetableGenerator;
 
 /**
+ * Component responsible for populating database with initial data
+ * 
  * @author Vitaliy Dragun
  *
  */
@@ -50,68 +49,7 @@ public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopu
     
     private static final Logger LOG = LoggerFactory.getLogger(InitialDataDatabasePopulatorImpl.class);
 
-    @Value("#{'${generator.category}'.split(',\\s*')}")
-    private List<String> categoryData;
-
-    @Value("#{'${generator.firstNames}'.split(',\\s*')}")
-    private List<String> firstNames;
-
-    @Value("#{'${generator.lastNames}'.split(',\\s*')}")
-    private List<String> lastNames;
-
-    @Value("#{T(java.time.LocalDate).parse('${genertor.baseDate}')}")
-    private LocalDate baseDate;
-
-    @Value("${generator.deviationDays}")
-    private Integer deviationDays;
-
-    @Value("${generator.numberOfStudents}")
-    private Integer numberOfStudents;
-
-    @Value("${generator.numberOfTeachers}")
-    private Integer numberOfTeachers;
-
-    @Value("${generator.numberOfClassrooms}")
-    private Integer numberOfClassroms;
-
-    @Value("${generator.classroomFromCapacity}")
-    private Integer classroomFromCapacity;
-
-    @Value("${generator.classroomToCapacity}")
-    private Integer classroomToCapacity;
-
-    @Value("#{'${generator.coursePrefixes}'.split(',\\s*')}")
-    private List<String> coursePrefixes;
-
-    @Value("${generator.numberOfCourses}")
-    private Integer numberOfCourses;
-
-    @Value("${generator.numberOfGroups}")
-    private Integer numberOfGroups;
-
-    @Value("${generator.minStudentsPerGroup}")
-    private Integer minStudentsPerGroup;
-
-    @Value("${generator.maxStudentsPerGroup}")
-    private Integer maxStudenstPerGroup;
-
-    @Value("${generator.maxCoursesPerStudent}")
-    private Integer maxCoursesPerStudent;
-
-    @Value("#{T(java.time.LocalTime).parse('${generator.timetable.startTime}')}")
-    private LocalTime timetableStartTime;
-
-    @Value("#{T(java.time.LocalTime).parse('${generator.timetable.endTime}')}")
-    private LocalTime timetableEndTime;
-
-    @Value("${generator.timetable.numberOfMonths}")
-    private Integer numberOfMonths;
-
-    @Value("${generator.timetable.durationInMinutes}")
-    private Integer durationInMinutes;
-
-    @Value("${generator.timetable.maxClassesPerWeek}")
-    private Integer maxClassesPerWeek;
+    private GeneratorProperties generatorProps;
 
     private ClassroomDao classroomDao;
 
@@ -128,6 +66,7 @@ public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopu
     private TimetableDao timetableDao;
 
     public InitialDataDatabasePopulatorImpl(
+            GeneratorProperties generatorProps,
             ClassroomDao classroomDao,
             CategoryDao categoryDao,
             GroupDao groupDao,
@@ -135,6 +74,7 @@ public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopu
             StudentDao studentDao,
             CourseDao courseDao,
             TimetableDao timetableDao) {
+        this.generatorProps = generatorProps;
         this.classroomDao = classroomDao;
         this.categoryDao = categoryDao;
         this.groupDao = groupDao;
@@ -163,43 +103,66 @@ public class InitialDataDatabasePopulatorImpl implements InitialDataDatabasePopu
         TeacherGenerator teacherGenerator = new TeacherGenerator();
         CourseGenerator courseGenerator = new CourseGenerator();
         TimetableGenerator timetableGenerator = new TimetableGenerator(
-                timetableStartTime,
-                timetableEndTime,
-                durationInMinutes,
-                numberOfMonths,
-                maxClassesPerWeek);
+                generatorProps.getTimetableStartTime(),
+                generatorProps.getTimetableEndTime(),
+                generatorProps.getTimetableDurationInMinutes(),
+                generatorProps.getTimetablePeriodOfMonths(),
+                generatorProps.getTimetableMaxClassesPerWeek());
         StudentsToGroupRandomDistributor groupRandomDistributor = new StudentsToGroupRandomDistributor();
         StudentsToCoursesRandomDistributor coursesRandomDistributor = new StudentsToCoursesRandomDistributor();
 
-        List<Category> categories = categoryParser.parse(categoryData);
+        List<Category> categories = categoryParser.parse(generatorProps.getCategories());
         categoryDao.saveAll(categories);
 
-        List<Group> groups = groupGenerator.generate(numberOfGroups);
+        List<Group> groups = groupGenerator.generate(generatorProps.getNumberOfGroups());
         groupDao.saveAll(groups);
 
-        List<Classroom> classrooms = classroomGenerator.generate(numberOfClassroms, classroomFromCapacity,
-                classroomToCapacity);
+        List<Classroom> classrooms = classroomGenerator.generate(
+                generatorProps.getNumberOfClassrooms(),
+                generatorProps.getClassroomMinCapacity(),
+                generatorProps.getClassroomMaxCapacity());
         classrooms.forEach(classroom -> classroomDao.save(classroom));
 
         List<Student> students = studentGenerator
-                .generate(PersonGeneratorData.from(numberOfStudents, firstNames, lastNames, baseDate, deviationDays));
+                .generate(PersonGeneratorData.from(
+                        generatorProps.getNumberOfStudents(),
+                        generatorProps.getFirstNames(),
+                        generatorProps.getLastNames(),
+                        generatorProps.getBaseDate(),
+                        generatorProps.getDeviationDays()));
         studentDao.saveAll(students);
 
         List<Teacher> teachers = teacherGenerator
-                .generate(PersonGeneratorData.from(numberOfTeachers, firstNames, lastNames, baseDate, deviationDays));
+                .generate(PersonGeneratorData.from(
+                        generatorProps.getNumberOfTeachers(),
+                        generatorProps.getFirstNames(),
+                        generatorProps.getLastNames(),
+                        generatorProps.getBaseDate(),
+                        generatorProps.getDeviationDays()));
         teacherDao.saveAll(teachers);
 
         List<Course> courses = courseGenerator
-                .generate(CourseGeneratorData.from(numberOfCourses, coursePrefixes, categories, teachers));
+                .generate(CourseGeneratorData.from(
+                        generatorProps.getNumberOfCourses(),
+                        generatorProps.getCoursePrefixes(),
+                        categories,
+                        teachers));
         courseDao.saveAll(courses);
 
         List<Timetable> timetables = timetableGenerator.generate(courses, classrooms);
         timetableDao.saveAll(timetables);
 
-        groupRandomDistributor.assignStudentsToGroups(students, groups, minStudentsPerGroup, maxStudenstPerGroup);
+        groupRandomDistributor.assignStudentsToGroups(
+                students,
+                groups,
+                generatorProps.getMinStudentsPerGroup(),
+                generatorProps.getMaxStudentsPerGroup());
         persistStudentsWithGroupsInDatabase(students);
 
-        coursesRandomDistributor.assignStudentsToCourses(students, courses, maxCoursesPerStudent);
+        coursesRandomDistributor.assignStudentsToCourses(
+                students,
+                courses,
+                generatorProps.getMaxCoursesPerStudent());
         persistStudentWithCoursesInDatabase(students);
     }
 
