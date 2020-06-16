@@ -10,16 +10,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.vdragun.tms.config.SpringDataDaoConfig;
+import org.springframework.context.annotation.Import;
 import org.vdragun.tms.dao.DBTestHelper;
 import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.util.StartupDataInitializerTest.StartupDataConfig;
 
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = Replace.NONE)
+@Import({ DaoTestConfig.class, StartupDataConfig.class })
 @DisplayName("Startup Data Initializer")
-@SpringJUnitConfig({ DaoTestConfig.class, SpringDataDaoConfig.class, StartupDataConfig.class })
 class StartupDataInitializerTest {
 
     @Value("#{'${generator.category}'.split(',\\s*').length}")
@@ -65,7 +69,7 @@ class StartupDataInitializerTest {
         assertThat(timetablesInDatabase, greaterThanOrEqualTo(numberOfMonths * 4 * coursesInDatabase));
     }
 
-    @Configuration
+    @TestConfiguration
     @ComponentScan(basePackages = { "org.vdragun.tms.util.initializer" })
     static class StartupDataConfig {
 

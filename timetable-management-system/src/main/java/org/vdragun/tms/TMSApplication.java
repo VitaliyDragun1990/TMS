@@ -2,13 +2,12 @@ package org.vdragun.tms;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 
 /**
  * @author Vitaliy Dragun
  *
  */
-@SpringBootApplication(exclude = HibernateJpaAutoConfiguration.class)
+@SpringBootApplication
 public class TMSApplication {
 
     public static void main(String[] args) {
