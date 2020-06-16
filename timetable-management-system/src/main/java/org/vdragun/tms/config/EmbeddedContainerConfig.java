@@ -1,7 +1,5 @@
 package org.vdragun.tms.config;
 
-import java.util.Properties;
-
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.tomcat.util.descriptor.web.ContextResource;
@@ -15,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class EmbeddedContainerConfig {
 
     @Bean
-    public TomcatServletWebServerFactory tomcatFactory(Properties dataSourceProperties) {
+    public TomcatServletWebServerFactory tomcatFactory(JndiDataSourceProperties props) {
         return new TomcatServletWebServerFactory() {
             
             @Override
@@ -27,10 +25,18 @@ public class EmbeddedContainerConfig {
             @Override
             protected void postProcessContext(Context context) {
                 ContextResource resource = new ContextResource();
-                resource.setName(dataSourceProperties.getProperty("name"));
-                resource.setType(dataSourceProperties.getProperty("type"));
-                
-                dataSourceProperties.forEach((key, value) -> resource.setProperty(key.toString(), value));
+                resource.setName(props.getResourceName());
+                resource.setType(props.getResourceType());
+
+                resource.setProperty("dataSource.implicitCachingEnabled", props.getImplicitCachingEnabled());
+                resource.setProperty("dataSource.password", props.getPassword());
+                resource.setProperty("dataSource.user", props.getUser());
+                resource.setProperty("driverClassName", props.getDriverClassName());
+                resource.setProperty("factory", props.getFactory());
+                resource.setProperty("idleTimeout", props.getIdleTimeout());
+                resource.setProperty("jdbcUrl", props.getJdbcUrl());
+                resource.setProperty("maximumPoolSize", props.getMaximumPoolSize());
+                resource.setProperty("minimumIdle", props.getMinimumIdle());
                 
                 context.getNamingResources().addResource(resource);
             }

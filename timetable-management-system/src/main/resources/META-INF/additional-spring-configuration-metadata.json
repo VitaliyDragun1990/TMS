@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "jwt.token.secret",
+    "type": "java.lang.String",
+    "description": "Represents keyword to generate JWT token"
+  },
+  {
+    "name": "jwt.token.expired",
+    "type": "java.lang.String",
+    "description": "Represents JWT token lifetime, in millis"
+  }
+]}

@@ -28,7 +28,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
-import org.vdragun.tms.config.SpringDataDaoConfig;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Student;
@@ -39,7 +38,7 @@ import org.vdragun.tms.dao.DaoTestConfig;
 import org.vdragun.tms.dao.TimetableDao;
 
 @DataJpaTest
-@Import({ SpringDataDaoConfig.class, DaoTestConfig.class })
+@Import({ DaoTestConfig.class })
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DisplayName("Spring Data Timetable DAO")
 public class SpringDataTimetableDaoTest {

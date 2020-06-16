@@ -18,13 +18,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.acceptance.steps.SearchStudentMonthlyTimetablesSteps;
-import org.vdragun.tms.config.SpringDataDaoConfig;
 import org.vdragun.tms.core.application.service.timetable.TimetableServiceImpl;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @Import({
-        SpringDataDaoConfig.class,
         TimetableServiceImpl.class,
         EmbeddedDataSourceConfig.class,
         SearchStudentMonthlyTimetablesSteps.class // steps definition needs explicit import
