@@ -3,7 +3,7 @@ package org.vdragun.tms.security.rest.service;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import org.vdragun.tms.security.rest.validation.Username;
+import org.vdragun.tms.security.validation.Username;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;

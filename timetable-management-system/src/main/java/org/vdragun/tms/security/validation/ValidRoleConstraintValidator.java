@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.validation;
+package org.vdragun.tms.security.validation;
 
 import java.util.regex.Pattern;
 

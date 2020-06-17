@@ -8,10 +8,10 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.vdragun.tms.core.application.validation.PersonName;
-import org.vdragun.tms.security.rest.validation.Password;
-import org.vdragun.tms.security.rest.validation.UniqueUsername;
-import org.vdragun.tms.security.rest.validation.Username;
-import org.vdragun.tms.security.rest.validation.ValidRole;
+import org.vdragun.tms.security.validation.Password;
+import org.vdragun.tms.security.validation.UniqueUsername;
+import org.vdragun.tms.security.validation.Username;
+import org.vdragun.tms.security.validation.ValidRole;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;

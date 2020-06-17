@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.validation;
+package org.vdragun.tms.security.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -6,24 +6,24 @@ import javax.validation.ConstraintValidatorContext;
 import org.vdragun.tms.security.dao.UserDao;
 
 /**
- * Custom {@link ConstraintValidator} for validation of {@link ExistingRole}
+ * Custom {@link ConstraintValidator} for validation of {@link UniqueEmail}
  * constraint
  * 
  * @author Vitaliy Dragun
  *
  */
-public class UniqueUsernameConstraintValidator implements ConstraintValidator<UniqueUsername, String> {
+public class UniqueEmailConstraintValidator implements ConstraintValidator<UniqueEmail, String> {
 
     private UserDao userDao;
 
-    public UniqueUsernameConstraintValidator(UserDao userDao) {
+    public UniqueEmailConstraintValidator(UserDao userDao) {
         this.userDao = userDao;
     }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value != null) {
-            return userDao.findByUsername(value) == null;
+            return userDao.findByEmail(value) == null;
         }
         return true;
     }
