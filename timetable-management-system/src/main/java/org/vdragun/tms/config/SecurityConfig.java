@@ -21,12 +21,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.vdragun.tms.security.rest.exception.AccessDeniedExceptionHandler;
+import org.vdragun.tms.security.rest.exception.RestAccessDeniedExceptionHandler;
 import org.vdragun.tms.security.rest.exception.RestAuthenticationEntryPoint;
 import org.vdragun.tms.security.rest.jwt.JwtAuthenticationTokenFilter;
 import org.vdragun.tms.security.rest.jwt.JwtConfigurer;
 import org.vdragun.tms.security.rest.jwt.JwtTokenProvider;
 import org.vdragun.tms.security.service.AuthenticatedUserDetailsService;
+import org.vdragun.tms.security.web.exception.WebAccessDeniedExceptionHandler;
 
 @Configuration
 public class SecurityConfig {
@@ -51,7 +52,7 @@ public class SecurityConfig {
         private JwtTokenProvider jwtTokenProvider;
 
         @Autowired
-        private AccessDeniedExceptionHandler accessDeniedHandler;
+        private RestAccessDeniedExceptionHandler accessDeniedHandler;
         
         @Autowired
         private RestAuthenticationEntryPoint authEntryPoint;
@@ -109,6 +110,9 @@ public class SecurityConfig {
 
         @Autowired
         private PasswordEncoder passwordEncoder;
+        
+        @Autowired
+        private WebAccessDeniedExceptionHandler accessDeniedHandler;
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -121,14 +125,13 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .authorizeRequests()
-                    .antMatchers("/students", "/courses", "/timetables", "/teachers")
+                    .antMatchers(GET, "/courses/register").hasAuthority(ADMIN)
+                    .antMatchers(GET, "/courses", "/courses/**").permitAll()
+                    .antMatchers(POST, "/courses").hasAuthority(ADMIN)
+                    .antMatchers("/students", "/timetables",
+                            "/teachers")
                     .authenticated()
                     .antMatchers("/", "/**", "/auth/signup", "/auth/signin").permitAll()
-//                    .csrf()
-//                    .disable()
-//                    .authorizeRequests()
-//                    .anyRequest()
-//                    .permitAll()
                     .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                     .and()
                         .formLogin()
@@ -136,8 +139,10 @@ public class SecurityConfig {
                             .loginProcessingUrl("/auth/signin")
                     .defaultSuccessUrl("/home")
                     .and()
-                    .logout()
-                    .logoutUrl("/auth/signout");
+                        .logout()
+                            .logoutUrl("/auth/signout")
+                    .and()
+                        .exceptionHandling().accessDeniedHandler(accessDeniedHandler);
         }
 
         @Override
