@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.vdragun.tms.security.dao.RoleDao;
 import org.vdragun.tms.security.model.Role;
 import org.vdragun.tms.security.model.User;
-import org.vdragun.tms.security.rest.service.AuthenticationService;
+import org.vdragun.tms.security.rest.service.RestAuthenticationService;
 import org.vdragun.tms.security.rest.service.SigninRequest;
 import org.vdragun.tms.security.rest.service.SigninResponse;
 import org.vdragun.tms.security.rest.service.SignupRequest;
@@ -20,14 +20,14 @@ import org.vdragun.tms.security.rest.service.SignupResponse;
 import org.vdragun.tms.security.service.UserService;
 
 /**
- * Implementation of {@link AuthenticationService} that operates with JWT tokens
+ * Implementation of {@link RestAuthenticationService} that operates with JWT tokens
  * to authenticate application user
  * 
  * @author Vitaliy Dragun
  *
  */
 @Service
-public class JwtAuthenticationService implements AuthenticationService {
+public class JwtAuthenticationService implements RestAuthenticationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JwtAuthenticationService.class);
 

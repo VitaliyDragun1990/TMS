@@ -6,7 +6,7 @@ package org.vdragun.tms.security.rest.service;
  * @author Vitaliy Dragun
  *
  */
-public interface AuthenticationService {
+public interface RestAuthenticationService {
 
     /**
      * Sign in user using specified {@link SigninRequest} request
