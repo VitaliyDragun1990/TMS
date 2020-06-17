@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.vdragun.tms.security.dao.RoleDao;
 import org.vdragun.tms.security.model.Role;
@@ -35,17 +36,20 @@ public class JwtAuthenticationService implements RestAuthenticationService {
     private JwtTokenProvider jwtTokenProvider;
     private UserService userService;
     private RoleDao roleDao;
+    private PasswordEncoder passwordEncoder;
 
 
     public JwtAuthenticationService(
             AuthenticationManager authenticationManager,
             JwtTokenProvider jwtTokenProvider,
             UserService userService,
-            RoleDao roleDao) {
+            RoleDao roleDao,
+            PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
         this.roleDao = roleDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -68,11 +72,11 @@ public class JwtAuthenticationService implements RestAuthenticationService {
                 request.getFirstName(),
                 request.getLastName(),
                 request.getEmail(),
-                request.getPassword());
+                passwordEncoder.encode(request.getPassword()));
 
         for (String roleName : request.getRoles()) {
             // Handle role not found & role ADMIN is forbidden
-            Role role = roleDao.findByName(roleName.toUpperCase()).get();
+            Role role = roleDao.findByName(roleName.toUpperCase());
             user.addRole(role);
         }
 

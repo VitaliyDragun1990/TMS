@@ -10,9 +10,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.vdragun.tms.security.model.Role;
 import org.vdragun.tms.security.model.Status;
 import org.vdragun.tms.security.model.User;
+import org.vdragun.tms.security.service.AuthenticatedUser;
 
 /**
- * Factory to produce {@link JwtUser} instances
+ * Factory to produce {@link AuthenticatedUser} instances
  * 
  * @author Vitaliy Dragun
  *
@@ -22,8 +23,8 @@ public final class JwtUserFactory {
     private JwtUserFactory() {
     }
 
-    public static JwtUser create(User user) {
-        return new JwtUser(
+    public static AuthenticatedUser create(User user) {
+        return new AuthenticatedUser(
                 user.getId(),
                 user.getUsername(),
                 user.getFirstName(),

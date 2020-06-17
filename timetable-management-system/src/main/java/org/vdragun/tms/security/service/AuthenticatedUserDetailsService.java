@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.jwt;
+package org.vdragun.tms.security.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,23 +7,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.vdragun.tms.security.model.User;
-import org.vdragun.tms.security.service.UserService;
+import org.vdragun.tms.security.rest.jwt.JwtUserFactory;
 
 /**
- * Custom implementation of {@link UserDetailsService} which provide JWT
- * authenticated token to authenticated user
+ * Custom implementation of {@link UserDetailsService} which looks for
+ * {@link AuthenticatedUser} instance by username
  * 
  * @author Vitaliy Dragun
  *
  */
 @Service
-public class JwtUserDetailsService implements UserDetailsService {
+public class AuthenticatedUserDetailsService implements UserDetailsService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JwtUserDetailsService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuthenticatedUserDetailsService.class);
 
     private UserService userService;
 
-    public JwtUserDetailsService(UserService userService) {
+    public AuthenticatedUserDetailsService(UserService userService) {
         this.userService = userService;
     }
 

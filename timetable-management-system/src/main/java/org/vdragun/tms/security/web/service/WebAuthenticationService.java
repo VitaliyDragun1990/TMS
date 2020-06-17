@@ -1,5 +1,9 @@
 package org.vdragun.tms.security.web.service;
 
+import java.util.List;
+
+import org.vdragun.tms.security.model.Role;
+
 /**
  * Service component responsible for user authentication
  * 
@@ -14,8 +18,8 @@ public interface WebAuthenticationService {
     void processSignUp(SignupForm form);
 
     /**
-     * Sign in existing user using specified form data
+     * Returns {@link Role}s available to register new user
      */
-    // TODO: may be obsolete because Spring Security handle login itself
-    void processSignIn(SigninForm form);
+    List<Role> findRols();
+
 }

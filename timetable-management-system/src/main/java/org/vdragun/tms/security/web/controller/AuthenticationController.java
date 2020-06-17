@@ -17,10 +17,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.vdragun.tms.security.dao.RoleDao;
 import org.vdragun.tms.security.model.Role;
 import org.vdragun.tms.security.validation.SignupFormPasswordsMatchValidator;
-import org.vdragun.tms.security.web.service.SigninForm;
 import org.vdragun.tms.security.web.service.SignupForm;
 import org.vdragun.tms.security.web.service.WebAuthenticationService;
 import org.vdragun.tms.util.Constants.Attribute;
@@ -41,13 +39,12 @@ public class AuthenticationController {
     public static final String BASE_URL = "/auth";
 
     private WebAuthenticationService authService;
-    private RoleDao roleDao;
     private SignupFormPasswordsMatchValidator formValidator;
 
-    public AuthenticationController(WebAuthenticationService authService, RoleDao roleDao,
+    public AuthenticationController(
+            WebAuthenticationService authService,
             SignupFormPasswordsMatchValidator formValidator) {
         this.authService = authService;
-        this.roleDao = roleDao;
         this.formValidator = formValidator;
     }
 
@@ -63,7 +60,7 @@ public class AuthenticationController {
 
     @ModelAttribute(Attribute.ROLES)
     public List<Role> allRoles() {
-        return roleDao.findAll();
+        return authService.findRols();
     }
 
     @GetMapping("/signup")
@@ -90,21 +87,9 @@ public class AuthenticationController {
             return Page.SIGN_UP_FORM;
         }
 
-        return redirectTo("/home");
-    }
+        authService.processSignUp(form);
 
-    @GetMapping("/signin")
-    public String showSigninForm(Model model) {
-        model.addAttribute(Attribute.SINGIN_FORM, new SigninForm());
-
-        return Page.SIGN_IN_FORM;
-    }
-
-    @PostMapping("/signin")
-    public String signInUser(SigninForm form) {
-        LOG.info("SigninForm: {}", form);
-
-        return redirectTo("/home");
+        return redirectTo("/auth/signin");
     }
 
     protected String getRequestUri() {
