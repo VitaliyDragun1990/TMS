@@ -12,7 +12,7 @@
     
       <h3 class="mb-5" th:text="#{title.userSigninForm}">Sign in Form</h3>
 
-      <form id="signupForm" th:object="${user}" th:action="@{/auth/signin}" method="post"
+      <form id="signupForm" th:object="${signinForm}" th:action="@{/auth/signin}" method="post"
             th:with="isValidated=${validated ne null}">
             
         <!-- Form Errors  -->

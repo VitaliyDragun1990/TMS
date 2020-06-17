@@ -102,6 +102,8 @@ public final class Constants {
         public static final String VALIDATED = "validated";
         public static final String TITLES = "titles";
         public static final String USER = "user";
+        public static final String SINGUP_FORM = "signupForm";
+        public static final String SINGIN_FORM = "signinForm";
         public static final String ROLES = "roles";
 
         private Attribute() {

@@ -17,6 +17,9 @@
      <logger name="org.vdragun.tms.security.rest" level="trace" additivity="false">
         <appender-ref ref="CONSOLE" />
     </logger>
+    <logger name="org.vdragun.tms.security.web" level="trace" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
     
     <logger name="org.springframework" level="info" additivity="false">
         <appender-ref ref="CONSOLE" />

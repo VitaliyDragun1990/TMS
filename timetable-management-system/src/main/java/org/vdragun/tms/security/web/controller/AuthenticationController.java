@@ -1,14 +1,25 @@
 package org.vdragun.tms.security.web.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.vdragun.tms.security.dao.RoleDao;
+import org.vdragun.tms.security.model.Role;
+import org.vdragun.tms.security.validation.SignupFormPasswordsMatchValidator;
 import org.vdragun.tms.security.web.service.SigninForm;
 import org.vdragun.tms.security.web.service.SignupForm;
 import org.vdragun.tms.security.web.service.WebAuthenticationService;
@@ -31,30 +42,60 @@ public class AuthenticationController {
 
     private WebAuthenticationService authService;
     private RoleDao roleDao;
+    private SignupFormPasswordsMatchValidator formValidator;
 
-    public AuthenticationController(WebAuthenticationService authService, RoleDao roleDao) {
+    public AuthenticationController(WebAuthenticationService authService, RoleDao roleDao,
+            SignupFormPasswordsMatchValidator formValidator) {
         this.authService = authService;
         this.roleDao = roleDao;
+        this.formValidator = formValidator;
+    }
+
+    @InitBinder
+    void sharedInitBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
+
+    @InitBinder(Attribute.SINGUP_FORM)
+    void signupInitBinder(WebDataBinder binder) {
+        binder.addValidators(formValidator);
+    }
+
+    @ModelAttribute(Attribute.ROLES)
+    public List<Role> allRoles() {
+        return roleDao.findAll();
     }
 
     @GetMapping("/signup")
     public String showSignupForm(Model model) {
-        model.addAttribute(Attribute.USER, new SignupForm());
-        model.addAttribute(Attribute.ROLES, roleDao.findAll());
+        LOG.trace("Received GET request to show user sign up form, URI: {}", getRequestUri());
+
+        model.addAttribute(Attribute.SINGUP_FORM, new SignupForm());
 
         return Page.SIGN_UP_FORM;
     }
 
     @PostMapping("/signup")
-    public String signupNewUser(@ModelAttribute(Attribute.USER) SignupForm form, Model model) {
-        LOG.info("SignupForm: {}", form);
+    public String signupNewUser(
+            @Valid @ModelAttribute(Attribute.SINGUP_FORM) SignupForm form,
+            BindingResult bindingResult,
+            Model model) {
+        LOG.trace("Received POST request to register new user, data: {}, URI: {}", form, getRequestUri());
+
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors().forEach(error -> LOG.trace("Validation error: {}", error));
+
+            model.addAttribute(Attribute.VALIDATED, true);
+
+            return Page.SIGN_UP_FORM;
+        }
 
         return redirectTo("/home");
     }
 
     @GetMapping("/signin")
     public String showSigninForm(Model model) {
-        model.addAttribute(Attribute.USER, new SigninForm());
+        model.addAttribute(Attribute.SINGIN_FORM, new SigninForm());
 
         return Page.SIGN_IN_FORM;
     }
@@ -64,6 +105,11 @@ public class AuthenticationController {
         LOG.info("SigninForm: {}", form);
 
         return redirectTo("/home");
+    }
+
+    protected String getRequestUri() {
+        ServletUriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromCurrentRequest();
+        return uriBuilder.toUriString();
     }
 
     protected String redirectTo(String targetURI) {

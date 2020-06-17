@@ -1,5 +1,15 @@
 package org.vdragun.tms.security.web.service;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
+import org.vdragun.tms.core.application.validation.PersonName;
+import org.vdragun.tms.security.validation.Password;
+import org.vdragun.tms.security.validation.UniqueEmail;
+import org.vdragun.tms.security.validation.UniqueUsername;
+import org.vdragun.tms.security.validation.Username;
+import org.vdragun.tms.security.validation.ValidRole;
+
 /**
  * Contains user's sign up request data
  * 
@@ -8,12 +18,34 @@ package org.vdragun.tms.security.web.service;
  */
 public class SignupForm {
 
+    @NotNull
+    @Username
+    @UniqueUsername
     private String username;
+
+    @NotNull
+    @PersonName
     private String firstName;
+
+    @NotNull
+    @PersonName
     private String lastName;
+
+    @NotNull
+    @Password
     private String password;
+
+    @NotNull
+    @Password
     private String confirmPassword;
+
+    @NotNull
+    @Email
+    @UniqueEmail
     private String email;
+
+    @NotNull
+    @ValidRole
     private String role;
 
     public SignupForm() {

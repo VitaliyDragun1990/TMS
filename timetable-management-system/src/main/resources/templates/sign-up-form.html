@@ -12,7 +12,7 @@
     
       <h3 class="mb-5" th:text="#{title.userSignupForm}">Sign up Form</h3>
 
-      <form id="signupForm" th:object="${user}" th:action="@{/auth/signup}" method="post"
+      <form id="signupForm" th:object="${signupForm}" th:action="@{/auth/signup}" method="post"
             th:with="isValidated=${validated ne null}">
             
         <!-- Form Errors  -->
@@ -110,7 +110,7 @@
                    th:classappend="${isValidated && !#fields.hasErrors('email')} ? 'is-valid'">
             <span class="invalid-feedback">
               <ul>
-                <li th:each="err : ${#fields.errors('email')}" th:text=${err}>Please provide last name</li>
+                <li th:each="err : ${#fields.errors('email')}" th:text=${err}>Please provide valid email</li>
               </ul>
             </span>
           </div>
@@ -124,7 +124,7 @@
               <option th:each="role : ${roles}"
                       th:value="${role.name}"
                       th:text="${#strings.substringAfter(role.name,'ROLE_')}"
-                      th:selected="${role.name.equals(user.role)}">STUDENT</option>
+                      th:selected="${role.name.equals(signupForm.role)}">STUDENT</option>
               
             </select>
           </div>
