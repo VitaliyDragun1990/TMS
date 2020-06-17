@@ -75,6 +75,8 @@ public final class Constants {
         public static final String NOT_FOUND = "404";
         public static final String BAD_REQUEST = "400";
         public static final String SERVER_ERROR = "500";
+        public static final String SIGN_UP_FORM = "sign-up-form";
+        public static final String SIGN_IN_FORM = "sign-in-form";
 
         private Page() {
         }
@@ -99,6 +101,8 @@ public final class Constants {
         public static final String ERROR = "error";
         public static final String VALIDATED = "validated";
         public static final String TITLES = "titles";
+        public static final String USER = "user";
+        public static final String ROLES = "roles";
 
         private Attribute() {
         }
