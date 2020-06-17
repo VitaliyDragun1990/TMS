@@ -14,15 +14,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.vdragun.tms.security.rest.exception.AccessDeniedExceptionHandler;
 import org.vdragun.tms.security.rest.exception.RestAuthenticationEntryPoint;
 import org.vdragun.tms.security.rest.jwt.JwtAuthenticationTokenFilter;
 import org.vdragun.tms.security.rest.jwt.JwtConfigurer;
 import org.vdragun.tms.security.rest.jwt.JwtTokenProvider;
+import org.vdragun.tms.security.service.AuthenticatedUserDetailsService;
 
 @Configuration
 public class SecurityConfig {
@@ -100,15 +104,40 @@ public class SecurityConfig {
     @Order(2)
     public static class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+        @Autowired
+        private AuthenticatedUserDetailsService userDetailsService;
+
+        @Autowired
+        private PasswordEncoder passwordEncoder;
+
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth
+                    .userDetailsService(userDetailsService)
+                    .passwordEncoder(passwordEncoder);
+        }
+
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                    .antMatcher("/**")
-                    .csrf()
-                    .disable()
                     .authorizeRequests()
-                    .anyRequest()
-                    .permitAll();
+                    .antMatchers("/students", "/courses", "/timetables", "/teachers")
+                    .authenticated()
+                    .antMatchers("/", "/**", "/auth/signup", "/auth/signin").permitAll()
+//                    .csrf()
+//                    .disable()
+//                    .authorizeRequests()
+//                    .anyRequest()
+//                    .permitAll()
+                    .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                    .and()
+                        .formLogin()
+                            .loginPage("/auth/signin")
+                            .loginProcessingUrl("/auth/signin")
+                    .defaultSuccessUrl("/home")
+                    .and()
+                    .logout()
+                    .logoutUrl("/auth/signout");
         }
 
         @Override
