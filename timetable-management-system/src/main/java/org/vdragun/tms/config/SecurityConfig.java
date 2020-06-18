@@ -125,12 +125,62 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .authorizeRequests()
+                    // courses
                     .antMatchers(GET, "/courses/register").hasAuthority(ADMIN)
                     .antMatchers(GET, "/courses", "/courses/**").permitAll()
                     .antMatchers(POST, "/courses").hasAuthority(ADMIN)
-                    .antMatchers("/students", "/timetables",
-                            "/teachers")
+                    // students
+                    .antMatchers(
+                            GET,
+                            "/students/register",
+                            "/students/*/update"
+                            )
+                    .hasAuthority(ADMIN)
+                    .antMatchers(
+                            GET,
+                            "/students",
+                            "/students/**")
                     .authenticated()
+                    .antMatchers(
+                            POST,
+                            "/students/delete",
+                            "/students",
+                            "/students/**")
+                    .hasAuthority(ADMIN)
+                    // teachers
+                    .antMatchers(GET, "/teachers/register").hasAnyAuthority(ADMIN)
+                    .antMatchers(
+                            GET,
+                            "/teachers",
+                            "/teachers/**")
+                    .hasAnyAuthority(ADMIN, TEACHER)
+                    .antMatchers(POST, "/teachers").hasAuthority(ADMIN)
+                    // timetables
+                    .antMatchers(
+                            GET,
+                            "/timetables/register",
+                            "/timetables/*/update"
+                            )
+                    .hasAuthority(ADMIN)
+                    .antMatchers(
+                            GET,
+                            "/timetables/teacher/**"
+                            )
+                    .hasAnyAuthority(ADMIN, TEACHER)
+                    .antMatchers(
+                            GET,
+                            "/timetables",
+                            "/timetables/*",
+                            "/timetables/student/**"
+                            )
+                    .authenticated()
+                    .antMatchers(
+                            POST,
+                            "/timetables",
+                            "/timetables/*",
+                            "/timetables/delete")
+                    .hasAuthority(ADMIN)
+                    
                     .antMatchers("/", "/**", "/auth/signup", "/auth/signin").permitAll()
                     .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                     .and()
