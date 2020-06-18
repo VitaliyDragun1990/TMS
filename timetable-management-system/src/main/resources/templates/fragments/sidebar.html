@@ -12,7 +12,9 @@
 
             <ul class="list-unstyled components">
                 <p th:text="#{label.operationGroups}">Operation Groups</p>
-                <li class="active" th:class="${#strings.contains(#request.requestURI,'/students') ? 'active': ''}">
+                
+                <!-- Students -->                
+                <li sec:authorize="isAuthenticated()" class="active" th:class="${#strings.contains(#request.requestURI,'/students') ? 'active': ''}">
                     <a href="#studentSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
                        th:text="#{label.students}">
                       Students
@@ -23,14 +25,16 @@
                               Show All
                             </a>
                         </li>
-                        <li>
+                        <li sec:authorize="hasRole('ADMIN')">
                             <a id="registerStudent" href="#" th:href="@{/students/register}" th:text="#{label.register}">
                               Register
                             </a>
                         </li>
                     </ul>
                 </li>
-                <li th:class="${#strings.contains(#request.requestURI,'/teachers') ? 'active': ''}">
+                
+                <!-- Teachers -->                
+                <li sec:authorize="hasAnyRole('TEACHER','ADMIN')" th:class="${#strings.contains(#request.requestURI,'/teachers') ? 'active': ''}">
                     <a href="#teacherSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
                        th:text="#{label.teachers}">
                       Teachers
@@ -39,12 +43,14 @@
                         <li>
                             <a id="showAllTeachers" href="#" th:href="@{/teachers}" th:text="#{label.showAll}">Show All</a>
                         </li>
-                        <li>
+                        <li sec:authorize="hasRole('ADMIN')">
                             <a id="registerTeacher" href="#" th:href="@{/teachers/register}" th:text="#{label.register}">Register</a>
                         </li>
                     </ul>
                 </li>
-                <li th:class="${#strings.contains(#request.requestURI,'/timetables') ? 'active': ''}">
+                
+                <!-- Timetables -->                
+                <li sec:authorize="isAuthenticated()" th:class="${#strings.contains(#request.requestURI,'/timetables') ? 'active': ''}">
                     <a href="#timetableSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
                        th:text="#{label.tmtables}">
                       Timetables
@@ -53,11 +59,13 @@
                         <li>
                             <a id="showAllTimetables" href="#" th:href="@{/timetables}" th:text="#{label.showAll}">Show All</a>
                         </li>
-                        <li>
+                        <li sec:authorize="hasRole('ADMIN')">
                             <a id="registerTimetable" href="#" th:href="@{/timetables/register}" th:text="#{label.register}">Register</a>
                         </li>
                     </ul>
                 </li>
+                
+                <!-- Courses -->
                 <li th:class="${#strings.contains(#request.requestURI,'/courses') ? 'active': ''}">
                     <a href="#courseSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
                        th:text="#{label.courses}">
@@ -67,7 +75,7 @@
                         <li>
                             <a id="showAllCourses" href="#" th:href="@{/courses}" th:text="#{label.showAll}">Show All</a>
                         </li>
-                        <li>
+                        <li sec:authorize="hasRole('ADMIN')">
                             <a id="registerCourse" href="#" th:href="@{/courses/register}" th:text="#{label.register}">Register</a>
                         </li>
                     </ul>

@@ -17,6 +17,7 @@
 
       <form id="studentForm" th:object="${student}" th:attr="data-student-id=${student.id}">
 
+        <!-- First Name  -->
         <div class="form-group row">
           <label for="firstName" class="col-sm-2 col-form-label" th:text="#{label.fname}">First name</label>
           <div class="col-sm-10">
@@ -24,6 +25,7 @@
           </div>
         </div>
 
+        <!-- Last Name  -->
         <div class="form-group row">
           <label for="lastName" class="col-sm-2 col-form-label" th:text="#{label.lname}">Last name</label>
           <div class="col-sm-10">
@@ -31,6 +33,7 @@
           </div>
         </div>
         
+        <!-- Enrollment Date  -->        
          <div class="form-group row">
           <label for="enrollmentDate" class="col-sm-2 col-form-label" th:text="#{label.edate}">Enrollment Date</label>
           <div class="col-sm-10">
@@ -38,6 +41,7 @@
           </div>
         </div>
         
+        <!-- Group  -->        
         <div class="form-group row" th:with="hasGroup=${student.group ne null}">
           <label for="group" class="col-sm-2 col-form-label" th:text="#{label.group}">Group</label>
           <div class="col-sm-10 form-row">
@@ -49,6 +53,7 @@
           </div>
         </div>
 
+        <!-- Courses  -->
         <fieldset class="form-group">
           <div class="row">
             <legend class="col-form-label col-sm-2 pt-0" th:text="#{label.courses}">Courses</legend>
@@ -62,7 +67,8 @@
           </div>
         </fieldset>
         
-        <div class="row">
+        <!-- Update/Delete  -->        
+        <div sec:authorize="hasRole('ADMIN')" class="row">
           <a href="#" th:href="@{/students/{id}/update(id=${student.id})}" class="btn btn-info mb-3 mr-3 updateBtn" 
              th:text="#{label.updateStudent}">
             Update Student
@@ -75,6 +81,8 @@
       </form>
       
       <hr />
+      
+        <!-- Search timetables  -->      
       <div th:replace="fragments/search-timetables :: search (@{'/timetables/student/'+${student.id}+'/'})">
       </div>
       

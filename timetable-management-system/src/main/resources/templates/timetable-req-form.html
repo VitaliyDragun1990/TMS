@@ -14,10 +14,12 @@
       <form action="#" th:action="@{/timetables}" method="POST" id="timetableReqForm" th:object="${timetable}"
             th:with="isValidated=${validated ne null}">
             
+        <!-- Form errors -->               
         <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
           <p class="text-dark" th:text="#{msg.correctErrors}">Please Correct Errors Below</p>
         </div>
       
+        <!-- Date -->         
         <div class="form-group row">
           <label for="startTime" class="col-sm-2 col-form-label" th:text="#{label.date}">Date</label>
           <div class="col-sm-10">
@@ -31,11 +33,12 @@
           </div>
         </div>
         
+        <!-- Duration -->           
         <div class="form-group row">
           <label for="durationInMinutes" class="col-sm-2 col-form-label" th:text="#{label.duration}">Duration (mins)</label>
           <div class="col-sm-10">
             <input type="number" class="form-control" th:field="*{duration}" th:errorclass="is-invalid"
-                   th:classappend="${isValidated && !#fields.hasErrors('duration')} ? 'is-valid'">
+                   autofocus="true" th:classappend="${isValidated && !#fields.hasErrors('duration')} ? 'is-valid'">
             <span class="invalid-feedback">
               <ul>
                 <li th:each="err : ${#fields.errors('duration')}" th:text=${err}>Please provide duration</li>
@@ -44,6 +47,7 @@
           </div>
         </div> 
         
+        <!-- Course -->           
         <div class="form-group row">
           <label for="courseId" class="col-sm-2 col-form-label" th:text="#{label.course}">Course</label>
           <div class="col-sm-10">
@@ -56,6 +60,7 @@
           </div>
         </div>
         
+        <!-- Classroom -->           
         <div class="form-group row">
           <label for="classroomId" class="col-sm-2 col-form-label" th:text="#{label.classroom}">Classroom</label>
           <div class="col-sm-10">
@@ -68,6 +73,7 @@
           </div>
         </div>
         
+        <!-- Teacher -->           
         <div class="form-group row">
           <label for="teacherId" class="col-sm-2 col-form-label" th:text="#{label.teacher}">Teacher</label>
           <div class="col-sm-10">
@@ -80,6 +86,7 @@
           </div>
         </div>
     
+        <!-- Submit -->       
        <button type="submit" class="btn btn-info" th:text="#{label.submit}">Submit</button>
 
       </form>

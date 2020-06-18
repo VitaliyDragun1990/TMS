@@ -17,6 +17,7 @@
 
       <form data-teacher-id="${teacher.id}" id="teacherForm">
 
+        <!-- First Name  -->
         <div class="form-group row">
           <label for="firstName" class="col-sm-2 col-form-label" th:text="#{label.fname}">First name</label>
           <div class="col-sm-10">
@@ -24,6 +25,7 @@
           </div>
         </div>
 
+        <!-- Last Name  -->
         <div class="form-group row">
           <label for="lastName" class="col-sm-2 col-form-label" th:text="#{label.lname}">Last name</label>
           <div class="col-sm-10">
@@ -31,6 +33,7 @@
           </div>
         </div>
         
+        <!-- Date Hired  -->        
          <div class="form-group row">
           <label for="hdate" class="col-sm-2 col-form-label" th:text="#{label.hdate}">Date Hired</label>
           <div class="col-sm-10">
@@ -39,6 +42,7 @@
           </div>
         </div>
 
+        <!-- Title  -->
         <div class="form-group row">
           <label for="title" class="col-sm-2 col-form-label" th:text="#{label.title}">Professor</label>
           <div class="col-sm-10">
@@ -47,6 +51,7 @@
           </div>
         </div>
 
+        <!-- Courses  -->
         <fieldset class="form-group">
           <div class="row">
             <legend class="col-form-label col-sm-2 pt-0" th:text="#{label.courses}">Courses</legend>
@@ -62,7 +67,8 @@
         
         <hr />
         
-        <div th:replace="fragments/search-timetables :: search (@{'/timetables/teacher/'+${teacher.id}+'/'})">
+        <!-- Search timetables  -->        
+        <div sec:authorize="hasAnyRole('ADMIN','TEACHER')" th:replace="fragments/search-timetables :: search (@{'/timetables/teacher/'+${teacher.id}+'/'})">
         </div>
 
       </form>
