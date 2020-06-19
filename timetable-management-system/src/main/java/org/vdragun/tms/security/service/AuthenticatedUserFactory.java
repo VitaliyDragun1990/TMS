@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.jwt;
+package org.vdragun.tms.security.service;
 
 import static java.util.stream.Collectors.toList;
 
@@ -10,7 +10,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.vdragun.tms.security.model.Role;
 import org.vdragun.tms.security.model.Status;
 import org.vdragun.tms.security.model.User;
-import org.vdragun.tms.security.service.AuthenticatedUser;
 
 /**
  * Factory to produce {@link AuthenticatedUser} instances
@@ -18,9 +17,9 @@ import org.vdragun.tms.security.service.AuthenticatedUser;
  * @author Vitaliy Dragun
  *
  */
-public final class JwtUserFactory {
+public final class AuthenticatedUserFactory {
 
-    private JwtUserFactory() {
+    private AuthenticatedUserFactory() {
     }
 
     public static AuthenticatedUser create(User user) {

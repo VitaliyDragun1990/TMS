@@ -20,7 +20,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="nav navbar-nav ml-auto">
             <li sec:authorize="isAuthenticated()" class="nav-item active">
-              <a class="nav-link" href="#" th:href="@{/}" th:text="#{msg.hello(${#authentication.principal.username})}">
+              <a id="user-link" class="nav-link" href="#" th:href="@{/}" th:text="#{msg.hello(${#authentication.principal.username})}">
                 Hello, <span sec:authemtication="name">Jack</span>
               </a>
             </li>
@@ -28,14 +28,14 @@
               <a class="nav-link" href="#" th:href="@{/}" th:text="#{label.home}">Home</a>
             </li>
             <li sec:authorize="!isAuthenticated()" class="nav-item">
-              <a class="nav-link" href="#" th:href="@{/auth/signup}" th:text="#{label.signup}">Sign Up</a>
+              <a id="signup-link" class="nav-link" href="#" th:href="@{/auth/signup}" th:text="#{label.signup}">Sign Up</a>
             </li>
             <li sec:authorize="!isAuthenticated()" class="nav-item">
-              <a class="nav-link" href="#" th:href="@{/auth/signin}" th:text="#{label.signin}">Sign In</a>
+              <a id="signin-link" class="nav-link" href="#" th:href="@{/auth/signin}" th:text="#{label.signin}">Sign In</a>
             </li>
             <li sec:authorize="isAuthenticated()" class="nav-item">
               <form method="POST" th:action="@{/auth/signout}">
-                  <button class="btn btn-link nav-link" type="submit" th:text="#{label.signout}">Sign Out</button>
+                  <button id="signout-link" class="btn btn-link nav-link" type="submit" th:text="#{label.signout}">Sign Out</button>
               </form>
             </li>
           </ul>

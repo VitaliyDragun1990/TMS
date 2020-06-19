@@ -9,6 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -33,12 +34,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.SecurityConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.service.teacher.TeacherData;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Title;
+import org.vdragun.tms.security.WithMockAuthenticatedUser;
+import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
@@ -50,7 +54,12 @@ import org.vdragun.tms.util.Constants.Page;
  *
  */
 @WebMvcTest(controllers = RegisterTeacherController.class)
-@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
+@Import({
+        WebConfig.class,
+        WebMvcConfig.class,
+        SecurityConfig.class,
+        MessageProvider.class })
+@WithMockAuthenticatedUser
 @TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Register Teacher Controller")
 public class RegisterTeacherControllerTest {
@@ -63,6 +72,9 @@ public class RegisterTeacherControllerTest {
 
     @MockBean
     private TeacherService teacherServiceMock;
+
+    @MockBean
+    private UserDao userDao;
 
     @Captor
     private ArgumentCaptor<TeacherData> captor;
@@ -106,7 +118,8 @@ public class RegisterTeacherControllerTest {
         Teacher registered = generator.generateTeacher();
         when(teacherServiceMock.registerNewTeacher(any(TeacherData.class))).thenReturn(registered);
         
-        mockMvc.perform(post("/teachers").locale(Locale.US)
+        mockMvc.perform(post("/teachers").with(csrf())
+                .locale(Locale.US)
                 .param("firstName", firstName)
                 .param("lastName", lastName)
                 .param("title", title.toString())
@@ -127,7 +140,8 @@ public class RegisterTeacherControllerTest {
         String toShortLastName = "J";
         LocalDate dateHiredInTheFuture = LocalDate.now().plusDays(5);
 
-        mockMvc.perform(post("/teachers").locale(Locale.US)
+        mockMvc.perform(post("/teachers").with(csrf())
+                .locale(Locale.US)
                 .param("firstName", nonLatinFirstName)
                 .param("lastName", toShortLastName)
                 .param("dateHired", formatDate(dateHiredInTheFuture)))

@@ -11,6 +11,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -36,6 +37,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.SecurityConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
@@ -44,6 +46,8 @@ import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.security.WithMockAuthenticatedUser;
+import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
@@ -55,7 +59,12 @@ import org.vdragun.tms.util.Constants.Page;
  *
  */
 @WebMvcTest(controllers = UpdateTimetableController.class)
-@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
+@Import({
+        WebConfig.class,
+        WebMvcConfig.class,
+        SecurityConfig.class,
+        MessageProvider.class })
+@WithMockAuthenticatedUser
 @TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Update Timetable Controller")
 public class UpdateTimetableControllerTest {
@@ -71,6 +80,9 @@ public class UpdateTimetableControllerTest {
 
     @MockBean
     private ClassroomService classroomServiceMock;
+
+    @MockBean
+    private UserDao userDao;
 
     @Captor
     private ArgumentCaptor<UpdateTimetableData> captor;
@@ -143,7 +155,8 @@ public class UpdateTimetableControllerTest {
         Integer duration = 60;
         Integer classroomId = 1;
 
-        mockMvc.perform(post("/timetables/{timetableId}", timetableId).locale(Locale.US)
+        mockMvc.perform(post("/timetables/{timetableId}", timetableId).with(csrf())
+                .locale(Locale.US)
                 .param("timetableId", timetableId.toString())
                 .param("startTime", formatDateTime(startTime))
                 .param("duration", duration.toString())
@@ -165,7 +178,8 @@ public class UpdateTimetableControllerTest {
         Integer invalidDuration = 10;
         Integer invalidClassroomId = -1;
 
-        mockMvc.perform(post("/timetables/{timetableId}", timetableId).locale(Locale.US)
+        mockMvc.perform(post("/timetables/{timetableId}", timetableId).with(csrf())
+                .locale(Locale.US)
                 .param("timetableId", timetableId.toString())
                 .param("startTime", formatDateTime(pastStartTime))
                 .param("duration", invalidDuration.toString())
@@ -189,7 +203,8 @@ public class UpdateTimetableControllerTest {
         doThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found", timetableId))
                 .when(timetableServiceMock).updateExistingTimetable(any(UpdateTimetableData.class));
 
-        mockMvc.perform(post("/timetables/{timetableId}", timetableId).locale(Locale.US)
+        mockMvc.perform(post("/timetables/{timetableId}", timetableId).with(csrf())
+                .locale(Locale.US)
                 .param("timetableId", timetableId.toString())
                 .param("startTime", formatDateTime(startTime))
                 .param("duration", duration.toString())
@@ -212,7 +227,8 @@ public class UpdateTimetableControllerTest {
         Integer duration = 60;
         Integer classroomId = 1;
 
-        mockMvc.perform(post("/timetables/{timetableId}", invalidTimetableId).locale(Locale.US)
+        mockMvc.perform(post("/timetables/{timetableId}", invalidTimetableId).with(csrf())
+                .locale(Locale.US)
                 .param("timetableId", invalidTimetableId.toString())
                 .param("startTime", formatDateTime(startTime))
                 .param("duration", duration.toString())

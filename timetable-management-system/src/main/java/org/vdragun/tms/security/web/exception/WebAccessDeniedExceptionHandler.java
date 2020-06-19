@@ -12,7 +12,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.stereotype.Component;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
@@ -21,7 +20,6 @@ import org.vdragun.tms.util.localizer.MessageLocalizer;
  * @author Vitaliy Dragun
  *
  */
-@Component
 public class WebAccessDeniedExceptionHandler implements AccessDeniedHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebAccessDeniedExceptionHandler.class);

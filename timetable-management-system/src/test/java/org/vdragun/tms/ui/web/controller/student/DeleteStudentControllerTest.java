@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -25,11 +26,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.SecurityConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.security.WithMockAuthenticatedUser;
+import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
@@ -40,7 +44,12 @@ import org.vdragun.tms.util.Constants.Page;
  *
  */
 @WebMvcTest(controllers = DeleteStudentController.class)
-@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
+@Import({
+        WebConfig.class,
+        WebMvcConfig.class,
+        SecurityConfig.class,
+        MessageProvider.class })
+@WithMockAuthenticatedUser
 @TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Delete Student Controller")
 public class DeleteStudentControllerTest {
@@ -54,6 +63,9 @@ public class DeleteStudentControllerTest {
     @MockBean
     private StudentService studentsServiceMock;
 
+    @MockBean
+    private UserDao userDao;
+
     private String getMessage(String msgCode, Object... args) {
         return messageProvider.getMessage(msgCode, args);
     }
@@ -62,7 +74,8 @@ public class DeleteStudentControllerTest {
     void shouldDeleteStudentByGivenIdentifier() throws Exception {
         Integer studentId = 1;
 
-        mockMvc.perform(post("/students/delete").locale(Locale.US)
+        mockMvc.perform(post("/students/delete").with(csrf())
+                .locale(Locale.US)
                 .param("id", studentId.toString()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(Attribute.INFO_MESSAGE,
@@ -79,7 +92,8 @@ public class DeleteStudentControllerTest {
                 .when(studentsServiceMock)
                 .deleteStudentById(studentId);
 
-        mockMvc.perform(post("/students/delete").locale(Locale.US)
+        mockMvc.perform(post("/students/delete").with(csrf())
+                .locale(Locale.US)
                 .param("id", studentId + ""))
                 .andExpect(status().isNotFound())
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
@@ -94,7 +108,8 @@ public class DeleteStudentControllerTest {
     void shouldShowBadRequestPageIfStudentIdentifierIsNotNumber() throws Exception {
         String invalidStudentId = "id";
 
-        mockMvc.perform(post("/students/delete").locale(Locale.US)
+        mockMvc.perform(post("/students/delete").with(csrf())
+                .locale(Locale.US)
                 .param("id", invalidStudentId + ""))
                 .andExpect(status().isBadRequest())
                 .andExpect(model().attributeExists(Attribute.ERROR, Attribute.MESSAGE))

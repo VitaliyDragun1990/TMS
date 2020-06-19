@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.jwt;
+package org.vdragun.tms.security.rest.service;
 
 import java.util.Collection;
 
@@ -13,11 +13,7 @@ import org.springframework.stereotype.Service;
 import org.vdragun.tms.security.dao.RoleDao;
 import org.vdragun.tms.security.model.Role;
 import org.vdragun.tms.security.model.User;
-import org.vdragun.tms.security.rest.service.RestAuthenticationService;
-import org.vdragun.tms.security.rest.service.SigninRequest;
-import org.vdragun.tms.security.rest.service.SigninResponse;
-import org.vdragun.tms.security.rest.service.SignupRequest;
-import org.vdragun.tms.security.rest.service.SignupResponse;
+import org.vdragun.tms.security.rest.jwt.JwtTokenProvider;
 import org.vdragun.tms.security.service.UserService;
 
 /**

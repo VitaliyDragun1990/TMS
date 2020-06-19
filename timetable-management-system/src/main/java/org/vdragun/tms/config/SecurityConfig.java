@@ -19,15 +19,22 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.security.rest.exception.RestAccessDeniedExceptionHandler;
 import org.vdragun.tms.security.rest.exception.RestAuthenticationEntryPoint;
 import org.vdragun.tms.security.rest.jwt.JwtAuthenticationTokenFilter;
 import org.vdragun.tms.security.rest.jwt.JwtConfigurer;
 import org.vdragun.tms.security.rest.jwt.JwtTokenProvider;
 import org.vdragun.tms.security.service.AuthenticatedUserDetailsService;
+import org.vdragun.tms.security.service.UserService;
+import org.vdragun.tms.security.service.UserServiceImpl;
 import org.vdragun.tms.security.web.exception.WebAccessDeniedExceptionHandler;
+import org.vdragun.tms.util.localizer.MessageLocalizer;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 public class SecurityConfig {
@@ -35,6 +42,16 @@ public class SecurityConfig {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticatedUserDetailsService userDetailsService(UserService userService) {
+        return new AuthenticatedUserDetailsService(userService);
+    }
+
+    @Bean
+    public UserServiceImpl userService(UserDao userDao) {
+        return new UserServiceImpl(userDao);
     }
 
     @Configuration
@@ -56,6 +73,20 @@ public class SecurityConfig {
         
         @Autowired
         private RestAuthenticationEntryPoint authEntryPoint;
+
+        @Bean
+        public RestAccessDeniedExceptionHandler restAccessDeniedExceptionHandler(
+                ObjectMapper mapper,
+                MessageLocalizer messageLocalizer) {
+            return new RestAccessDeniedExceptionHandler(mapper, messageLocalizer);
+        }
+
+        @Bean
+        public RestAuthenticationEntryPoint restAuthenticationEntryPoint(
+                ObjectMapper mapper,
+                MessageLocalizer messageLocalizer) {
+            return new RestAuthenticationEntryPoint(mapper, messageLocalizer);
+        }
 
         @Bean
         @Override
@@ -106,13 +137,18 @@ public class SecurityConfig {
     public static class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         @Autowired
-        private AuthenticatedUserDetailsService userDetailsService;
+        private UserDetailsService userDetailsService;
 
         @Autowired
         private PasswordEncoder passwordEncoder;
         
         @Autowired
         private WebAccessDeniedExceptionHandler accessDeniedHandler;
+
+        @Bean
+        public WebAccessDeniedExceptionHandler webAccessDeniedExceptionHandler(MessageLocalizer messageLocalizer) {
+            return new WebAccessDeniedExceptionHandler(messageLocalizer);
+        }
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {

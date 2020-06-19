@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.security.model.Status;
@@ -16,7 +15,6 @@ import org.vdragun.tms.security.model.User;
  * @author Vitaliy Dragun
  *
  */
-@Service
 public class UserServiceImpl implements UserService {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);

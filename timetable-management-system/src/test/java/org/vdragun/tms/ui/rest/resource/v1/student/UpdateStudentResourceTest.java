@@ -39,6 +39,7 @@ import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.security.TestSecurityConfig;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.util.Constants.Message;
@@ -50,8 +51,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
         properties = {
                 "jndi.datasource=false",
                 "startup.data.initialize=false",
-                "secured.rest=false" })
-@Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
+                "secured.rest=false",
+                "secured.web=false",
+                "secured.none=true",
+        })
+@Import({
+        EmbeddedDataSourceConfig.class,
+        JsonVerifier.class,
+        TestSecurityConfig.class })
 @DisplayName("Student Resource Update Functionality Integration Test")
 public class UpdateStudentResourceTest {
 

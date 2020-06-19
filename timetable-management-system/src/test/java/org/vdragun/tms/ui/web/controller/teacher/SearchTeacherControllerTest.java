@@ -20,11 +20,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.SecurityConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Teacher;
+import org.vdragun.tms.security.WithMockAuthenticatedUser;
+import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
@@ -36,7 +39,12 @@ import org.vdragun.tms.util.Constants.Page;
  *
  */
 @WebMvcTest(controllers = SearchTeacherController.class)
-@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
+@Import({
+        WebConfig.class,
+        WebMvcConfig.class,
+        SecurityConfig.class,
+        MessageProvider.class })
+@WithMockAuthenticatedUser
 @TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Search Teacher Controller")
 public class SearchTeacherControllerTest {
@@ -49,6 +57,9 @@ public class SearchTeacherControllerTest {
 
     @MockBean
     private TeacherService teacherServiceMock;
+
+    @MockBean
+    private UserDao userDao;
 
     private EntityGenerator generator = new EntityGenerator();
 

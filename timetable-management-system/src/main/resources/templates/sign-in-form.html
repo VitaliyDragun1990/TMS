@@ -16,7 +16,7 @@
             
         <!-- Form Errors  -->
         <div th:if="${param.error}" class="alert alert-danger">
-          <p class="text-dark" th:text="#{msg.signinFailed}">Unable to sign in. Check your username and password.</p>
+          <p class="text-dark form-errors" th:text="#{msg.signinFailed}">Unable to sign in. Check your username and password.</p>
         </div>
         
         <!-- Sign out message  -->
@@ -50,7 +50,7 @@
         </div>
         
         <!-- Submit  -->        
-        <button type="submit" class="btn btn-info" th:text="#{label.submit}">Submit</button>
+        <button id="signin-submit" type="submit" class="btn btn-info" th:text="#{label.submit}">Submit</button>
         
       </form>
       

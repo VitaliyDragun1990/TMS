@@ -5,9 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 import org.vdragun.tms.security.model.User;
-import org.vdragun.tms.security.rest.jwt.JwtUserFactory;
 
 /**
  * Custom implementation of {@link UserDetailsService} which looks for
@@ -16,7 +14,6 @@ import org.vdragun.tms.security.rest.jwt.JwtUserFactory;
  * @author Vitaliy Dragun
  *
  */
-@Service
 public class AuthenticatedUserDetailsService implements UserDetailsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticatedUserDetailsService.class);
@@ -37,7 +34,7 @@ public class AuthenticatedUserDetailsService implements UserDetailsService {
         }
         LOG.debug("IN loadUserByUsername - User with username: {} successfully loaded", username);
 
-        return JwtUserFactory.create(user);
+        return AuthenticatedUserFactory.create(user);
     }
 
 }
