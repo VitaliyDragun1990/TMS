@@ -20,10 +20,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.system.page.HomePage;
+import org.vdragun.tms.system.page.SignInPage;
 import org.vdragun.tms.system.page.StudentInfoPage;
 import org.vdragun.tms.system.page.StudentRegistrationPage;
 import org.vdragun.tms.system.page.StudentUpdatePage;
@@ -39,6 +42,7 @@ import com.codeborne.selenide.Browsers;
 @Import({
         EmbeddedDataSourceConfig.class
 })
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @DisplayName("Web User Interface System Test")
 public class WebUserInterfaceSystemTest {
 
@@ -72,8 +76,13 @@ public class WebUserInterfaceSystemTest {
     @Rollback
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/ui_test_data.sql" })
     void shouldRegisterNewStudentAndDisplaySuccessMessage() {
-        StudentRegistrationPage
+        SignInPage
                 .open()
+                .provideInput("admin", "password")
+                .submitExpectedSuccess();
+
+        StudentRegistrationPage
+                .navigateToPage()
                 .provideInput("Martin", "Fowler", "10/05/2020")
                 .submitExpectedSuccess()
                 .verifyInfoMsgPresent(message("msg.studentRegisterSuccess"))
@@ -85,6 +94,11 @@ public class WebUserInterfaceSystemTest {
     @Rollback
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/ui_test_data.sql" })
     void shouldShowValidationErrorsIfRegistrationDataInvalid() {
+        SignInPage
+                .open()
+                .provideInput("admin", "password")
+                .submitExpectedSuccess();
+
         StudentRegistrationPage
                 .open()
                 .provideInput("a", "b", "")
@@ -100,8 +114,13 @@ public class WebUserInterfaceSystemTest {
     @Rollback
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/ui_test_data.sql" })
     void shouldUpdateExistingStudentAndDisplaySuccessMessage() {
+        SignInPage
+                .open()
+                .provideInput("admin", "password")
+                .submitExpectedSuccess();
+
         StudentUpdatePage
-                .openForStudent(1000)
+                .navigateToPageForStudent(1000)
                 .provideInput("Jacky", "Brown", "-", 1000, 1001)
                 .submit()
                 .verifyInfoMsgPresent(message("msg.studentUpdateSuccess"))
@@ -115,8 +134,13 @@ public class WebUserInterfaceSystemTest {
     void shouldSearchStudentMonthlyTimetablesAndDisplayResult() {
         int expectedTimetablesCount = 2;
 
+        SignInPage
+                .open()
+                .provideInput("admin", "password")
+                .submitExpectedSuccess();
+
         StudentInfoPage
-                .openForStudent(1000)
+                .navigateToPageForStudent(1000)
                 .searchMonthlyTimetablesFor("May")
                 .verifyInfoMsg(message("msg.timetablesForStudent", expectedTimetablesCount, "John", "Doe", "May"))
                 .verifyTimetablesCount(expectedTimetablesCount);
@@ -126,6 +150,11 @@ public class WebUserInterfaceSystemTest {
     @Rollback
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/ui_test_data.sql" })
     void shouldDisplayErrorMessageIfSearchStudentTimetablesWithoutTargetDate() {
+        SignInPage
+                .open()
+                .provideInput("admin", "password")
+                .submitExpectedSuccess();
+
         StudentInfoPage
                 .openForStudent(1000)
                 .searchTimetablesExpectedFailure("monthly", "")

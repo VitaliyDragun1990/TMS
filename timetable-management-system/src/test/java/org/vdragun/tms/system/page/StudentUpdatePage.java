@@ -19,16 +19,24 @@ public class StudentUpdatePage {
     public static StudentUpdatePage openForStudent(Integer studentId) {
         // open student info page
         StudentInfoPage.openForStudent(studentId);
-        // click update button
-        $("a.updateBtn").click();
-        // verify correct page URL
-        assertThat(url()).endsWith(format("/students/%d/update", studentId));
+
+        return new StudentUpdatePage(studentId);
+    }
+
+    public static StudentUpdatePage navigateToPageForStudent(Integer studentId) {
+        // navigate to student info page
+        StudentInfoPage.navigateToPageForStudent(studentId);
 
         return new StudentUpdatePage(studentId);
     }
 
     protected StudentUpdatePage(Integer studentId) {
         this.studentId = studentId;
+
+        // click update button
+        $("a.updateBtn").click();
+        // verify correct page URL
+        assertThat(url()).endsWith(format("/students/%d/update", studentId));
     }
 
     public StudentUpdatePage provideInput(String firstName, String lastName, String groupId, int... courseIds) {

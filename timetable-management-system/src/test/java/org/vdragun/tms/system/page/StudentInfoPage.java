@@ -28,21 +28,32 @@ public class StudentInfoPage {
     public static StudentInfoPage openForStudent(Integer studentId) {
         // Open the home page
         Selenide.open("/");
-        // navigate to registration form
+        navigateToStudentInfoPage(studentId);
+
+        return new StudentInfoPage(studentId);
+    }
+
+    public static StudentInfoPage navigateToPageForStudent(Integer studentId) {
+        navigateToStudentInfoPage(studentId);
+
+        return new StudentInfoPage(studentId);
+    }
+
+    private static void navigateToStudentInfoPage(Integer studentId) {
+        // navigate to student info form
         $(byCssSelector("[href='#studentSubmenu']")).click();
         $("a#showAllStudents").click();
         // verify correct page URL
         assertThat(url()).endsWith("/students");
         // select student with given id
         $$(format("table#studentsTable tbody tr#row-%d", studentId)).first().$("a.btn-link").click();
-        // verify correct page URL
-        assertThat(url()).endsWith(format("/students/%d", studentId));
-
-        return new StudentInfoPage(studentId);
     }
 
     protected StudentInfoPage(Integer studentId) {
         this.studentId = studentId;
+
+        // verify correct page URL
+        assertThat(url()).endsWith(format("/students/%d", studentId));
     }
 
     public StudentInfoPage verifyPageUrl(String pageUrl) {
@@ -78,7 +89,7 @@ public class StudentInfoPage {
         // press search button
         $("button#searchTmBtn").click();
 
-        // verify url has changed
+        // verify URL has changed
         assertThat(url()).endsWith(format("/timetables/student/%d/month?targetDate=%s", studentId, targetDate));
         return new TimetablesSearchResultPage();
     }
