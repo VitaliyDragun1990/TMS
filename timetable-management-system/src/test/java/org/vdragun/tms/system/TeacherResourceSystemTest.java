@@ -29,7 +29,7 @@ import org.vdragun.tms.core.domain.Title;
 import org.vdragun.tms.dao.TeacherDao;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.rest.resource.v1.TestTokenGenerator;
-import org.vdragun.tms.util.Constants.Roles;
+import org.vdragun.tms.util.Constants.Role;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.configuration.DBUnit;
@@ -79,7 +79,7 @@ public class TeacherResourceSystemTest {
 
     @BeforeEach
     void generateAuthToken() {
-        authToken = tokenGenerator.generateToken(ADMIN, Roles.ADMIN);
+        authToken = tokenGenerator.generateToken(ADMIN, Role.ADMIN);
     }
 
     @Test

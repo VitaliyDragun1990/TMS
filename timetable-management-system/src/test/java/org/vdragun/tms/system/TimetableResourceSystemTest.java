@@ -34,7 +34,7 @@ import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.TimetableDao;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.rest.resource.v1.TestTokenGenerator;
-import org.vdragun.tms.util.Constants.Roles;
+import org.vdragun.tms.util.Constants.Role;
 import org.vdragun.tms.util.localizer.TemporalLocalizer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -104,7 +104,7 @@ public class TimetableResourceSystemTest {
 
     @BeforeEach
     void generateAuthToken() {
-        authToken = tokenGenerator.generateToken(ADMIN, Roles.ADMIN);
+        authToken = tokenGenerator.generateToken(ADMIN, Role.ADMIN);
     }
 
     @Test

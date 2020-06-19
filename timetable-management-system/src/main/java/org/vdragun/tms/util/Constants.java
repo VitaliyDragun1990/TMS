@@ -103,8 +103,8 @@ public final class Constants {
         public static final String VALIDATED = "validated";
         public static final String TITLES = "titles";
         public static final String USER = "user";
-        public static final String SINGUP_FORM = "signupForm";
-        public static final String SINGIN_FORM = "signinForm";
+        public static final String SIGN_UP_FORM = "signupForm";
+        public static final String SIGN_IN_FORM = "signinForm";
         public static final String ROLES = "roles";
         public static final String ACCESS_DENIED_MSG = "accessDeniedMsg";
 
@@ -112,10 +112,13 @@ public final class Constants {
         }
     }
 
-    public static final class Roles {
+    public static final class Role {
 
         public static final String ADMIN = "ROLE_ADMIN";
         public static final String STUDENT = "ROLE_STUDENT";
         public static final String TEACHER = "ROLE_TEACHER";
+        
+        private Role() {
+        }
     }
 }

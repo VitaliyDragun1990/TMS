@@ -53,7 +53,7 @@ public class AuthenticationController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @InitBinder(Attribute.SINGUP_FORM)
+    @InitBinder(Attribute.SIGN_UP_FORM)
     void signupInitBinder(WebDataBinder binder) {
         binder.addValidators(formValidator);
     }
@@ -67,14 +67,14 @@ public class AuthenticationController {
     public String showSignupForm(Model model) {
         LOG.trace("Received GET request to show user sign up form, URI: {}", getRequestUri());
 
-        model.addAttribute(Attribute.SINGUP_FORM, new SignupForm());
+        model.addAttribute(Attribute.SIGN_UP_FORM, new SignupForm());
 
         return Page.SIGN_UP_FORM;
     }
 
     @PostMapping("/signup")
     public String signupNewUser(
-            @Valid @ModelAttribute(Attribute.SINGUP_FORM) SignupForm form,
+            @Valid @ModelAttribute(Attribute.SIGN_UP_FORM) SignupForm form,
             BindingResult bindingResult,
             Model model) {
         LOG.trace("Received POST request to register new user, data: {}, URI: {}", form, getRequestUri());

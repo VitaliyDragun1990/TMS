@@ -5,8 +5,8 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-import static org.vdragun.tms.util.Constants.Roles.ADMIN;
-import static org.vdragun.tms.util.Constants.Roles.TEACHER;
+import static org.vdragun.tms.util.Constants.Role.ADMIN;
+import static org.vdragun.tms.util.Constants.Role.TEACHER;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
