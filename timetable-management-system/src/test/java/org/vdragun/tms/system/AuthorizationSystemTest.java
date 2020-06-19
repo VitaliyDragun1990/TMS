@@ -22,6 +22,7 @@ import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.rest.resource.v1.TestTokenGenerator;
 import org.vdragun.tms.ui.rest.resource.v1.course.CourseResource;
+import org.vdragun.tms.ui.rest.resource.v1.student.StudentResource;
 import org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource;
 import org.vdragun.tms.util.Constants.Message;
 
@@ -62,7 +63,7 @@ public class AuthorizationSystemTest {
         HttpEntity<?> request = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                CourseResource.BASE_URL,
+                StudentResource.BASE_URL,
                 HttpMethod.GET,
                 request,
                 String.class);

@@ -103,10 +103,12 @@ public class SecurityConfig {
                     .authorizeRequests()
                     .antMatchers(REGISTER_ENDPOINT, LOGIN_ENDPOINT).permitAll()
                     // courses
-                    .antMatchers(GET, "/api/v1/courses", "/api/v1/courses/**").authenticated()
+                    .antMatchers(GET, "/api/v1/courses", "/api/v1/courses/**")
+                    .permitAll()
                     .antMatchers(POST, "/api/v1/courses").hasAuthority(ADMIN)
                     // students
-                    .antMatchers(GET, "/api/v1/students", "/api/v1/students/**").hasAnyAuthority(ADMIN, TEACHER)
+                    .antMatchers(GET, "/api/v1/students", "/api/v1/students/**")
+                    .authenticated()
                     .antMatchers(POST, "/api/v1/students").hasAuthority(ADMIN)
                     .antMatchers(PUT, "/api/v1/students/**").hasAuthority(ADMIN)
                     .antMatchers(DELETE, "/api/v1/students/**").hasAuthority(ADMIN)
@@ -114,17 +116,25 @@ public class SecurityConfig {
                     .antMatchers(GET, "/api/v1/teachers", "/api/v1/teachers/**").hasAnyAuthority(ADMIN, TEACHER)
                     .antMatchers(POST, "/api/v1/teachers").hasAuthority(ADMIN)
                     // timetables
-                    .antMatchers(GET, "/api/v1/timetables", "/api/v1/timetables/**").authenticated()
+                    .antMatchers(GET, "/api/v1/timetables/teacher/**").hasAnyAuthority(ADMIN, TEACHER)
+                    .antMatchers(
+                            GET,
+                            "/api/v1/timetables",
+                            "/api/v1/timetables/*",
+                            "/api/v1/timetables/student/**").authenticated()
                     .antMatchers(POST, "/api/v1/timetables").hasAuthority(ADMIN)
                     .antMatchers(PUT, "/api/v1/timetables/**").hasAuthority(ADMIN)
                     .antMatchers(DELETE, "/api/v1/timetables/**").hasAuthority(ADMIN)
                      // other
                     .anyRequest().authenticated()
-                    .and().exceptionHandling()
+                    .and()
+                        .exceptionHandling()
                         .accessDeniedHandler(accessDeniedHandler)
                         .authenticationEntryPoint(authEntryPoint)
-                    .and().sessionManagement().sessionCreationPolicy(STATELESS)
-                    .and().apply(new JwtConfigurer(new JwtAuthenticationTokenFilter(jwtTokenProvider, authEntryPoint)));
+                    .and()
+                        .sessionManagement().sessionCreationPolicy(STATELESS)
+                    .and()
+                        .apply(new JwtConfigurer(new JwtAuthenticationTokenFilter(jwtTokenProvider, authEntryPoint)));
         }
     }
 
@@ -216,7 +226,6 @@ public class SecurityConfig {
                             "/timetables/*",
                             "/timetables/delete")
                     .hasAuthority(ADMIN)
-                    
                     .antMatchers("/", "/**", "/auth/signup", "/auth/signin").permitAll()
                     .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                     .and()
