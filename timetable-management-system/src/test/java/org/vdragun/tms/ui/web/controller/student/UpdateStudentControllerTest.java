@@ -14,6 +14,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -36,6 +37,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.SecurityConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
@@ -46,6 +48,8 @@ import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.security.WithMockAuthenticatedUser;
+import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
@@ -59,7 +63,12 @@ import io.florianlopes.spring.test.web.servlet.request.MockMvcRequestBuilderUtil
  *
  */
 @WebMvcTest(controllers = UpdateStudentController.class)
-@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
+@Import({
+        WebConfig.class,
+        WebMvcConfig.class,
+        SecurityConfig.class,
+        MessageProvider.class })
+@WithMockAuthenticatedUser
 @TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Update Student Controller")
 public class UpdateStudentControllerTest {
@@ -78,6 +87,9 @@ public class UpdateStudentControllerTest {
 
     @MockBean
     private GroupService groupServiceMock;
+
+    @MockBean
+    private UserDao userDao;
 
     @Captor
     private ArgumentCaptor<UpdateStudentData> captor;
@@ -140,7 +152,8 @@ public class UpdateStudentControllerTest {
         List<Integer> courseIds = asList(1);
         UpdateStudentData updateData = new UpdateStudentData(studentId, groupId, "Jack", "Smith", courseIds);
 
-        mockMvc.perform(postForm("/students/" + 1, updateData).locale(Locale.US))
+        mockMvc.perform(postForm("/students/" + 1, updateData).with(csrf())
+                .locale(Locale.US))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(Attribute.INFO_MESSAGE,
                         equalTo(getMessage(Message.STUDENT_UPDATE_SUCCESS))))
@@ -160,7 +173,8 @@ public class UpdateStudentControllerTest {
         UpdateStudentData updateData =
                 new UpdateStudentData(studentId, invalidGroupId, toShortFirstName, blankLastName, invalidCourseIds);
 
-        mockMvc.perform(MockMvcRequestBuilderUtils.postForm("/students/" + 1, updateData).locale(Locale.US))
+        mockMvc.perform(MockMvcRequestBuilderUtils.postForm("/students/" + 1, updateData).with(csrf())
+                .locale(Locale.US))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(4))
@@ -182,7 +196,8 @@ public class UpdateStudentControllerTest {
 
         UpdateStudentData updateData = new UpdateStudentData(nonExistingStudentId, groupId, "Jack", "Smith", courseIds);
 
-        mockMvc.perform(postForm("/students/" + 1, updateData).locale(Locale.US))
+        mockMvc.perform(postForm("/students/" + 1, updateData).with(csrf())
+                .locale(Locale.US))
                 .andExpect(status().isNotFound())
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
                 .andExpect(model().attribute(Attribute.MESSAGE,
@@ -201,7 +216,8 @@ public class UpdateStudentControllerTest {
         Integer groupId = 1;
         Integer courseId = 1;
 
-        mockMvc.perform(post("/students/{studentId}", invalidStudentId).locale(Locale.US)
+        mockMvc.perform(post("/students/{studentId}", invalidStudentId).with(csrf())
+                .locale(Locale.US)
                 .param("firstName", firstName)
                 .param("lastName", lastName)
                 .param("groupId", groupId.toString())

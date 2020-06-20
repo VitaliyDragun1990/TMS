@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.jwt;
+package org.vdragun.tms.security.service;
 
 import static java.util.stream.Collectors.toList;
 
@@ -12,18 +12,18 @@ import org.vdragun.tms.security.model.Status;
 import org.vdragun.tms.security.model.User;
 
 /**
- * Factory to produce {@link JwtUser} instances
+ * Factory to produce {@link AuthenticatedUser} instances
  * 
  * @author Vitaliy Dragun
  *
  */
-public final class JwtUserFactory {
+public final class AuthenticatedUserFactory {
 
-    private JwtUserFactory() {
+    private AuthenticatedUserFactory() {
     }
 
-    public static JwtUser create(User user) {
-        return new JwtUser(
+    public static AuthenticatedUser create(User user) {
+        return new AuthenticatedUser(
                 user.getId(),
                 user.getUsername(),
                 user.getFirstName(),

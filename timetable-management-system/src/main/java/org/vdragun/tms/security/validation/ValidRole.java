@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.validation;
+package org.vdragun.tms.security.validation;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -23,7 +23,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = { ValidRoleConstraintValidator.class })
 public @interface ValidRole {
 
-    String message() default "{org.vdragun.tms.security.rest.validation.ValidRole.message}";
+    String message() default "{org.vdragun.tms.security.validation.ValidRole.message}";
 
     Class<?>[] groups() default {};
 

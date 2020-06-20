@@ -9,6 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -28,6 +29,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.SecurityConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.service.category.CategoryService;
@@ -37,6 +39,8 @@ import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
+import org.vdragun.tms.security.WithMockAuthenticatedUser;
+import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
@@ -48,7 +52,12 @@ import org.vdragun.tms.util.Constants.Page;
  *
  */
 @WebMvcTest(controllers = RegisterCourseController.class)
-@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
+@Import({
+        WebConfig.class,
+        WebMvcConfig.class,
+        SecurityConfig.class,
+        MessageProvider.class })
+@WithMockAuthenticatedUser
 @TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Register Course Controller")
 public class RegisterCourseControllerTest {
@@ -67,6 +76,9 @@ public class RegisterCourseControllerTest {
 
     @MockBean
     private CategoryService categoryServiceMock;
+
+    @MockBean
+    private UserDao userDao;
 
     private EntityGenerator generator = new EntityGenerator();
 
@@ -97,7 +109,8 @@ public class RegisterCourseControllerTest {
         Course registered = generator.generateCourse();
         when(courseServiceMock.registerNewCourse(any(CourseData.class))).thenReturn(registered);
 
-        mockMvc.perform(postForm("/courses", courseData).locale(Locale.US))
+        mockMvc.perform(postForm("/courses", courseData).with(csrf())
+                .locale(Locale.US))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute(Attribute.INFO_MESSAGE,
                         equalTo(getMessage(Message.COURSE_REGISTER_SUCCESS))))
@@ -115,7 +128,8 @@ public class RegisterCourseControllerTest {
         int illelagIdentity = -1;
         CourseData courseData = new CourseData(toShortName, forbiddenCharDescription, illelagIdentity, illelagIdentity);
 
-        mockMvc.perform(postForm("/courses", courseData).locale(Locale.US))
+        mockMvc.perform(postForm("/courses", courseData).with(csrf())
+                .locale(Locale.US))
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(4))
                 .andExpect(model().attributeHasFieldErrors("course", "name", "description", "categoryId", "teacherId"))

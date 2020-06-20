@@ -27,25 +27,53 @@
       <tbody>
         <tr th:each="tmtable,iterStat : ${timetables}" th:object="${tmtable}">
           <th scope="row" th:text="${iterStat.count}">1</th>
+          
+          <!-- Timetable date -->             
           <td>
-            <a class="btn btn-link" href="#" th:href="@{/timetables/{timetableId}(timetableId=*{id})}"
+            <!-- Show link if user has authority -->               
+            <a th:if="${#authorization.url('GET','/timetables/*')}"
+               class="btn btn-link" href="#" th:href="@{/timetables/{timetableId}(timetableId=*{id})}"
                th:text="*{{startTime}}">
               25/10/2017 12:30
             </a>
+           <!-- Otherwise show plain text -->
+           <span th:unless="${#authorization.url('GET','/timetables/*')}" th:text="*{{startTime}}">
+             25/10/2017 12:30
+           </span>                              
           </td>
+          
+          <!-- Timetable duration -->             
           <td th:text="*{durationInMinutes}">60</td>
+          
+          <!-- Timetable course -->             
           <td>
-            <a class="btn btn-link" href="#" th:href="@{/courses/{courseId}(courseId=*{course.id})}"
+            <!-- Show link if user has authority -->             
+            <a th:if="${#authorization.url('GET','/courses/*')}"
+               class="btn btn-link" href="#" th:href="@{/courses/{courseId}(courseId=*{course.id})}"
                th:text="*{course.name}">
               History
             </a>
+           <!-- Otherwise show plain text -->
+           <span th:unless="${#authorization.url('GET','/courses/*')}" th:text="*{course.name}">
+             History
+           </span>                      
           </td>
+          
+          <!-- Timetable classroom -->             
           <td th:text="*{classroom.id}">1</td>
+          
+          <!-- Course teacher -->             
           <td>
-            <a class="btn btn-link" href="#" th:href="@{/teachers/{teacherId}(teacherId=*{teacher.id})}"
+            <!-- Show link if user has authority -->            
+            <a th:if="${#authorization.url('GET','/teachers/*')}"
+               class="btn btn-link" href="#" th:href="@{/teachers/{teacherId}(teacherId=*{teacher.id})}"
                th:text="|*{teacher.firstName} *{teacher.lastName}|">
                Jack Smith
            </a>
+           <!-- Otherwise show plain text -->
+           <span th:unless="${#authorization.url('GET','/teachers/*')}" th:text="|*{teacher.firstName} *{teacher.lastName}|">
+             Jack Smith
+           </span>                       
           </td>
         </tr>
       </tbody>

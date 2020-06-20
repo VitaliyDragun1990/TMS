@@ -26,7 +26,9 @@ import org.vdragun.tms.util.localizer.MessageLocalizer;
  * @author Vitaliy Dragun
  *
  */
-@ControllerAdvice(basePackages = "org.vdragun.tms.ui.web.controller")
+@ControllerAdvice(basePackages = {
+        "org.vdragun.tms.ui.web.controller",
+        "org.vdragun.tms.security.web.controller" })
 public class WebExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebExceptionHandler.class);

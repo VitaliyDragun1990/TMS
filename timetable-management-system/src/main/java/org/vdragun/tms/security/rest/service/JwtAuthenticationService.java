@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.jwt;
+package org.vdragun.tms.security.rest.service;
 
 import java.util.Collection;
 
@@ -8,26 +8,23 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.vdragun.tms.security.dao.RoleDao;
 import org.vdragun.tms.security.model.Role;
 import org.vdragun.tms.security.model.User;
-import org.vdragun.tms.security.rest.service.AuthenticationService;
-import org.vdragun.tms.security.rest.service.SigninRequest;
-import org.vdragun.tms.security.rest.service.SigninResponse;
-import org.vdragun.tms.security.rest.service.SignupRequest;
-import org.vdragun.tms.security.rest.service.SignupResponse;
+import org.vdragun.tms.security.rest.jwt.JwtTokenProvider;
 import org.vdragun.tms.security.service.UserService;
 
 /**
- * Implementation of {@link AuthenticationService} that operates with JWT tokens
+ * Implementation of {@link RestAuthenticationService} that operates with JWT tokens
  * to authenticate application user
  * 
  * @author Vitaliy Dragun
  *
  */
 @Service
-public class JwtAuthenticationService implements AuthenticationService {
+public class JwtAuthenticationService implements RestAuthenticationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JwtAuthenticationService.class);
 
@@ -35,17 +32,20 @@ public class JwtAuthenticationService implements AuthenticationService {
     private JwtTokenProvider jwtTokenProvider;
     private UserService userService;
     private RoleDao roleDao;
+    private PasswordEncoder passwordEncoder;
 
 
     public JwtAuthenticationService(
             AuthenticationManager authenticationManager,
             JwtTokenProvider jwtTokenProvider,
             UserService userService,
-            RoleDao roleDao) {
+            RoleDao roleDao,
+            PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
         this.roleDao = roleDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -68,11 +68,11 @@ public class JwtAuthenticationService implements AuthenticationService {
                 request.getFirstName(),
                 request.getLastName(),
                 request.getEmail(),
-                request.getPassword());
+                passwordEncoder.encode(request.getPassword()));
 
         for (String roleName : request.getRoles()) {
             // Handle role not found & role ADMIN is forbidden
-            Role role = roleDao.findByName(roleName.toUpperCase()).get();
+            Role role = roleDao.findByName(roleName.toUpperCase());
             user.addRole(role);
         }
 

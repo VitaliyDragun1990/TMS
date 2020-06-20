@@ -87,18 +87,30 @@ $(function() {
 	}
 	
 	var postForm  = function(url, fieldName, fieldValue) {
+		var csrfTokenValue = $('#deleteDialog').attr('data-csrf-token');
+		
 		var form = $('<form>', {
 			id: 'postForm',	// arbitrary here
 			action: url,
 			method: 'POST'
+		});
+		
+		var tokenInput = $('<input>', {
+			name: '_csrf',
+			value: csrfTokenValue,
+			type: 'hidden'
 		});
 		var input = $('<input>', {
 			name: fieldName,
 			value: fieldValue,
 			type: 'hidden'
 		});
+		
 		form.append(input);
+		form.append(tokenInput);
+		
 		$('body').append(form);
+		
 		form.submit();
 	}
 	

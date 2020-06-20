@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.jwt;
+package org.vdragun.tms.security.service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Vitaliy Dragun
  *
  */
-public class JwtUser implements UserDetails {
+public class AuthenticatedUser implements UserDetails {
     private static final long serialVersionUID = -3048837644418237013L;
 
     private final Integer id;
@@ -28,7 +28,7 @@ public class JwtUser implements UserDetails {
     private final LocalDateTime lastPasswordResetDate;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public JwtUser(
+    public AuthenticatedUser(
             Integer id,
             String username,
             String firstName,

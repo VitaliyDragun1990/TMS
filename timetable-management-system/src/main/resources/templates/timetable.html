@@ -17,6 +17,7 @@
 
       <form id="timetableForm" th:object="${timetable}">
 
+        <!-- Date  -->
         <div class="form-group row">
           <label for="startTime" class="col-sm-2 col-form-label" th:text="#{label.date}">Date</label>
           <div class="col-sm-10">
@@ -24,6 +25,7 @@
           </div>
         </div>
         
+        <!-- Duration  -->        
         <div class="form-group row">
           <label for="durationInMinutes" class="col-sm-2 col-form-label" th:text="#{label.duration}">Duration (mins)</label>
           <div class="col-sm-10">
@@ -31,6 +33,7 @@
           </div>
         </div>
         
+        <!-- Courses  -->        
         <div class="form-group row">
           <label for="course" class="col-sm-2 col-form-label" th:text="#{label.course}">Course</label>
           <div class="col-sm-10">
@@ -38,6 +41,7 @@
           </div>
         </div>
         
+        <!-- Classroom  -->        
         <div class="form-group row">
           <label for="classroom" class="col-sm-2 col-form-label" th:text="#{label.classroom}">Classroom</label>
           <div class="col-sm-10">
@@ -45,6 +49,7 @@
           </div>
         </div>
         
+        <!-- Teacher  -->        
         <div class="form-group row">
           <label for="teacher" class="col-sm-2 col-form-label" th:text="#{label.teacher}">Teacher</label>
           <div class="col-sm-10">
@@ -53,7 +58,8 @@
           </div>
         </div>
         
-        <div class="row">
+        <!-- Update/Delete  -->        
+        <div sec:authorize="hasRole('ADMIN')" class="row">
           <a href="#"
              th:href="@{/timetables/{id}/update(id=${timetable.id})}"
              class="btn btn-info mb-3 mr-3"

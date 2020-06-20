@@ -9,7 +9,7 @@
   
     <div class="modal fade" id="deleteDialog" data-backdrop="static" tabindex="-1" role="dialog"
          aria-labelledby="staticBackdropLabel" aria-hidden="true" 
-         th:attr="data-target-url=${targetUrl},data-target-id=${targetId}">
+         th:attr="data-target-url=${targetUrl},data-target-id=${targetId},data-csrf-token=${_csrf.token}">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">

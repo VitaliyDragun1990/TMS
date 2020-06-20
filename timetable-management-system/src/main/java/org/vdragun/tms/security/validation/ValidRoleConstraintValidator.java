@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.validation;
+package org.vdragun.tms.security.validation;
 
 import java.util.regex.Pattern;
 
@@ -27,7 +27,7 @@ public class ValidRoleConstraintValidator implements ConstraintValidator<ValidRo
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value != null) {
-            return ROLE_NAME_PATTERN.matcher(value).matches() && roleDao.findByName(value).isPresent();
+            return ROLE_NAME_PATTERN.matcher(value).matches() && roleDao.findByName(value) != null;
         }
         return true;
     }

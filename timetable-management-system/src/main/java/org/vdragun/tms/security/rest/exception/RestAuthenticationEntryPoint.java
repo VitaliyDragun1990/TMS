@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.stereotype.Component;
 import org.vdragun.tms.security.rest.jwt.JwtAuthenticationException;
 import org.vdragun.tms.ui.rest.exception.ApiError;
 import org.vdragun.tms.util.Constants.Message;
@@ -27,7 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Vitaliy Dragun
  *
  */
-@Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private ObjectMapper mapper;

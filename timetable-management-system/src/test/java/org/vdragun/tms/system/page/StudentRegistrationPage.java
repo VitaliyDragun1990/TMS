@@ -21,16 +21,20 @@ public class StudentRegistrationPage {
     public static StudentRegistrationPage open() {
         // Open the home page
         Selenide.open("/");
+
+        return new StudentRegistrationPage();
+    }
+
+    public static StudentRegistrationPage navigateToPage() {
+        return new StudentRegistrationPage();
+    }
+
+    protected StudentRegistrationPage() {
         // navigate to registration form
         $(byCssSelector("[href='#studentSubmenu']")).click();
         $("a#registerStudent").click();
         // verify correct page URL
         assertThat(url()).endsWith("/students/register");
-
-        return new StudentRegistrationPage();
-    }
-
-    protected StudentRegistrationPage() {
     }
 
     public StudentRegistrationPage provideInput(String firstName, String lastName, String enrollmentDate) {
@@ -43,7 +47,7 @@ public class StudentRegistrationPage {
 
     public StudentInfoPage submitExpectedSuccess() {
         // press submit button
-        $(byCssSelector("[type='submit']")).click();
+        $("button#reg-submit").click();
 
         String studentId = $("form#studentForm").getAttribute("data-student-id");
         return new StudentInfoPage(Integer.valueOf(studentId));
@@ -51,7 +55,7 @@ public class StudentRegistrationPage {
 
     public StudentRegistrationPage submitExpectedFailure() {
         // press submit button
-        $(byCssSelector("[type='submit']")).click();
+        $("button#reg-submit").click();
 
         return this;
     }

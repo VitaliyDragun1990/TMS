@@ -22,18 +22,44 @@
       <tbody>
         <tr th:each="teacher,iterStat : ${teachers}" th:object="${teacher}">
           <th scope="row" th:text="${iterStat.count}">1</th>
+          
+          <!-- Course teacher -->          
           <td>
-            <a class="btn btn-link" href="#" th:href="@{/teachers/{teacherId}(teacherId=*{id})}"
+            <!-- Show link if user has authority -->          
+            <a th:if="${#authorization.url('GET','/teachers/*')}" 
+               class="btn btn-link" href="#" th:href="@{/teachers/{teacherId}(teacherId=*{id})}"
                th:text="|*{firstName} *{lastName}|">
               Mark Otto
             </a>
+           <!-- Otherwise show plain text -->
+           <span th:unless="${#authorization.url('GET','/teachers/*')}" th:text="|*{firstName} *{lastName}|">
+             Mark Otto
+           </span>            
           </td>
+          
+          <!-- Date Hired -->          
           <td th:text="*{{dateHired}}">25/10/2017</td>
+          
+          <!-- Title -->          
           <td th:text="#{|label.title.${teacher.title}|}">Instructor</td>
+          
+          <!-- Courses -->          
           <td>
-            <p th:each="course : ${teacher.courses}" th:text="${course.name}" class="text-dark">
-                History
-            </p>
+            <!-- Show link if user has authority -->
+            <th:block th:if="${#authorization.url('GET','/courses/*')}" >
+              <p th:each="course : ${teacher.courses}">
+              <a class="btn btn-link" href="#" th:href="@{/courses/{courseId}(courseId=${course.id})}"
+                 th:text="${course.name}">
+                 History
+              </a>
+              </p>
+            </th:block>
+            <!-- Otherwise show plain text -->               
+            <th:block th:unless="${#authorization.url('GET','/courses/*')}">
+              <p th:each="course : ${teacher.courses}" th:text="${course.name}" class="text-dark">
+                  History
+              </p>
+            </th:block>
           </td>
         </tr>
       </tbody>

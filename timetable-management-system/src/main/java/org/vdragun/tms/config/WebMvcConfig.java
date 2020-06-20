@@ -46,6 +46,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         WebMvcConfigurer.super.addViewControllers(registry);
         registry.addViewController("/").setViewName(Page.HOME);
+        registry.addViewController("/auth/signin").setViewName(Page.SIGN_IN_FORM);
         registry.addRedirectViewController("/home", "/");
     }
 

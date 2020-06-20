@@ -37,6 +37,7 @@ import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.security.TestSecurityConfig;
 import org.vdragun.tms.ui.rest.resource.v1.JsonVerifier;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.util.Constants.Message;
@@ -48,8 +49,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
         properties = {
                 "jndi.datasource=false",
                 "startup.data.initialize=false",
-                "secured.rest=false" })
-@Import({ EmbeddedDataSourceConfig.class, JsonVerifier.class })
+                "secured.rest=false",
+                "secured.web=false",
+                "secured.none=true",
+        })
+@Import({
+        EmbeddedDataSourceConfig.class,
+        JsonVerifier.class,
+        TestSecurityConfig.class })
 @DisplayName("Timetable Resource Register Functionality Integration Test")
 public class RegisterTimetableResourceTest {
 

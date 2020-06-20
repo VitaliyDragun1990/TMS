@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.validation;
+package org.vdragun.tms.security.validation;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -12,8 +12,6 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import javax.validation.ReportAsSingleViolation;
-import javax.validation.constraints.Pattern;
 
 /**
  * @author Vitaliy Dragun
@@ -21,13 +19,11 @@ import javax.validation.constraints.Pattern;
  */
 @Target({ METHOD, FIELD, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
-@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
-@ReportAsSingleViolation
 @Documented
-@Constraint(validatedBy = {})
-public @interface Password {
+@Constraint(validatedBy = { UniqueUsernameConstraintValidator.class })
+public @interface UniqueUsername {
 
-    String message() default "{org.vdragun.tms.security.rest.validation.Password.message}";
+    String message() default "{org.vdragun.tms.security.validation.UniqueUsername.message}";
 
     Class<?>[] groups() default {};
 

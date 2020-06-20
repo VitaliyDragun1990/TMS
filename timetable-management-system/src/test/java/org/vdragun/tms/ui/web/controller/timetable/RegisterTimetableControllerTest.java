@@ -8,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -33,6 +34,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.SecurityConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.service.classroom.ClassroomService;
@@ -44,6 +46,8 @@ import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.security.WithMockAuthenticatedUser;
+import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
@@ -55,7 +59,12 @@ import org.vdragun.tms.util.Constants.Page;
  *
  */
 @WebMvcTest(controllers = RegisterTimetableController.class)
-@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
+@Import({
+        WebConfig.class,
+        WebMvcConfig.class,
+        SecurityConfig.class,
+        MessageProvider.class })
+@WithMockAuthenticatedUser
 @TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Register Timetable Controller")
 public class RegisterTimetableControllerTest {
@@ -77,6 +86,9 @@ public class RegisterTimetableControllerTest {
 
     @MockBean
     private ClassroomService classroomServiceMock;
+
+    @MockBean
+    private UserDao userDao;
 
     @Captor
     private ArgumentCaptor<CreateTimetableData> captor;
@@ -129,7 +141,8 @@ public class RegisterTimetableControllerTest {
         Timetable registered = generator.generateTimetable();
         when(timetableServiceMock.registerNewTimetable(any(CreateTimetableData.class))).thenReturn(registered);
         
-        mockMvc.perform(post("/timetables").locale(Locale.US)
+        mockMvc.perform(post("/timetables").with(csrf())
+                .locale(Locale.US)
                 .param("startTime", formatDateTime(startTime))
                 .param("duration", duration
                         .toString())
@@ -159,7 +172,8 @@ public class RegisterTimetableControllerTest {
         Integer invalidClassroomId = -1;
         Integer invalidTeacherId = -100;
 
-        mockMvc.perform(post("/timetables").locale(Locale.US)
+        mockMvc.perform(post("/timetables").with(csrf())
+                .locale(Locale.US)
                 .param("startTime", formatDateTime(pastStartTime))
                 .param("duration", invalidDuration
                         .toString())

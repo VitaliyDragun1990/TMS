@@ -8,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -31,11 +32,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.SecurityConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.service.student.CreateStudentData;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.security.WithMockAuthenticatedUser;
+import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
@@ -47,7 +51,12 @@ import org.vdragun.tms.util.Constants.Page;
  *
  */
 @WebMvcTest(controllers = RegisterStudentController.class)
-@Import({ WebConfig.class, WebMvcConfig.class, MessageProvider.class })
+@Import({
+        WebConfig.class,
+        WebMvcConfig.class,
+        SecurityConfig.class,
+        MessageProvider.class })
+@WithMockAuthenticatedUser
 @TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Register Student Controller")
 public class RegisterStudentControllerTest {
@@ -60,6 +69,9 @@ public class RegisterStudentControllerTest {
 
     @MockBean
     private StudentService studentsServiceMock;
+
+    @MockBean
+    private UserDao userDao;
 
     @Captor
     private ArgumentCaptor<CreateStudentData> captor;
@@ -99,7 +111,8 @@ public class RegisterStudentControllerTest {
         Student registered = generator.generateStudent();
         when(studentsServiceMock.registerNewStudent(any(CreateStudentData.class))).thenReturn(registered);
 
-        mockMvc.perform(post("/students").locale(Locale.US)
+        mockMvc.perform(post("/students").with(csrf())
+                .locale(Locale.US)
                 .param("firstName", firstName)
                 .param("lastName", lastName)
                 .param("enrollmentDate", formatDate(enrollmentDate)))
@@ -119,7 +132,8 @@ public class RegisterStudentControllerTest {
         String toShortLastName = "J";
         LocalDate enrollmentDateInTheFuture = LocalDate.now().plusDays(5);
 
-        mockMvc.perform(post("/students").locale(Locale.US)
+        mockMvc.perform(post("/students").with(csrf())
+                .locale(Locale.US)
                 .param("firstName", nonLatinFirstName)
                 .param("lastName", toShortLastName)
                 .param("enrollmentDate", formatDate(enrollmentDateInTheFuture)))

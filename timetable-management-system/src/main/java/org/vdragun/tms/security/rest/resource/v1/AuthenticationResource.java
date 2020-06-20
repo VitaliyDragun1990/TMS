@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.vdragun.tms.security.rest.service.AuthenticationService;
+import org.vdragun.tms.security.rest.service.RestAuthenticationService;
 import org.vdragun.tms.security.rest.service.SigninRequest;
 import org.vdragun.tms.security.rest.service.SigninResponse;
 import org.vdragun.tms.security.rest.service.SignupRequest;
@@ -45,9 +45,9 @@ public class AuthenticationResource {
 
     public static final String BASE_URL = "/api/v1/auth";
 
-    private AuthenticationService authService;
+    private RestAuthenticationService authService;
 
-    public AuthenticationResource(AuthenticationService authService) {
+    public AuthenticationResource(RestAuthenticationService authService) {
         this.authService = authService;
     }
 
