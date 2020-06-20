@@ -2,7 +2,6 @@ package org.vdragun.tms.ui.web.controller.timetable;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +22,7 @@ import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
 import org.vdragun.tms.util.Constants.View;
+import org.vdragun.tms.util.localizer.TemporalLocalizer;
 
 /**
  * Processes timetable-related search requests
@@ -43,6 +43,9 @@ public class SearchTimetableController extends AbstractController {
     @Autowired
     private StudentService studentService;
 
+    @Autowired
+    private TemporalLocalizer temporalLocalizer;
+
     @GetMapping
     public String showAllTimetables(Model model, Pageable pageable) {
         log.trace("Received GET request to show all timetables, page number: {}, URI={}",
@@ -51,6 +54,7 @@ public class SearchTimetableController extends AbstractController {
 
         model.addAttribute(Attribute.TIMETABLES, result);
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_TIMETABLES, result.getTotalElements()));
+        model.addAttribute(Attribute.PAGE_URL_TEMPLATE, buildPageTemplateUrl("/timetables"));
 
         return View.TIMETABLES;
     }
@@ -67,21 +71,28 @@ public class SearchTimetableController extends AbstractController {
     public String showlDailyTimetablesForTeacher(
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetDate") LocalDate targetDate,
-            Model model) {
-        log.trace("Received GET request to show daily timetables for teacher with id={} for date={}, URI={}",
-                teacherId, targetDate, getRequestUri());
+            Model model,
+            Pageable pageable) {
+        log.trace(
+                "Received GET request to show daily timetables for teacher with id={} for date={}, page number: {}, URI={}",
+                teacherId, targetDate, pageable.getPageNumber(), getRequestUri());
 
-        List<Timetable> result = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate);
+        Page<Timetable> page = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate, pageable);
         Teacher teacher = teacherService.findTeacherById(teacherId);
         String msg = getMessage(
                 Message.TIMETABLES_FOR_TEACHER,
-                result.size(),
+                page.getTotalElements(),
                 teacher.getFirstName(),
                 teacher.getLastName(),
                 formatDate(targetDate));
 
-        model.addAttribute(Attribute.TIMETABLES, result);
+        String pageTemplateUrl = buildPageTemplateUrl(
+                "/timetables/teacher/" + teacherId + "/day",
+                QueryParam.from("targetDate", temporalLocalizer.localizeDate(targetDate)));
+
+        model.addAttribute(Attribute.TIMETABLES, page);
         model.addAttribute(Attribute.MESSAGE, msg);
+        model.addAttribute(Attribute.PAGE_URL_TEMPLATE, pageTemplateUrl);
 
         return View.TIMETABLES;
     }
@@ -90,21 +101,28 @@ public class SearchTimetableController extends AbstractController {
     public String showMonthlyTimetablesForTeacher(
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetDate") Month targetDate,
-            Model model) {
-        log.trace("Received GET request to show monthly timetables for teacher with id={} for month={}, URI={}",
-                teacherId, targetDate, getRequestUri());
+            Model model,
+            Pageable pageable) {
+        log.trace(
+                "Received GET request to show monthly timetables for teacher with id={} for month={}, page number: {} URI={}",
+                teacherId, targetDate, pageable.getPageNumber(), getRequestUri());
 
-        List<Timetable> result = timetableService.findMonthlyTimetablesForTeacher(teacherId, targetDate);
+        Page<Timetable> page = timetableService.findMonthlyTimetablesForTeacher(teacherId, targetDate, pageable);
         Teacher teacher = teacherService.findTeacherById(teacherId);
         String msg = getMessage(
                 Message.TIMETABLES_FOR_TEACHER,
-                result.size(),
+                page.getTotalElements(),
                 teacher.getFirstName(),
                 teacher.getLastName(),
                 formatMonth(targetDate));
+        
+        String pageTemplateUrl = buildPageTemplateUrl(
+                "/timetables/teacher/" + teacherId + "/month",
+                QueryParam.from("targetDate", temporalLocalizer.localizeMonth(targetDate)));
 
-        model.addAttribute(Attribute.TIMETABLES, result);
+        model.addAttribute(Attribute.TIMETABLES, page);
         model.addAttribute(Attribute.MESSAGE, msg);
+        model.addAttribute(Attribute.PAGE_URL_TEMPLATE, pageTemplateUrl);
 
         return View.TIMETABLES;
     }
@@ -113,21 +131,28 @@ public class SearchTimetableController extends AbstractController {
     public String showlDailyTimetablesForStudent(
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetDate") LocalDate targetDate,
-            Model model) {
-        log.trace("Received GET request to show daily timetables for student with id={} for date={}, URI={}",
-                studentId, targetDate, getRequestUri());
+            Model model,
+            Pageable pageable) {
+        log.trace(
+                "Received GET request to show daily timetables for student with id={} for date={}, page number: {}, URI={}",
+                studentId, targetDate, pageable.getPageNumber(), getRequestUri());
 
-        List<Timetable> result = timetableService.findDailyTimetablesForStudent(studentId, targetDate);
+        Page<Timetable> page = timetableService.findDailyTimetablesForStudent(studentId, targetDate, pageable);
         Student student = studentService.findStudentById(studentId);
         String msg = getMessage(
                 Message.TIMETABLES_FOR_STUDENT,
-                result.size(),
+                page.getTotalElements(),
                 student.getFirstName(),
                 student.getLastName(),
                 formatDate(targetDate));
+        
+        String pageTemplateUrl = buildPageTemplateUrl(
+                "/timetables/student/" + studentId + "/day",
+                QueryParam.from("targetDate", temporalLocalizer.localizeDate(targetDate)));
 
-        model.addAttribute(Attribute.TIMETABLES, result);
+        model.addAttribute(Attribute.TIMETABLES, page);
         model.addAttribute(Attribute.MESSAGE, msg);
+        model.addAttribute(Attribute.PAGE_URL_TEMPLATE, pageTemplateUrl);
 
         return View.TIMETABLES;
     }
@@ -136,21 +161,28 @@ public class SearchTimetableController extends AbstractController {
     public String showMonthlyTimetablesForStudent(
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetDate") Month targetDate,
-            Model model) {
-        log.trace("Received GET request to show monthly timetables for student with id={} for month={}, URI={}",
-                studentId, targetDate, getRequestUri());
+            Model model,
+            Pageable pageable) {
+        log.trace(
+                "Received GET request to show monthly timetables for student with id={} for month={}, page number: {}, URI={}",
+                studentId, targetDate, pageable.getPageNumber(), getRequestUri());
 
-        List<Timetable> result = timetableService.findMonthlyTimetablesForStudent(studentId, targetDate);
+        Page<Timetable> page = timetableService.findMonthlyTimetablesForStudent(studentId, targetDate, pageable);
         Student student = studentService.findStudentById(studentId);
         String msg = getMessage(
                 Message.TIMETABLES_FOR_STUDENT,
-                result.size(),
+                page.getTotalElements(),
                 student.getFirstName(),
                 student.getLastName(),
                 formatMonth(targetDate));
 
-        model.addAttribute(Attribute.TIMETABLES, result);
+        String pageTemplateUrl = buildPageTemplateUrl(
+                "/timetables/student/" + studentId + "/month",
+                QueryParam.from("targetDate", temporalLocalizer.localizeMonth(targetDate)));
+
+        model.addAttribute(Attribute.TIMETABLES, page);
         model.addAttribute(Attribute.MESSAGE, msg);
+        model.addAttribute(Attribute.PAGE_URL_TEMPLATE, pageTemplateUrl);
 
         return View.TIMETABLES;
     }

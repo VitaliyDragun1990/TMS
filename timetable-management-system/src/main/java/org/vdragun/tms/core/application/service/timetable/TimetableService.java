@@ -69,6 +69,16 @@ public interface TimetableService {
     List<Timetable> findDailyTimetablesForStudent(Integer studentId, LocalDate date);
 
     /**
+     * Finds all timetables available for specified day for student with provided
+     * identifier and pageable data
+     * 
+     * @param studentId student identifier
+     * @param date      day for which timetables should be found
+     * @throws ResourceNotFoundException if no student with specified identifier
+     */
+    Page<Timetable> findDailyTimetablesForStudent(Integer studentId, LocalDate date, Pageable pageable);
+
+    /**
      * Finds all timetables available for specified month for student with provided
      * identifier
      * 
@@ -77,6 +87,16 @@ public interface TimetableService {
      * @throws ResourceNotFoundException if no student with specified identifier
      */
     List<Timetable> findMonthlyTimetablesForStudent(Integer studentId, Month month);
+
+    /**
+     * Finds all timetables available for specified month for student with provided
+     * identifier and pageable data
+     * 
+     * @param studentId student identifier
+     * @param month     month for which timetables should be found
+     * @throws ResourceNotFoundException if no student with specified identifier
+     */
+    Page<Timetable> findMonthlyTimetablesForStudent(Integer studentId, Month month, Pageable pageable);
 
     /**
      * Finds all timetables available for specified day for teacher with provided
@@ -89,6 +109,17 @@ public interface TimetableService {
     List<Timetable> findDailyTimetablesForTeacher(Integer teacherId, LocalDate date);
 
     /**
+     * Finds timetables available for specified day for teacher with provided
+     * identifier according to provided pageable data
+     * 
+     * @param teacherId teacher identifier
+     * @param date      day for which timetables should be found
+     * @param pageable  page related data
+     * @throws ResourceNotFoundException if no teacher with specified identifier
+     */
+    Page<Timetable> findDailyTimetablesForTeacher(Integer teacherId, LocalDate date, Pageable pageable);
+
+    /**
      * Finds all timetables available for specified month for teacher with provided
      * identifier
      * 
@@ -97,6 +128,16 @@ public interface TimetableService {
      * @throws ResourceNotFoundException if no teacher with specified identifier
      */
     List<Timetable> findMonthlyTimetablesForTeacher(Integer teacherId, Month month);
+
+    /**
+     * Finds all timetables available for specified month for teacher with provided
+     * identifier and pageable data
+     * 
+     * @param teacherId teacher identifier
+     * @param month     month for which timetables should be found
+     * @throws ResourceNotFoundException if no teacher with specified identifier
+     */
+    Page<Timetable> findMonthlyTimetablesForTeacher(Integer teacherId, Month month, Pageable pageable);
 
     /**
      * Deletes timetable with specified identifier

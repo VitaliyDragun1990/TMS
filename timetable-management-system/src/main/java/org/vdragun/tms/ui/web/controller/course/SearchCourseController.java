@@ -36,6 +36,7 @@ public class SearchCourseController extends AbstractController {
 
         model.addAttribute(Attribute.COURSES, page);
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_COURSES, page.getTotalElements()));
+        model.addAttribute(Attribute.PAGE_URL_TEMPLATE, buildPageTemplateUrl("/courses"));
 
         return View.COURSES;
     }

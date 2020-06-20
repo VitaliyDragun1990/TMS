@@ -66,6 +66,7 @@ public class TimetableServiceImpl implements TimetableService {
         timetableDao.save(timetable);
 
         LOG.debug("New timetable has been registered: {}", timetable);
+
         return timetable;
     }
 
@@ -82,6 +83,7 @@ public class TimetableServiceImpl implements TimetableService {
         timetableDao.update(timetable);
 
         LOG.debug("Timetable with id={} has been successfully updated", timetable.getId());
+
         return timetable;
     }
 
@@ -100,6 +102,7 @@ public class TimetableServiceImpl implements TimetableService {
 
         List<Timetable> result = timetableDao.findAll();
         LOG.debug("Found {} timetables", result.size());
+
         return result;
     }
 
@@ -123,7 +126,21 @@ public class TimetableServiceImpl implements TimetableService {
         List<Timetable> result = timetableDao.findDailyForStudent(studentId, date);
 
         LOG.debug("Found {} timetables for student with id={} for date={}", result.size(), studentId, date);
+
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Timetable> findDailyTimetablesForStudent(Integer studentId, LocalDate date, Pageable pageable) {
+        assertStudentExists(studentId);
+
+        Page<Timetable> page = timetableDao.findDailyForStudent(studentId, date, pageable);
+
+        LOG.debug("Found {} timetables for student with id={} for date={}, page number: {}, page size: {}",
+                page.getNumberOfElements(), studentId, date, page.getNumber(), page.getSize());
+
+        return page;
     }
 
     @Override
@@ -140,6 +157,19 @@ public class TimetableServiceImpl implements TimetableService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Timetable> findMonthlyTimetablesForStudent(Integer studentId, Month month, Pageable pageable) {
+        assertStudentExists(studentId);
+
+        Page<Timetable> page = timetableDao.findMonthlyForStudent(studentId, month, pageable);
+
+        LOG.debug("Found {} timetables for student with id={} for month={}, page number: {}, page size: {}",
+                page.getNumberOfElements(), studentId, month, page.getNumber(), page.getSize());
+
+        return page;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Timetable> findDailyTimetablesForTeacher(Integer teacherId, LocalDate date) {
         LOG.debug("Retrieving all timetables for teacher with id={} for date={}", teacherId, date);
         assertTeacherExists(teacherId);
@@ -152,6 +182,18 @@ public class TimetableServiceImpl implements TimetableService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Timetable> findDailyTimetablesForTeacher(Integer teacherId, LocalDate date, Pageable pageable) {
+        assertTeacherExists(teacherId);
+
+        Page<Timetable> page = timetableDao.findDailyForTeacher(teacherId, date, pageable);
+
+        LOG.debug("Found {} timetables for teacher with id={} for date={}, page number: {}, page size: {}",
+                page.getNumberOfElements(), teacherId, date, page.getNumber(), page.getSize());
+        return page;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Timetable> findMonthlyTimetablesForTeacher(Integer teacherId, Month month) {
         LOG.debug("Retrieving all timetables for teacher with id={} for month={}", teacherId, month);
         assertTeacherExists(teacherId);
@@ -160,6 +202,19 @@ public class TimetableServiceImpl implements TimetableService {
 
         LOG.debug("Found {} timetables for teacher with id={} for month={}", result.size(), teacherId, month);
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Timetable> findMonthlyTimetablesForTeacher(Integer teacherId, Month month, Pageable pageable) {
+        assertTeacherExists(teacherId);
+
+        Page<Timetable> page = timetableDao.findMonthlyForTeacher(teacherId, month, pageable);
+
+        LOG.debug("Found {} timetables for teacher with id={} for month={}, page number: {}, page size: {}",
+                page.getNumberOfElements(), teacherId, month, page.getNumber(), page.getSize());
+
+        return page;
     }
 
     @Override

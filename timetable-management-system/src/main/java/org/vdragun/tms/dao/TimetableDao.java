@@ -56,10 +56,22 @@ public interface TimetableDao {
     List<Timetable> findDailyForStudent(Integer studentId, LocalDate date);
 
     /**
+     * Finds all timetables available for a student with specified identifier for
+     * specified date and pageable data.
+     */
+    Page<Timetable> findDailyForStudent(Integer studentId, LocalDate date, Pageable pageable);
+
+    /**
      * Finds all timetables available for a teacher with specified identifier for
      * specified date.
      */
     List<Timetable> findDailyForTeacher(Integer teacherId, LocalDate date);
+
+    /**
+     * Finds all timetables available for a teacher with specified identifier for
+     * specified date and pageable data.
+     */
+    Page<Timetable> findDailyForTeacher(Integer teacherId, LocalDate date, Pageable pageable);
 
     /**
      * Finds all timetables available for a student with specified identifier for
@@ -68,10 +80,22 @@ public interface TimetableDao {
     List<Timetable> findMonthlyForStudent(Integer studentId, Month month);
 
     /**
+     * Finds all timetables available for a student with specified identifier for
+     * specified month and pageable data.
+     */
+    Page<Timetable> findMonthlyForStudent(Integer studentId, Month month, Pageable pageable);
+
+    /**
      * Finds all timetables available for a teacher with specified identifier for
      * specified month.
      */
     List<Timetable> findMonthlyForTeacher(Integer teacherId, Month month);
+
+    /**
+     * Finds all timetables available for a teacher with specified identifier for
+     * specified month and pageable data.
+     */
+    Page<Timetable> findMonthlyForTeacher(Integer teacherId, Month month, Pageable pageable);
 
     /**
      * Deletes timetable with given identifier, if any
