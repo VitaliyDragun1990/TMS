@@ -3,6 +3,8 @@ package org.vdragun.tms.dao;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.vdragun.tms.core.domain.Teacher;
 
 /**
@@ -34,6 +36,11 @@ public interface TeacherDao {
      * Finds all available teachers.
      */
     List<Teacher> findAll();
+
+    /**
+     * Finds all available teachers for given pageable data
+     */
+    Page<Teacher> findAll(Pageable pageable);
 
     /**
      * Finds teacher assigned to the course with given identifier if any.

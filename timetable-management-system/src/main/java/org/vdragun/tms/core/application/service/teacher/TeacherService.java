@@ -2,6 +2,8 @@ package org.vdragun.tms.core.application.service.teacher;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.domain.Teacher;
 
@@ -36,6 +38,13 @@ public interface TeacherService {
      * @return list of all available teachers
      */
     List<Teacher> findAllTeachers();
+
+    /**
+     * Finds teachers according to provided pageable data.
+     * 
+     * @return page with teachers
+     */
+    Page<Teacher> findTeachers(Pageable pageable);
 
     /**
      * Returns teacher assigned to course with specified identifier
