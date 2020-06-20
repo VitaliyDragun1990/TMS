@@ -2,6 +2,8 @@ package org.vdragun.tms.core.application.service.student;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.domain.Student;
 
@@ -46,6 +48,13 @@ public interface StudentService {
      * @return list of all available students
      */
     List<Student> findAllStudents();
+
+    /**
+     * Finds students according to provided pageable data.
+     * 
+     * @return page with students
+     */
+    Page<Student> findStudents(Pageable pageable);
 
     /**
      * Finds all students assigned to course with specified identifier.

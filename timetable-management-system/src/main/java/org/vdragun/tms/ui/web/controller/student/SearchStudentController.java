@@ -1,8 +1,8 @@
 package org.vdragun.tms.ui.web.controller.student;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +29,13 @@ public class SearchStudentController extends AbstractController {
     private StudentService studentService;
 
     @GetMapping
-    public String showAllStudents(Model model) {
-        log.trace("Received GET request to show all students, URI={}", getRequestUri());
-        List<Student> result = studentService.findAllStudents();
+    public String showAllStudents(Model model, Pageable pageable) {
+        log.trace("Received GET request to show all students, page number: {}, URI={}",
+                pageable.getPageNumber(), getRequestUri());
+        Page<Student> page = studentService.findStudents(pageable);
 
-        model.addAttribute(Attribute.STUDENTS, result);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_STUDENTS, result.size()));
+        model.addAttribute(Attribute.STUDENTS, page);
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_STUDENTS, page.getTotalElements()));
 
         return View.STUDENTS;
     }

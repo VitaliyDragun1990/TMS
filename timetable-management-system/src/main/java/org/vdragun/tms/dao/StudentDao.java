@@ -3,6 +3,8 @@ package org.vdragun.tms.dao;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.vdragun.tms.core.domain.Student;
 
 /**
@@ -34,6 +36,11 @@ public interface StudentDao {
      * Finds all available students.
      */
     List<Student> findAll();
+
+    /**
+     * Finds all available students for given pageable data
+     */
+    Page<Student> findAll(Pageable pageable);
 
     /**
      * Finds all students assigned to the course with specified identifier.
