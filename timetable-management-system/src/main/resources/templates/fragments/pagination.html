@@ -26,7 +26,7 @@
         </li>
         
         <!-- If total page count less than 10 - print all  -->
-        <th:block th:if="${page.totalPages < 10}">
+        <th:block th:if="${page.totalPages <= 10}">
         <li th:each="pageNum : ${#numbers.sequence(1, page.totalPages)}" class="page-item"
             th:classappend="${pageNum eq page.number + 1}? 'active'">
           <a class="page-link" href="#" th:href="@{/{url}?page={num}(url=${url},num=${pageNum})}" th:text="${pageNum}">1</a>

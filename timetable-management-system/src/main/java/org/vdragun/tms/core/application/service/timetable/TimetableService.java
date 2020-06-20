@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.domain.Timetable;
 
@@ -48,6 +50,13 @@ public interface TimetableService {
      * @return list of all available timetables
      */
     List<Timetable> findAllTimetables();
+
+    /**
+     * Finds timetables according to provided pageable data.
+     * 
+     * @return page with timetables
+     */
+    Page<Timetable> findTimetables(Pageable pageable);
 
     /**
      * Finds all timetables available for specified day for student with provided

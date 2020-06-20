@@ -5,6 +5,8 @@ import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.vdragun.tms.core.domain.Timetable;
 
 /**
@@ -41,6 +43,11 @@ public interface TimetableDao {
      * Returns all timetables
      */
     List<Timetable> findAll();
+
+    /**
+     * Finds all available timetables for given pageable data
+     */
+    Page<Timetable> findAll(Pageable pageable);
 
     /**
      * Finds all timetables available for a student with specified identifier for

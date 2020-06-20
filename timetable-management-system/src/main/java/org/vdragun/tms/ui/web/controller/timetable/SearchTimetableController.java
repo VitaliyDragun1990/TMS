@@ -5,6 +5,8 @@ import java.time.Month;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,12 +44,13 @@ public class SearchTimetableController extends AbstractController {
     private StudentService studentService;
 
     @GetMapping
-    public String showAllTimetables(Model model) {
-        log.trace("Received GET request to show all timetables, URI={}", getRequestUri());
-        List<Timetable> result = timetableService.findAllTimetables();
+    public String showAllTimetables(Model model, Pageable pageable) {
+        log.trace("Received GET request to show all timetables, page number: {}, URI={}",
+                pageable.getPageNumber(), getRequestUri());
+        Page<Timetable> result = timetableService.findTimetables(pageable);
 
         model.addAttribute(Attribute.TIMETABLES, result);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_TIMETABLES, result.size()));
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_TIMETABLES, result.getTotalElements()));
 
         return View.TIMETABLES;
     }

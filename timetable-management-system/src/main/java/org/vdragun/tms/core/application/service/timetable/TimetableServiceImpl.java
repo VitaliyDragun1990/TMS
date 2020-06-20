@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
@@ -99,6 +101,17 @@ public class TimetableServiceImpl implements TimetableService {
         List<Timetable> result = timetableDao.findAll();
         LOG.debug("Found {} timetables", result.size());
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Timetable> findTimetables(Pageable pageable) {
+        Page<Timetable> page = timetableDao.findAll(pageable);
+
+        LOG.debug("Found {} timetables, page number: {}, page size: {}",
+                page.getNumberOfElements(), pageable.getPageNumber(), pageable.getPageSize());
+
+        return page;
     }
 
     @Override
