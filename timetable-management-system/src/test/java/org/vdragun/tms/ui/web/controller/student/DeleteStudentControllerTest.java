@@ -37,7 +37,7 @@ import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * @author Vitaliy Dragun
@@ -99,7 +99,7 @@ public class DeleteStudentControllerTest {
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/delete"))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
 
         verify(studentsServiceMock, times(1)).deleteStudentById(studentId);
     }
@@ -116,7 +116,7 @@ public class DeleteStudentControllerTest {
                 .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", invalidStudentId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/delete"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
 
         verify(studentsServiceMock, never()).deleteStudentById(any(Integer.class));
     }

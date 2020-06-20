@@ -9,7 +9,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.vdragun.tms.ui.web.converter.StudentToUpdateStudentDataConverter;
 import org.vdragun.tms.ui.web.converter.TimetableToUpdateTimetableDataConverter;
 import org.vdragun.tms.ui.web.converter.TitleCustomFormatter;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -45,8 +45,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         WebMvcConfigurer.super.addViewControllers(registry);
-        registry.addViewController("/").setViewName(Page.HOME);
-        registry.addViewController("/auth/signin").setViewName(Page.SIGN_IN_FORM);
+        registry.addViewController("/").setViewName(View.HOME);
+        registry.addViewController("/auth/signin").setViewName(View.SIGN_IN_FORM);
         registry.addRedirectViewController("/home", "/");
     }
 

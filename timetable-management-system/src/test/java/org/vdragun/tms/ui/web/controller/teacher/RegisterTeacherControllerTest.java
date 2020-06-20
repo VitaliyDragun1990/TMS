@@ -47,7 +47,7 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * @author Vitaliy Dragun
@@ -105,7 +105,7 @@ public class RegisterTeacherControllerTest {
                 .andExpect(model().attributeExists(Attribute.TEACHER, Attribute.TITLES))
                 .andExpect(model().attribute(Attribute.TITLES, equalTo(titles)))
                 .andExpect(model().attribute(Attribute.TEACHER, samePropertyValuesAs(new TeacherData())))
-                .andExpect(view().name(Page.TEACHER_FORM));
+                .andExpect(view().name(View.TEACHER_FORM));
     }
 
     @Test
@@ -149,7 +149,7 @@ public class RegisterTeacherControllerTest {
                 .andExpect(model().errorCount(4))
                 .andExpect(model().attributeHasFieldErrors("teacher", "firstName", "lastName", "title", "dateHired"))
                 .andExpect(model().attribute(Attribute.VALIDATED, equalTo(true)))
-                .andExpect(view().name(Page.TEACHER_FORM));
+                .andExpect(view().name(View.TEACHER_FORM));
 
         verify(teacherServiceMock, never()).registerNewTeacher(any(TeacherData.class));
     }

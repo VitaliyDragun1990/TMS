@@ -32,7 +32,7 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * @author Vitaliy Dragun
@@ -74,7 +74,7 @@ public class SearchTeacherControllerTest {
                 .andExpect(model().attribute(Attribute.TEACHERS, equalTo(teachers)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.ALL_TEACHERS, teachers.size()))))
-                .andExpect(view().name(Page.TEACHERS));
+                .andExpect(view().name(View.TEACHERS));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class SearchTeacherControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TEACHER))
                 .andExpect(model().attribute(Attribute.TEACHER, equalTo(teacher)))
-                .andExpect(view().name(Page.TEACHER_INFO));
+                .andExpect(view().name(View.TEACHER_INFO));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class SearchTeacherControllerTest {
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/teachers/" + teacherId))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class SearchTeacherControllerTest {
                 .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", teacherId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/teachers/" + teacherId))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     private String getMessage(String msgCode, Object... args) {

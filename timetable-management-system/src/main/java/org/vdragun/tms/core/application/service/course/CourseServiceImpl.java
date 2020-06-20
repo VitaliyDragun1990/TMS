@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
@@ -70,6 +72,17 @@ public class CourseServiceImpl implements CourseService {
 
         LOG.debug("Found {} courses", result.size());
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Course> findCourses(Pageable pageable) {
+        Page<Course> page = courseDao.findAll(pageable);
+
+        LOG.debug("Found {} courses, page number: {}, page size: {}",
+                page.getNumberOfElements(), pageable.getPageNumber(), pageable.getPageSize());
+
+        return page;
     }
 
     @Override

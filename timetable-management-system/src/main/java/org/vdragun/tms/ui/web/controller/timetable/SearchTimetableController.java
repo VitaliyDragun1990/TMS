@@ -20,7 +20,7 @@ import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * Processes timetable-related search requests
@@ -49,7 +49,7 @@ public class SearchTimetableController extends AbstractController {
         model.addAttribute(Attribute.TIMETABLES, result);
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_TIMETABLES, result.size()));
 
-        return Page.TIMETABLES;
+        return View.TIMETABLES;
     }
 
     @GetMapping("/{timetableId}")
@@ -57,7 +57,7 @@ public class SearchTimetableController extends AbstractController {
         log.trace("Received GET request to show data for timetable with id={}, URI={}", timetableId, getRequestUri());
         model.addAttribute(Attribute.TIMETABLE, timetableService.findTimetableById(timetableId));
 
-        return Page.TIMETABLE_INFO;
+        return View.TIMETABLE_INFO;
     }
 
     @GetMapping("/teacher/{teacherId}/day")
@@ -80,7 +80,7 @@ public class SearchTimetableController extends AbstractController {
         model.addAttribute(Attribute.TIMETABLES, result);
         model.addAttribute(Attribute.MESSAGE, msg);
 
-        return Page.TIMETABLES;
+        return View.TIMETABLES;
     }
 
     @GetMapping("/teacher/{teacherId}/month")
@@ -103,7 +103,7 @@ public class SearchTimetableController extends AbstractController {
         model.addAttribute(Attribute.TIMETABLES, result);
         model.addAttribute(Attribute.MESSAGE, msg);
 
-        return Page.TIMETABLES;
+        return View.TIMETABLES;
     }
 
     @GetMapping("/student/{studentId}/day")
@@ -126,7 +126,7 @@ public class SearchTimetableController extends AbstractController {
         model.addAttribute(Attribute.TIMETABLES, result);
         model.addAttribute(Attribute.MESSAGE, msg);
 
-        return Page.TIMETABLES;
+        return View.TIMETABLES;
     }
 
     @GetMapping("/student/{studentId}/month")
@@ -149,6 +149,6 @@ public class SearchTimetableController extends AbstractController {
         model.addAttribute(Attribute.TIMETABLES, result);
         model.addAttribute(Attribute.MESSAGE, msg);
 
-        return Page.TIMETABLES;
+        return View.TIMETABLES;
     }
 }

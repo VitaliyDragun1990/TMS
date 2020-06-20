@@ -13,7 +13,7 @@ import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * Processes student-related search requests
@@ -36,7 +36,7 @@ public class SearchStudentController extends AbstractController {
         model.addAttribute(Attribute.STUDENTS, result);
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_STUDENTS, result.size()));
 
-        return Page.STUDENTS;
+        return View.STUDENTS;
     }
 
     @GetMapping("/{studentId}")
@@ -44,6 +44,6 @@ public class SearchStudentController extends AbstractController {
         log.trace("Received GET request to show data for student with id={}, URI={}", studentId, getRequestUri());
         model.addAttribute(Attribute.STUDENT, studentService.findStudentById(studentId));
 
-        return Page.STUDENT_INFO;
+        return View.STUDENT_INFO;
     }
 }

@@ -16,7 +16,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 /**
@@ -45,7 +45,7 @@ public class WebExceptionHandler {
         LOG.warn("Handling resource not found exception", exception);
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
 
-        return Page.NOT_FOUND;
+        return View.NOT_FOUND;
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -54,7 +54,7 @@ public class WebExceptionHandler {
         LOG.warn("Handling handler not found exception", exception);
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, exception.getRequestURL()));
 
-        return Page.NOT_FOUND;
+        return View.NOT_FOUND;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -72,7 +72,7 @@ public class WebExceptionHandler {
         model.addAttribute(Attribute.ERROR, errMsg);
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
 
-        return Page.BAD_REQUEST;
+        return View.BAD_REQUEST;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -87,7 +87,7 @@ public class WebExceptionHandler {
         model.addAttribute(Attribute.ERROR, errMsg);
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
 
-        return Page.BAD_REQUEST;
+        return View.BAD_REQUEST;
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -96,7 +96,7 @@ public class WebExceptionHandler {
         LOG.error("Handling application exception", exception);
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
 
-        return Page.SERVER_ERROR;
+        return View.SERVER_ERROR;
     }
 
     private String getRequestUrl(HttpServletRequest req) {

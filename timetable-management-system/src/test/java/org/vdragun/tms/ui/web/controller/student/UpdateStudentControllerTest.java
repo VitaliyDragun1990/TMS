@@ -54,7 +54,7 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 import io.florianlopes.spring.test.web.servlet.request.MockMvcRequestBuilderUtils;
 
@@ -115,7 +115,7 @@ public class UpdateStudentControllerTest {
                 .andExpect(model().attribute(Attribute.COURSES, equalTo(courses)))
                 .andExpect(model().attribute(Attribute.GROUPS, equalTo(groups)))
                 .andExpect(model().attribute(Attribute.STUDENT, samePropertyValuesAs(updateDataFrom(student))))
-                .andExpect(view().name(Page.STUDENT_UPDATE_FORM));
+                .andExpect(view().name(View.STUDENT_UPDATE_FORM));
     }
     
     @Test
@@ -129,7 +129,7 @@ public class UpdateStudentControllerTest {
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + studentId + "/update"))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -142,7 +142,7 @@ public class UpdateStudentControllerTest {
                 .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", invalidStudentId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + invalidStudentId + "/update"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -181,7 +181,7 @@ public class UpdateStudentControllerTest {
                 .andExpect(model().attributeHasFieldErrors("student", "firstName", "lastName", "groupId",
                         "courseIds[0]"))
                 .andExpect(model().attribute(Attribute.VALIDATED, equalTo(true)))
-                .andExpect(view().name(Page.STUDENT_UPDATE_FORM));
+                .andExpect(view().name(View.STUDENT_UPDATE_FORM));
 
         verify(studentServiceMock, never()).updateExistingStudent(any(UpdateStudentData.class));
     }
@@ -202,7 +202,7 @@ public class UpdateStudentControllerTest {
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + nonExistingStudentId))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
 
         verify(studentServiceMock, times(1)).updateExistingStudent(captor.capture());
         assertThat(captor.getValue(), samePropertyValuesAs(updateData));
@@ -227,7 +227,7 @@ public class UpdateStudentControllerTest {
                 .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", invalidStudentId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + invalidStudentId))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
 
         verify(studentServiceMock, never()).updateExistingStudent(any(UpdateStudentData.class));
     }

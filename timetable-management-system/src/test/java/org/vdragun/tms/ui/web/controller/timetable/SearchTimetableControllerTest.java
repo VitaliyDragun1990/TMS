@@ -43,7 +43,7 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * @author Vitaliy Dragun
@@ -110,7 +110,7 @@ public class SearchTimetableControllerTest {
                 .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(timetables)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.ALL_TIMETABLES, timetables.size()))))
-                .andExpect(view().name(Page.TIMETABLES));
+                .andExpect(view().name(View.TIMETABLES));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class SearchTimetableControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TIMETABLE))
                 .andExpect(model().attribute(Attribute.TIMETABLE, equalTo(timetable)))
-                .andExpect(view().name(Page.TIMETABLE_INFO));
+                .andExpect(view().name(View.TIMETABLE_INFO));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class SearchTimetableControllerTest {
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/timetables/" + timetableId))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -150,7 +150,7 @@ public class SearchTimetableControllerTest {
                 .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", invalidTimetableId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/timetables/" + invalidTimetableId))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -174,7 +174,7 @@ public class SearchTimetableControllerTest {
                                 teacher.getFirstName(),
                                 teacher.getLastName(),
                                 formatDate(targetDate)))))
-                .andExpect(view().name(Page.TIMETABLES));
+                .andExpect(view().name(View.TIMETABLES));
     }
 
     @Test
@@ -192,7 +192,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/teacher/" + nonExistentTeacherId + "/day"))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -208,7 +208,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/teacher/" + invalidTeacherId + "/day"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -224,7 +224,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/teacher/" + teacherId + "/day"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -248,7 +248,7 @@ public class SearchTimetableControllerTest {
                                 student.getFirstName(),
                                 student.getLastName(),
                                 formatDate(targetDate)))))
-                .andExpect(view().name(Page.TIMETABLES));
+                .andExpect(view().name(View.TIMETABLES));
     }
 
     @Test
@@ -266,7 +266,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/student/" + nonExistentStudentId + "/day"))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -282,7 +282,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/student/" + invalidStudentId + "/day"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -298,7 +298,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/student/" + studentId + "/day"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -322,7 +322,7 @@ public class SearchTimetableControllerTest {
                                 teacher.getFirstName(),
                                 teacher.getLastName(),
                                 formatMonth(targetDate)))))
-                .andExpect(view().name(Page.TIMETABLES));
+                .andExpect(view().name(View.TIMETABLES));
     }
 
     @Test
@@ -340,7 +340,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/teacher/" + nonExistentTeacherId + "/month"))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -356,7 +356,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/teacher/" + invalidTeacherId + "/month"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -372,7 +372,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/teacher/" + teacherId + "/month"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -396,7 +396,7 @@ public class SearchTimetableControllerTest {
                                 student.getFirstName(),
                                 student.getLastName(),
                                 formatMonth(targetDate)))))
-                .andExpect(view().name(Page.TIMETABLES));
+                .andExpect(view().name(View.TIMETABLES));
     }
 
     @Test
@@ -414,7 +414,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/student/" + nonExistentStudentId + "/month"))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -430,7 +430,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/student/" + invalidStudentId + "/month"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -446,7 +446,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/student/" + studentId + "/month"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
 }

@@ -32,7 +32,7 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * @author Vitaliy Dragun
@@ -78,7 +78,7 @@ public class SearchStudentControllerTest {
                 .andExpect(model().attribute(Attribute.STUDENTS, equalTo(students)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.ALL_STUDENTS, students.size()))))
-                .andExpect(view().name(Page.STUDENTS));
+                .andExpect(view().name(View.STUDENTS));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class SearchStudentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.STUDENT))
                 .andExpect(model().attribute(Attribute.STUDENT, equalTo(student)))
-                .andExpect(view().name(Page.STUDENT_INFO));
+                .andExpect(view().name(View.STUDENT_INFO));
     }
 
     @Test
@@ -104,7 +104,7 @@ public class SearchStudentControllerTest {
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + studentId))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class SearchStudentControllerTest {
                 .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", invalidStudentId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + invalidStudentId))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
 }

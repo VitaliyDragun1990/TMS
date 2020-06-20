@@ -22,7 +22,7 @@ import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * Processes timetable update requests
@@ -56,7 +56,7 @@ public class UpdateTimetableController extends AbstractController {
                 Attribute.TIMETABLE,
                 conversionService.convert(timetableService.findTimetableById(timetableId), UpdateTimetableData.class));
 
-        return Page.TIMETABLE_UPDATE_FORM;
+        return View.TIMETABLE_UPDATE_FORM;
     }
 
     @PostMapping("/{timetableId}")
@@ -73,7 +73,7 @@ public class UpdateTimetableController extends AbstractController {
             bindingResult.getAllErrors().forEach(error -> log.trace("Validation error: {}", error));
             model.addAttribute(Attribute.VALIDATED, true);
 
-            return Page.TIMETABLE_UPDATE_FORM;
+            return View.TIMETABLE_UPDATE_FORM;
         }
 
         timetableService.updateExistingTimetable(timetableData);

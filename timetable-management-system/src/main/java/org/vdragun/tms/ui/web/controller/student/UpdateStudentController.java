@@ -27,7 +27,7 @@ import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * Processes student update requests
@@ -74,7 +74,7 @@ public class UpdateStudentController extends AbstractController {
                 Attribute.STUDENT,
                 conversionService.convert(studentService.findStudentById(studentId), UpdateStudentData.class));
 
-        return Page.STUDENT_UPDATE_FORM;
+        return View.STUDENT_UPDATE_FORM;
     }
 
     @PostMapping("/{studentId}")
@@ -91,7 +91,7 @@ public class UpdateStudentController extends AbstractController {
             bindingResult.getAllErrors().forEach(error -> log.trace("Validation error: {}", error));
             model.addAttribute(Attribute.VALIDATED, true);
 
-            return Page.STUDENT_UPDATE_FORM;
+            return View.STUDENT_UPDATE_FORM;
         }
 
         studentService.updateExistingStudent(studentData);

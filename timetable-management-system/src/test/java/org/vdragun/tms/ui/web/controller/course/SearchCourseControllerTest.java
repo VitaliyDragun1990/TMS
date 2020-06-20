@@ -32,7 +32,7 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * @author Vitaliy Dragun
@@ -79,7 +79,7 @@ public class SearchCourseControllerTest {
                 .andExpect(model().attribute(Attribute.COURSES, equalTo(courses)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.ALL_COURSES, courses.size()))))
-                .andExpect(view().name(Page.COURSES));
+                .andExpect(view().name(View.COURSES));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class SearchCourseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.COURSE))
                 .andExpect(model().attribute(Attribute.COURSE, equalTo(course)))
-                .andExpect(view().name(Page.COURSE_INFO));
+                .andExpect(view().name(View.COURSE_INFO));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class SearchCourseControllerTest {
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/courses/" + courseId))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -121,7 +121,7 @@ public class SearchCourseControllerTest {
                 .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", courseId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/courses/" + courseId))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
 }

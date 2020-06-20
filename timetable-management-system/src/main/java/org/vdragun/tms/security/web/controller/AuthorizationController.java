@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.vdragun.tms.util.Constants.Attribute;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 @Controller
 public class AuthorizationController {
@@ -22,7 +22,7 @@ public class AuthorizationController {
             model.addAttribute(Attribute.MESSAGE, accessDeniedMsg);
             session.removeAttribute(Attribute.ACCESS_DENIED_MSG);
 
-            return Page.ACCESS_DENIED;
+            return View.ACCESS_DENIED;
         }
 
         // else redirect to home page

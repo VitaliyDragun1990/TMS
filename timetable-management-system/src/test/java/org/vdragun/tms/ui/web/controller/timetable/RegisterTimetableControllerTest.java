@@ -52,7 +52,7 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * @author Vitaliy Dragun
@@ -127,7 +127,7 @@ public class RegisterTimetableControllerTest {
                 .andExpect(model().attribute(Attribute.COURSES, equalTo(courses)))
                 .andExpect(model().attribute(Attribute.CLASSROOMS, equalTo(classrooms)))
                 .andExpect(model().attribute(Attribute.TIMETABLE, samePropertyValuesAs(new CreateTimetableData())))
-                .andExpect(view().name(Page.TIMETABLE_REG_FORM));
+                .andExpect(view().name(View.TIMETABLE_REG_FORM));
     }
 
     @Test
@@ -186,7 +186,7 @@ public class RegisterTimetableControllerTest {
                         "courseId",
                         "classroomId", "teacherId"))
                 .andExpect(model().attribute(Attribute.VALIDATED, equalTo(true)))
-                .andExpect(view().name(Page.TIMETABLE_REG_FORM));
+                .andExpect(view().name(View.TIMETABLE_REG_FORM));
 
         verify(timetableServiceMock, never()).registerNewTimetable(any(CreateTimetableData.class));
     }
