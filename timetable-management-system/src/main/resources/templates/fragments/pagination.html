@@ -79,7 +79,8 @@
       </ul>
     </nav>
     
-    <th:block th:fragment="icon (uri, sortKey)">
+    <!-- Sort icon  -->
+    <th:block th:fragment="sortIcon (uri, sortKey)">
       <i th:if="${#strings.contains(uri, sortKey+',asc')}" class="fi-xwsuxl-sort-up-solid"></i>
       <i th:if="${#strings.contains(uri, sortKey+',desc')}" class="fi-xwsdxl-sort-up-solid"></i>
       <i th:unless="${#strings.contains(uri, sortKey)}" class="fi-xwluxl-sort-wide"></i>

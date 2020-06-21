@@ -36,7 +36,6 @@ public class SearchStudentController extends AbstractController {
 
         model.addAttribute(Attribute.STUDENTS, page);
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_STUDENTS, page.getTotalElements()));
-        model.addAttribute(Attribute.PAGE_URL_TEMPLATE, buildPageTemplateUrl("/students"));
 
         return View.STUDENTS;
     }

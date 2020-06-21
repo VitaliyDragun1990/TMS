@@ -13,10 +13,28 @@
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>
-          <th scope="col" th:text="#{label.name}">Name</th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,courses.number+1,'name')}|}"
+               th:text="#{label.name}">
+              Name
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'name')"></th:block>            
+          </th>
           <th scope="col" th:text="#{label.description}">Description</th>
-          <th scope="col" th:text="#{label.category}">Category</th>
-          <th scope="col" th:text="#{label.teacher}">Teacher</th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,courses.number+1,'category.code')}|}"
+               th:text="#{label.category}">
+              Category
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'category.code')"></th:block>           
+          </th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,courses.number+1,'teacher.firstName','teacher.lastName')}|}"
+               th:text="#{label.teacher}">
+              Teacher
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'teacher.firstName')"></th:block>           
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -61,7 +79,7 @@
     </table>
     
     <!-- Pagination  -->
-    <div th:replace="fragments/pagination :: pagination (${courses},${pageUrlTemplate})">
+    <div th:replace="fragments/pagination :: pagination (${courses},${requestUri})">
     </div>
       
   </div>
