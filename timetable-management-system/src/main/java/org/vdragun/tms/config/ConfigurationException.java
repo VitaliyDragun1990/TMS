@@ -15,4 +15,8 @@ public class ConfigurationException extends ApplicationException {
         super(message, cause);
     }
 
+    public ConfigurationException(String message) {
+        super(message);
+    }
+
 }
