@@ -1,7 +1,9 @@
 package org.vdragun.tms.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -35,6 +37,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
         interceptor.setParamName("lang");
 
         return interceptor;
+    }
+
+    @Bean
+    public FilterRegistrationBean<RequestUriMemorizerFilter> filterRegistrationBean() {
+        FilterRegistrationBean<RequestUriMemorizerFilter> registrationBean = new FilterRegistrationBean<>();
+        RequestUriMemorizerFilter filter = new RequestUriMemorizerFilter();
+
+        registrationBean.setFilter(filter);
+        registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+
+        return registrationBean;
     }
 
     @Override
