@@ -44,7 +44,7 @@ public class StudentInfoPage {
         $(byCssSelector("[href='#studentSubmenu']")).click();
         $("a#showAllStudents").click();
         // verify correct page URL
-        assertThat(url()).endsWith("/students");
+        assertThat(url()).endsWith("/students?page=1&sort=firstName,asc&sort=lastName,asc");
         // select student with given id
         $$(format("table#studentsTable tbody tr#row-%d", studentId)).first().$("a.btn-link").click();
     }

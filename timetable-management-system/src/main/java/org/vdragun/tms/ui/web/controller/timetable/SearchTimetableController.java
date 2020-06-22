@@ -1,11 +1,14 @@
 package org.vdragun.tms.ui.web.controller.timetable;
 
+import static org.springframework.data.domain.Sort.Direction.ASC;
+
 import java.time.LocalDate;
 import java.time.Month;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,7 +70,7 @@ public class SearchTimetableController extends AbstractController {
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetDate") LocalDate targetDate,
             Model model,
-            Pageable pageable) {
+            @SortDefault(sort = "startTime", direction = ASC) Pageable pageable) {
         log.trace(
                 "Received GET request to show daily timetables for teacher with id={} for date={}, page number: {}, URI={}",
                 teacherId, targetDate, pageable.getPageNumber(), getRequestUri());
@@ -92,7 +95,7 @@ public class SearchTimetableController extends AbstractController {
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetDate") Month targetDate,
             Model model,
-            Pageable pageable) {
+            @SortDefault(sort = "startTime", direction = ASC) Pageable pageable) {
         log.trace(
                 "Received GET request to show monthly timetables for teacher with id={} for month={}, page number: {} URI={}",
                 teacherId, targetDate, pageable.getPageNumber(), getRequestUri());
@@ -117,7 +120,7 @@ public class SearchTimetableController extends AbstractController {
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetDate") LocalDate targetDate,
             Model model,
-            Pageable pageable) {
+            @SortDefault(sort = "startTime", direction = ASC) Pageable pageable) {
         log.trace(
                 "Received GET request to show daily timetables for student with id={} for date={}, page number: {}, URI={}",
                 studentId, targetDate, pageable.getPageNumber(), getRequestUri());
@@ -142,7 +145,7 @@ public class SearchTimetableController extends AbstractController {
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetDate") Month targetDate,
             Model model,
-            Pageable pageable) {
+            @SortDefault(sort = "startTime", direction = ASC) Pageable pageable) {
         log.trace(
                 "Received GET request to show monthly timetables for student with id={} for month={}, page number: {}, URI={}",
                 studentId, targetDate, pageable.getPageNumber(), getRequestUri());

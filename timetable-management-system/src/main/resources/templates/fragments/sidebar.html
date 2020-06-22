@@ -21,7 +21,8 @@
                     </a>
                     <ul class="collapse list-unstyled" id="studentSubmenu">
                         <li>
-                            <a id="showAllStudents" href="#" th:href="@{/students}" th:text="#{label.showAll}">
+                            <a id="showAllStudents" href="#" th:href="@{/students?page=1&sort=firstName,asc&sort=lastName,asc}"
+                               th:text="#{label.showAll}">
                               Show All
                             </a>
                         </li>
@@ -41,7 +42,8 @@
                     </a>
                     <ul class="collapse list-unstyled" id="teacherSubmenu">
                         <li>
-                            <a id="showAllTeachers" href="#" th:href="@{/teachers}" th:text="#{label.showAll}">Show All</a>
+                            <a id="showAllTeachers" href="#"
+                               th:href="@{/teachers?page=1&sort=firstName,asc&sort=lastName,asc}" th:text="#{label.showAll}">Show All</a>
                         </li>
                         <li sec:authorize="hasRole('ADMIN')">
                             <a id="registerTeacher" href="#" th:href="@{/teachers/register}" th:text="#{label.register}">Register</a>
@@ -57,7 +59,8 @@
                     </a>
                     <ul class="collapse list-unstyled" id="timetableSubmenu">
                         <li>
-                            <a id="showAllTimetables" href="#" th:href="@{/timetables}" th:text="#{label.showAll}">Show All</a>
+                            <a id="showAllTimetables" href="#" th:href="@{/timetables?page=1&sort=startTime,asc}"
+                               th:text="#{label.showAll}">Show All</a>
                         </li>
                         <li sec:authorize="hasRole('ADMIN')">
                             <a id="registerTimetable" href="#" th:href="@{/timetables/register}" th:text="#{label.register}">Register</a>
@@ -73,7 +76,7 @@
                     </a>
                     <ul class="collapse list-unstyled" id="courseSubmenu">
                         <li>
-                            <a id="showAllCourses" href="#" th:href="@{/courses}" th:text="#{label.showAll}">Show All</a>
+                            <a id="showAllCourses" href="#" th:href="@{/courses?page=1&sort=name,asc}" th:text="#{label.showAll}">Show All</a>
                         </li>
                         <li sec:authorize="hasRole('ADMIN')">
                             <a id="registerCourse" href="#" th:href="@{/courses/register}" th:text="#{label.register}">Register</a>
