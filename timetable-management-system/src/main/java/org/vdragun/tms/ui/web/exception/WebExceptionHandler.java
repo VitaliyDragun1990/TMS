@@ -42,8 +42,10 @@ public class WebExceptionHandler {
             ResourceNotFoundException exception,
             Model model,
             HttpServletRequest request) {
-        LOG.warn("Handling resource not found exception", exception);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+        String requestUri = getRequestUri(request);
+        LOG.warn("Handling resource not found exception, url:[{}]", requestUri, exception);
+
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, requestUri));
 
         return View.NOT_FOUND;
     }
@@ -63,14 +65,15 @@ public class WebExceptionHandler {
             MethodArgumentTypeMismatchException exception,
             Model model,
             HttpServletRequest request) {
-        LOG.warn("Handling method argument type mismatch exception", exception.getRootCause());
+        String requestUri = getRequestUri(request);
+        LOG.warn("Handling method argument type mismatch exception, url:[{}]", request, exception.getRootCause());
 
         String errMsg = "";
         if (exception.getRootCause() instanceof NumberFormatException) {
             errMsg = extractMessage((Exception) exception.getRootCause());
         }
         model.addAttribute(Attribute.ERROR, errMsg);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, requestUri));
 
         return View.BAD_REQUEST;
     }
@@ -81,11 +84,12 @@ public class WebExceptionHandler {
             MissingServletRequestParameterException exception,
             Model model,
             HttpServletRequest request) {
-        LOG.warn("Handling missing request parameter exception", exception);
+        String requestUri = getRequestUri(request);
+        LOG.warn("Handling missing request parameter exception, url:[{}]", requestUri, exception);
 
         String errMsg = getMessage(Message.REQUIRED_REQUEST_PARAMETER, exception.getParameterName());
         model.addAttribute(Attribute.ERROR, errMsg);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, requestUri));
 
         return View.BAD_REQUEST;
     }
@@ -93,16 +97,16 @@ public class WebExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({ Exception.class })
     public String handleException(Exception exception, Model model, HttpServletRequest request) {
-        LOG.error("Handling application exception", exception);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+        String requestUri = getRequestUri(request);
+        LOG.error("Handling application exception, url:[{}]", requestUri, exception);
+
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, requestUri));
 
         return View.SERVER_ERROR;
     }
 
-    private String getRequestUrl(HttpServletRequest req) {
-        String requestUri = req.getRequestURI();
-        String queryString = req.getQueryString();
-        return requestUri + (queryString != null ? "?" + queryString : "");
+    private String getRequestUri(HttpServletRequest request) {
+        return (String) request.getAttribute(Attribute.REQUEST_URI);
     }
 
     private String getMessage(String code, Object... args) {

@@ -29,6 +29,7 @@ import org.vdragun.tms.config.SecurityConfig;
 import org.vdragun.tms.config.ThymeleafConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
+import org.vdragun.tms.core.application.exception.InvalidPageNumberException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
@@ -53,6 +54,10 @@ import org.vdragun.tms.util.Constants.View;
 @TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Search Course Controller")
 public class SearchCourseControllerTest {
+
+    private static final int MAX_VALID_PAGE_NUMBER = 5;
+    private static final int PAGE_SIZE = 20;
+    private static final int INVALID_PAGE_NUMBER = 10;
 
     @Autowired
     private MockMvc mockMvc;
@@ -88,6 +93,20 @@ public class SearchCourseControllerTest {
                         equalTo(getMessage(Message.ALL_COURSES, page.getTotalElements()))))
                 .andExpect(view().name(View.COURSES));
     }
+
+    @Test
+    void shouldShowNotFoundPageIfPageNumberIsInvalid() throws Exception {
+        when(courseServiceMock.findCourses(any(Pageable.class)))
+                .thenThrow(invalidPageNumberException());
+
+        mockMvc
+                .perform(get("/courses?page={pageNumber}", INVALID_PAGE_NUMBER).locale(Locale.US))
+                .andExpect(status().isNotFound())
+                .andExpect(model().attribute(Attribute.MESSAGE,
+                        equalTo(getMessage(Message.REQUESTED_RESOURCE, "/courses?page=" + INVALID_PAGE_NUMBER))))
+                .andExpect(view().name(View.NOT_FOUND));
+    }
+
 
     @Test
     void shouldShowCoursePageForExitingCourse() throws Exception {
@@ -129,6 +148,10 @@ public class SearchCourseControllerTest {
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/courses/" + courseId))))
                 .andExpect(view().name(View.BAD_REQUEST));
+    }
+
+    private InvalidPageNumberException invalidPageNumberException() {
+        return new InvalidPageNumberException(Course.class, INVALID_PAGE_NUMBER, PAGE_SIZE, MAX_VALID_PAGE_NUMBER);
     }
 
 }

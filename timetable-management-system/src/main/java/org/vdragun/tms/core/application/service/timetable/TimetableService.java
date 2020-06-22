@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.vdragun.tms.core.application.exception.InvalidPageNumberException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.domain.Timetable;
 
@@ -55,6 +56,7 @@ public interface TimetableService {
      * Finds timetables according to provided pageable data.
      * 
      * @return page with timetables
+     * @throws InvalidPageNumberException if specified page number is invalid
      */
     Page<Timetable> findTimetables(Pageable pageable);
 
@@ -74,7 +76,8 @@ public interface TimetableService {
      * 
      * @param studentId student identifier
      * @param date      day for which timetables should be found
-     * @throws ResourceNotFoundException if no student with specified identifier
+     * @throws ResourceNotFoundException  if no student with specified identifier
+     * @throws InvalidPageNumberException if specified page number is invalid
      */
     Page<Timetable> findDailyTimetablesForStudent(Integer studentId, LocalDate date, Pageable pageable);
 
@@ -94,7 +97,8 @@ public interface TimetableService {
      * 
      * @param studentId student identifier
      * @param month     month for which timetables should be found
-     * @throws ResourceNotFoundException if no student with specified identifier
+     * @throws ResourceNotFoundException  if no student with specified identifier
+     * @throws InvalidPageNumberException if specified page number is invalid
      */
     Page<Timetable> findMonthlyTimetablesForStudent(Integer studentId, Month month, Pageable pageable);
 
@@ -115,7 +119,8 @@ public interface TimetableService {
      * @param teacherId teacher identifier
      * @param date      day for which timetables should be found
      * @param pageable  page related data
-     * @throws ResourceNotFoundException if no teacher with specified identifier
+     * @throws ResourceNotFoundException  if no teacher with specified identifier
+     * @throws InvalidPageNumberException if specified page number is invalid
      */
     Page<Timetable> findDailyTimetablesForTeacher(Integer teacherId, LocalDate date, Pageable pageable);
 
@@ -135,7 +140,8 @@ public interface TimetableService {
      * 
      * @param teacherId teacher identifier
      * @param month     month for which timetables should be found
-     * @throws ResourceNotFoundException if no teacher with specified identifier
+     * @throws ResourceNotFoundException  if no teacher with specified identifier
+     * @throws InvalidPageNumberException if specified page number is invalid
      */
     Page<Timetable> findMonthlyTimetablesForTeacher(Integer teacherId, Month month, Pageable pageable);
 

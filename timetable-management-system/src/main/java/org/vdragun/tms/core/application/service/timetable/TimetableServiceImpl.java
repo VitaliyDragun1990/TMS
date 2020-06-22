@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.vdragun.tms.core.application.exception.InvalidPageNumberException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Course;
@@ -110,12 +111,14 @@ public class TimetableServiceImpl implements TimetableService {
     @Transactional(readOnly = true)
     public Page<Timetable> findTimetables(Pageable pageable) {
         Page<Timetable> page = timetableDao.findAll(pageable);
+        assertValidPageNumber(page);
 
         LOG.debug("Found {} timetables, page number: {}, page size: {}",
                 page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
 
         return page;
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -136,6 +139,7 @@ public class TimetableServiceImpl implements TimetableService {
         assertStudentExists(studentId);
 
         Page<Timetable> page = timetableDao.findDailyForStudent(studentId, date, pageable);
+        assertValidPageNumber(page);
 
         LOG.debug("Found {} timetables for student with id={} for date={}, page number: {}, page size: {}",
                 page.getTotalElements(), studentId, date, page.getNumber(), page.getSize());
@@ -161,6 +165,7 @@ public class TimetableServiceImpl implements TimetableService {
         assertStudentExists(studentId);
 
         Page<Timetable> page = timetableDao.findMonthlyForStudent(studentId, month, pageable);
+        assertValidPageNumber(page);
 
         LOG.debug("Found {} timetables for student with id={} for month={}, page number: {}, page size: {}",
                 page.getTotalElements(), studentId, month, page.getNumber(), page.getSize());
@@ -186,6 +191,7 @@ public class TimetableServiceImpl implements TimetableService {
         assertTeacherExists(teacherId);
 
         Page<Timetable> page = timetableDao.findDailyForTeacher(teacherId, date, pageable);
+        assertValidPageNumber(page);
 
         LOG.debug("Found {} timetables for teacher with id={} for date={}, page number: {}, page size: {}",
                 page.getTotalElements(), teacherId, date, page.getNumber(), page.getSize());
@@ -210,6 +216,7 @@ public class TimetableServiceImpl implements TimetableService {
         assertTeacherExists(teacherId);
 
         Page<Timetable> page = timetableDao.findMonthlyForTeacher(teacherId, month, pageable);
+        assertValidPageNumber(page);
 
         LOG.debug("Found {} timetables for teacher with id={} for month={}, page number: {}, page size: {}",
                 page.getTotalElements(), teacherId, month, page.getNumber(), page.getSize());
@@ -228,6 +235,14 @@ public class TimetableServiceImpl implements TimetableService {
                     Timetable.class,
                     "Fail to delete timetable: timetable with id=%d does not exist",
                     timetableId);
+        }
+    }
+
+    private void assertValidPageNumber(Page<Timetable> page) {
+        if (page.getNumber() >= page.getTotalPages()) {
+            throw new InvalidPageNumberException(
+                    Timetable.class,
+                    page.getNumber() + 1, page.getSize(), page.getTotalPages() - 1);
         }
     }
 
