@@ -25,9 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.vdragun.tms.config.SecurityConfig;
+import org.vdragun.tms.config.ThymeleafConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
@@ -53,6 +57,7 @@ import org.vdragun.tms.util.Constants.View;
 @Import({
         WebConfig.class,
         WebMvcConfig.class,
+        ThymeleafConfig.class,
         SecurityConfig.class,
         MessageProvider.class })
 @WithMockAuthenticatedUser
@@ -102,14 +107,15 @@ public class SearchTimetableControllerTest {
     @Test
     void shouldShowAllTimetablesPage() throws Exception {
         List<Timetable> timetables = generator.generateTimetables(10);
-        when(timetableServiceMock.findAllTimetables()).thenReturn(timetables);
+        Page<Timetable> page = new PageImpl<>(timetables);
+        when(timetableServiceMock.findTimetables(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/timetables").locale(Locale.US))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TIMETABLES, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(timetables)))
+                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(page)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
-                        equalTo(getMessage(Message.ALL_TIMETABLES, timetables.size()))))
+                        equalTo(getMessage(Message.ALL_TIMETABLES, page.getTotalElements()))))
                 .andExpect(view().name(View.TIMETABLES));
     }
 
@@ -158,19 +164,23 @@ public class SearchTimetableControllerTest {
         Teacher teacher = generator.generateTeacher();
         List<Timetable> timetables = generator.generateTimetables(10);
         LocalDate targetDate = LocalDate.now();
+        Page<Timetable> page = new PageImpl<>(timetables);
 
         when(teacherServiceMock.findTeacherById(teacher.getId())).thenReturn(teacher);
-        when(timetableServiceMock.findDailyTimetablesForTeacher(teacher.getId(), targetDate)).thenReturn(timetables);
+        when(timetableServiceMock.findDailyTimetablesForTeacher(
+                eq(teacher.getId()),
+                eq(targetDate),
+                any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/timetables/teacher/{teacherId}/day", teacher.getId()).locale(Locale.US)
                 .param("targetDate", formatDate(targetDate)))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TIMETABLES, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(timetables)))
+                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(page)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(
                                 Message.TIMETABLES_FOR_TEACHER,
-                                timetables.size(),
+                                page.getTotalElements(),
                                 teacher.getFirstName(),
                                 teacher.getLastName(),
                                 formatDate(targetDate)))))
@@ -180,9 +190,14 @@ public class SearchTimetableControllerTest {
     @Test
     void shouldShowNotFoundPageWhenSearchDailyTimetablesForNonExistentTeacher() throws Exception {
         Integer nonExistentTeacherId = 1;
-        when(timetableServiceMock.findDailyTimetablesForTeacher(eq(nonExistentTeacherId), any(LocalDate.class)))
-                .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found",
-                        nonExistentTeacherId));
+        when(timetableServiceMock.findDailyTimetablesForTeacher(
+                eq(nonExistentTeacherId),
+                any(LocalDate.class),
+                any(Pageable.class)))
+                        .thenThrow(new ResourceNotFoundException(
+                                Teacher.class,
+                                "Teacher with id=%d not found",
+                                nonExistentTeacherId));
 
         mockMvc.perform(get("/timetables/teacher/{teacherId}/day", nonExistentTeacherId).locale(Locale.US)
                 .param("targetDate", formatDate(LocalDate.now())))
@@ -232,19 +247,23 @@ public class SearchTimetableControllerTest {
         Student student = generator.generateStudent();
         List<Timetable> timetables = generator.generateTimetables(10);
         LocalDate targetDate = LocalDate.now();
+        Page<Timetable> page = new PageImpl<>(timetables);
 
         when(studentServiceMock.findStudentById(student.getId())).thenReturn(student);
-        when(timetableServiceMock.findDailyTimetablesForStudent(student.getId(), targetDate)).thenReturn(timetables);
+        when(timetableServiceMock.findDailyTimetablesForStudent(
+                eq(student.getId()),
+                eq(targetDate),
+                any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/timetables/student/{studentId}/day", student.getId()).locale(Locale.US)
                 .param("targetDate", formatDate(targetDate)))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TIMETABLES, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(timetables)))
+                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(page)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(
                                 Message.TIMETABLES_FOR_STUDENT,
-                                timetables.size(),
+                                page.getTotalElements(),
                                 student.getFirstName(),
                                 student.getLastName(),
                                 formatDate(targetDate)))))
@@ -254,9 +273,14 @@ public class SearchTimetableControllerTest {
     @Test
     void shouldShowNotFoundPageWhenSearchDailyTimetablesForNonExistentStudent() throws Exception {
         Integer nonExistentStudentId = 1;
-        when(timetableServiceMock.findDailyTimetablesForStudent(eq(nonExistentStudentId), any(LocalDate.class)))
-                .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found",
-                        nonExistentStudentId));
+        when(timetableServiceMock.findDailyTimetablesForStudent(
+                eq(nonExistentStudentId),
+                any(LocalDate.class),
+                any(Pageable.class)))
+                        .thenThrow(new ResourceNotFoundException(
+                                Student.class,
+                                "Student with id=%d not found",
+                                nonExistentStudentId));
 
         mockMvc.perform(get("/timetables/student/{studentId}/day", nonExistentStudentId).locale(Locale.US)
                 .param("targetDate", formatDate(LocalDate.now())))
@@ -306,19 +330,23 @@ public class SearchTimetableControllerTest {
         Teacher teacher = generator.generateTeacher();
         List<Timetable> timetables = generator.generateTimetables(10);
         Month targetDate = LocalDate.now().getMonth();
+        Page<Timetable> page = new PageImpl<>(timetables);
 
         when(teacherServiceMock.findTeacherById(teacher.getId())).thenReturn(teacher);
-        when(timetableServiceMock.findMonthlyTimetablesForTeacher(teacher.getId(), targetDate)).thenReturn(timetables);
+        when(timetableServiceMock.findMonthlyTimetablesForTeacher(
+                eq(teacher.getId()),
+                eq(targetDate),
+                any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/timetables/teacher/{teacherId}/month", teacher.getId()).locale(Locale.US)
                 .param("targetDate", targetDate.toString()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TIMETABLES, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(timetables)))
+                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(page)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(
                                 Message.TIMETABLES_FOR_TEACHER,
-                                timetables.size(),
+                                page.getTotalElements(),
                                 teacher.getFirstName(),
                                 teacher.getLastName(),
                                 formatMonth(targetDate)))))
@@ -328,9 +356,14 @@ public class SearchTimetableControllerTest {
     @Test
     void shouldShowNotFoundPageWhenSearchMonthlyTimetablesForNonExistentTeacher() throws Exception {
         Integer nonExistentTeacherId = 1;
-        when(timetableServiceMock.findMonthlyTimetablesForTeacher(eq(nonExistentTeacherId), any(Month.class)))
-                .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found",
-                        nonExistentTeacherId));
+        when(timetableServiceMock.findMonthlyTimetablesForTeacher(
+                eq(nonExistentTeacherId),
+                any(Month.class),
+                any(Pageable.class)))
+                        .thenThrow(new ResourceNotFoundException(
+                                Teacher.class,
+                                "Teacher with id=%d not found",
+                                nonExistentTeacherId));
 
         mockMvc.perform(get("/timetables/teacher/{teacherId}/month", nonExistentTeacherId).locale(Locale.US)
                 .param("targetDate", formatMonth(LocalDate.now().getMonth())))
@@ -380,19 +413,23 @@ public class SearchTimetableControllerTest {
         Student student = generator.generateStudent();
         List<Timetable> timetables = generator.generateTimetables(10);
         Month targetDate = LocalDate.now().getMonth();
+        Page<Timetable> page = new PageImpl<>(timetables);
 
         when(studentServiceMock.findStudentById(student.getId())).thenReturn(student);
-        when(timetableServiceMock.findMonthlyTimetablesForStudent(student.getId(), targetDate)).thenReturn(timetables);
+        when(timetableServiceMock.findMonthlyTimetablesForStudent(
+                eq(student.getId()),
+                eq(targetDate),
+                any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/timetables/student/{studentId}/month", student.getId()).locale(Locale.US)
                 .param("targetDate", targetDate.toString()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TIMETABLES, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(timetables)))
+                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(page)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(
                                 Message.TIMETABLES_FOR_STUDENT,
-                                timetables.size(),
+                                page.getTotalElements(),
                                 student.getFirstName(),
                                 student.getLastName(),
                                 formatMonth(targetDate)))))
@@ -402,9 +439,14 @@ public class SearchTimetableControllerTest {
     @Test
     void shouldShowNotFoundPageWhenSearchMonthlyTimetablesForNonExistentStudent() throws Exception {
         Integer nonExistentStudentId = 1;
-        when(timetableServiceMock.findMonthlyTimetablesForStudent(eq(nonExistentStudentId), any(Month.class)))
-                .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found",
-                        nonExistentStudentId));
+        when(timetableServiceMock.findMonthlyTimetablesForStudent(
+                eq(nonExistentStudentId),
+                any(Month.class),
+                any(Pageable.class)))
+                        .thenThrow(new ResourceNotFoundException(
+                                Student.class,
+                                "Student with id=%d not found",
+                                nonExistentStudentId));
 
         mockMvc.perform(get("/timetables/student/{studentId}/month", nonExistentStudentId).locale(Locale.US)
                 .param("targetDate", formatMonth(LocalDate.now().getMonth())))

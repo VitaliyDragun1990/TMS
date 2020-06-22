@@ -3,7 +3,8 @@ package org.vdragun.tms.ui.web.controller.course;
 import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -19,9 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.vdragun.tms.config.SecurityConfig;
+import org.vdragun.tms.config.ThymeleafConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
@@ -42,6 +47,7 @@ import org.vdragun.tms.util.Constants.View;
 @Import({
         WebConfig.class,
         WebMvcConfig.class,
+        ThymeleafConfig.class,
         SecurityConfig.class,
         MessageProvider.class })
 @TestPropertySource(properties = "secured.rest=false")
@@ -69,16 +75,17 @@ public class SearchCourseControllerTest {
     @Test
     void shouldShowPageWithAvailableCourses() throws Exception {
         List<Course> courses = generator.generateCourses(10);
-        when(courseServiceMock.findAllCourses()).thenReturn(courses);
+        Page<Course> page = new PageImpl<>(courses);
+        when(courseServiceMock.findCourses(any(Pageable.class))).thenReturn(page);
 
         mockMvc
                 .perform(get("/courses").locale(Locale.US))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.COURSES, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.COURSES, hasSize(courses.size())))
-                .andExpect(model().attribute(Attribute.COURSES, equalTo(courses)))
+                .andExpect(model().attribute(Attribute.COURSES, hasProperty("size", equalTo(10))))
+                .andExpect(model().attribute(Attribute.COURSES, equalTo(page)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
-                        equalTo(getMessage(Message.ALL_COURSES, courses.size()))))
+                        equalTo(getMessage(Message.ALL_COURSES, page.getTotalElements()))))
                 .andExpect(view().name(View.COURSES));
     }
 
