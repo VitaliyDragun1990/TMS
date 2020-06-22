@@ -112,7 +112,7 @@ public class TimetableServiceImpl implements TimetableService {
         Page<Timetable> page = timetableDao.findAll(pageable);
 
         LOG.debug("Found {} timetables, page number: {}, page size: {}",
-                page.getNumberOfElements(), pageable.getPageNumber(), pageable.getPageSize());
+                page.getTotalElements(), pageable.getPageNumber(), pageable.getPageSize());
 
         return page;
     }
@@ -138,7 +138,7 @@ public class TimetableServiceImpl implements TimetableService {
         Page<Timetable> page = timetableDao.findDailyForStudent(studentId, date, pageable);
 
         LOG.debug("Found {} timetables for student with id={} for date={}, page number: {}, page size: {}",
-                page.getNumberOfElements(), studentId, date, page.getNumber(), page.getSize());
+                page.getTotalElements(), studentId, date, page.getNumber(), page.getSize());
 
         return page;
     }
@@ -163,7 +163,7 @@ public class TimetableServiceImpl implements TimetableService {
         Page<Timetable> page = timetableDao.findMonthlyForStudent(studentId, month, pageable);
 
         LOG.debug("Found {} timetables for student with id={} for month={}, page number: {}, page size: {}",
-                page.getNumberOfElements(), studentId, month, page.getNumber(), page.getSize());
+                page.getTotalElements(), studentId, month, page.getNumber(), page.getSize());
 
         return page;
     }
@@ -188,7 +188,7 @@ public class TimetableServiceImpl implements TimetableService {
         Page<Timetable> page = timetableDao.findDailyForTeacher(teacherId, date, pageable);
 
         LOG.debug("Found {} timetables for teacher with id={} for date={}, page number: {}, page size: {}",
-                page.getNumberOfElements(), teacherId, date, page.getNumber(), page.getSize());
+                page.getTotalElements(), teacherId, date, page.getNumber(), page.getSize());
         return page;
     }
 
@@ -212,7 +212,7 @@ public class TimetableServiceImpl implements TimetableService {
         Page<Timetable> page = timetableDao.findMonthlyForTeacher(teacherId, month, pageable);
 
         LOG.debug("Found {} timetables for teacher with id={} for month={}, page number: {}, page size: {}",
-                page.getNumberOfElements(), teacherId, month, page.getNumber(), page.getSize());
+                page.getTotalElements(), teacherId, month, page.getNumber(), page.getSize());
 
         return page;
     }
