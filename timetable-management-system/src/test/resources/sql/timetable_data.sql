@@ -19,9 +19,9 @@ INSERT INTO student_courses (student_id, course_id) VALUES (2, 2);
 INSERT INTO classrooms (classroom_id, capacity) VALUES (1, 30);
 INSERT INTO classrooms (classroom_id, capacity) VALUES (2, 60);
 
-INSERT INTO timetables (start_date_time, duration, classroom_id, course_id, teacher_id)
-    VALUES ('2020-03-10 09:30:00', 60, 1, 1, 1);
-INSERT INTO timetables (start_date_time, duration, classroom_id, course_id, teacher_id)
-    VALUES ('2020-03-10 12:30:00', 60, 1, 2, 2);
-INSERT INTO timetables (start_date_time, duration, classroom_id, course_id, teacher_id)
-    VALUES ('2020-03-25 09:30:00', 60, 1, 1, 1);
+INSERT INTO timetables (start_date_time, duration, classroom_id, course_id)
+    VALUES ('2020-03-10 09:30:00', 60, 1, 1);
+INSERT INTO timetables (start_date_time, duration, classroom_id, course_id)
+    VALUES ('2020-03-10 12:30:00', 60, 1, 2);
+INSERT INTO timetables (start_date_time, duration, classroom_id, course_id)
+    VALUES ('2020-03-25 09:30:00', 60, 1, 1);

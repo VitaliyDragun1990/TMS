@@ -95,9 +95,8 @@ public class SpringDataTimetableDaoTest {
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldSaveNewTimetableToDatabase() {
         Classroom classroom = dbHelper.findRandomClassroomInDatabase();
-        Teacher teacher = dbHelper.findTeacherByNameInDatabase(JACK, SMITH);
         Course course = dbHelper.findCourseByNameInDatabase(ADVANCED_BIOLOGY);
-        Timetable timetable = new Timetable(APRIL_FIFTH_NINE_THIRTY, DURATION_NINETY, course, classroom, teacher);
+        Timetable timetable = new Timetable(APRIL_FIFTH_NINE_THIRTY, DURATION_NINETY, course, classroom);
 
         dao.save(timetable);
         dbHelper.flushChangesToDatabase();
@@ -109,10 +108,9 @@ public class SpringDataTimetableDaoTest {
     @Sql(scripts = { "/sql/clear_database.sql", "/sql/timetable_data.sql" })
     void shouldSaveSeveralNewTimetablesToDatabase() {
         Classroom classroom = dbHelper.findRandomClassroomInDatabase();
-        Teacher teacher = dbHelper.findTeacherByNameInDatabase(JACK, SMITH);
         Course course = dbHelper.findCourseByNameInDatabase(ADVANCED_BIOLOGY);
-        Timetable timetableA = new Timetable(APRIL_FIFTH_NINE_THIRTY, DURATION_NINETY, course, classroom, teacher);
-        Timetable timetableB = new Timetable(APRIL_TEN_NINE_THIRTY, DURATION_NINETY, course, classroom, teacher);
+        Timetable timetableA = new Timetable(APRIL_FIFTH_NINE_THIRTY, DURATION_NINETY, course, classroom);
+        Timetable timetableB = new Timetable(APRIL_TEN_NINE_THIRTY, DURATION_NINETY, course, classroom);
 
         dao.saveAll(asList(timetableA, timetableB));
         dbHelper.flushChangesToDatabase();
@@ -260,12 +258,10 @@ public class SpringDataTimetableDaoTest {
     void shouldUpdateExistingTimetable() {
         Timetable existing = dbHelper.findRandomTimetableInDatabase();
 
-        Teacher newTeacher = dbHelper.findTeacherByNameInDatabase(JOHN, PORTER);
         Classroom newClassroom = dbHelper.findClassroomByCapacity(CAPACITY_SIXTY);
         int newDuration = DURATION_NINETY;
         LocalDateTime newTime = APRIL_FIFTH_NINE_THIRTY;
 
-        existing.setTeacher(newTeacher);
         existing.setClassroom(newClassroom);
         existing.setDurationInMinutes(newDuration);
         existing.setStartTime(newTime);
@@ -294,7 +290,6 @@ public class SpringDataTimetableDaoTest {
         assertThat(actual.getStartTime(), equalTo(expected.getStartTime()));
         assertThat(actual.getDurationInMinutes(), equalTo(expected.getDurationInMinutes()));
         assertThat(actual.getClassroom(), equalTo(expected.getClassroom()));
-        assertThat(actual.getTeacher(), equalTo(expected.getTeacher()));
         assertThat(actual.getCourse(), equalTo(expected.getCourse()));
     }
 

@@ -21,54 +21,54 @@ import org.vdragun.tms.dao.TimetableDao;
 public interface SpringDataTimetableDao extends TimetableDao, TimetableDaoFragment {
 
     @Override
-    @Query("SELECT t FROM Timetable t JOIN t.course tc WHERE tc.id IN "
-            + "(SELECT sc.id FROM Student s JOIN s.courses sc WHERE s.id = ?1) AND "
-            + "EXTRACT (DAY FROM t.startTime) = EXTRACT(DAY FROM CAST (?2 AS LocalDate)) "
-            + "AND EXTRACT (MONTH FROM t.startTime) = EXTRACT (MONTH FROM CAST (?2 AS LocalDate))"
-            + "ORDER BY t.startTime")
+    @Query("SELECT timetable FROM Timetable timetable JOIN timetable.course timetable_course WHERE timetable_course.id IN "
+            + "(SELECT student_courses.id FROM Student student JOIN student.courses student_courses WHERE student.id = ?1) AND "
+            + "EXTRACT (DAY FROM timetable.startTime) = EXTRACT(DAY FROM CAST (?2 AS LocalDate)) "
+            + "AND EXTRACT (MONTH FROM timetable.startTime) = EXTRACT (MONTH FROM CAST (?2 AS LocalDate)) "
+            + "ORDER BY timetable.startTime")
     List<Timetable> findDailyForStudent(Integer studentId, LocalDate date);
 
     @Override
-    @Query("SELECT t FROM Timetable t JOIN t.course tc WHERE tc.id IN "
-            + "(SELECT sc.id FROM Student s JOIN s.courses sc WHERE s.id = ?1) AND "
-            + "EXTRACT (DAY FROM t.startTime) = EXTRACT(DAY FROM CAST (?2 AS LocalDate)) "
-            + "AND EXTRACT (MONTH FROM t.startTime) = EXTRACT (MONTH FROM CAST (?2 AS LocalDate))"
-            + "ORDER BY t.startTime")
+    @Query("SELECT timetable FROM Timetable timetable JOIN timetable.course timetable_course WHERE timetable_course.id IN "
+            + "(SELECT student_courses.id FROM Student student JOIN student.courses student_courses WHERE student.id = ?1) AND "
+            + "EXTRACT (DAY FROM timetable.startTime) = EXTRACT(DAY FROM CAST (?2 AS LocalDate)) "
+            + "AND EXTRACT (MONTH FROM timetable.startTime) = EXTRACT (MONTH FROM CAST (?2 AS LocalDate))")
     Page<Timetable> findDailyForStudent(Integer studentId, LocalDate date, Pageable pageable);
 
     @Override
-    @Query("SELECT t FROM Timetable t JOIN t.teacher tt WHERE tt.id = ?1 "
-            + "AND EXTRACT (DAY FROM t.startTime) = EXTRACT(DAY FROM CAST (?2 AS LocalDate)) "
-            + "AND EXTRACT (MONTH FROM t.startTime) = EXTRACT (MONTH FROM CAST (?2 AS LocalDate))"
-            + "ORDER BY t.startTime")
+    @Query("SELECT timetable FROM Timetable timetable JOIN timetable.course.teacher course_teacher WHERE course_teacher.id = ?1 "
+            + "AND EXTRACT (DAY FROM timetable.startTime) = EXTRACT(DAY FROM CAST (?2 AS LocalDate)) "
+            + "AND EXTRACT (MONTH FROM timetable.startTime) = EXTRACT (MONTH FROM CAST (?2 AS LocalDate)) "
+            + "ORDER BY timetable.startTime")
     List<Timetable> findDailyForTeacher(Integer teacherId, LocalDate date);
 
     @Override
-    @Query("SELECT t FROM Timetable t JOIN t.teacher tt WHERE tt.id = ?1 "
-            + "AND EXTRACT (DAY FROM t.startTime) = EXTRACT (DAY FROM CAST (?2 AS LocalDate)) "
-            + "AND EXTRACT (MONTH FROM t.startTime) = EXTRACT (MONTH FROM CAST (?2 AS LocalDate))"
-            + "ORDER BY t.startTime")
+    @Query("SELECT timetable FROM Timetable timetable JOIN timetable.course.teacher course_teacher WHERE course_teacher.id = ?1 "
+            + "AND EXTRACT (DAY FROM timetable.startTime) = EXTRACT (DAY FROM CAST (?2 AS LocalDate)) "
+            + "AND EXTRACT (MONTH FROM timetable.startTime) = EXTRACT (MONTH FROM CAST (?2 AS LocalDate))")
     Page<Timetable> findDailyForTeacher(Integer teacherId, LocalDate date, Pageable pageable);
 
     @Override
-    @Query("SELECT t FROM Timetable t JOIN t.course tc WHERE tc.id IN "
-            + "(SELECT sc.id FROM Student s JOIN s.courses sc WHERE s.id = ?1) AND "
-            + "EXTRACT (MONTH FROM t.startTime) = ?#{[1].value}")
+    @Query("SELECT timetable FROM Timetable timetable JOIN timetable.course timetable_course WHERE timetable_course.id IN "
+            + "(SELECT student_courses.id FROM Student student JOIN student.courses student_courses WHERE student.id = ?1) AND "
+            + "EXTRACT (MONTH FROM timetable.startTime) = ?#{[1].value} "
+            + "ORDER BY timetable.startTime")
     List<Timetable> findMonthlyForStudent(Integer studentId, Month month);
 
     @Override
-    @Query("SELECT t FROM Timetable t JOIN t.course tc WHERE tc.id IN "
-            + "(SELECT sc.id FROM Student s JOIN s.courses sc WHERE s.id = ?1) AND "
-            + "EXTRACT (MONTH FROM t.startTime) = ?#{[1].value}")
+    @Query("SELECT timetable FROM Timetable timetable JOIN timetable.course timetable_course WHERE timetable_course.id IN "
+            + "(SELECT student_courses FROM Student student JOIN student.courses student_courses WHERE student.id = ?1) AND "
+            + "EXTRACT (MONTH FROM timetable.startTime) = ?#{[1].value}")
     Page<Timetable> findMonthlyForStudent(Integer studentId, Month month, Pageable pageable);
 
     @Override
-    @Query("SELECT t FROM Timetable t JOIN t.teacher tt WHERE tt.id = ?1 "
-            + "AND EXTRACT (MONTH FROM t.startTime) = ?#{[1].value}")
+    @Query("SELECT timetable FROM Timetable timetable JOIN timetable.course.teacher course_teacher WHERE course_teacher.id = ?1 "
+            + "AND EXTRACT (MONTH FROM timetable.startTime) = ?#{[1].value} "
+            + "ORDER BY timetable.startTime")
     List<Timetable> findMonthlyForTeacher(Integer teacherId, Month month);
 
     @Override
-    @Query("SELECT t FROM Timetable t JOIN t.teacher tt WHERE tt.id = ?1 "
-            + "AND EXTRACT (MONTH FROM t.startTime) = ?#{[1].value}")
+    @Query("SELECT timetable FROM Timetable timetable JOIN timetable.course.teacher course_teacher WHERE course_teacher.id = ?1 "
+            + "AND EXTRACT (MONTH FROM timetable.startTime) = ?#{[1].value}")
     Page<Timetable> findMonthlyForTeacher(Integer teacherId, Month month, Pageable pageable);
 }

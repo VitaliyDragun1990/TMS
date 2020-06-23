@@ -56,14 +56,12 @@ public class TimetableServiceImpl implements TimetableService {
 
         Classroom classroom = getClassroom(timetableData.getClassroomId());
         Course course = getCourse(timetableData.getCourseId());
-        Teacher teacher = getTeacher(timetableData.getTeacherId());
 
         Timetable timetable = new Timetable(
                 timetableData.getStartTime(),
                 timetableData.getDuration(),
                 course,
-                classroom,
-                teacher);
+                classroom);
         timetableDao.save(timetable);
 
         LOG.debug("New timetable has been registered: {}", timetable);
@@ -280,13 +278,6 @@ public class TimetableServiceImpl implements TimetableService {
                 .orElseThrow(
                         () -> new ResourceNotFoundException(Course.class,
                                 "Course with id=%d does not exist", courseId));
-    }
-
-    private Teacher getTeacher(Integer teacherId) {
-        return teacherDao.findById(teacherId)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(Teacher.class,
-                                "Teacher with id=%d does not exist", teacherId));
     }
 
 }

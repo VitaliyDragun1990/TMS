@@ -71,7 +71,7 @@ CREATE TABLE timetables (
     start_date_time TIMESTAMP,
     duration INTEGER,
     classroom_id INTEGER NOT NULL,
-    course_id INTEGER NOT NULL
+    course_id INTEGER NOT NULL,
     FOREIGN KEY (classroom_id) REFERENCES classrooms(classroom_id) ON DELETE RESTRICT,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE RESTRICT
 );

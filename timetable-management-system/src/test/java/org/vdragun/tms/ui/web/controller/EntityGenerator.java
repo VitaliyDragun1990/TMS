@@ -134,8 +134,7 @@ public class EntityGenerator {
                 LocalDateTime.now().plusDays(randomInt(1, 30)).truncatedTo(ChronoUnit.MINUTES),
                 randomInt(30, 60),
                 generateCourse(),
-                generateClassroom(),
-                generateTeacher());
+                generateClassroom());
     }
 
     public List<Timetable> generateTimetables(int number) {

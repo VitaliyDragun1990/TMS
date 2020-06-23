@@ -106,19 +106,6 @@ public class TimetableServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenRegisterTimetableWithNonExistingTeacher() {
-        when(classroomDaoMock.findById(eq(CLASSROOM_ID))).thenReturn(Optional.of(provideClassroom()));
-        when(courseDaoMock.findById(eq(COURSE_ID))).thenReturn(Optional.of(provideCourse()));
-        when(teacherDaoMock.findById(any(Integer.class))).thenReturn(Optional.empty());
-        CreateTimetableData data = new CreateTimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID, CLASSROOM_ID,
-                TEACHER_ID);
-
-        assertThrows(ResourceNotFoundException.class, () -> service.registerNewTimetable(data));
-
-        verify(timetableDaoMock, never()).save(any(Timetable.class));
-    }
-
-    @Test
     void shouldRegisterNewTimetable() {
         when(classroomDaoMock.findById(eq(CLASSROOM_ID))).thenReturn(Optional.of(provideClassroom()));
         when(courseDaoMock.findById(eq(COURSE_ID))).thenReturn(Optional.of(provideCourse()));
@@ -134,7 +121,6 @@ public class TimetableServiceImplTest {
         assertThat(savedTimetable.getDurationInMinutes(), equalTo(NINETY_MINUTES));
         assertThat(savedTimetable.getClassroom().getId(), equalTo(CLASSROOM_ID));
         assertThat(savedTimetable.getCourse().getId(), equalTo(COURSE_ID));
-        assertThat(savedTimetable.getTeacher().getId(), equalTo(TEACHER_ID));
     }
 
     @Test
@@ -309,7 +295,7 @@ public class TimetableServiceImplTest {
     }
 
     private Timetable timetable(Integer timetableId, LocalDateTime startTime, int duration) {
-        return new Timetable(timetableId, startTime, duration, provideCourse(), provideClassroom(), provideTeacher());
+        return new Timetable(timetableId, startTime, duration, provideCourse(), provideClassroom());
     }
 
     private Classroom provideClassroom() {
