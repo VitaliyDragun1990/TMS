@@ -33,7 +33,7 @@
           </div>
         </div>
         
-        <!-- Courses  -->        
+        <!-- Course  -->        
         <div class="form-group row">
           <label for="course" class="col-sm-2 col-form-label" th:text="#{label.course}">Course</label>
           <div class="col-sm-10">
@@ -54,7 +54,7 @@
           <label for="teacher" class="col-sm-2 col-form-label" th:text="#{label.teacher}">Teacher</label>
           <div class="col-sm-10">
             <input type="text" class="form-control" id="teacher" name="teacher"
-                   th:value="|*{teacher.firstName} *{teacher.lastName}|" disabled>
+                   th:value="|*{course.teacher.firstName} *{course.teacher.lastName}|" disabled>
           </div>
         </div>
         

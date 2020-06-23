@@ -39,12 +39,10 @@ import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.service.classroom.ClassroomService;
 import org.vdragun.tms.core.application.service.course.CourseService;
-import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Course;
-import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.security.WithMockAuthenticatedUser;
 import org.vdragun.tms.security.dao.UserDao;
@@ -79,9 +77,6 @@ public class RegisterTimetableControllerTest {
     private TimetableService timetableServiceMock;
 
     @MockBean
-    private TeacherService teacherServiceMock;
-
-    @MockBean
     private CourseService courseServiceMock;
 
     @MockBean
@@ -112,18 +107,14 @@ public class RegisterTimetableControllerTest {
 
     @Test
     void shouldShowTimetableRegistrationForm() throws Exception {
-        List<Teacher> teachers = generator.generateTeachers(10);
         List<Course> courses = generator.generateCourses(10);
         List<Classroom> classrooms = generator.generateClassrooms(10);
-        when(teacherServiceMock.findAllTeachers()).thenReturn(teachers);
         when(courseServiceMock.findAllCourses()).thenReturn(courses);
         when(classroomServiceMock.findAllClassrooms()).thenReturn(classrooms);
 
         mockMvc.perform(get("/timetables/register").locale(Locale.US))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists(Attribute.TEACHERS, Attribute.COURSES, Attribute.CLASSROOMS,
-                        Attribute.TIMETABLE))
-                .andExpect(model().attribute(Attribute.TEACHERS, equalTo(teachers)))
+                .andExpect(model().attributeExists(Attribute.COURSES, Attribute.CLASSROOMS, Attribute.TIMETABLE))
                 .andExpect(model().attribute(Attribute.COURSES, equalTo(courses)))
                 .andExpect(model().attribute(Attribute.CLASSROOMS, equalTo(classrooms)))
                 .andExpect(model().attribute(Attribute.TIMETABLE, samePropertyValuesAs(new CreateTimetableData())))
@@ -158,8 +149,7 @@ public class RegisterTimetableControllerTest {
                 startTime,
                 duration,
                 courseId,
-                classroomId,
-                teacherId);
+                classroomId);
         verify(timetableServiceMock, times(1)).registerNewTimetable(captor.capture());
         assertThat(captor.getValue(), samePropertyValuesAs(expected));
     }
@@ -181,10 +171,13 @@ public class RegisterTimetableControllerTest {
                 .param("classroomId", invalidClassroomId.toString())
                 .param("teacherId", invalidTeacherId.toString()))
                 .andExpect(status().isOk())
-                .andExpect(model().errorCount(5))
-                .andExpect(model().attributeHasFieldErrors("timetable", "startTime", "duration",
+                .andExpect(model().errorCount(4))
+                .andExpect(model().attributeHasFieldErrors(
+                        "timetable",
+                        "startTime",
+                        "duration",
                         "courseId",
-                        "classroomId", "teacherId"))
+                        "classroomId"))
                 .andExpect(model().attribute(Attribute.VALIDATED, equalTo(true)))
                 .andExpect(view().name(View.TIMETABLE_REG_FORM));
 

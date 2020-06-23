@@ -84,8 +84,8 @@ public class TimetableServiceImplTest {
         when(classroomDaoMock.findById(any(Integer.class))).thenReturn(Optional.empty());
         when(courseDaoMock.findById(eq(COURSE_ID))).thenReturn(Optional.of(provideCourse()));
         when(teacherDaoMock.findById(eq(TEACHER_ID))).thenReturn(Optional.of(provideTeacher()));
-        CreateTimetableData data = new CreateTimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID, CLASSROOM_ID,
-                TEACHER_ID);
+        CreateTimetableData data = new CreateTimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID,
+                CLASSROOM_ID);
 
         assertThrows(ResourceNotFoundException.class, () -> service.registerNewTimetable(data));
         
@@ -97,8 +97,8 @@ public class TimetableServiceImplTest {
         when(classroomDaoMock.findById(eq(CLASSROOM_ID))).thenReturn(Optional.of(provideClassroom()));
         when(courseDaoMock.findById(any(Integer.class))).thenReturn(Optional.empty());
         when(teacherDaoMock.findById(eq(TEACHER_ID))).thenReturn(Optional.of(provideTeacher()));
-        CreateTimetableData data = new CreateTimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID, CLASSROOM_ID,
-                TEACHER_ID);
+        CreateTimetableData data = new CreateTimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID,
+                CLASSROOM_ID);
 
         assertThrows(ResourceNotFoundException.class, () -> service.registerNewTimetable(data));
 
@@ -110,8 +110,8 @@ public class TimetableServiceImplTest {
         when(classroomDaoMock.findById(eq(CLASSROOM_ID))).thenReturn(Optional.of(provideClassroom()));
         when(courseDaoMock.findById(eq(COURSE_ID))).thenReturn(Optional.of(provideCourse()));
         when(teacherDaoMock.findById(eq(TEACHER_ID))).thenReturn(Optional.of(provideTeacher()));
-        CreateTimetableData data = new CreateTimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID, CLASSROOM_ID,
-                TEACHER_ID);
+        CreateTimetableData data = new CreateTimetableData(MARCH_THIRTEEN_NINE_THIRTY, NINETY_MINUTES, COURSE_ID,
+                CLASSROOM_ID);
 
         service.registerNewTimetable(data);
 

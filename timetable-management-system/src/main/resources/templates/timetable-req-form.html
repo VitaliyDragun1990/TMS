@@ -72,19 +72,6 @@
             </select>
           </div>
         </div>
-        
-        <!-- Teacher -->           
-        <div class="form-group row">
-          <label for="teacherId" class="col-sm-2 col-form-label" th:text="#{label.teacher}">Teacher</label>
-          <div class="col-sm-10">
-            <select class="form-control w-50" th:field=*{teacherId}>
-              <option th:each="teacher : ${teachers}" th:value="${teacher.id}"
-                      th:text="|${teacher.firstName} ${teacher.lastName}|">
-                John Smith
-              </option>
-            </select>
-          </div>
-        </div>
     
         <!-- Submit -->       
        <button type="submit" class="btn btn-info" th:text="#{label.submit}">Submit</button>

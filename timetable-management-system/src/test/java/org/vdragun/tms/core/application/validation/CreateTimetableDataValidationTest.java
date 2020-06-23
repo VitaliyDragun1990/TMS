@@ -23,7 +23,6 @@ public class CreateTimetableDataValidationTest extends AbstractValidationTest {
     private static final LocalDateTime VALID_START_TIME = LocalDateTime.now().withHour(9).plusDays(5);
     private static final Integer VALID_DURATION = 60;
     private static final Integer VALID_COURSE_ID = 1;
-    private static final Integer VALID_TEACHER_ID = 2;
     private static final Integer VALID_CLASSROOM_ID = 3;
 
     @Autowired
@@ -40,8 +39,7 @@ public class CreateTimetableDataValidationTest extends AbstractValidationTest {
                 VALID_START_TIME,
                 VALID_DURATION,
                 VALID_COURSE_ID,
-                VALID_CLASSROOM_ID,
-                VALID_TEACHER_ID);
+                VALID_CLASSROOM_ID);
 
         DataBinder dataBinder = createDataBinderFor(data);
         dataBinder.validate();
@@ -56,8 +54,7 @@ public class CreateTimetableDataValidationTest extends AbstractValidationTest {
                 null,
                 VALID_DURATION,
                 VALID_COURSE_ID,
-                VALID_CLASSROOM_ID,
-                VALID_TEACHER_ID);
+                VALID_CLASSROOM_ID);
 
         DataBinder dataBinder = createDataBinderFor(data);
         dataBinder.validate();
@@ -73,8 +70,7 @@ public class CreateTimetableDataValidationTest extends AbstractValidationTest {
                 VALID_START_TIME,
                 null,
                 VALID_COURSE_ID,
-                VALID_CLASSROOM_ID,
-                VALID_TEACHER_ID);
+                VALID_CLASSROOM_ID);
 
         DataBinder dataBinder = createDataBinderFor(data);
         dataBinder.validate();
@@ -90,8 +86,7 @@ public class CreateTimetableDataValidationTest extends AbstractValidationTest {
                 VALID_START_TIME,
                 VALID_DURATION,
                 null,
-                VALID_CLASSROOM_ID,
-                VALID_TEACHER_ID);
+                VALID_CLASSROOM_ID);
 
         DataBinder dataBinder = createDataBinderFor(data);
         dataBinder.validate();
@@ -107,24 +102,6 @@ public class CreateTimetableDataValidationTest extends AbstractValidationTest {
                 VALID_START_TIME,
                 VALID_DURATION,
                 VALID_COURSE_ID,
-                null,
-                VALID_TEACHER_ID);
-
-        DataBinder dataBinder = createDataBinderFor(data);
-        dataBinder.validate();
-
-        BindingResult result = dataBinder.getBindingResult();
-        assertThat(result.getAllErrors().size(), equalTo(1));
-        assertFieldErrors(result, "classroomId", "NotNull");
-    }
-
-    @Test
-    void shouldRaiseValidationErrorIfTeacherIdIsNotPresent() {
-        CreateTimetableData data = new CreateTimetableData(
-                VALID_START_TIME,
-                VALID_DURATION,
-                VALID_COURSE_ID,
-                VALID_CLASSROOM_ID,
                 null);
 
         DataBinder dataBinder = createDataBinderFor(data);
@@ -132,7 +109,7 @@ public class CreateTimetableDataValidationTest extends AbstractValidationTest {
 
         BindingResult result = dataBinder.getBindingResult();
         assertThat(result.getAllErrors().size(), equalTo(1));
-        assertFieldErrors(result, "teacherId", "NotNull");
+        assertFieldErrors(result, "classroomId", "NotNull");
     }
 
     @ParameterizedTest
@@ -145,8 +122,7 @@ public class CreateTimetableDataValidationTest extends AbstractValidationTest {
                 VALID_START_TIME,
                 invalidDurationValue,
                 VALID_COURSE_ID,
-                VALID_CLASSROOM_ID,
-                VALID_TEACHER_ID);
+                VALID_CLASSROOM_ID);
 
         DataBinder dataBinder = createDataBinderFor(data);
         dataBinder.validate();
@@ -162,17 +138,15 @@ public class CreateTimetableDataValidationTest extends AbstractValidationTest {
                 VALID_START_TIME,
                 VALID_DURATION,
                 -1,
-                0,
-                -10);
+                0);
 
         DataBinder dataBinder = createDataBinderFor(data);
         dataBinder.validate();
 
         BindingResult result = dataBinder.getBindingResult();
-        assertThat(result.getAllErrors().size(), equalTo(3));
+        assertThat(result.getAllErrors().size(), equalTo(2));
         assertFieldErrors(result, "courseId", "Positive");
         assertFieldErrors(result, "classroomId", "Positive");
-        assertFieldErrors(result, "teacherId", "Positive");
     }
 
     @Test
@@ -183,8 +157,7 @@ public class CreateTimetableDataValidationTest extends AbstractValidationTest {
                 pastTime,
                 VALID_DURATION,
                 VALID_COURSE_ID,
-                VALID_CLASSROOM_ID,
-                VALID_TEACHER_ID);
+                VALID_CLASSROOM_ID);
 
         DataBinder dataBinder = createDataBinderFor(data);
         dataBinder.validate();

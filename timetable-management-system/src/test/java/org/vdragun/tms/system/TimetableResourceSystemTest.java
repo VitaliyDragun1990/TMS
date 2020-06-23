@@ -117,8 +117,7 @@ public class TimetableResourceSystemTest {
                 REGISTER_TIMETABLE_START_TIME,
                 DURATION_SIXTY,
                 COURSE_ID,
-                CLASSROOM_ID_ONE,
-                TEACHER_ID);
+                CLASSROOM_ID_ONE);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         headers.add(AUTHORIZATION, BEARER + authToken);
@@ -215,11 +214,10 @@ public class TimetableResourceSystemTest {
 
         headers.add(AUTHORIZATION, BEARER + authToken);
         HttpEntity<?> request = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate
-                .exchange(
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
-                        HttpMethod.GET,
-                        request,
+                HttpMethod.GET,
+                request,
                 String.class,
                 TEACHER_ID);
 
