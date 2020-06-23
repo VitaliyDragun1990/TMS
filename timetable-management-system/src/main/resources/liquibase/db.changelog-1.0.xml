@@ -197,9 +197,6 @@
             <column name="course_id" type="integer">
                 <constraints nullable="false" />
             </column>
-            <column name="teacher_id" type="integer">
-                <constraints nullable="false" />
-            </column>
         </createTable>
 
         <addForeignKeyConstraint
@@ -213,12 +210,6 @@
             constraintName="fk_timetable_course" onDelete="RESTRICT"
             referencedColumnNames="course_id"
             referencedTableName="courses" />
-
-        <addForeignKeyConstraint
-            baseColumnNames="teacher_id" baseTableName="timetables"
-            constraintName="fk_timetable_teacher" onDelete="RESTRICT"
-            referencedColumnNames="teacher_id"
-            referencedTableName="teachers" />
     </changeSet>
 
     <changeSet id="add_students_sequence"
