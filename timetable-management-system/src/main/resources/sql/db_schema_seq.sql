@@ -72,10 +72,8 @@ CREATE TABLE timetables (
     duration INTEGER,
     classroom_id INTEGER NOT NULL,
     course_id INTEGER NOT NULL,
-    teacher_id INTEGER NOT NULL,
     FOREIGN KEY (classroom_id) REFERENCES classrooms(classroom_id) ON DELETE RESTRICT,
-    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE RESTRICT,
-    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id) ON DELETE RESTRICT
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE RESTRICT
 );
 
 CREATE SEQUENCE students_student_id_seq;

@@ -43,10 +43,6 @@ public class Timetable {
     @JoinColumn(name = "classroom_id")
     private Classroom classroom;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "teacher_id")
-    private Teacher teacher;
-
     protected Timetable() {
     }
 
@@ -54,9 +50,8 @@ public class Timetable {
             LocalDateTime startTime,
             int durationInMinutes,
             Course course,
-            Classroom classroom,
-            Teacher teacher) {
-        this(null, startTime, durationInMinutes, course, classroom, teacher);
+            Classroom classroom) {
+        this(null, startTime, durationInMinutes, course, classroom);
     }
 
     public Timetable(
@@ -64,14 +59,12 @@ public class Timetable {
             LocalDateTime startTime,
             int durationInMinutes,
             Course course,
-            Classroom classroom,
-            Teacher teacher) {
+            Classroom classroom) {
         this.id = id;
         this.startTime = startTime;
         this.durationInMinutes = durationInMinutes;
         this.course = course;
         this.classroom = classroom;
-        this.teacher = teacher;
     }
 
     public Integer getId() {
@@ -108,14 +101,6 @@ public class Timetable {
 
     public void setClassroom(Classroom classroom) {
         this.classroom = classroom;
-    }
-
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
     }
 
     @Override

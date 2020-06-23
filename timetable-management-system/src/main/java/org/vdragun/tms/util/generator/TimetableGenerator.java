@@ -78,8 +78,7 @@ public class TimetableGenerator {
                         courseDateTime,
                         classDurationMinutes,
                         course,
-                        reservation.classroom(),
-                        course.getTeacher());
+                        reservation.classroom());
                 result.add(timetable);
             }
         }

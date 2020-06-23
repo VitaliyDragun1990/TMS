@@ -28,14 +28,14 @@ INSERT INTO student_courses (student_id, course_id) VALUES (1000, 1000); -- Art 
 INSERT INTO student_courses (student_id, course_id) VALUES (1001, 1001); -- History for Amanda
 
 -- Timetables
-INSERT INTO timetables (timetable_id, start_date_time, duration, classroom_id, course_id, teacher_id)
-    VALUES (1000, '2020-05-01 09:30:00', 60, 1, 1000, 1000); -- Art
-INSERT INTO timetables (timetable_id, start_date_time, duration, classroom_id, course_id, teacher_id)
-    VALUES (1001, '2020-05-05 09:30:00', 60, 1, 1000, 1000); -- Art
-INSERT INTO timetables (timetable_id, start_date_time, duration, classroom_id, course_id, teacher_id)
-    VALUES (1002, '2020-05-01 12:30:00', 60, 1, 1001, 1001); -- History
-INSERT INTO timetables (timetable_id, start_date_time, duration, classroom_id, course_id, teacher_id)
-    VALUES (1003, '2020-05-05 12:30:00', 60, 1, 1001, 1001); -- History
+INSERT INTO timetables (timetable_id, start_date_time, duration, classroom_id, course_id)
+    VALUES (1000, '2020-05-01 09:30:00', 60, 1, 1000); -- Art
+INSERT INTO timetables (timetable_id, start_date_time, duration, classroom_id, course_id)
+    VALUES (1001, '2020-05-05 09:30:00', 60, 1, 1000); -- Art
+INSERT INTO timetables (timetable_id, start_date_time, duration, classroom_id, course_id)
+    VALUES (1002, '2020-05-01 12:30:00', 60, 1, 1001); -- History
+INSERT INTO timetables (timetable_id, start_date_time, duration, classroom_id, course_id)
+    VALUES (1003, '2020-05-05 12:30:00', 60, 1, 1001); -- History
     
 -- Roles
 INSERT INTO roles(role_id, role_name) VALUES (1, 'ROLE_ADMIN'), (2, 'ROLE_STUDENT'), (3, 'ROLE_TEACHER');

@@ -60,25 +60,18 @@ public class CreateTimetableData {
             required = true)
     private Integer classroomId;
 
-    @NotNull
-    @Positive
-    @Schema(
-            description = "Unique identifier of the teacher assigned to the course",
-            minimum = "1",
-            example = "1",
-            required = true)
-    private Integer teacherId;
-
     public CreateTimetableData() {
     }
 
-    public CreateTimetableData(LocalDateTime startTime, Integer durationInMinutes, Integer courseId,
-            Integer classroomId, Integer teacherId) {
+    public CreateTimetableData(
+            LocalDateTime startTime,
+            Integer durationInMinutes,
+            Integer courseId,
+            Integer classroomId) {
         this.startTime = startTime;
         this.duration = durationInMinutes;
         this.courseId = courseId;
         this.classroomId = classroomId;
-        this.teacherId = teacherId;
     }
 
     public LocalDateTime getStartTime() {
@@ -113,18 +106,10 @@ public class CreateTimetableData {
         this.classroomId = classroomId;
     }
 
-    public Integer getTeacherId() {
-        return teacherId;
-    }
-
-    public void setTeacherId(Integer teacherId) {
-        this.teacherId = teacherId;
-    }
-
     @Override
     public String toString() {
         return "CreateTimetableData [startTime=" + startTime + ", durationInMinutes=" + duration + ", courseId="
-                + courseId + ", classroomId=" + classroomId + ", teacherId=" + teacherId + "]";
+                + courseId + ", classroomId=" + classroomId + "]";
     }
 
 }

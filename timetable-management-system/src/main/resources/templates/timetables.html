@@ -46,11 +46,11 @@
             <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'classroom.id')"></th:block>                      
           </th>
           <th scope="col">
-            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,timetables.number+1,'teacher.firstName','teacher.lastName')}|}"
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,timetables.number+1,'course.teacher.firstName','course.teacher.lastName')}|}"
                th:text="#{label.teacher}">
               Teacher
             </a>
-            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'teacher.firstName')"></th:block>            
+            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'course.teacher.firstName')"></th:block>            
           </th>
         </tr>
       </thead>
@@ -96,12 +96,12 @@
           <td>
             <!-- Show link if user has authority -->            
             <a th:if="${#authorization.url('GET','/teachers/*')}"
-               class="btn btn-link" href="#" th:href="@{/teachers/{teacherId}(teacherId=*{teacher.id})}"
-               th:text="|*{teacher.firstName} *{teacher.lastName}|">
+               class="btn btn-link" href="#" th:href="@{/teachers/{teacherId}(teacherId=*{course.teacher.id})}"
+               th:text="|*{course.teacher.firstName} *{course.teacher.lastName}|">
                Jack Smith
            </a>
            <!-- Otherwise show plain text -->
-           <span th:unless="${#authorization.url('GET','/teachers/*')}" th:text="|*{teacher.firstName} *{teacher.lastName}|">
+           <span th:unless="${#authorization.url('GET','/teachers/*')}" th:text="|*{course.teacher.firstName} *{course.teacher.lastName}|">
              Jack Smith
            </span>                       
           </td>

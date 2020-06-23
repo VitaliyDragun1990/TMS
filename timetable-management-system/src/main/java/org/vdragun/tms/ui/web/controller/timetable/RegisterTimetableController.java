@@ -15,12 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.vdragun.tms.core.application.service.classroom.ClassroomService;
 import org.vdragun.tms.core.application.service.course.CourseService;
-import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Course;
-import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
@@ -41,9 +39,6 @@ public class RegisterTimetableController extends AbstractController {
     private TimetableService timetableService;
 
     @Autowired
-    private TeacherService teacherService;
-
-    @Autowired
     private CourseService courseService;
 
     @Autowired
@@ -57,11 +52,6 @@ public class RegisterTimetableController extends AbstractController {
     @ModelAttribute(Attribute.COURSES)
     List<Course> allCourses() {
         return courseService.findAllCourses();
-    }
-
-    @ModelAttribute(Attribute.TEACHERS)
-    List<Teacher> allTeachers() {
-        return teacherService.findAllTeachers();
     }
 
     @GetMapping("/register")

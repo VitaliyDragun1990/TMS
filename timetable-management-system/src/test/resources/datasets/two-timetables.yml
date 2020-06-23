@@ -45,10 +45,8 @@ timetables:
     duration: 60
     classroom_id: 1
     course_id: 1
-    teacher_id: 1
   - timetable_id: 2
     start_date_time: "[now+1d 12:00]"
     duration: 60
     classroom_id: 1
     course_id: 2
-    teacher_id: 2

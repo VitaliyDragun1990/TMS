@@ -62,7 +62,6 @@ public class RegisterTimetableResourceTest {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final LocalDateTime TIMETABLE_START_TIME = LocalDateTime.now().plusDays(3).truncatedTo(MINUTES);
-    private static final int TEACHER_ID = 3;
     private static final int CLASSROOM_ID = 2;
     private static final int COURSE_ID = 1;
     private static final int DURATION = 60;
@@ -92,7 +91,7 @@ public class RegisterTimetableResourceTest {
     @Test
     void shouldRegisterNewTimetable() throws Exception {
         CreateTimetableData registerData =
-                new CreateTimetableData(TIMETABLE_START_TIME, DURATION, COURSE_ID, CLASSROOM_ID, TEACHER_ID);
+                new CreateTimetableData(TIMETABLE_START_TIME, DURATION, COURSE_ID, CLASSROOM_ID);
         Timetable expectedTimetable = generator.generateTimetable();
         when(timetableServiceMock.registerNewTimetable(any(CreateTimetableData.class))).thenReturn(expectedTimetable);
 
@@ -118,9 +117,8 @@ public class RegisterTimetableResourceTest {
         LocalDateTime startTimeInthePast = LocalDateTime.now().minusDays(3);
         int tooShortDuration = 20;
         int invalidCourseId = 0;
-        int negativeTeacherId = -1;
         CreateTimetableData invalidData =
-                new CreateTimetableData(startTimeInthePast, tooShortDuration, invalidCourseId, null, negativeTeacherId);
+                new CreateTimetableData(startTimeInthePast, tooShortDuration, invalidCourseId, null);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(invalidData), headers);
@@ -138,7 +136,6 @@ public class RegisterTimetableResourceTest {
         jsonVerifier.verifyValidationError(response.getBody(), "duration", "TimetableDuration");
         jsonVerifier.verifyValidationError(response.getBody(), "courseId", "Positive.courseId");
         jsonVerifier.verifyValidationError(response.getBody(), "classroomId", "NotNull.classroomId");
-        jsonVerifier.verifyValidationError(response.getBody(), "teacherId", "Positive.teacherId");
 
         verify(timetableServiceMock, never()).registerNewTimetable(any(CreateTimetableData.class));
     }
