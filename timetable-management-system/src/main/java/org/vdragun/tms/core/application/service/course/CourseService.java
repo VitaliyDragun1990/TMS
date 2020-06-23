@@ -2,6 +2,8 @@ package org.vdragun.tms.core.application.service.course;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.domain.Course;
 
@@ -36,6 +38,13 @@ public interface CourseService {
      * @return list of all available courses
      */
     List<Course> findAllCourses();
+
+    /**
+     * Finds courses according to provided pageable data
+     * 
+     * @return page with courses
+     */
+    Page<Course> findCourses(Pageable pageable);
 
     /**
      * Finds all courses belonging to category with provided identifier

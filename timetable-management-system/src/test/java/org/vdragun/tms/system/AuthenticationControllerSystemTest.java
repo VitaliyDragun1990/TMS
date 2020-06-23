@@ -35,7 +35,7 @@ import org.vdragun.tms.security.model.User;
 import org.vdragun.tms.security.web.service.SignupForm;
 import org.vdragun.tms.security.web.service.WebAuthenticationService;
 import org.vdragun.tms.util.Constants.Attribute;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 import org.vdragun.tms.util.Constants.Role;
 
 @SpringBootTest(
@@ -74,7 +74,7 @@ public class AuthenticationControllerSystemTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.SIGN_UP_FORM))
                 .andExpect(model().attribute(Attribute.SIGN_UP_FORM, samePropertyValuesAs(new SignupForm())))
-                .andExpect(view().name(Page.SIGN_UP_FORM));
+                .andExpect(view().name(View.SIGN_UP_FORM));
     }
 
     @Test
@@ -129,7 +129,7 @@ public class AuthenticationControllerSystemTest {
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(1))
                 .andExpect(model().attributeHasFieldErrors(Attribute.SIGN_UP_FORM, "username"))
-                .andExpect(view().name(Page.SIGN_UP_FORM));
+                .andExpect(view().name(View.SIGN_UP_FORM));
 
         verify(authService, never()).processSignUp(any(SignupForm.class));
     }
@@ -157,7 +157,7 @@ public class AuthenticationControllerSystemTest {
                 .andExpect(status().isOk())
                 .andExpect(model().errorCount(1))
                 .andExpect(model().attributeHasFieldErrors(Attribute.SIGN_UP_FORM, "email"))
-                .andExpect(view().name(Page.SIGN_UP_FORM));
+                .andExpect(view().name(View.SIGN_UP_FORM));
 
         verify(authService, never()).processSignUp(any(SignupForm.class));
     }

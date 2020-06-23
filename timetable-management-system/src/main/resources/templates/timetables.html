@@ -17,11 +17,41 @@
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>
-          <th scope="col" th:text="#{label.date}">Date</th>
-          <th scope="col" th:text="#{label.duration}">Duration (mins)</th>
-          <th scope="col" th:text="#{label.course}">Course</th>
-          <th scope="col" th:text="#{label.classroom}">Classroom</th>
-          <th scope="col" th:text="#{label.teacher}">Teacher</th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,timetables.number+1,'startTime')}|}"
+               th:text="#{label.date}">
+              Date
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'startTime')"></th:block>
+          </th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,timetables.number+1,'durationInMinutes')}|}"
+               th:text="#{label.duration}">
+              Duration (mins)
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'durationInMinutes')"></th:block>                  
+          </th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,timetables.number+1,'course.name')}|}"
+               th:text="#{label.course}">
+              Course
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'course.name')"></th:block>                 
+          </th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,timetables.number+1,'classroom.id')}|}"
+               th:text="#{label.classroom}">
+              Classroom
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'classroom.id')"></th:block>                      
+          </th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,timetables.number+1,'teacher.firstName','teacher.lastName')}|}"
+               th:text="#{label.teacher}">
+              Teacher
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'teacher.firstName')"></th:block>            
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -78,6 +108,10 @@
         </tr>
       </tbody>
     </table>
+    
+    <!-- Pagination  -->
+    <div th:replace="fragments/pagination :: pagination (${timetables},${requestUri})">
+    </div>    
     
   </div>
 </body>

@@ -3,6 +3,8 @@ package org.vdragun.tms.dao;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.vdragun.tms.core.domain.Course;
 
 /**
@@ -34,6 +36,11 @@ public interface CourseDao {
      * Finds all available courses
      */
     List<Course> findAll();
+
+    /**
+     * Finds all available courses for given pageable data
+     */
+    Page<Course> findAll(Pageable pageable);
 
     /**
      * Finds all courses belonging to category with specified identifier

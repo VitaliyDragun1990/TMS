@@ -22,7 +22,7 @@ import org.vdragun.tms.security.validation.SignupFormPasswordsMatchValidator;
 import org.vdragun.tms.security.web.service.SignupForm;
 import org.vdragun.tms.security.web.service.WebAuthenticationService;
 import org.vdragun.tms.util.Constants.Attribute;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * Processes student registration requests
@@ -69,7 +69,7 @@ public class AuthenticationController {
 
         model.addAttribute(Attribute.SIGN_UP_FORM, new SignupForm());
 
-        return Page.SIGN_UP_FORM;
+        return View.SIGN_UP_FORM;
     }
 
     @PostMapping("/signup")
@@ -84,7 +84,7 @@ public class AuthenticationController {
 
             model.addAttribute(Attribute.VALIDATED, true);
 
-            return Page.SIGN_UP_FORM;
+            return View.SIGN_UP_FORM;
         }
 
         authService.processSignUp(form);

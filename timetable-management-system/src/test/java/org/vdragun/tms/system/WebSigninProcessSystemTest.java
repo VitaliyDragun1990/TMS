@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
 import org.vdragun.tms.security.WithMockAuthenticatedUser;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
@@ -55,7 +55,7 @@ public class WebSigninProcessSystemTest {
     void shouldShowSignInForm() throws Exception {
         mockMvc.perform(get("/auth/signin").locale(Locale.US))
                 .andExpect(status().isOk())
-                .andExpect(view().name(Page.SIGN_IN_FORM));
+                .andExpect(view().name(View.SIGN_IN_FORM));
     }
 
     @Test

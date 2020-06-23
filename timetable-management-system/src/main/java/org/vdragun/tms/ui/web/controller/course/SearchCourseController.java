@@ -1,8 +1,8 @@
 package org.vdragun.tms.ui.web.controller.course;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +13,7 @@ import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * Processes course-related search requests
@@ -29,14 +29,15 @@ public class SearchCourseController extends AbstractController {
     private CourseService courseService;
 
     @GetMapping
-    public String showAllCourses(Model model) {
-        log.trace("Received GET request to show all courses, URI={}", getRequestUri());
-        List<Course> result = courseService.findAllCourses();
+    public String showAllCourses(Model model, Pageable pageable) {
+        log.trace("Received GET request to show all courses, page number: {}, URI={}",
+                pageable.getPageNumber(), getRequestUri());
+        Page<Course> page = courseService.findCourses(pageable);
 
-        model.addAttribute(Attribute.COURSES, result);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_COURSES, result.size()));
+        model.addAttribute(Attribute.COURSES, page);
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_COURSES, page.getTotalElements()));
 
-        return Page.COURSES;
+        return View.COURSES;
     }
 
     @GetMapping("/{courseId}")
@@ -44,7 +45,7 @@ public class SearchCourseController extends AbstractController {
         log.trace("Received GET request to show course data for course with id={}, URI={}", courseId, getRequestUri());
         model.addAttribute(Attribute.COURSE, courseService.findCourseById(courseId));
 
-        return Page.COURSE_INFO;
+        return View.COURSE_INFO;
     }
 
 }

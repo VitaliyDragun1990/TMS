@@ -5,8 +5,11 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.vdragun.tms.core.application.exception.InvalidPageNumberException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.core.domain.Course;
@@ -74,6 +77,18 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Course> findCourses(Pageable pageable) {
+        Page<Course> page = courseDao.findAll(pageable);
+        assertValidPageNumber(page);
+
+        LOG.debug("Found {} courses, page number: {}, page size: {}",
+                page.getNumberOfElements(), pageable.getPageNumber(), pageable.getPageSize());
+
+        return page;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Course> findCoursesByCategory(Integer categoryId) {
         LOG.debug("Retrieving courses belonging to category with id={}", categoryId);
 
@@ -81,6 +96,14 @@ public class CourseServiceImpl implements CourseService {
 
         LOG.debug("Found {} courses belonging to category with id={}", result.size(), categoryId);
         return result;
+    }
+
+    private void assertValidPageNumber(Page<Course> page) {
+        if (page.getNumber() >= page.getTotalPages()) {
+            throw new InvalidPageNumberException(
+                    Course.class,
+                    page.getNumber() + 1, page.getSize(), page.getTotalPages() - 1);
+        }
     }
 
     private Teacher getTeacher(Integer teacherId) {

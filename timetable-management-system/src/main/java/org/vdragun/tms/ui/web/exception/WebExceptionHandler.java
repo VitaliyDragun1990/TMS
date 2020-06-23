@@ -16,7 +16,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 /**
@@ -42,10 +42,12 @@ public class WebExceptionHandler {
             ResourceNotFoundException exception,
             Model model,
             HttpServletRequest request) {
-        LOG.warn("Handling resource not found exception", exception);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+        String requestUri = getRequestUri(request);
+        LOG.warn("Handling resource not found exception, url:[{}]", requestUri, exception);
 
-        return Page.NOT_FOUND;
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, requestUri));
+
+        return View.NOT_FOUND;
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -54,7 +56,7 @@ public class WebExceptionHandler {
         LOG.warn("Handling handler not found exception", exception);
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, exception.getRequestURL()));
 
-        return Page.NOT_FOUND;
+        return View.NOT_FOUND;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -63,16 +65,17 @@ public class WebExceptionHandler {
             MethodArgumentTypeMismatchException exception,
             Model model,
             HttpServletRequest request) {
-        LOG.warn("Handling method argument type mismatch exception", exception.getRootCause());
+        String requestUri = getRequestUri(request);
+        LOG.warn("Handling method argument type mismatch exception, url:[{}]", request, exception.getRootCause());
 
         String errMsg = "";
         if (exception.getRootCause() instanceof NumberFormatException) {
             errMsg = extractMessage((Exception) exception.getRootCause());
         }
         model.addAttribute(Attribute.ERROR, errMsg);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, requestUri));
 
-        return Page.BAD_REQUEST;
+        return View.BAD_REQUEST;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -81,28 +84,29 @@ public class WebExceptionHandler {
             MissingServletRequestParameterException exception,
             Model model,
             HttpServletRequest request) {
-        LOG.warn("Handling missing request parameter exception", exception);
+        String requestUri = getRequestUri(request);
+        LOG.warn("Handling missing request parameter exception, url:[{}]", requestUri, exception);
 
         String errMsg = getMessage(Message.REQUIRED_REQUEST_PARAMETER, exception.getParameterName());
         model.addAttribute(Attribute.ERROR, errMsg);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, requestUri));
 
-        return Page.BAD_REQUEST;
+        return View.BAD_REQUEST;
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({ Exception.class })
     public String handleException(Exception exception, Model model, HttpServletRequest request) {
-        LOG.error("Handling application exception", exception);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+        String requestUri = getRequestUri(request);
+        LOG.error("Handling application exception, url:[{}]", requestUri, exception);
 
-        return Page.SERVER_ERROR;
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, requestUri));
+
+        return View.SERVER_ERROR;
     }
 
-    private String getRequestUrl(HttpServletRequest req) {
-        String requestUri = req.getRequestURI();
-        String queryString = req.getQueryString();
-        return requestUri + (queryString != null ? "?" + queryString : "");
+    private String getRequestUri(HttpServletRequest request) {
+        return (String) request.getAttribute(Attribute.REQUEST_URI);
     }
 
     private String getMessage(String code, Object... args) {

@@ -26,7 +26,7 @@ import org.vdragun.tms.security.WithMockAuthenticatedUser;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,
@@ -81,7 +81,7 @@ public class WebAuthorizationSystemTest {
         mockMvc.perform(get("/timetables/register").locale(Locale.US))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name(Page.TIMETABLE_REG_FORM));
+                .andExpect(view().name(View.TIMETABLE_REG_FORM));
     }
 
 }

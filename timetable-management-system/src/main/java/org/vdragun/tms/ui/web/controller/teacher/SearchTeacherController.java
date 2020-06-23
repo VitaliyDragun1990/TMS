@@ -1,8 +1,8 @@
 package org.vdragun.tms.ui.web.controller.teacher;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +13,7 @@ import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * Processes teacher-related search requests
@@ -29,14 +29,15 @@ public class SearchTeacherController extends AbstractController {
     private TeacherService teacherService;
 
     @GetMapping
-    public String showAllTeachers(Model model) {
-        log.trace("Received GET request to show all teachers, URI={}", getRequestUri());
-        List<Teacher> result = teacherService.findAllTeachers();
+    public String showAllTeachers(Model model, Pageable pageable) {
+        log.trace("Received GET request to show all teachers, page number: {}, URI={}",
+                pageable.getPageNumber(), getRequestUri());
+        Page<Teacher> page = teacherService.findTeachers(pageable);
 
-        model.addAttribute(Attribute.TEACHERS, result);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_TEACHERS, result.size()));
+        model.addAttribute(Attribute.TEACHERS, page);
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_TEACHERS, page.getTotalElements()));
 
-        return Page.TEACHERS;
+        return View.TEACHERS;
     }
 
     @GetMapping("/{teacherId}")
@@ -44,6 +45,6 @@ public class SearchTeacherController extends AbstractController {
         log.trace("Received GET request to show data for teacher with id={}, URI={}", teacherId, getRequestUri());
         model.addAttribute(Attribute.TEACHER, teacherService.findTeacherById(teacherId));
 
-        return Page.TEACHER_INFO;
+        return View.TEACHER_INFO;
     }
 }

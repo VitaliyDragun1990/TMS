@@ -5,6 +5,8 @@ import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.vdragun.tms.core.domain.Timetable;
 
 /**
@@ -43,10 +45,21 @@ public interface TimetableDao {
     List<Timetable> findAll();
 
     /**
+     * Finds all available timetables for given pageable data
+     */
+    Page<Timetable> findAll(Pageable pageable);
+
+    /**
      * Finds all timetables available for a student with specified identifier for
      * specified date.
      */
     List<Timetable> findDailyForStudent(Integer studentId, LocalDate date);
+
+    /**
+     * Finds all timetables available for a student with specified identifier for
+     * specified date and pageable data.
+     */
+    Page<Timetable> findDailyForStudent(Integer studentId, LocalDate date, Pageable pageable);
 
     /**
      * Finds all timetables available for a teacher with specified identifier for
@@ -55,16 +68,34 @@ public interface TimetableDao {
     List<Timetable> findDailyForTeacher(Integer teacherId, LocalDate date);
 
     /**
+     * Finds all timetables available for a teacher with specified identifier for
+     * specified date and pageable data.
+     */
+    Page<Timetable> findDailyForTeacher(Integer teacherId, LocalDate date, Pageable pageable);
+
+    /**
      * Finds all timetables available for a student with specified identifier for
      * specified month.
      */
     List<Timetable> findMonthlyForStudent(Integer studentId, Month month);
 
     /**
+     * Finds all timetables available for a student with specified identifier for
+     * specified month and pageable data.
+     */
+    Page<Timetable> findMonthlyForStudent(Integer studentId, Month month, Pageable pageable);
+
+    /**
      * Finds all timetables available for a teacher with specified identifier for
      * specified month.
      */
     List<Timetable> findMonthlyForTeacher(Integer teacherId, Month month);
+
+    /**
+     * Finds all timetables available for a teacher with specified identifier for
+     * specified month and pageable data.
+     */
+    Page<Timetable> findMonthlyForTeacher(Integer teacherId, Month month, Pageable pageable);
 
     /**
      * Deletes timetable with given identifier, if any

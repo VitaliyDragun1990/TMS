@@ -25,11 +25,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.vdragun.tms.config.SecurityConfig;
+import org.vdragun.tms.config.ThymeleafConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
+import org.vdragun.tms.core.application.exception.InvalidPageNumberException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.application.service.teacher.TeacherService;
@@ -43,7 +48,7 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * @author Vitaliy Dragun
@@ -53,12 +58,17 @@ import org.vdragun.tms.util.Constants.Page;
 @Import({
         WebConfig.class,
         WebMvcConfig.class,
+        ThymeleafConfig.class,
         SecurityConfig.class,
         MessageProvider.class })
 @WithMockAuthenticatedUser
 @TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Search Timetable Controller")
 public class SearchTimetableControllerTest {
+
+    private static final int MAX_VALID_PAGE_NUMBER = 5;
+    private static final int PAGE_SIZE = 20;
+    private static final int INVALID_PAGE_NUMBER = 10;
 
     @Autowired
     private MockMvc mockMvc;
@@ -102,15 +112,29 @@ public class SearchTimetableControllerTest {
     @Test
     void shouldShowAllTimetablesPage() throws Exception {
         List<Timetable> timetables = generator.generateTimetables(10);
-        when(timetableServiceMock.findAllTimetables()).thenReturn(timetables);
+        Page<Timetable> page = new PageImpl<>(timetables);
+        when(timetableServiceMock.findTimetables(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/timetables").locale(Locale.US))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TIMETABLES, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(timetables)))
+                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(page)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
-                        equalTo(getMessage(Message.ALL_TIMETABLES, timetables.size()))))
-                .andExpect(view().name(Page.TIMETABLES));
+                        equalTo(getMessage(Message.ALL_TIMETABLES, page.getTotalElements()))))
+                .andExpect(view().name(View.TIMETABLES));
+    }
+
+    @Test
+    void shouldShowNotFoundPageIfPageNumberIsInvalid() throws Exception {
+        when(timetableServiceMock.findTimetables(any(Pageable.class)))
+                .thenThrow(invalidPageNumberException());
+
+        mockMvc
+                .perform(get("/timetables?page={pageNumber}", INVALID_PAGE_NUMBER).locale(Locale.US))
+                .andExpect(status().isNotFound())
+                .andExpect(model().attribute(Attribute.MESSAGE,
+                        equalTo(getMessage(Message.REQUESTED_RESOURCE, "/timetables?page=" + INVALID_PAGE_NUMBER))))
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -122,7 +146,7 @@ public class SearchTimetableControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TIMETABLE))
                 .andExpect(model().attribute(Attribute.TIMETABLE, equalTo(timetable)))
-                .andExpect(view().name(Page.TIMETABLE_INFO));
+                .andExpect(view().name(View.TIMETABLE_INFO));
     }
 
     @Test
@@ -137,7 +161,7 @@ public class SearchTimetableControllerTest {
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/timetables/" + timetableId))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -150,7 +174,7 @@ public class SearchTimetableControllerTest {
                 .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", invalidTimetableId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/timetables/" + invalidTimetableId))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -158,31 +182,61 @@ public class SearchTimetableControllerTest {
         Teacher teacher = generator.generateTeacher();
         List<Timetable> timetables = generator.generateTimetables(10);
         LocalDate targetDate = LocalDate.now();
+        Page<Timetable> page = new PageImpl<>(timetables);
 
         when(teacherServiceMock.findTeacherById(teacher.getId())).thenReturn(teacher);
-        when(timetableServiceMock.findDailyTimetablesForTeacher(teacher.getId(), targetDate)).thenReturn(timetables);
+        when(timetableServiceMock.findDailyTimetablesForTeacher(
+                eq(teacher.getId()),
+                eq(targetDate),
+                any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/timetables/teacher/{teacherId}/day", teacher.getId()).locale(Locale.US)
                 .param("targetDate", formatDate(targetDate)))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TIMETABLES, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(timetables)))
+                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(page)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(
                                 Message.TIMETABLES_FOR_TEACHER,
-                                timetables.size(),
+                                page.getTotalElements(),
                                 teacher.getFirstName(),
                                 teacher.getLastName(),
                                 formatDate(targetDate)))))
-                .andExpect(view().name(Page.TIMETABLES));
+                .andExpect(view().name(View.TIMETABLES));
+    }
+
+    @Test
+    void shouldShowNotFoundPageIfPageNumberIsInvalidWhenSearchDailyTimetablesForTeacher() throws Exception {
+        LocalDate targetDate = LocalDate.now();
+        Integer teacherId = 1;
+        when(timetableServiceMock.findDailyTimetablesForTeacher(
+                any(Integer.class),
+                any(LocalDate.class),
+                any(Pageable.class)))
+                        .thenThrow(invalidPageNumberException());
+
+        mockMvc.perform(get("/timetables/teacher/{teacherId}/day?page={pageNum}", teacherId, INVALID_PAGE_NUMBER)
+                .locale(Locale.US)
+                .param("targetDate", formatDate(targetDate)))
+                .andExpect(status().isNotFound())
+                .andExpect(model().attribute(Attribute.MESSAGE,
+                        equalTo(getMessage(
+                                Message.REQUESTED_RESOURCE,
+                                format("/timetables/teacher/%d/day?page=%d", teacherId, INVALID_PAGE_NUMBER)))))
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
     void shouldShowNotFoundPageWhenSearchDailyTimetablesForNonExistentTeacher() throws Exception {
         Integer nonExistentTeacherId = 1;
-        when(timetableServiceMock.findDailyTimetablesForTeacher(eq(nonExistentTeacherId), any(LocalDate.class)))
-                .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found",
-                        nonExistentTeacherId));
+        when(timetableServiceMock.findDailyTimetablesForTeacher(
+                eq(nonExistentTeacherId),
+                any(LocalDate.class),
+                any(Pageable.class)))
+                        .thenThrow(new ResourceNotFoundException(
+                                Teacher.class,
+                                "Teacher with id=%d not found",
+                                nonExistentTeacherId));
 
         mockMvc.perform(get("/timetables/teacher/{teacherId}/day", nonExistentTeacherId).locale(Locale.US)
                 .param("targetDate", formatDate(LocalDate.now())))
@@ -192,7 +246,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/teacher/" + nonExistentTeacherId + "/day"))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -208,7 +262,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/teacher/" + invalidTeacherId + "/day"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -224,7 +278,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/teacher/" + teacherId + "/day"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -232,31 +286,62 @@ public class SearchTimetableControllerTest {
         Student student = generator.generateStudent();
         List<Timetable> timetables = generator.generateTimetables(10);
         LocalDate targetDate = LocalDate.now();
+        Page<Timetable> page = new PageImpl<>(timetables);
 
         when(studentServiceMock.findStudentById(student.getId())).thenReturn(student);
-        when(timetableServiceMock.findDailyTimetablesForStudent(student.getId(), targetDate)).thenReturn(timetables);
+        when(timetableServiceMock.findDailyTimetablesForStudent(
+                eq(student.getId()),
+                eq(targetDate),
+                any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/timetables/student/{studentId}/day", student.getId()).locale(Locale.US)
                 .param("targetDate", formatDate(targetDate)))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TIMETABLES, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(timetables)))
+                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(page)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(
                                 Message.TIMETABLES_FOR_STUDENT,
-                                timetables.size(),
+                                page.getTotalElements(),
                                 student.getFirstName(),
                                 student.getLastName(),
                                 formatDate(targetDate)))))
-                .andExpect(view().name(Page.TIMETABLES));
+                .andExpect(view().name(View.TIMETABLES));
+    }
+
+    @Test
+    void shouldShowNotFoundPageIfPageNumberIsInvalidWhenSearchDailyTimetablesForStudent() throws Exception {
+        LocalDate targetDate = LocalDate.now();
+        Integer studentId = 1;
+        when(timetableServiceMock
+                .findDailyTimetablesForStudent(
+                any(Integer.class),
+                any(LocalDate.class),
+                any(Pageable.class)))
+                        .thenThrow(invalidPageNumberException());
+
+        mockMvc.perform(get("/timetables/student/{studentId}/day?page={pageNum}", studentId, INVALID_PAGE_NUMBER)
+                .locale(Locale.US)
+                .param("targetDate", formatDate(targetDate)))
+                .andExpect(status().isNotFound())
+                .andExpect(model().attribute(Attribute.MESSAGE,
+                        equalTo(getMessage(
+                                Message.REQUESTED_RESOURCE,
+                                format("/timetables/student/%d/day?page=%d", studentId, INVALID_PAGE_NUMBER)))))
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
     void shouldShowNotFoundPageWhenSearchDailyTimetablesForNonExistentStudent() throws Exception {
         Integer nonExistentStudentId = 1;
-        when(timetableServiceMock.findDailyTimetablesForStudent(eq(nonExistentStudentId), any(LocalDate.class)))
-                .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found",
-                        nonExistentStudentId));
+        when(timetableServiceMock.findDailyTimetablesForStudent(
+                eq(nonExistentStudentId),
+                any(LocalDate.class),
+                any(Pageable.class)))
+                        .thenThrow(new ResourceNotFoundException(
+                                Student.class,
+                                "Student with id=%d not found",
+                                nonExistentStudentId));
 
         mockMvc.perform(get("/timetables/student/{studentId}/day", nonExistentStudentId).locale(Locale.US)
                 .param("targetDate", formatDate(LocalDate.now())))
@@ -266,7 +351,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/student/" + nonExistentStudentId + "/day"))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -282,7 +367,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/student/" + invalidStudentId + "/day"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -298,7 +383,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/student/" + studentId + "/day"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -306,31 +391,61 @@ public class SearchTimetableControllerTest {
         Teacher teacher = generator.generateTeacher();
         List<Timetable> timetables = generator.generateTimetables(10);
         Month targetDate = LocalDate.now().getMonth();
+        Page<Timetable> page = new PageImpl<>(timetables);
 
         when(teacherServiceMock.findTeacherById(teacher.getId())).thenReturn(teacher);
-        when(timetableServiceMock.findMonthlyTimetablesForTeacher(teacher.getId(), targetDate)).thenReturn(timetables);
+        when(timetableServiceMock.findMonthlyTimetablesForTeacher(
+                eq(teacher.getId()),
+                eq(targetDate),
+                any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/timetables/teacher/{teacherId}/month", teacher.getId()).locale(Locale.US)
                 .param("targetDate", targetDate.toString()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TIMETABLES, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(timetables)))
+                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(page)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(
                                 Message.TIMETABLES_FOR_TEACHER,
-                                timetables.size(),
+                                page.getTotalElements(),
                                 teacher.getFirstName(),
                                 teacher.getLastName(),
                                 formatMonth(targetDate)))))
-                .andExpect(view().name(Page.TIMETABLES));
+                .andExpect(view().name(View.TIMETABLES));
+    }
+
+    @Test
+    void shouldShowNotFoundPageIfPageNumberIsInvalidWhenSearchMonthlyTimetablesForTeacher() throws Exception {
+        Month targetDate = LocalDate.now().getMonth();
+        Integer teacherId = 1;
+        when(timetableServiceMock.findMonthlyTimetablesForTeacher(
+                any(Integer.class),
+                any(Month.class),
+                any(Pageable.class)))
+                        .thenThrow(invalidPageNumberException());
+
+        mockMvc.perform(get("/timetables/teacher/{teacherId}/month?page={pageNum}", teacherId, INVALID_PAGE_NUMBER)
+                .locale(Locale.US)
+                .param("targetDate", targetDate.toString()))
+                .andExpect(status().isNotFound())
+                .andExpect(model().attribute(Attribute.MESSAGE,
+                        equalTo(getMessage(
+                                Message.REQUESTED_RESOURCE,
+                                format("/timetables/teacher/%d/month?page=%d", teacherId, INVALID_PAGE_NUMBER)))))
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
     void shouldShowNotFoundPageWhenSearchMonthlyTimetablesForNonExistentTeacher() throws Exception {
         Integer nonExistentTeacherId = 1;
-        when(timetableServiceMock.findMonthlyTimetablesForTeacher(eq(nonExistentTeacherId), any(Month.class)))
-                .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found",
-                        nonExistentTeacherId));
+        when(timetableServiceMock.findMonthlyTimetablesForTeacher(
+                eq(nonExistentTeacherId),
+                any(Month.class),
+                any(Pageable.class)))
+                        .thenThrow(new ResourceNotFoundException(
+                                Teacher.class,
+                                "Teacher with id=%d not found",
+                                nonExistentTeacherId));
 
         mockMvc.perform(get("/timetables/teacher/{teacherId}/month", nonExistentTeacherId).locale(Locale.US)
                 .param("targetDate", formatMonth(LocalDate.now().getMonth())))
@@ -340,7 +455,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/teacher/" + nonExistentTeacherId + "/month"))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -356,7 +471,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/teacher/" + invalidTeacherId + "/month"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -372,7 +487,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/teacher/" + teacherId + "/month"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -380,31 +495,61 @@ public class SearchTimetableControllerTest {
         Student student = generator.generateStudent();
         List<Timetable> timetables = generator.generateTimetables(10);
         Month targetDate = LocalDate.now().getMonth();
+        Page<Timetable> page = new PageImpl<>(timetables);
 
         when(studentServiceMock.findStudentById(student.getId())).thenReturn(student);
-        when(timetableServiceMock.findMonthlyTimetablesForStudent(student.getId(), targetDate)).thenReturn(timetables);
+        when(timetableServiceMock.findMonthlyTimetablesForStudent(
+                eq(student.getId()),
+                eq(targetDate),
+                any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/timetables/student/{studentId}/month", student.getId()).locale(Locale.US)
                 .param("targetDate", targetDate.toString()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.TIMETABLES, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(timetables)))
+                .andExpect(model().attribute(Attribute.TIMETABLES, equalTo(page)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(
                                 Message.TIMETABLES_FOR_STUDENT,
-                                timetables.size(),
+                                page.getTotalElements(),
                                 student.getFirstName(),
                                 student.getLastName(),
                                 formatMonth(targetDate)))))
-                .andExpect(view().name(Page.TIMETABLES));
+                .andExpect(view().name(View.TIMETABLES));
+    }
+
+    @Test
+    void shouldShowNotFoundPageIfPageNumberIsInvalidWhenSearchMonthlyTimetablesForStudent() throws Exception {
+        Month targetDate = LocalDate.now().getMonth();
+        Integer studentId = 1;
+        when(timetableServiceMock.findMonthlyTimetablesForStudent(
+                any(Integer.class),
+                any(Month.class),
+                any(Pageable.class)))
+                        .thenThrow(invalidPageNumberException());
+
+        mockMvc.perform(get("/timetables/student/{studentId}/month?page={pageNum}", studentId, INVALID_PAGE_NUMBER)
+                .locale(Locale.US)
+                .param("targetDate", targetDate.toString()))
+                .andExpect(status().isNotFound())
+                .andExpect(model().attribute(Attribute.MESSAGE,
+                        equalTo(getMessage(
+                                Message.REQUESTED_RESOURCE,
+                                format("/timetables/student/%d/month?page=%d", studentId, INVALID_PAGE_NUMBER)))))
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
     void shouldShowNotFoundPageWhenSearchMonthlyTimetablesForNonExistentStudent() throws Exception {
         Integer nonExistentStudentId = 1;
-        when(timetableServiceMock.findMonthlyTimetablesForStudent(eq(nonExistentStudentId), any(Month.class)))
-                .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found",
-                        nonExistentStudentId));
+        when(timetableServiceMock.findMonthlyTimetablesForStudent(
+                eq(nonExistentStudentId),
+                any(Month.class),
+                any(Pageable.class)))
+                        .thenThrow(new ResourceNotFoundException(
+                                Student.class,
+                                "Student with id=%d not found",
+                                nonExistentStudentId));
 
         mockMvc.perform(get("/timetables/student/{studentId}/month", nonExistentStudentId).locale(Locale.US)
                 .param("targetDate", formatMonth(LocalDate.now().getMonth())))
@@ -414,7 +559,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/student/" + nonExistentStudentId + "/month"))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -430,7 +575,7 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/student/" + invalidStudentId + "/month"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -446,7 +591,11 @@ public class SearchTimetableControllerTest {
                         equalTo(getMessage(
                                 Message.REQUESTED_RESOURCE,
                                 "/timetables/student/" + studentId + "/month"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
+    }
+
+    private InvalidPageNumberException invalidPageNumberException() {
+        return new InvalidPageNumberException(Timetable.class, INVALID_PAGE_NUMBER, PAGE_SIZE, MAX_VALID_PAGE_NUMBER);
     }
 
 }

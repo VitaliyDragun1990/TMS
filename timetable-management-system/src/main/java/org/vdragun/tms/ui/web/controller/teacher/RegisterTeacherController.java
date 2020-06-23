@@ -26,7 +26,7 @@ import org.vdragun.tms.core.domain.Title;
 import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * Processes teacher registration requests
@@ -56,7 +56,7 @@ public class RegisterTeacherController extends AbstractController {
         log.trace("Received GET request to show steacher registration form, URI={}", getRequestUri());
         model.addAttribute(Attribute.TEACHER, new TeacherData());
 
-        return Page.TEACHER_FORM;
+        return View.TEACHER_FORM;
     }
 
     @PostMapping
@@ -71,7 +71,7 @@ public class RegisterTeacherController extends AbstractController {
             bindingResult.getAllErrors().forEach(error -> log.trace("Validation error: {}", error));
             model.addAttribute(Attribute.VALIDATED, true);
 
-            return Page.TEACHER_FORM;
+            return View.TEACHER_FORM;
         }
 
         Teacher teacher = teacherService.registerNewTeacher(teacherData);

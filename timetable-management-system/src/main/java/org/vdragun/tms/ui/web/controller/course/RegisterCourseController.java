@@ -22,7 +22,7 @@ import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * Processes course registration requests
@@ -63,7 +63,7 @@ public class RegisterCourseController extends AbstractController {
         log.trace("Received GET request to show course registration from, URI={}", getRequestUri());
         model.addAttribute(Attribute.COURSE, new CourseData());
 
-        return Page.COURSE_FORM;
+        return View.COURSE_FORM;
     }
 
     @PostMapping
@@ -78,7 +78,7 @@ public class RegisterCourseController extends AbstractController {
             bindingResult.getAllErrors().forEach(error -> log.trace("Validation error: {}", error));
             model.addAttribute(Attribute.VALIDATED, true);
 
-            return Page.COURSE_FORM;
+            return View.COURSE_FORM;
         }
 
         Course course = courseService.registerNewCourse(courseData);

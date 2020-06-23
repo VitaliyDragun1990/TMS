@@ -55,7 +55,7 @@ public final class Constants {
         }
     }
 
-    public static final class Page {
+    public static final class View {
 
         public static final String COURSES = "courses";
         public static final String COURSE_INFO = "course";
@@ -79,7 +79,7 @@ public final class Constants {
         public static final String SIGN_IN_FORM = "sign-in-form";
         public static final String SIGN_UP_FORM = "sign-up-form";
 
-        private Page() {
+        private View() {
         }
     }
 
@@ -107,6 +107,7 @@ public final class Constants {
         public static final String SIGN_IN_FORM = "signinForm";
         public static final String ROLES = "roles";
         public static final String ACCESS_DENIED_MSG = "accessDeniedMsg";
+        public static final String REQUEST_URI = "requestUri";
 
         private Attribute() {
         }

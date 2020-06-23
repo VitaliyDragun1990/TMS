@@ -20,7 +20,7 @@ import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * Processes student registration requests
@@ -45,7 +45,7 @@ public class RegisterStudentController extends AbstractController {
         log.trace("Received GET request to show student registration form, URI={}", getRequestUri());
         model.addAttribute(Attribute.STUDENT, new CreateStudentData());
 
-        return Page.STUDENT_REG_FORM;
+        return View.STUDENT_REG_FORM;
     }
 
     @PostMapping
@@ -60,7 +60,7 @@ public class RegisterStudentController extends AbstractController {
             bindingResult.getAllErrors().forEach(error -> log.trace("Validation error: {}", error));
             model.addAttribute(Attribute.VALIDATED, true);
 
-            return Page.STUDENT_REG_FORM;
+            return View.STUDENT_REG_FORM;
         }
 
         Student student = studentService.registerNewStudent(studentData);

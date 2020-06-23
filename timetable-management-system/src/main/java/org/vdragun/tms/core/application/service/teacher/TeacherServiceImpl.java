@@ -4,8 +4,11 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.vdragun.tms.core.application.exception.InvalidPageNumberException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.dao.TeacherDao;
@@ -66,12 +69,32 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Teacher> findTeachers(Pageable pageable) {
+        Page<Teacher> page = dao.findAll(pageable);
+        assertValidPageNumber(page);
+
+        LOG.debug("Found {} teachers, page number: {}, page size: {}",
+                page.getNumberOfElements(), pageable.getPageNumber(), pageable.getPageSize());
+
+        return page;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Teacher findTeacherForCourse(Integer courseId) {
         LOG.debug("Searching for teacher assigned to course with id={}", courseId);
 
         return dao.findForCourseWithId(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         Teacher.class, "Teacher for course with id=%d not found: No course with such id", courseId));
+    }
+
+    private void assertValidPageNumber(Page<Teacher> page) {
+        if (page.getNumber() >= page.getTotalPages()) {
+            throw new InvalidPageNumberException(
+                    Teacher.class,
+                    page.getNumber() + 1, page.getSize(), page.getTotalPages() - 1);
+        }
     }
 
 }

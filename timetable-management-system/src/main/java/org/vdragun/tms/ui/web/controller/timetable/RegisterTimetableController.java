@@ -25,7 +25,7 @@ import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * Processes timetable registration requests
@@ -69,7 +69,7 @@ public class RegisterTimetableController extends AbstractController {
         log.trace("Received GET request to show timetable registration form, URI={}", getRequestUri());
         model.addAttribute(Attribute.TIMETABLE, new CreateTimetableData());
 
-        return Page.TIMETABLE_REG_FORM;
+        return View.TIMETABLE_REG_FORM;
     }
 
     @PostMapping
@@ -84,7 +84,7 @@ public class RegisterTimetableController extends AbstractController {
             bindingResult.getAllErrors().forEach(error -> log.trace("Validation error: {}", error));
             model.addAttribute(Attribute.VALIDATED, true);
 
-            return Page.TIMETABLE_REG_FORM;
+            return View.TIMETABLE_REG_FORM;
         }
 
         Timetable timetable = timetableService.registerNewTimetable(timetableData);

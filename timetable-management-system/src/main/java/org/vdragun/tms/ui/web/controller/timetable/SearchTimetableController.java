@@ -1,10 +1,14 @@
 package org.vdragun.tms.ui.web.controller.timetable;
 
+import static org.springframework.data.domain.Sort.Direction.ASC;
+
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +24,7 @@ import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.web.controller.AbstractController;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * Processes timetable-related search requests
@@ -42,14 +46,15 @@ public class SearchTimetableController extends AbstractController {
     private StudentService studentService;
 
     @GetMapping
-    public String showAllTimetables(Model model) {
-        log.trace("Received GET request to show all timetables, URI={}", getRequestUri());
-        List<Timetable> result = timetableService.findAllTimetables();
+    public String showAllTimetables(Model model, Pageable pageable) {
+        log.trace("Received GET request to show all timetables, page number: {}, URI={}",
+                pageable.getPageNumber(), getRequestUri());
+        Page<Timetable> result = timetableService.findTimetables(pageable);
 
         model.addAttribute(Attribute.TIMETABLES, result);
-        model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_TIMETABLES, result.size()));
+        model.addAttribute(Attribute.MESSAGE, getMessage(Message.ALL_TIMETABLES, result.getTotalElements()));
 
-        return Page.TIMETABLES;
+        return View.TIMETABLES;
     }
 
     @GetMapping("/{timetableId}")
@@ -57,98 +62,106 @@ public class SearchTimetableController extends AbstractController {
         log.trace("Received GET request to show data for timetable with id={}, URI={}", timetableId, getRequestUri());
         model.addAttribute(Attribute.TIMETABLE, timetableService.findTimetableById(timetableId));
 
-        return Page.TIMETABLE_INFO;
+        return View.TIMETABLE_INFO;
     }
 
     @GetMapping("/teacher/{teacherId}/day")
     public String showlDailyTimetablesForTeacher(
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetDate") LocalDate targetDate,
-            Model model) {
-        log.trace("Received GET request to show daily timetables for teacher with id={} for date={}, URI={}",
-                teacherId, targetDate, getRequestUri());
+            Model model,
+            @SortDefault(sort = "startTime", direction = ASC) Pageable pageable) {
+        log.trace(
+                "Received GET request to show daily timetables for teacher with id={} for date={}, page number: {}, URI={}",
+                teacherId, targetDate, pageable.getPageNumber(), getRequestUri());
 
-        List<Timetable> result = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate);
+        Page<Timetable> page = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate, pageable);
         Teacher teacher = teacherService.findTeacherById(teacherId);
         String msg = getMessage(
                 Message.TIMETABLES_FOR_TEACHER,
-                result.size(),
+                page.getTotalElements(),
                 teacher.getFirstName(),
                 teacher.getLastName(),
                 formatDate(targetDate));
 
-        model.addAttribute(Attribute.TIMETABLES, result);
+        model.addAttribute(Attribute.TIMETABLES, page);
         model.addAttribute(Attribute.MESSAGE, msg);
 
-        return Page.TIMETABLES;
+        return View.TIMETABLES;
     }
 
     @GetMapping("/teacher/{teacherId}/month")
     public String showMonthlyTimetablesForTeacher(
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetDate") Month targetDate,
-            Model model) {
-        log.trace("Received GET request to show monthly timetables for teacher with id={} for month={}, URI={}",
-                teacherId, targetDate, getRequestUri());
+            Model model,
+            @SortDefault(sort = "startTime", direction = ASC) Pageable pageable) {
+        log.trace(
+                "Received GET request to show monthly timetables for teacher with id={} for month={}, page number: {} URI={}",
+                teacherId, targetDate, pageable.getPageNumber(), getRequestUri());
 
-        List<Timetable> result = timetableService.findMonthlyTimetablesForTeacher(teacherId, targetDate);
+        Page<Timetable> page = timetableService.findMonthlyTimetablesForTeacher(teacherId, targetDate, pageable);
         Teacher teacher = teacherService.findTeacherById(teacherId);
         String msg = getMessage(
                 Message.TIMETABLES_FOR_TEACHER,
-                result.size(),
+                page.getTotalElements(),
                 teacher.getFirstName(),
                 teacher.getLastName(),
                 formatMonth(targetDate));
-
-        model.addAttribute(Attribute.TIMETABLES, result);
+        
+        model.addAttribute(Attribute.TIMETABLES, page);
         model.addAttribute(Attribute.MESSAGE, msg);
 
-        return Page.TIMETABLES;
+        return View.TIMETABLES;
     }
 
     @GetMapping("/student/{studentId}/day")
     public String showlDailyTimetablesForStudent(
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetDate") LocalDate targetDate,
-            Model model) {
-        log.trace("Received GET request to show daily timetables for student with id={} for date={}, URI={}",
-                studentId, targetDate, getRequestUri());
+            Model model,
+            @SortDefault(sort = "startTime", direction = ASC) Pageable pageable) {
+        log.trace(
+                "Received GET request to show daily timetables for student with id={} for date={}, page number: {}, URI={}",
+                studentId, targetDate, pageable.getPageNumber(), getRequestUri());
 
-        List<Timetable> result = timetableService.findDailyTimetablesForStudent(studentId, targetDate);
+        Page<Timetable> page = timetableService.findDailyTimetablesForStudent(studentId, targetDate, pageable);
         Student student = studentService.findStudentById(studentId);
         String msg = getMessage(
                 Message.TIMETABLES_FOR_STUDENT,
-                result.size(),
+                page.getTotalElements(),
                 student.getFirstName(),
                 student.getLastName(),
                 formatDate(targetDate));
-
-        model.addAttribute(Attribute.TIMETABLES, result);
+        
+        model.addAttribute(Attribute.TIMETABLES, page);
         model.addAttribute(Attribute.MESSAGE, msg);
 
-        return Page.TIMETABLES;
+        return View.TIMETABLES;
     }
 
     @GetMapping("/student/{studentId}/month")
     public String showMonthlyTimetablesForStudent(
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetDate") Month targetDate,
-            Model model) {
-        log.trace("Received GET request to show monthly timetables for student with id={} for month={}, URI={}",
-                studentId, targetDate, getRequestUri());
+            Model model,
+            @SortDefault(sort = "startTime", direction = ASC) Pageable pageable) {
+        log.trace(
+                "Received GET request to show monthly timetables for student with id={} for month={}, page number: {}, URI={}",
+                studentId, targetDate, pageable.getPageNumber(), getRequestUri());
 
-        List<Timetable> result = timetableService.findMonthlyTimetablesForStudent(studentId, targetDate);
+        Page<Timetable> page = timetableService.findMonthlyTimetablesForStudent(studentId, targetDate, pageable);
         Student student = studentService.findStudentById(studentId);
         String msg = getMessage(
                 Message.TIMETABLES_FOR_STUDENT,
-                result.size(),
+                page.getTotalElements(),
                 student.getFirstName(),
                 student.getLastName(),
                 formatMonth(targetDate));
 
-        model.addAttribute(Attribute.TIMETABLES, result);
+        model.addAttribute(Attribute.TIMETABLES, page);
         model.addAttribute(Attribute.MESSAGE, msg);
 
-        return Page.TIMETABLES;
+        return View.TIMETABLES;
     }
 }

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 /**
@@ -65,12 +65,12 @@ public class GlobalErrorController extends AbstractErrorController {
             log.warn("Handling not found resource, URI:{}", getRequestUrl(request));
             model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
 
-            return Page.NOT_FOUND;
+            return View.NOT_FOUND;
         } else {
             log.error("Handling internal application error, URI:{}", getRequestUrl(request));
             model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
 
-            return Page.SERVER_ERROR;
+            return View.SERVER_ERROR;
         }
     }
 

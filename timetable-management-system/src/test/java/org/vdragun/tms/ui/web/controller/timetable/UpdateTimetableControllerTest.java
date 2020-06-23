@@ -52,7 +52,7 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * @author Vitaliy Dragun
@@ -117,7 +117,7 @@ public class UpdateTimetableControllerTest {
                 .andExpect(model().attribute(Attribute.CLASSROOMS, equalTo(classrooms)))
                 .andExpect(model().attribute(Attribute.TIMETABLE,
                         samePropertyValuesAs(updateDataFrom(timetableToUpdate))))
-                .andExpect(view().name(Page.TIMETABLE_UPDATE_FORM));
+                .andExpect(view().name(View.TIMETABLE_UPDATE_FORM));
     }
 
     @Test
@@ -130,7 +130,7 @@ public class UpdateTimetableControllerTest {
                 .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", timetableId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/timetables/" + timetableId + "/update"))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class UpdateTimetableControllerTest {
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/timetables/" + timetableId + "/update"))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -189,7 +189,7 @@ public class UpdateTimetableControllerTest {
                 .andExpect(model().attributeHasFieldErrors("timetable", "startTime", "duration",
                         "classroomId"))
                 .andExpect(model().attribute(Attribute.VALIDATED, equalTo(true)))
-                .andExpect(view().name(Page.TIMETABLE_UPDATE_FORM));
+                .andExpect(view().name(View.TIMETABLE_UPDATE_FORM));
 
         verify(timetableServiceMock, never()).updateExistingTimetable(any(UpdateTimetableData.class));
     }
@@ -213,7 +213,7 @@ public class UpdateTimetableControllerTest {
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/timetables/" + timetableId))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
 
         UpdateTimetableData expected = new UpdateTimetableData(timetableId, startTime, duration, classroomId);
         verify(timetableServiceMock, times(1)).updateExistingTimetable(captor.capture());
@@ -238,7 +238,7 @@ public class UpdateTimetableControllerTest {
                 .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", invalidTimetableId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/timetables/" + invalidTimetableId))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
     }
 
     private UpdateTimetableData updateDataFrom(Timetable timetable) {

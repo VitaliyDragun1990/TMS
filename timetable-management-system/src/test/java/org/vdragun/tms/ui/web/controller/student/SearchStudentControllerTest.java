@@ -3,6 +3,7 @@ package org.vdragun.tms.ui.web.controller.student;
 import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -18,11 +19,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.vdragun.tms.config.SecurityConfig;
+import org.vdragun.tms.config.ThymeleafConfig;
 import org.vdragun.tms.config.WebConfig;
 import org.vdragun.tms.config.WebMvcConfig;
+import org.vdragun.tms.core.application.exception.InvalidPageNumberException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.domain.Student;
@@ -32,7 +38,7 @@ import org.vdragun.tms.ui.web.controller.EntityGenerator;
 import org.vdragun.tms.ui.web.controller.MessageProvider;
 import org.vdragun.tms.util.Constants.Attribute;
 import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.Page;
+import org.vdragun.tms.util.Constants.View;
 
 /**
  * @author Vitaliy Dragun
@@ -42,12 +48,17 @@ import org.vdragun.tms.util.Constants.Page;
 @Import({
         WebConfig.class,
         WebMvcConfig.class,
+        ThymeleafConfig.class,
         SecurityConfig.class,
         MessageProvider.class })
 @WithMockAuthenticatedUser
 @TestPropertySource(properties = "secured.rest=false")
 @DisplayName("Search Student Controller")
 public class SearchStudentControllerTest {
+
+    private static final int MAX_VALID_PAGE_NUMBER = 5;
+    private static final int PAGE_SIZE = 20;
+    private static final int INVALID_PAGE_NUMBER = 10;
 
     @Autowired
     private MockMvc mockMvc;
@@ -70,15 +81,29 @@ public class SearchStudentControllerTest {
     @Test
     void shouldShowAllStudentsPage() throws Exception {
         List<Student> students = generator.generateStudents(10);
-        when(studentServiceMock.findAllStudents()).thenReturn(students);
+        Page<Student> page = new PageImpl<>(students);
+        when(studentServiceMock.findStudents(any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/students").locale(Locale.US))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.STUDENTS, Attribute.MESSAGE))
-                .andExpect(model().attribute(Attribute.STUDENTS, equalTo(students)))
+                .andExpect(model().attribute(Attribute.STUDENTS, equalTo(page)))
                 .andExpect(model().attribute(Attribute.MESSAGE,
-                        equalTo(getMessage(Message.ALL_STUDENTS, students.size()))))
-                .andExpect(view().name(Page.STUDENTS));
+                        equalTo(getMessage(Message.ALL_STUDENTS, page.getTotalElements()))))
+                .andExpect(view().name(View.STUDENTS));
+    }
+
+    @Test
+    void shouldShowNotFoundPageIfPageNumberIsInvalid() throws Exception {
+        when(studentServiceMock.findStudents(any(Pageable.class)))
+                .thenThrow(invalidPageNumberException());
+
+        mockMvc
+                .perform(get("/students?page={pageNumber}", INVALID_PAGE_NUMBER).locale(Locale.US))
+                .andExpect(status().isNotFound())
+                .andExpect(model().attribute(Attribute.MESSAGE,
+                        equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students?page=" + INVALID_PAGE_NUMBER))))
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -90,7 +115,7 @@ public class SearchStudentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(Attribute.STUDENT))
                 .andExpect(model().attribute(Attribute.STUDENT, equalTo(student)))
-                .andExpect(view().name(Page.STUDENT_INFO));
+                .andExpect(view().name(View.STUDENT_INFO));
     }
 
     @Test
@@ -104,7 +129,7 @@ public class SearchStudentControllerTest {
                 .andExpect(model().attributeExists(Attribute.MESSAGE))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + studentId))))
-                .andExpect(view().name(Page.NOT_FOUND));
+                .andExpect(view().name(View.NOT_FOUND));
     }
 
     @Test
@@ -117,7 +142,11 @@ public class SearchStudentControllerTest {
                 .andExpect(model().attribute(Attribute.ERROR, containsString(format("\"%s\"", invalidStudentId))))
                 .andExpect(model().attribute(Attribute.MESSAGE,
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/students/" + invalidStudentId))))
-                .andExpect(view().name(Page.BAD_REQUEST));
+                .andExpect(view().name(View.BAD_REQUEST));
+    }
+
+    private InvalidPageNumberException invalidPageNumberException() {
+        return new InvalidPageNumberException(Student.class, INVALID_PAGE_NUMBER, PAGE_SIZE, MAX_VALID_PAGE_NUMBER);
     }
 
 }

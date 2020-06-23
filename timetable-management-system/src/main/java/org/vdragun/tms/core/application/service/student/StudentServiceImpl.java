@@ -6,8 +6,11 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.vdragun.tms.core.application.exception.InvalidPageNumberException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Group;
@@ -91,6 +94,18 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Student> findStudents(Pageable pageable) {
+        Page<Student> page = studentDao.findAll(pageable);
+        assertValidPageNumber(page);
+
+        LOG.debug("Found {} students, page number: {}, page size: {}",
+                page.getNumberOfElements(), pageable.getPageNumber(), pageable.getPageSize());
+
+        return page;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Student> findStudentsForCourse(Integer courseId) {
         assertCourseExists(courseId);
 
@@ -115,6 +130,14 @@ public class StudentServiceImpl implements StudentService {
         assertStudentExists(studentId);
 
         studentDao.deleteById(studentId);
+    }
+
+    private void assertValidPageNumber(Page<Student> page) {
+        if (page.getNumber() >= page.getTotalPages()) {
+            throw new InvalidPageNumberException(
+                    Student.class,
+                    page.getNumber() + 1, page.getSize(), page.getTotalPages() - 1);
+        }
     }
 
     private void assertCourseExists(Integer courseId) {
