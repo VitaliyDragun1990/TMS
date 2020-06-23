@@ -92,6 +92,10 @@ public class CourseModel extends RepresentationModel<CourseModel> {
         return teacherId;
     }
 
+    public void setTeacherId(Integer teacherId) {
+        this.teacherId = teacherId;
+    }
+
     public String getTeacherFullName() {
         return teacherFullName;
     }
