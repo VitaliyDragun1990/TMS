@@ -1,6 +1,7 @@
 package org.vdragun.tms.ui.web.controller.timetable;
 
 import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -46,9 +47,11 @@ public class SearchTimetableController extends AbstractController {
     private StudentService studentService;
 
     @GetMapping
-    public String showAllTimetables(Model model, Pageable pageable) {
+    public String showAllTimetables(
+            Model model,
+            Pageable pageable) {
         log.trace("Received GET request to show all timetables, page number: {}, URI={}",
-                pageable.getPageNumber(), getRequestUri());
+                pageable.getPageNumber(), getFullRequestUri());
         Page<Timetable> result = timetableService.findTimetables(pageable);
 
         model.addAttribute(Attribute.TIMETABLES, result);
@@ -58,8 +61,11 @@ public class SearchTimetableController extends AbstractController {
     }
 
     @GetMapping("/{timetableId}")
-    public String showTimetableInfo(@PathVariable("timetableId") Integer timetableId, Model model) {
-        log.trace("Received GET request to show data for timetable with id={}, URI={}", timetableId, getRequestUri());
+    public String showTimetableInfo(
+            @PathVariable("timetableId") Integer timetableId,
+            Model model) {
+        log.trace("Received GET request to show data for timetable with id={}, URI={}", timetableId,
+                getFullRequestUri());
         model.addAttribute(Attribute.TIMETABLE, timetableService.findTimetableById(timetableId));
 
         return View.TIMETABLE_INFO;
@@ -73,7 +79,7 @@ public class SearchTimetableController extends AbstractController {
             @SortDefault(sort = "startTime", direction = ASC) Pageable pageable) {
         log.trace(
                 "Received GET request to show daily timetables for teacher with id={} for date={}, page number: {}, URI={}",
-                teacherId, targetDate, pageable.getPageNumber(), getRequestUri());
+                teacherId, targetDate, pageable.getPageNumber(), getFullRequestUri());
 
         Page<Timetable> page = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate, pageable);
         Teacher teacher = teacherService.findTeacherById(teacherId);
@@ -98,7 +104,7 @@ public class SearchTimetableController extends AbstractController {
             @SortDefault(sort = "startTime", direction = ASC) Pageable pageable) {
         log.trace(
                 "Received GET request to show monthly timetables for teacher with id={} for month={}, page number: {} URI={}",
-                teacherId, targetDate, pageable.getPageNumber(), getRequestUri());
+                teacherId, targetDate, pageable.getPageNumber(), getFullRequestUri());
 
         Page<Timetable> page = timetableService.findMonthlyTimetablesForTeacher(teacherId, targetDate, pageable);
         Teacher teacher = teacherService.findTeacherById(teacherId);
@@ -123,7 +129,7 @@ public class SearchTimetableController extends AbstractController {
             @SortDefault(sort = "startTime", direction = ASC) Pageable pageable) {
         log.trace(
                 "Received GET request to show daily timetables for student with id={} for date={}, page number: {}, URI={}",
-                studentId, targetDate, pageable.getPageNumber(), getRequestUri());
+                studentId, targetDate, pageable.getPageNumber(), getFullRequestUri());
 
         Page<Timetable> page = timetableService.findDailyTimetablesForStudent(studentId, targetDate, pageable);
         Student student = studentService.findStudentById(studentId);
@@ -148,7 +154,7 @@ public class SearchTimetableController extends AbstractController {
             @SortDefault(sort = "startTime", direction = ASC) Pageable pageable) {
         log.trace(
                 "Received GET request to show monthly timetables for student with id={} for month={}, page number: {}, URI={}",
-                studentId, targetDate, pageable.getPageNumber(), getRequestUri());
+                studentId, targetDate, pageable.getPageNumber(), getFullRequestUri());
 
         Page<Timetable> page = timetableService.findMonthlyTimetablesForStudent(studentId, targetDate, pageable);
         Student student = studentService.findStudentById(studentId);

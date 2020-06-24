@@ -3,7 +3,7 @@ package org.vdragun.tms.ui.rest.resource.v1.course;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
-import static org.vdragun.tms.util.Constants.Attribute.FULL_REQUEST_URI;
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
 
 import java.util.List;
 
@@ -23,7 +23,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -85,11 +84,11 @@ public class CourseResource {
             })
     @GetMapping
     @ResponseStatus(OK)
-    public CollectionModel<CourseModel> getAllCourses(@RequestAttribute(FULL_REQUEST_URI) String requestUri) {
-        LOG.trace("Received GET request to retrieve all courses, URI={}", requestUri);
+    public CollectionModel<CourseModel> getAllCourses() {
+        LOG.trace("Received GET request to retrieve all courses, URI={}", getFullRequestUri());
         List<Course> courses = courseService.findAllCourses();
         CollectionModel<CourseModel> result = courseModelAssembler.toCollectionModel(courses);
-        result.add(linkTo(methodOn(CourseResource.class).getAllCourses(requestUri)).withSelfRel());
+        result.add(linkTo(methodOn(CourseResource.class).getAllCourses()).withSelfRel());
 
         return result;
     }
@@ -126,9 +125,8 @@ public class CourseResource {
     @ResponseStatus(OK)
     public CourseModel getCourseById(
             @Parameter(description = "Identifier of the course to be obtained. Cannot be null or empty", example = "1")
-            @PathVariable("courseId") @Positive(message = Message.POSITIVE_ID) Integer courseId,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
-        LOG.trace("Received GET request to retrieve course with id={}, URI={}", courseId, requestUri);
+            @PathVariable("courseId") @Positive(message = Message.POSITIVE_ID) Integer courseId) {
+        LOG.trace("Received GET request to retrieve course with id={}, URI={}", courseId, getFullRequestUri());
 
         return courseModelAssembler.toModel(courseService.findCourseById(courseId));
     }
@@ -159,9 +157,8 @@ public class CourseResource {
                     description = "Course to register. Cannot be null or empty.",
                     required = true,
                     schema = @Schema(implementation = CourseData.class))
-            @Valid @RequestBody CourseData courseData,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
-        LOG.trace("Received POST request to register new course, data={}, URI={}", courseData, requestUri);
+            @Valid @RequestBody CourseData courseData) {
+        LOG.trace("Received POST request to register new course, data={}, URI={}", courseData, getFullRequestUri());
 
         Course course = courseService.registerNewCourse(courseData);
         CourseModel courseModel = courseModelAssembler.toModel(course);

@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.jwt;
+package org.vdragun.tms.security.rest.filter;
 
 import java.io.IOException;
 
@@ -16,6 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.filter.GenericFilterBean;
+import org.vdragun.tms.security.rest.jwt.JwtTokenProvider;
 
 /**
  * Checks each incoming request for JWT token. If specified token is found and

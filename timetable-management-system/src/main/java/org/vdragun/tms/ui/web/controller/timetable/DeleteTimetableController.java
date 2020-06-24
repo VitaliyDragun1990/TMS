@@ -1,5 +1,7 @@
 package org.vdragun.tms.ui.web.controller.timetable;
 
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,8 +27,10 @@ public class DeleteTimetableController extends AbstractController {
     private TimetableService timetableService;
 
     @PostMapping("/delete")
-    public String deleteTimetable(@RequestParam("id") Integer timetableId, RedirectAttributes redirectAttributes) {
-        log.trace("Received POST reuqest to delete timetable with id={}, URI={}", timetableId, getRequestUri());
+    public String deleteTimetable(
+            @RequestParam("id") Integer timetableId,
+            RedirectAttributes redirectAttributes) {
+        log.trace("Received POST reuqest to delete timetable with id={}, URI={}", timetableId, getFullRequestUri());
         timetableService.deleteTimetableById(timetableId);
 
         redirectAttributes.addFlashAttribute(

@@ -1,6 +1,6 @@
 package org.vdragun.tms.ui.web.exception;
 
-import javax.servlet.http.HttpServletRequest;
+import static org.vdragun.tms.util.WebUtil.getRequestUri;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +40,8 @@ public class WebExceptionHandler {
     @ExceptionHandler({ ResourceNotFoundException.class })
     public String handleNotFoundException(
             ResourceNotFoundException exception,
-            Model model,
-            HttpServletRequest request) {
-        String requestUri = getRequestUri(request);
+            Model model) {
+        String requestUri = getRequestUri();
         LOG.warn("Handling resource not found exception, url:[{}]", requestUri, exception);
 
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, requestUri));
@@ -63,10 +62,9 @@ public class WebExceptionHandler {
     @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
     public String handleMethodArgumentMismatchException(
             MethodArgumentTypeMismatchException exception,
-            Model model,
-            HttpServletRequest request) {
-        String requestUri = getRequestUri(request);
-        LOG.warn("Handling method argument type mismatch exception, url:[{}]", request, exception.getRootCause());
+            Model model) {
+        String requestUri = getRequestUri();
+        LOG.warn("Handling method argument type mismatch exception, url:[{}]", requestUri, exception.getRootCause());
 
         String errMsg = "";
         if (exception.getRootCause() instanceof NumberFormatException) {
@@ -82,9 +80,8 @@ public class WebExceptionHandler {
     @ExceptionHandler({ MissingServletRequestParameterException.class })
     public String handleMissingRequestParameterException(
             MissingServletRequestParameterException exception,
-            Model model,
-            HttpServletRequest request) {
-        String requestUri = getRequestUri(request);
+            Model model) {
+        String requestUri = getRequestUri();
         LOG.warn("Handling missing request parameter exception, url:[{}]", requestUri, exception);
 
         String errMsg = getMessage(Message.REQUIRED_REQUEST_PARAMETER, exception.getParameterName());
@@ -96,17 +93,13 @@ public class WebExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({ Exception.class })
-    public String handleException(Exception exception, Model model, HttpServletRequest request) {
-        String requestUri = getRequestUri(request);
+    public String handleException(Exception exception, Model model) {
+        String requestUri = getRequestUri();
         LOG.error("Handling application exception, url:[{}]", requestUri, exception);
 
         model.addAttribute(Attribute.MESSAGE, getMessage(Message.REQUESTED_RESOURCE, requestUri));
 
         return View.SERVER_ERROR;
-    }
-
-    private String getRequestUri(HttpServletRequest request) {
-        return (String) request.getAttribute(Attribute.REQUEST_URI);
     }
 
     private String getMessage(String code, Object... args) {

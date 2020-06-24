@@ -3,7 +3,7 @@ package org.vdragun.tms.ui.rest.resource.v1.student;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
-import static org.vdragun.tms.util.Constants.Attribute.FULL_REQUEST_URI;
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
 
 import java.util.List;
 
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -86,12 +85,12 @@ public class StudentResource {
             })
     @GetMapping
     @ResponseStatus(OK)
-    public CollectionModel<StudentModel> getAllStudents(@RequestAttribute(FULL_REQUEST_URI) String requestUri) {
-        LOG.trace("Received GET request to retrieve all students, URI={}", requestUri);
+    public CollectionModel<StudentModel> getAllStudents() {
+        LOG.trace("Received GET request to retrieve all students, URI={}", getFullRequestUri());
 
         List<Student> students = studentService.findAllStudents();
         CollectionModel<StudentModel> result = studentModelAssembler.toCollectionModel(students);
-        result.add(linkTo(methodOn(StudentResource.class).getAllStudents(requestUri)).withSelfRel());
+        result.add(linkTo(methodOn(StudentResource.class).getAllStudents()).withSelfRel());
 
         return result;
     }
@@ -128,9 +127,8 @@ public class StudentResource {
     public StudentModel getStudentById(
             @Parameter(description = "Identifier of the student to be obtained. Cannot be null or empty.",
                     example = "1")
-            @PathVariable("studentId") @Positive(message = Message.POSITIVE_ID) Integer studentId,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
-        LOG.trace("Received GET request to retrieve student with id={}, URI={}", studentId, requestUri);
+            @PathVariable("studentId") @Positive(message = Message.POSITIVE_ID) Integer studentId) {
+        LOG.trace("Received GET request to retrieve student with id={}, URI={}", studentId, getFullRequestUri());
 
         return studentModelAssembler.toModel(studentService.findStudentById(studentId));
     }
@@ -161,9 +159,8 @@ public class StudentResource {
                     description = "Student to register. Cannot be null or empty.",
                     required = true,
                     schema = @Schema(implementation = CreateStudentData.class))
-            @RequestBody @Valid CreateStudentData studentData,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
-        LOG.trace("Received POST request to register new student, data={}, URI={}", studentData, requestUri);
+            @RequestBody @Valid CreateStudentData studentData) {
+        LOG.trace("Received POST request to register new student, data={}, URI={}", studentData, getFullRequestUri());
 
         Student student = studentService.registerNewStudent(studentData);
         StudentModel studentModel = studentModelAssembler.toModel(student);
@@ -209,11 +206,10 @@ public class StudentResource {
                     description = "Data for update. Cannot be null or empty.",
                     required = true,
                     schema = @Schema(implementation = UpdateStudentData.class))
-            @RequestBody @Valid UpdateStudentData studentData,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+            @RequestBody @Valid UpdateStudentData studentData) {
         LOG.trace(
                 "Received PUT request to update student with id={}, data={} URI={}",
-                studentId, studentData, requestUri);
+                studentId, studentData, getFullRequestUri());
 
         Student student = studentService.updateExistingStudent(studentData);
         return studentModelAssembler.toModel(student);
@@ -242,9 +238,8 @@ public class StudentResource {
     public void deleteStudent(
             @Parameter(description = "Identifier of the student to be deleted. Cannot be null or empty.",
                     example = "1")
-            @PathVariable("studentId") @Positive(message = "Positive.id") Integer studentId,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
-        LOG.trace("Received DELETE request to delete student with id={}, URI={}", studentId, requestUri);
+            @PathVariable("studentId") @Positive(message = "Positive.id") Integer studentId) {
+        LOG.trace("Received DELETE request to delete student with id={}, URI={}", studentId, getFullRequestUri());
         studentService.deleteStudentById(studentId);
     }
 

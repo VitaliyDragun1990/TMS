@@ -3,7 +3,7 @@ package org.vdragun.tms.ui.rest.resource.v1.teacher;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
-import static org.vdragun.tms.util.Constants.Attribute.FULL_REQUEST_URI;
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
 
 import java.util.List;
 
@@ -23,7 +23,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -84,12 +83,12 @@ public class TeacherResource {
             })
     @GetMapping
     @ResponseStatus(OK)
-    public CollectionModel<TeacherModel> getAllTeachers(@RequestAttribute(FULL_REQUEST_URI) String requestUri) {
-        LOG.trace("Received GET request to retrieve all teachers, URI={}", requestUri);
+    public CollectionModel<TeacherModel> getAllTeachers() {
+        LOG.trace("Received GET request to retrieve all teachers, URI={}", getFullRequestUri());
 
         List<Teacher> teachers = teacherService.findAllTeachers();
         CollectionModel<TeacherModel> result = teacherModelAssembler.toCollectionModel(teachers);
-        result.add(linkTo(methodOn(TeacherResource.class).getAllTeachers(requestUri)).withSelfRel());
+        result.add(linkTo(methodOn(TeacherResource.class).getAllTeachers()).withSelfRel());
 
         return result;
     }
@@ -126,9 +125,8 @@ public class TeacherResource {
     public TeacherModel getTeacherById(
             @Parameter(description = "Identifier of the teacher to be obtained. Cannot be null or empty.",
                     example = "1")
-            @PathVariable("teacherId") @Positive(message = Message.POSITIVE_ID) Integer teacherId,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
-        LOG.trace("Received GET request to retrieve teacher with id={}, URI={}", teacherId, requestUri);
+            @PathVariable("teacherId") @Positive(message = Message.POSITIVE_ID) Integer teacherId) {
+        LOG.trace("Received GET request to retrieve teacher with id={}, URI={}", teacherId, getFullRequestUri());
 
         return teacherModelAssembler.toModel(teacherService.findTeacherById(teacherId));
     }
@@ -159,9 +157,8 @@ public class TeacherResource {
                     description = "Teacher to register. Cannot be null or empty.",
                     required = true,
                     schema = @Schema(implementation = TeacherData.class))
-            @RequestBody @Valid TeacherData teacherData,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
-        LOG.trace("Received POST request to register new teacher, data={}, URI={}", teacherData, requestUri);
+            @RequestBody @Valid TeacherData teacherData) {
+        LOG.trace("Received POST request to register new teacher, data={}, URI={}", teacherData, getFullRequestUri());
 
         Teacher teacher = teacherService.registerNewTeacher(teacherData);
         TeacherModel teacherModel = teacherModelAssembler.toModel(teacher);

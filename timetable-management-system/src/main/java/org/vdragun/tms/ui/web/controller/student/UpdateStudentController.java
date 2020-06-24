@@ -1,5 +1,7 @@
 package org.vdragun.tms.ui.web.controller.student;
 
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -67,9 +69,11 @@ public class UpdateStudentController extends AbstractController {
     }
 
     @GetMapping("/{studentId}/update")
-    public String showUpdateForm(@PathVariable("studentId") Integer studentId, Model model) {
+    public String showUpdateForm(
+            @PathVariable("studentId") Integer studentId,
+            Model model) {
         log.trace("Received GET request to show student update form for student with id={}, URI={}",
-                studentId, getRequestUri());
+                studentId, getFullRequestUri());
         model.addAttribute(
                 Attribute.STUDENT,
                 conversionService.convert(studentService.findStudentById(studentId), UpdateStudentData.class));
@@ -85,7 +89,7 @@ public class UpdateStudentController extends AbstractController {
             Model model,
             RedirectAttributes redirectAttriutes) {
         log.trace("Received POST request to update student with id={}, data={} URI={}",
-                studentId, studentData, getRequestUri());
+                studentId, studentData, getFullRequestUri());
 
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(error -> log.trace("Validation error: {}", error));

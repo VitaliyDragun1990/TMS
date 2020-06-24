@@ -1,6 +1,7 @@
 package org.vdragun.tms.ui.web.controller.teacher;
 
 import static java.util.Arrays.asList;
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class RegisterTeacherController extends AbstractController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        log.trace("Received GET request to show steacher registration form, URI={}", getRequestUri());
+        log.trace("Received GET request to show steacher registration form, URI={}", getFullRequestUri());
         model.addAttribute(Attribute.TEACHER, new TeacherData());
 
         return View.TEACHER_FORM;
@@ -65,7 +66,7 @@ public class RegisterTeacherController extends AbstractController {
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes) {
-        log.trace("Received POST request to register new teacher, data={}, URI={}", teacherData, getRequestUri());
+        log.trace("Received POST request to register new teacher, data={}, URI={}", teacherData, getFullRequestUri());
 
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(error -> log.trace("Validation error: {}", error));

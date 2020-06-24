@@ -1,5 +1,7 @@
 package org.vdragun.tms.ui.web.controller.course;
 
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,9 +31,11 @@ public class SearchCourseController extends AbstractController {
     private CourseService courseService;
 
     @GetMapping
-    public String showAllCourses(Model model, Pageable pageable) {
+    public String showAllCourses(
+            Model model,
+            Pageable pageable) {
         log.trace("Received GET request to show all courses, page number: {}, URI={}",
-                pageable.getPageNumber(), getRequestUri());
+                pageable.getPageNumber(), getFullRequestUri());
         Page<Course> page = courseService.findCourses(pageable);
 
         model.addAttribute(Attribute.COURSES, page);
@@ -41,8 +45,11 @@ public class SearchCourseController extends AbstractController {
     }
 
     @GetMapping("/{courseId}")
-    public String showCourseInfo(@PathVariable("courseId") Integer courseId, Model model) {
-        log.trace("Received GET request to show course data for course with id={}, URI={}", courseId, getRequestUri());
+    public String showCourseInfo(
+            @PathVariable("courseId") Integer courseId,
+            Model model) {
+        log.trace("Received GET request to show course data for course with id={}, URI={}",
+                courseId, getFullRequestUri());
         model.addAttribute(Attribute.COURSE, courseService.findCourseById(courseId));
 
         return View.COURSE_INFO;

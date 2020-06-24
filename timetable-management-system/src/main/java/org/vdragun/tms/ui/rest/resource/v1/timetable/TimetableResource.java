@@ -3,7 +3,7 @@ package org.vdragun.tms.ui.rest.resource.v1.timetable;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
-import static org.vdragun.tms.util.Constants.Attribute.FULL_REQUEST_URI;
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -93,13 +92,13 @@ public class TimetableResource {
             })
     @GetMapping
     @ResponseStatus(OK)
-    public CollectionModel<TimetableModel> getAllTimetables(@RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+    public CollectionModel<TimetableModel> getAllTimetables() {
 
-        LOG.trace("Received GET request to retrieve all timetables, URI={}", requestUri);
+        LOG.trace("Received GET request to retrieve all timetables, URI={}", getFullRequestUri());
         
         List<Timetable> timetables = timetableService.findAllTimetables();
         CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
-        result.add(linkTo(methodOn(TimetableResource.class).getAllTimetables(requestUri)).withSelfRel());
+        result.add(linkTo(methodOn(TimetableResource.class).getAllTimetables()).withSelfRel());
 
         return result;
     }
@@ -136,11 +135,10 @@ public class TimetableResource {
     public TimetableModel getTimetableById(
             @Parameter(description = "Identifier of the timetable to be obtained. Cannot be null or empty.",
                     example = "1")
-            @PathVariable("timetableId") @Positive(message = Message.POSITIVE_ID) Integer timetableId,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+            @PathVariable("timetableId") @Positive(message = Message.POSITIVE_ID) Integer timetableId) {
 
         LOG.trace("Received GET request to retrieve timetable with id={}, URI={}",
-                timetableId, requestUri);
+                timetableId, getFullRequestUri());
 
         return timetableModelAssembler.toModel(timetableService.findTimetableById(timetableId));
     }
@@ -182,11 +180,10 @@ public class TimetableResource {
             @Parameter(
                     description = "Target date for which timetables to be obtained. Cannot be null or empty.",
                     example = "2020-05-22")
-            @RequestParam("targetDate") LocalDate targetDate,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+            @RequestParam("targetDate") LocalDate targetDate) {
 
         LOG.trace("Received GET request to retrieve daily timetables for teacher with id={} for date={}, URI={}",
-                teacherId, targetDate, requestUri);
+                teacherId, targetDate, getFullRequestUri());
 
         List<Timetable> timetables = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate);
         CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
@@ -237,11 +234,10 @@ public class TimetableResource {
             @Parameter(
                     description = "Target month for which timetables to be obtained. Cannot be null or empty.",
                     example = "May")
-            @RequestParam("targetMonth") Month targetMonth,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+            @RequestParam("targetMonth") Month targetMonth) {
 
         LOG.trace("Received GET request to retrieve monthly timetables for teacher with id={} for month={}, URI={}",
-                teacherId, targetMonth, requestUri);
+                teacherId, targetMonth, getFullRequestUri());
 
         List<Timetable> timetables = timetableService.findMonthlyTimetablesForTeacher(teacherId, targetMonth);
         CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
@@ -292,11 +288,10 @@ public class TimetableResource {
             @Parameter(
                     description = "Target date for which timetables to be obtained. Cannot be null or empty.",
                     example = "2020-05-22")
-            @RequestParam("targetDate") LocalDate targetDate,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+            @RequestParam("targetDate") LocalDate targetDate) {
 
         LOG.trace("Received GET request to retrieve daily timetables for student with id={} for date={}, URI={}",
-                studentId, targetDate, requestUri);
+                studentId, targetDate, getFullRequestUri());
 
         List<Timetable> timetables = timetableService.findDailyTimetablesForStudent(studentId, targetDate);
         CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
@@ -347,11 +342,10 @@ public class TimetableResource {
             @Parameter(
                     description = "Target month for which timetables to be obtained. Cannot be null or empty.",
                     example = "May")
-            @RequestParam("targetMonth") Month targetMonth,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+            @RequestParam("targetMonth") Month targetMonth) {
 
         LOG.trace("Received GET request to retrieve monthly timetables for student with id={} for month={}, URI={}",
-                studentId, targetMonth, requestUri);
+                studentId, targetMonth, getFullRequestUri());
 
         List<Timetable> timetables = timetableService.findMonthlyTimetablesForStudent(studentId, targetMonth);
         CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
@@ -391,10 +385,10 @@ public class TimetableResource {
                     description = "Timetable to register. Cannot be null or empty.",
                     required = true,
                     schema = @Schema(implementation = CreateTimetableData.class))
-            @RequestBody @Valid CreateTimetableData timetableData,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+            @RequestBody @Valid CreateTimetableData timetableData) {
 
-        LOG.trace("Received POST request to register new timetable, data={}, URI={}", timetableData, requestUri);
+        LOG.trace("Received POST request to register new timetable, data={}, URI={}",
+                timetableData, getFullRequestUri());
 
         Timetable timetable = timetableService.registerNewTimetable(timetableData);
         TimetableModel timetableModel = timetableModelAssembler.toModel(timetable);
@@ -440,11 +434,10 @@ public class TimetableResource {
                     description = "Data for update. Cannot be null or empty.",
                     required = true,
                     schema = @Schema(implementation = UpdateTimetableData.class))
-            @RequestBody @Valid UpdateTimetableData timetableData,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+            @RequestBody @Valid UpdateTimetableData timetableData) {
 
         LOG.trace("Received PUT request to update timetable with id={}, data={}, URI={}",
-                timetableId, timetableData, requestUri);
+                timetableId, timetableData, getFullRequestUri());
         Timetable timetable = timetableService.updateExistingTimetable(timetableData);
 
         return timetableModelAssembler.toModel(timetable);
@@ -473,10 +466,9 @@ public class TimetableResource {
     public void deleteTimetable(
             @Parameter(description = "Identifier of the timetable to be deleted. Cannot be null or empty.",
                     example = "1")
-            @PathVariable("timetableId") @Positive(message = "Positive.id") Integer timetableId,
-            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+            @PathVariable("timetableId") @Positive(message = "Positive.id") Integer timetableId) {
 
-        LOG.trace("Received POST reuqest to delete timetable with id={}, URI={}", timetableId, requestUri);
+        LOG.trace("Received POST reuqest to delete timetable with id={}, URI={}", timetableId, getFullRequestUri());
         timetableService.deleteTimetableById(timetableId);
     }
 
