@@ -14,25 +14,25 @@
         <tr>
           <th scope="col">#</th>
           <th scope="col">
-            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,teachers.number+1,'firstName','lastName')}|}"
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(teachers.number+1,'firstName','lastName')}|}"
                th:text="#{label.fullName}">
               First Name
             </a>
-            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'firstName')"></th:block>                   
+            <th:block th:replace="fragments/pagination :: sortIcon ('firstName')"></th:block>                   
           </th>
           <th scope="col">
-            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,teachers.number+1,'dateHired')}|}"
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(teachers.number+1,'dateHired')}|}"
                th:text="#{label.hdate}">
               Date Hired
             </a>
-            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'dateHired')"></th:block>            
+            <th:block th:replace="fragments/pagination :: sortIcon ('dateHired')"></th:block>            
           </th>
           <th scope="col">
-            <a href="#" th:href="@{|${#myutil.updatePagingInfo(requestUri,teachers.number+1,'title')}|}"
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(teachers.number+1,'title')}|}"
                th:text="#{label.title}">
               Title
             </a>
-            <th:block th:replace="fragments/pagination :: sortIcon (${requestUri},'title')"></th:block>             
+            <th:block th:replace="fragments/pagination :: sortIcon ('title')"></th:block>             
           </th>
           <th scope="col" th:text="#{label.courses}">Courses</th>
         </tr>
@@ -84,7 +84,7 @@
     </table>
     
     <!-- Pagination  -->
-    <div th:replace="fragments/pagination :: pagination (${teachers},${requestUrl})">
+    <div th:replace="fragments/pagination :: pagination (${teachers})">
     </div>
     
   </div>
