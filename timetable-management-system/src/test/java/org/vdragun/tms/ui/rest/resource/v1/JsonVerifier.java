@@ -155,8 +155,10 @@ public class JsonVerifier {
                     .assertValue(json, equalTo(expectedStudent.getFirstName()));
             jPath(format("$._embedded.students[%d].lastName", i))
                     .assertValue(json, equalTo(expectedStudent.getLastName()));
-            jPath(format("$._embedded.students[%d].group", i))
-                    .assertValue(json, equalTo(expectedStudent.getGroup()));
+            if (expectedStudent.getGroup() != null) {
+                jPath(format("$._embedded.students[%d].group", i))
+                        .assertValue(json, equalTo(expectedStudent.getGroup()));
+            }
             jPath(format("$._embedded.students[%d].enrollmentDate", i))
                     .assertValue(json, equalTo(expectedStudent.getEnrollmentDate()));
 
@@ -179,13 +181,15 @@ public class JsonVerifier {
         }
     }
 
-    public void verifyStudentJson(String json, Student expectedContent) throws Exception {
-        StudentModel expectedStudent = modelConverter.convert(expectedContent, StudentModel.class);
+    public void verifyStudentJson(String json, Student expected) throws Exception {
+        StudentModel expectedStudent = modelConverter.convert(expected, StudentModel.class);
 
         jPath("$.id").assertValue(json, equalTo(expectedStudent.getId()));
         jPath("$.firstName").assertValue(json, equalTo(expectedStudent.getFirstName()));
         jPath("$.lastName").assertValue(json, equalTo(expectedStudent.getLastName()));
-        jPath("$.group").assertValue(json, equalTo(expectedStudent.getGroup()));
+        if (expected.getGroup() != null) {
+            jPath("$.group").assertValue(json, equalTo(expectedStudent.getGroup()));
+        }
         jPath("$.enrollmentDate").assertValue(json, equalTo(expectedStudent.getEnrollmentDate()));
 
         for (int j = 0; j < expectedStudent.getCourses().size(); j++) {

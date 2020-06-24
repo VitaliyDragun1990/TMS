@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -52,8 +53,6 @@ import org.vdragun.tms.util.Constants.Message;
 @DisplayName("Student Resource Delete Functionality Integration Test")
 public class DeleteStudentResourceTest {
 
-    private static final String CONTENT_TYPE_JSON = "application/json";
-
     @Autowired
     private JsonVerifier jsonVerifier;
 
@@ -73,6 +72,7 @@ public class DeleteStudentResourceTest {
         Integer studentId = 1;
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<Void> response = restTemplate.exchange(
@@ -91,6 +91,7 @@ public class DeleteStudentResourceTest {
         String invalidId = "id";
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -102,7 +103,7 @@ public class DeleteStudentResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.ARGUMENT_TYPE_MISSMATCH,
@@ -116,6 +117,7 @@ public class DeleteStudentResourceTest {
         Integer negativeId = -1;
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -127,7 +129,7 @@ public class DeleteStudentResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "studentId", Message.POSITIVE_ID);
 
@@ -141,6 +143,7 @@ public class DeleteStudentResourceTest {
                 .when(studentServiceMock).deleteStudentById(studentId);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -152,7 +155,7 @@ public class DeleteStudentResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND, Student.class.getSimpleName());
     }
 

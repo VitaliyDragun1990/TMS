@@ -6,10 +6,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
+import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
-import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource.BASE_URL;
 
 import java.time.LocalDate;
@@ -24,6 +26,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
@@ -53,7 +58,6 @@ import org.vdragun.tms.util.localizer.TemporalLocalizer;
 @DisplayName("Timetable Resource Search Functionality Integration Test")
 public class SearchTimetableResourceTest {
 
-    private static final String CONTENT_TYPE_JSON = "application/json";
     private static final int NUMBER_OF_TIMETABLES = 2;
     private static final Integer TEACHER_ID = 1;
     private static final Integer STUDENT_ID = 1;
@@ -75,16 +79,24 @@ public class SearchTimetableResourceTest {
 
     private EntityGenerator generator = new EntityGenerator();
 
+    private HttpHeaders headers = new HttpHeaders();
+
     @Test
     void shouldReturnAllAvailableTimetables() throws Exception {
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
         when(timetableServiceMock.findAllTimetables()).thenReturn(expectedTimetables);
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL, String.class);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL,
+                HttpMethod.GET,
+                request,
+                String.class);
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(2));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -94,12 +106,18 @@ public class SearchTimetableResourceTest {
         Timetable expectedTimetable = generator.generateTimetable();
         when(timetableServiceMock.findTimetableById(expectedTimetable.getId())).thenReturn(expectedTimetable);
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{timetableId}", String.class,
+        headers.add(ACCEPT, HAL_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{timetableId}",
+                HttpMethod.GET,
+                request,
+                String.class,
                 expectedTimetable.getId());
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetable);
     }
 
@@ -109,14 +127,18 @@ public class SearchTimetableResourceTest {
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
         when(timetableServiceMock.findDailyTimetablesForTeacher(TEACHER_ID, targetDate)).thenReturn(expectedTimetables);
         
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        headers.add(ACCEPT, HAL_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
+                HttpMethod.GET,
+                request,
                 String.class,
                 TEACHER_ID);
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(NUMBER_OF_TIMETABLES));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -126,15 +148,19 @@ public class SearchTimetableResourceTest {
         LocalDate targetDate = LocalDate.now();
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
         when(timetableServiceMock.findDailyTimetablesForStudent(STUDENT_ID, targetDate)).thenReturn(expectedTimetables);
-
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        
+        headers.add(ACCEPT, HAL_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/student/{studentId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
+                HttpMethod.GET,
+                request,
                 String.class,
                 STUDENT_ID);
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(NUMBER_OF_TIMETABLES));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -146,14 +172,18 @@ public class SearchTimetableResourceTest {
         when(timetableServiceMock.findMonthlyTimetablesForTeacher(TEACHER_ID, targetMonth))
                 .thenReturn(expectedTimetables);
         
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        headers.add(ACCEPT, HAL_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
+                HttpMethod.GET,
+                request,
                 String.class,
                 TEACHER_ID);
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(NUMBER_OF_TIMETABLES));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -165,14 +195,18 @@ public class SearchTimetableResourceTest {
         when(timetableServiceMock.findMonthlyTimetablesForStudent(STUDENT_ID, targetMonth))
                 .thenReturn(expectedTimetables);
         
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        headers.add(ACCEPT, HAL_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/student/{studentId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
+                HttpMethod.GET,
+                request,
                 String.class,
                 STUDENT_ID);
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.timetables", hasSize(NUMBER_OF_TIMETABLES));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetables);
     }
@@ -181,12 +215,18 @@ public class SearchTimetableResourceTest {
     void shouldReturnStatusBadRequestIfGivenTimetableIdentifierIsNotNumber() throws Exception {
         String invalidId = "id";
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{timetableId}", String.class,
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{timetableId}",
+                HttpMethod.GET,
+                request,
+                String.class,
                 invalidId);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.ARGUMENT_TYPE_MISSMATCH,
@@ -200,12 +240,18 @@ public class SearchTimetableResourceTest {
                 .thenThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found",
                         timetableId));
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{timetableId}", String.class,
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{timetableId}",
+                HttpMethod.GET,
+                request,
+                String.class,
                 timetableId);
 
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.RESOURCE_NOT_FOUND,
@@ -216,12 +262,18 @@ public class SearchTimetableResourceTest {
     void shouldReturnStatuBadRequestIfGivenIdentifierIsNotValid() throws Exception {
         Integer negativeId = -1;
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{timetableId}", String.class,
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{timetableId}",
+                HttpMethod.GET,
+                request,
+                String.class,
                 negativeId);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "timetableId", Message.POSITIVE_ID);
     }
@@ -230,15 +282,19 @@ public class SearchTimetableResourceTest {
     void shouldReturnStatusBadRequestIfGivenTeacherIdentifierIsNotNumberForDailyRequest() throws Exception {
         String invalidId = "id";
         LocalDate targetDate = LocalDate.now();
-
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
+                HttpMethod.GET,
+                request,
                 String.class,
                 invalidId);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.ARGUMENT_TYPE_MISSMATCH,
@@ -250,15 +306,19 @@ public class SearchTimetableResourceTest {
         LocalDate targetDate = LocalDate.now();
         when(timetableServiceMock.findDailyTimetablesForTeacher(TEACHER_ID, targetDate))
                 .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", TEACHER_ID));
-
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
+                HttpMethod.GET,
+                request,
                 String.class,
                 TEACHER_ID);
 
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.RESOURCE_NOT_FOUND,
@@ -269,29 +329,37 @@ public class SearchTimetableResourceTest {
     void shouldReturnStatuBadRequestIfGivenTeacherIdentifierIsNotValidForDailyRequest() throws Exception {
         Integer negativeId = -1;
         LocalDate targetDate = LocalDate.now();
-
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
+                HttpMethod.GET,
+                request,
                 String.class,
                 negativeId);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "teacherId", Message.POSITIVE_ID);
     }
 
     @Test
     void shouldReturnStatusBadRequestIfTargetDateParameterIsMissingForDailyTeacherRequest() throws Exception {
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/day",
+                HttpMethod.GET,
+                request,
                 String.class,
                 TEACHER_ID);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.MISSING_REQUIRED_PARAMETER,
@@ -301,15 +369,19 @@ public class SearchTimetableResourceTest {
     @Test
     void shouldReturnStatusBadRequestIfTargetDateParameterIsNotValidDateForDailyTeacherRequest() throws Exception {
         String targetDate = "invalid";
-
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/day?targetDate=" + targetDate,
+                HttpMethod.GET,
+                request,
                 String.class,
                 TEACHER_ID);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.ARGUMENT_TYPE_MISSMATCH,
@@ -319,15 +391,19 @@ public class SearchTimetableResourceTest {
     void shouldReturnStatusBadRequestIfGivenTeacherIdentifierIsNotNumberForMonthlyRequest() throws Exception {
         String invalidId = "id";
         Month targetMonth = Month.MAY;
-
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
+                HttpMethod.GET,
+                request,
                 String.class,
                 invalidId);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.ARGUMENT_TYPE_MISSMATCH,
@@ -339,15 +415,19 @@ public class SearchTimetableResourceTest {
         Month targetMonth = Month.MAY;
         when(timetableServiceMock.findMonthlyTimetablesForTeacher(TEACHER_ID, targetMonth))
                 .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", TEACHER_ID));
-
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
+                HttpMethod.GET,
+                request,
                 String.class,
                 TEACHER_ID);
 
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.RESOURCE_NOT_FOUND,
@@ -358,29 +438,37 @@ public class SearchTimetableResourceTest {
     void shouldReturnStatuBadRequestIfGivenTeacherIdentifierIsNotValidForMonthlyRequest() throws Exception {
         Integer negativeId = -1;
         Month targetMonth = Month.MAY;
-
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
+                HttpMethod.GET,
+                request,
                 String.class,
                 negativeId);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "teacherId", Message.POSITIVE_ID);
     }
 
     @Test
     void shouldReturnStatusBadRequestIfTargetMonthParameterIsMissingForMonthlyTeacherRequest() throws Exception {
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/month",
+                HttpMethod.GET,
+                request,
                 String.class,
                 TEACHER_ID);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.MISSING_REQUIRED_PARAMETER,
@@ -390,15 +478,19 @@ public class SearchTimetableResourceTest {
     @Test
     void shouldReturnStatusBadRequestIfTargetMonthParameterIsNotValidMonthForMonthlyTeacherRequest() throws Exception {
         String targetMonth = "invalid";
-
-        ResponseEntity<String> response = restTemplate.getForEntity(
+        
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + targetMonth,
+                HttpMethod.GET,
+                request,
                 String.class,
                 TEACHER_ID);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.ARGUMENT_TYPE_MISSMATCH,

@@ -10,13 +10,14 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
+import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
 import static org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource.BASE_URL;
 
 import java.time.LocalDateTime;
@@ -63,7 +64,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Timetable Resource Update Functionality Integration Test")
 public class UpdateTimetableResourceTest {
 
-    private static final String CONTENT_TYPE_JSON = "application/json";
     private static final LocalDateTime TIMETABLE_START_TIME = LocalDateTime.now().plusDays(3).truncatedTo(MINUTES);
     private static final int TIMETABLE_ID = 1;
     private static final int CLASSROOM_ID = 2;
@@ -99,6 +99,7 @@ public class UpdateTimetableResourceTest {
         when(timetableServiceMock.updateExistingTimetable(any(UpdateTimetableData.class))).thenReturn(updatedTimetable);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -110,7 +111,7 @@ public class UpdateTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyTimetableJson(response.getBody(), updatedTimetable);
 
         verify(timetableServiceMock, times(1)).updateExistingTimetable(captor.capture());
@@ -126,6 +127,7 @@ public class UpdateTimetableResourceTest {
                         TIMETABLE_ID));
         
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -137,7 +139,7 @@ public class UpdateTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND,
                 Timetable.class.getSimpleName());
     }
@@ -149,6 +151,7 @@ public class UpdateTimetableResourceTest {
                 new UpdateTimetableData(TIMETABLE_ID, TIMETABLE_START_TIME, DURATION, CLASSROOM_ID);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -160,7 +163,7 @@ public class UpdateTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.ARGUMENT_TYPE_MISSMATCH,
@@ -176,6 +179,7 @@ public class UpdateTimetableResourceTest {
                 CLASSROOM_ID);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -187,7 +191,7 @@ public class UpdateTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "timetableId", Message.POSITIVE_ID);
 
@@ -207,6 +211,7 @@ public class UpdateTimetableResourceTest {
                 invalidClassrommId);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(invalidData), headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -218,7 +223,7 @@ public class UpdateTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "startTime", "Future.startTime");
         jsonVerifier.verifyValidationError(response.getBody(), "duration", "TimetableDuration");
@@ -231,6 +236,7 @@ public class UpdateTimetableResourceTest {
     @Test
     void shouldReturnStatusBadRequestIfUpdateDataIsMissing() throws Exception {
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -242,7 +248,7 @@ public class UpdateTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.MALFORMED_JSON_REQUEST);
 
         verify(timetableServiceMock, never()).updateExistingTimetable(any(UpdateTimetableData.class));

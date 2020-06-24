@@ -9,11 +9,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
 import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL;
 
 import org.junit.jupiter.api.DisplayName;
@@ -57,8 +57,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Course Resource Register Functionality Integration Test")
 public class RegisterCourseResourceTest {
 
-    private static final String CONTENT_TYPE_JSON = "application/json";
-
     @Autowired
     private ObjectMapper mapper;
 
@@ -88,6 +86,7 @@ public class RegisterCourseResourceTest {
         when(courseServiceMock.registerNewCourse(any(CourseData.class))).thenReturn(registered);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.ACCEPT, HAL_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(registerData), headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(
@@ -97,7 +96,7 @@ public class RegisterCourseResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(CREATED));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyCourseJson(response.getBody(), registered);
 
         verify(courseServiceMock, times(1)).registerNewCourse(captor.capture());
@@ -112,6 +111,7 @@ public class RegisterCourseResourceTest {
         CourseData invalidData = new CourseData(invalidCourseName, notLatinDescription, negativeCategoryId, null);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(invalidData), headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(
@@ -121,7 +121,7 @@ public class RegisterCourseResourceTest {
         
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "name", "CourseName");
         jsonVerifier.verifyValidationError(response.getBody(), "description", "LatinSentence");
@@ -134,6 +134,7 @@ public class RegisterCourseResourceTest {
     @Test
     void shouldReturnStatusBadRequestIfRegistrationDataIsMissing() throws Exception {
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(
@@ -143,7 +144,7 @@ public class RegisterCourseResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.MALFORMED_JSON_REQUEST);
 
         verify(courseServiceMock, never()).registerNewCourse(any(CourseData.class));

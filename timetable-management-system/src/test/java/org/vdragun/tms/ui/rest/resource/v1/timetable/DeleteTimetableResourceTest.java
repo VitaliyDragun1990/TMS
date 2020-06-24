@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -52,7 +53,6 @@ import org.vdragun.tms.util.Constants.Message;
 @DisplayName("Timetable Resource Delete Functionality Integration Test")
 public class DeleteTimetableResourceTest {
 
-    private static final String CONTENT_TYPE_JSON = "application/json";
     private static final Integer TIMETABLE_ID = 1;
     
     @Autowired
@@ -72,7 +72,8 @@ public class DeleteTimetableResourceTest {
     @Test
     void shouldDeleteTimetableById() throws Exception {
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
-        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<String> request = new HttpEntity<>(headers);
 
         ResponseEntity<Void> response = restTemplate.exchange(
                 BASE_URL + "/{timetableId}",
@@ -88,9 +89,10 @@ public class DeleteTimetableResourceTest {
     @Test
     void shouldReturnStatusBadReqeustIfProvidedTimetableIdentifierIsNotNumber() throws Exception {
         String invalidId = "id";
-
+        
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
-        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<String> request = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/{timetableId}",
@@ -101,7 +103,7 @@ public class DeleteTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.ARGUMENT_TYPE_MISSMATCH,
@@ -113,9 +115,10 @@ public class DeleteTimetableResourceTest {
     @Test
     void shouldReturnStatusBadRequestIfProvidedTimetableIdentifierIsNotValid() throws Exception {
         Integer negativeId = -1;
-
+        
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
-        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<String> request = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/{timetableId}",
@@ -126,7 +129,7 @@ public class DeleteTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "timetableId", Message.POSITIVE_ID);
 
@@ -137,9 +140,10 @@ public class DeleteTimetableResourceTest {
     void shouldReturnStatusNotFoundIfNoTimetableWithProvidedIdentifierExist() throws Exception {
         doThrow(new ResourceNotFoundException(Timetable.class, "Timetable with id=%d not found", TIMETABLE_ID))
                 .when(timetableServiceMock).deleteTimetableById(any(Integer.class));
-
+        
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
-        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<String> request = new HttpEntity<>(headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/{timetableId}",
@@ -150,7 +154,7 @@ public class DeleteTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.RESOURCE_NOT_FOUND,
