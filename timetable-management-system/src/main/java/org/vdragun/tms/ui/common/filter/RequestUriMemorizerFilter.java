@@ -1,4 +1,4 @@
-package org.vdragun.tms.config;
+package org.vdragun.tms.ui.common.filter;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.vdragun.tms.config.ConfigurationException;
 import org.vdragun.tms.util.Constants;
 import org.vdragun.tms.util.Constants.Attribute;
 
@@ -34,9 +36,11 @@ public class RequestUriMemorizerFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String requestUri = getRequestUri(request);
+        String fullRequestUri = getFullRequestUri(request);
 
         if (notStaticResourceRequest(requestUri)) {
             request.setAttribute(Attribute.REQUEST_URI, requestUri);
+            request.setAttribute(Attribute.FULL_REQUEST_URI, fullRequestUri);
             LOG.trace("Request URI: {}", requestUri);
         }
         
@@ -46,6 +50,11 @@ public class RequestUriMemorizerFilter extends OncePerRequestFilter {
     private boolean notStaticResourceRequest(String requestUri) {
         return STATIC_RESOURCES.stream()
                 .noneMatch(requestUri::startsWith);
+    }
+
+    private String getFullRequestUri(HttpServletRequest request) {
+        ServletUriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromRequest(request);
+        return decode(uriBuilder.toUriString());
     }
 
     private String getRequestUri(HttpServletRequest request) {

@@ -3,12 +3,15 @@ package org.vdragun.tms.ui.rest.resource.v1.student;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
+import static org.vdragun.tms.util.Constants.Attribute.FULL_REQUEST_URI;
 
 import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,7 +36,6 @@ import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.exception.ApiError;
-import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 import org.vdragun.tms.util.Constants.Message;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,7 +58,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
         produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @Validated
 @Tag(name = "student", description = "the Student API")
-public class StudentResource extends AbstractResource {
+public class StudentResource {
+
+    private static final Logger LOG = LoggerFactory.getLogger(StudentResource.class);
 
     public static final String BASE_URL = "/api/v1/students";
 
@@ -64,10 +69,6 @@ public class StudentResource extends AbstractResource {
 
     @Autowired
     private RepresentationModelAssembler<Student, StudentModel> studentModelAssembler;
-
-    public StudentResource() {
-        super(null);
-    }
 
     @Operation(
             summary = "Find all students available",
@@ -85,12 +86,12 @@ public class StudentResource extends AbstractResource {
             })
     @GetMapping
     @ResponseStatus(OK)
-    public CollectionModel<StudentModel> getAllStudents() {
-        log.trace("Received GET request to retrieve all students, URI={}", getRequestUri());
+    public CollectionModel<StudentModel> getAllStudents(@RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+        LOG.trace("Received GET request to retrieve all students, URI={}", requestUri);
 
         List<Student> students = studentService.findAllStudents();
         CollectionModel<StudentModel> result = studentModelAssembler.toCollectionModel(students);
-        result.add(linkTo(methodOn(StudentResource.class).getAllStudents()).withSelfRel());
+        result.add(linkTo(methodOn(StudentResource.class).getAllStudents(requestUri)).withSelfRel());
 
         return result;
     }
@@ -127,8 +128,9 @@ public class StudentResource extends AbstractResource {
     public StudentModel getStudentById(
             @Parameter(description = "Identifier of the student to be obtained. Cannot be null or empty.",
                     example = "1")
-            @PathVariable("studentId") @Positive(message = Message.POSITIVE_ID) Integer studentId) {
-        log.trace("Received GET request to retrieve student with id={}, URI={}", studentId, getRequestUri());
+            @PathVariable("studentId") @Positive(message = Message.POSITIVE_ID) Integer studentId,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+        LOG.trace("Received GET request to retrieve student with id={}, URI={}", studentId, requestUri);
 
         return studentModelAssembler.toModel(studentService.findStudentById(studentId));
     }
@@ -159,8 +161,9 @@ public class StudentResource extends AbstractResource {
                     description = "Student to register. Cannot be null or empty.",
                     required = true,
                     schema = @Schema(implementation = CreateStudentData.class))
-            @RequestBody @Valid CreateStudentData studentData) {
-        log.trace("Received POST request to register new student, data={}, URI={}", studentData, getRequestUri());
+            @RequestBody @Valid CreateStudentData studentData,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+        LOG.trace("Received POST request to register new student, data={}, URI={}", studentData, requestUri);
 
         Student student = studentService.registerNewStudent(studentData);
         StudentModel studentModel = studentModelAssembler.toModel(student);
@@ -206,9 +209,11 @@ public class StudentResource extends AbstractResource {
                     description = "Data for update. Cannot be null or empty.",
                     required = true,
                     schema = @Schema(implementation = UpdateStudentData.class))
-            @RequestBody @Valid UpdateStudentData studentData) {
-        log.trace("Received PUT request to update student with id={}, data={} URI={}",
-                studentId, studentData, getRequestUri());
+            @RequestBody @Valid UpdateStudentData studentData,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+        LOG.trace(
+                "Received PUT request to update student with id={}, data={} URI={}",
+                studentId, studentData, requestUri);
 
         Student student = studentService.updateExistingStudent(studentData);
         return studentModelAssembler.toModel(student);
@@ -237,8 +242,9 @@ public class StudentResource extends AbstractResource {
     public void deleteStudent(
             @Parameter(description = "Identifier of the student to be deleted. Cannot be null or empty.",
                     example = "1")
-            @PathVariable("studentId") @Positive(message = "Positive.id") Integer studentId) {
-        log.trace("Received DELETE request to delete student with id={}, URI={}", studentId, getRequestUri());
+            @PathVariable("studentId") @Positive(message = "Positive.id") Integer studentId,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+        LOG.trace("Received DELETE request to delete student with id={}, URI={}", studentId, requestUri);
         studentService.deleteStudentById(studentId);
     }
 

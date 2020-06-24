@@ -108,6 +108,7 @@ public final class Constants {
         public static final String ROLES = "roles";
         public static final String ACCESS_DENIED_MSG = "accessDeniedMsg";
         public static final String REQUEST_URI = "requestUri";
+        public static final String FULL_REQUEST_URI = "fullRequestUri";
 
         private Attribute() {
         }

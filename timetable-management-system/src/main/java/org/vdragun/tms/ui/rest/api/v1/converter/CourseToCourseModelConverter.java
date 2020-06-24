@@ -2,6 +2,7 @@ package org.vdragun.tms.ui.rest.api.v1.converter;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.vdragun.tms.util.Constants.Attribute.REQUEST_URI;
 
 import org.springframework.core.convert.converter.Converter;
 import org.vdragun.tms.core.domain.Course;
@@ -29,9 +30,9 @@ public class CourseToCourseModelConverter implements Converter<Course, CourseMod
                 course.getTeacher().getFirstName() + " " + course.getTeacher().getLastName());
 
         model.add(
-                linkTo(methodOn(CourseResource.class).getCourseById(model.getId())).withSelfRel(),
-                linkTo(methodOn(TeacherResource.class).getTeacherById(model.getTeacherId())).withRel("teacher"),
-                linkTo(methodOn(CourseResource.class).getAllCourses()).withRel("courses"));
+                linkTo(methodOn(CourseResource.class).getCourseById(model.getId(), REQUEST_URI)).withSelfRel(),
+                linkTo(methodOn(TeacherResource.class).getTeacherById(model.getTeacherId(), REQUEST_URI)).withRel("teacher"),
+                linkTo(methodOn(CourseResource.class).getAllCourses(REQUEST_URI)).withRel("courses"));
 
         return model;
     }

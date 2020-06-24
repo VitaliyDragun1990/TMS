@@ -38,8 +38,8 @@ public class TimetableToTimetableModelConverter implements Converter<Timetable, 
                 timetable.getClassroom().getCapacity());
 
         model.add(
-                linkTo(methodOn(TimetableResource.class).getTimetableById(model.getId())).withSelfRel(),
-                linkTo(methodOn(TimetableResource.class).getAllTimetables()).withRel("timetables"));
+                linkTo(methodOn(TimetableResource.class).getTimetableById(model.getId(), "requestUri")).withSelfRel(),
+                linkTo(methodOn(TimetableResource.class).getAllTimetables("requestUri")).withRel("timetables"));
 
         return model;
     }

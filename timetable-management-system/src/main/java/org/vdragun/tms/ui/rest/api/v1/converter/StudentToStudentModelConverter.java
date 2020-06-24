@@ -3,6 +3,7 @@ package org.vdragun.tms.ui.rest.api.v1.converter;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.vdragun.tms.util.Constants.Attribute.REQUEST_URI;
 
 import java.util.Collection;
 import java.util.List;
@@ -45,8 +46,8 @@ public class StudentToStudentModelConverter implements Converter<Student, Studen
                 convertToDTO(student.getCourses()));
 
         model.add(
-                linkTo(methodOn(StudentResource.class).getStudentById(model.getId())).withSelfRel(),
-                linkTo(methodOn(StudentResource.class).getAllStudents()).withRel("students"));
+                linkTo(methodOn(StudentResource.class).getStudentById(model.getId(), REQUEST_URI)).withSelfRel(),
+                linkTo(methodOn(StudentResource.class).getAllStudents(REQUEST_URI)).withRel("students"));
 
         return model;
     }

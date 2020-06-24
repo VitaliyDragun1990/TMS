@@ -3,12 +3,15 @@ package org.vdragun.tms.ui.rest.resource.v1.course;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
+import static org.vdragun.tms.util.Constants.Attribute.FULL_REQUEST_URI;
 
 import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -20,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -29,7 +33,6 @@ import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.exception.ApiError;
-import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 import org.vdragun.tms.util.Constants.Message;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,7 +56,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
         produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @Validated
 @Tag(name = "course", description = "the Course API")
-public class CourseResource extends AbstractResource {
+public class CourseResource {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CourseResource.class);
 
     public static final String BASE_URL = "/api/v1/courses";
 
@@ -62,10 +67,6 @@ public class CourseResource extends AbstractResource {
 
     @Autowired
     private RepresentationModelAssembler<Course, CourseModel> courseModelAssembler;
-
-    public CourseResource() {
-        super(null);
-    }
 
     @SecurityRequirements
     @Operation(
@@ -84,11 +85,11 @@ public class CourseResource extends AbstractResource {
             })
     @GetMapping
     @ResponseStatus(OK)
-    public CollectionModel<CourseModel> getAllCourses() {
-        log.trace("Received GET request to retrieve all courses, URI={}", getRequestUri());
+    public CollectionModel<CourseModel> getAllCourses(@RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+        LOG.trace("Received GET request to retrieve all courses, URI={}", requestUri);
         List<Course> courses = courseService.findAllCourses();
         CollectionModel<CourseModel> result = courseModelAssembler.toCollectionModel(courses);
-        result.add(linkTo(methodOn(CourseResource.class).getAllCourses()).withSelfRel());
+        result.add(linkTo(methodOn(CourseResource.class).getAllCourses(requestUri)).withSelfRel());
 
         return result;
     }
@@ -125,8 +126,9 @@ public class CourseResource extends AbstractResource {
     @ResponseStatus(OK)
     public CourseModel getCourseById(
             @Parameter(description = "Identifier of the course to be obtained. Cannot be null or empty", example = "1")
-            @PathVariable("courseId") @Positive(message = Message.POSITIVE_ID) Integer courseId) {
-        log.trace("Received GET request to retrieve course with id={}, URI={}", courseId, getRequestUri());
+            @PathVariable("courseId") @Positive(message = Message.POSITIVE_ID) Integer courseId,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+        LOG.trace("Received GET request to retrieve course with id={}, URI={}", courseId, requestUri);
 
         return courseModelAssembler.toModel(courseService.findCourseById(courseId));
     }
@@ -157,8 +159,9 @@ public class CourseResource extends AbstractResource {
                     description = "Course to register. Cannot be null or empty.",
                     required = true,
                     schema = @Schema(implementation = CourseData.class))
-            @Valid @RequestBody CourseData courseData) {
-        log.trace("Received POST request to register new course, data={}, URI={}", courseData, getRequestUri());
+            @Valid @RequestBody CourseData courseData,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+        LOG.trace("Received POST request to register new course, data={}, URI={}", courseData, requestUri);
 
         Course course = courseService.registerNewCourse(courseData);
         CourseModel courseModel = courseModelAssembler.toModel(course);

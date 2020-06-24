@@ -3,6 +3,7 @@ package org.vdragun.tms.ui.rest.resource.v1.timetable;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
+import static org.vdragun.tms.util.Constants.Attribute.FULL_REQUEST_URI;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -11,6 +12,8 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.hateoas.CollectionModel;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,7 +40,6 @@ import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.exception.ApiError;
-import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 import org.vdragun.tms.util.Constants.Message;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,7 +62,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
         produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @Validated
 @Tag(name = "timetable", description = "the Timetable API")
-public class TimetableResource extends AbstractResource {
+public class TimetableResource {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TimetableResource.class);
 
     public static final String BASE_URL = "/api/v1/timetables";
 
@@ -71,10 +76,6 @@ public class TimetableResource extends AbstractResource {
     
     @Autowired
     private ConversionService conversionService;
-
-    public TimetableResource() {
-        super(null);
-    }
 
     @Operation(
             summary = "Find all timetables available",
@@ -92,13 +93,13 @@ public class TimetableResource extends AbstractResource {
             })
     @GetMapping
     @ResponseStatus(OK)
-    public CollectionModel<TimetableModel> getAllTimetables() {
+    public CollectionModel<TimetableModel> getAllTimetables(@RequestAttribute(FULL_REQUEST_URI) String requestUri) {
 
-        log.trace("Received GET request to retrieve all timetables, URI={}", getRequestUri());
+        LOG.trace("Received GET request to retrieve all timetables, URI={}", requestUri);
         
         List<Timetable> timetables = timetableService.findAllTimetables();
         CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
-        result.add(linkTo(methodOn(TimetableResource.class).getAllTimetables()).withSelfRel());
+        result.add(linkTo(methodOn(TimetableResource.class).getAllTimetables(requestUri)).withSelfRel());
 
         return result;
     }
@@ -135,9 +136,11 @@ public class TimetableResource extends AbstractResource {
     public TimetableModel getTimetableById(
             @Parameter(description = "Identifier of the timetable to be obtained. Cannot be null or empty.",
                     example = "1")
-            @PathVariable("timetableId") @Positive(message = Message.POSITIVE_ID) Integer timetableId) {
+            @PathVariable("timetableId") @Positive(message = Message.POSITIVE_ID) Integer timetableId,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
 
-        log.trace("Received GET request to retrieve timetable with id={}, URI={}", timetableId, getRequestUri());
+        LOG.trace("Received GET request to retrieve timetable with id={}, URI={}",
+                timetableId, requestUri);
 
         return timetableModelAssembler.toModel(timetableService.findTimetableById(timetableId));
     }
@@ -179,10 +182,11 @@ public class TimetableResource extends AbstractResource {
             @Parameter(
                     description = "Target date for which timetables to be obtained. Cannot be null or empty.",
                     example = "2020-05-22")
-            @RequestParam("targetDate") LocalDate targetDate) {
+            @RequestParam("targetDate") LocalDate targetDate,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
 
-        log.trace("Received GET request to retrieve daily timetables for teacher with id={} for date={}, URI={}",
-                teacherId, targetDate, getRequestUri());
+        LOG.trace("Received GET request to retrieve daily timetables for teacher with id={} for date={}, URI={}",
+                teacherId, targetDate, requestUri);
 
         List<Timetable> timetables = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate);
         CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
@@ -233,10 +237,11 @@ public class TimetableResource extends AbstractResource {
             @Parameter(
                     description = "Target month for which timetables to be obtained. Cannot be null or empty.",
                     example = "May")
-            @RequestParam("targetMonth") Month targetMonth) {
+            @RequestParam("targetMonth") Month targetMonth,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
 
-        log.trace("Received GET request to retrieve monthly timetables for teacher with id={} for month={}, URI={}",
-                teacherId, targetMonth, getRequestUri());
+        LOG.trace("Received GET request to retrieve monthly timetables for teacher with id={} for month={}, URI={}",
+                teacherId, targetMonth, requestUri);
 
         List<Timetable> timetables = timetableService.findMonthlyTimetablesForTeacher(teacherId, targetMonth);
         CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
@@ -287,10 +292,11 @@ public class TimetableResource extends AbstractResource {
             @Parameter(
                     description = "Target date for which timetables to be obtained. Cannot be null or empty.",
                     example = "2020-05-22")
-            @RequestParam("targetDate") LocalDate targetDate) {
+            @RequestParam("targetDate") LocalDate targetDate,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
 
-        log.trace("Received GET request to retrieve daily timetables for student with id={} for date={}, URI={}",
-                studentId, targetDate, getRequestUri());
+        LOG.trace("Received GET request to retrieve daily timetables for student with id={} for date={}, URI={}",
+                studentId, targetDate, requestUri);
 
         List<Timetable> timetables = timetableService.findDailyTimetablesForStudent(studentId, targetDate);
         CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
@@ -341,10 +347,11 @@ public class TimetableResource extends AbstractResource {
             @Parameter(
                     description = "Target month for which timetables to be obtained. Cannot be null or empty.",
                     example = "May")
-            @RequestParam("targetMonth") Month targetMonth) {
+            @RequestParam("targetMonth") Month targetMonth,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
 
-        log.trace("Received GET request to retrieve monthly timetables for student with id={} for month={}, URI={}",
-                studentId, targetMonth, getRequestUri());
+        LOG.trace("Received GET request to retrieve monthly timetables for student with id={} for month={}, URI={}",
+                studentId, targetMonth, requestUri);
 
         List<Timetable> timetables = timetableService.findMonthlyTimetablesForStudent(studentId, targetMonth);
         CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
@@ -384,9 +391,10 @@ public class TimetableResource extends AbstractResource {
                     description = "Timetable to register. Cannot be null or empty.",
                     required = true,
                     schema = @Schema(implementation = CreateTimetableData.class))
-            @RequestBody @Valid CreateTimetableData timetableData) {
+            @RequestBody @Valid CreateTimetableData timetableData,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
 
-        log.trace("Received POST request to register new timetable, data={}, URI={}", timetableData, getRequestUri());
+        LOG.trace("Received POST request to register new timetable, data={}, URI={}", timetableData, requestUri);
 
         Timetable timetable = timetableService.registerNewTimetable(timetableData);
         TimetableModel timetableModel = timetableModelAssembler.toModel(timetable);
@@ -432,10 +440,11 @@ public class TimetableResource extends AbstractResource {
                     description = "Data for update. Cannot be null or empty.",
                     required = true,
                     schema = @Schema(implementation = UpdateTimetableData.class))
-            @RequestBody @Valid UpdateTimetableData timetableData) {
+            @RequestBody @Valid UpdateTimetableData timetableData,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
 
-        log.trace("Received PUT request to update timetable with id={}, data={}, URI={}",
-                timetableId, timetableData, getRequestUri());
+        LOG.trace("Received PUT request to update timetable with id={}, data={}, URI={}",
+                timetableId, timetableData, requestUri);
         Timetable timetable = timetableService.updateExistingTimetable(timetableData);
 
         return timetableModelAssembler.toModel(timetable);
@@ -464,9 +473,10 @@ public class TimetableResource extends AbstractResource {
     public void deleteTimetable(
             @Parameter(description = "Identifier of the timetable to be deleted. Cannot be null or empty.",
                     example = "1")
-            @PathVariable("timetableId") @Positive(message = "Positive.id") Integer timetableId) {
+            @PathVariable("timetableId") @Positive(message = "Positive.id") Integer timetableId,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
 
-        log.trace("Received POST reuqest to delete timetable with id={}, URI={}", timetableId, getRequestUri());
+        LOG.trace("Received POST reuqest to delete timetable with id={}, URI={}", timetableId, requestUri);
         timetableService.deleteTimetableById(timetableId);
     }
 

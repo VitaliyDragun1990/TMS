@@ -2,6 +2,7 @@ package org.vdragun.tms.ui.rest.api.v1.mapper;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.vdragun.tms.util.Constants.Attribute.REQUEST_URI;
 
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -33,10 +34,14 @@ public interface TimetableModelMapper extends RepresentationModelMapper<Timetabl
     @AfterMapping
     default void addLinks(@MappingTarget TimetableModel model, Timetable timetable) {
         model.add(
-                linkTo(methodOn(TimetableResource.class).getTimetableById(model.getId())).withSelfRel(),
-                linkTo(methodOn(CourseResource.class).getCourseById(timetable.getCourse().getId())).withRel("course"),
-                linkTo(methodOn(TeacherResource.class).getTeacherById(timetable.getCourse().getTeacher().getId()))
+                linkTo(methodOn(TimetableResource.class).getTimetableById(model.getId(), REQUEST_URI)).withSelfRel(),
+                linkTo(methodOn(CourseResource.class).getCourseById(
+                        timetable.getCourse().getId(),
+                        REQUEST_URI)).withRel("course"),
+                linkTo(methodOn(TeacherResource.class).getTeacherById(
+                        timetable.getCourse().getTeacher().getId(),
+                        REQUEST_URI))
                     .withRel("teacher"),
-                linkTo(methodOn(TimetableResource.class).getAllTimetables()).withRel("timetables"));
+                linkTo(methodOn(TimetableResource.class).getAllTimetables(REQUEST_URI)).withRel("timetables"));
     }
 }

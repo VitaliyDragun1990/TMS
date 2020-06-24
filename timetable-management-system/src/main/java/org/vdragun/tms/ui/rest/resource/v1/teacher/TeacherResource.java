@@ -3,12 +3,15 @@ package org.vdragun.tms.ui.rest.resource.v1.teacher;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
+import static org.vdragun.tms.util.Constants.Attribute.FULL_REQUEST_URI;
 
 import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -20,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -29,7 +33,6 @@ import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.ui.rest.api.v1.model.TeacherModel;
 import org.vdragun.tms.ui.rest.exception.ApiError;
-import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 import org.vdragun.tms.util.Constants.Message;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,7 +55,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
         produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @Validated
 @Tag(name = "teacher", description = "the Teacher API")
-public class TeacherResource extends AbstractResource {
+public class TeacherResource {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TeacherResource.class);
 
     public static final String BASE_URL = "/api/v1/teachers";
 
@@ -61,10 +66,6 @@ public class TeacherResource extends AbstractResource {
 
     @Autowired
     private RepresentationModelAssembler<Teacher, TeacherModel> teacherModelAssembler;
-
-    public TeacherResource() {
-        super(null);
-    }
 
     @Operation(
             summary = "Find all teachers available",
@@ -83,12 +84,12 @@ public class TeacherResource extends AbstractResource {
             })
     @GetMapping
     @ResponseStatus(OK)
-    public CollectionModel<TeacherModel> getAllTeachers() {
-        log.trace("Received GET request to retrieve all teachers, URI={}", getRequestUri());
+    public CollectionModel<TeacherModel> getAllTeachers(@RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+        LOG.trace("Received GET request to retrieve all teachers, URI={}", requestUri);
 
         List<Teacher> teachers = teacherService.findAllTeachers();
         CollectionModel<TeacherModel> result = teacherModelAssembler.toCollectionModel(teachers);
-        result.add(linkTo(methodOn(TeacherResource.class).getAllTeachers()).withSelfRel());
+        result.add(linkTo(methodOn(TeacherResource.class).getAllTeachers(requestUri)).withSelfRel());
 
         return result;
     }
@@ -125,8 +126,9 @@ public class TeacherResource extends AbstractResource {
     public TeacherModel getTeacherById(
             @Parameter(description = "Identifier of the teacher to be obtained. Cannot be null or empty.",
                     example = "1")
-            @PathVariable("teacherId") @Positive(message = Message.POSITIVE_ID) Integer teacherId) {
-        log.trace("Received GET request to retrieve teacher with id={}, URI={}", teacherId, getRequestUri());
+            @PathVariable("teacherId") @Positive(message = Message.POSITIVE_ID) Integer teacherId,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+        LOG.trace("Received GET request to retrieve teacher with id={}, URI={}", teacherId, requestUri);
 
         return teacherModelAssembler.toModel(teacherService.findTeacherById(teacherId));
     }
@@ -157,8 +159,9 @@ public class TeacherResource extends AbstractResource {
                     description = "Teacher to register. Cannot be null or empty.",
                     required = true,
                     schema = @Schema(implementation = TeacherData.class))
-            @RequestBody @Valid TeacherData teacherData) {
-        log.trace("Received POST request to register new teacher, data={}, URI={}", teacherData, getRequestUri());
+            @RequestBody @Valid TeacherData teacherData,
+            @RequestAttribute(FULL_REQUEST_URI) String requestUri) {
+        LOG.trace("Received POST request to register new teacher, data={}, URI={}", teacherData, requestUri);
 
         Teacher teacher = teacherService.registerNewTeacher(teacherData);
         TeacherModel teacherModel = teacherModelAssembler.toModel(teacher);

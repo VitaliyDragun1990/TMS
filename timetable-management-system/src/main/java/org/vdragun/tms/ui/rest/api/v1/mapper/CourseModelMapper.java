@@ -2,6 +2,7 @@ package org.vdragun.tms.ui.rest.api.v1.mapper;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.vdragun.tms.util.Constants.Attribute.REQUEST_URI;
 
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -38,8 +39,8 @@ public interface CourseModelMapper extends RepresentationModelMapper<Course, Cou
     @AfterMapping
     default void addLinks(@MappingTarget CourseModel model, Course course) {
         model.add(
-                linkTo(methodOn(CourseResource.class).getCourseById(model.getId())).withSelfRel(),
-                linkTo(methodOn(TeacherResource.class).getTeacherById(model.getTeacherId())).withRel("teacher"),
-                linkTo(methodOn(CourseResource.class).getAllCourses()).withRel("courses"));
+                linkTo(methodOn(CourseResource.class).getCourseById(model.getId(), REQUEST_URI)).withSelfRel(),
+                linkTo(methodOn(TeacherResource.class).getTeacherById(model.getTeacherId(), REQUEST_URI)).withRel("teacher"),
+                linkTo(methodOn(CourseResource.class).getAllCourses(REQUEST_URI)).withRel("courses"));
     }
 }
