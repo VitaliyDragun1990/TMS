@@ -3,17 +3,14 @@ package org.vdragun.tms.config;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.vdragun.tms.ui.common.converter.LocalDateCustomFormatter;
 import org.vdragun.tms.ui.common.converter.LocalDateTimeCustomFormatter;
-import org.vdragun.tms.ui.common.filter.RequestUriMemorizerFilter;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
 import org.vdragun.tms.util.localizer.TemporalLocalizer;
 import org.vdragun.tms.util.localizer.UserLocaleMessageLocalizer;
@@ -62,17 +59,6 @@ public class WebConfig {
     @Bean
     public LocalDateTimeCustomFormatter localDateTimeCustomFormatter() {
         return new LocalDateTimeCustomFormatter(messageSource);
-    }
-
-    @Bean
-    public FilterRegistrationBean<RequestUriMemorizerFilter> filterRegistrationBean() {
-        FilterRegistrationBean<RequestUriMemorizerFilter> registrationBean = new FilterRegistrationBean<>();
-        RequestUriMemorizerFilter filter = new RequestUriMemorizerFilter();
-
-        registrationBean.setFilter(filter);
-        registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-
-        return registrationBean;
     }
 
 }
