@@ -8,6 +8,7 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
@@ -19,7 +20,7 @@ import org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource;
  * @author Vitaliy Dragun
  *
  */
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CourseModelMapper extends RepresentationModelMapper<Course, CourseModel> {
 
     CourseModelMapper INSTANCE = Mappers.getMapper(CourseModelMapper.class);
@@ -29,7 +30,6 @@ public interface CourseModelMapper extends RepresentationModelMapper<Course, Cou
     @Mapping(
             expression = "java(getFullName(course.getTeacher()))",
             target = "teacherFullName")
-    @Mapping(target = "add", ignore = true)
     CourseModel map(Course course);
 
     default String getFullName(Teacher teacher) {
