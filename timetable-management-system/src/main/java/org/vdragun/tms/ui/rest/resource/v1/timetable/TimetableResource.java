@@ -187,21 +187,20 @@ public class TimetableResource {
             @Parameter(
                     description = "Target date for which timetables to be obtained. Cannot be null or empty.",
                     example = "2020-05-22")
-            @RequestParam("targetDate") LocalDate targetDate) {
+            @RequestParam("targetDate") LocalDate targetDate,
+            @Parameter(
+                    required = false,
+                    example = "{\"page\": 1, \"size\": 10}") Pageable pageRequest,
+            @Parameter(hidden = true) PagedResourcesAssembler<Timetable> pagedAssembler) {
 
-        LOG.trace("Received GET request to retrieve daily timetables for teacher with id={} for date={}, URI={}",
-                teacherId, targetDate, getFullRequestUri());
+        LOG.trace(
+                "Received GET request to retrieve daily timetables for teacher with id={} for date={}, page request:{}, URI={}",
+                teacherId, targetDate, pageRequest, getFullRequestUri());
 
-        List<Timetable> timetables = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate);
-        CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
-        result.add(linkTo(
-                TimetableResource.class)
-                        .slash("teacher")
-                        .slash(teacherId)
-                        .slash("day?targetDate=" + conversionService.convert(targetDate, String.class))
-                        .withSelfRel());
+        Page<Timetable> page = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate, pageRequest);
+        Link selfLink = new Link(getFullRequestUri());
 
-        return result;
+        return pagedAssembler.toModel(page, timetableModelAssembler, selfLink);
     }
 
     @Operation(

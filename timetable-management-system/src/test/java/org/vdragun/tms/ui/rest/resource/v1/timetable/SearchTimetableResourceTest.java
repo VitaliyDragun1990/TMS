@@ -128,7 +128,10 @@ public class SearchTimetableResourceTest {
     void shouldReturnDailyTimetablesForTeacher() throws Exception {
         LocalDate targetDate = LocalDate.now();
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
-        when(timetableServiceMock.findDailyTimetablesForTeacher(TEACHER_ID, targetDate)).thenReturn(expectedTimetables);
+        when(timetableServiceMock.findDailyTimetablesForTeacher(
+                eq(TEACHER_ID),
+                eq(targetDate),
+                any(Pageable.class))).thenReturn(new PageImpl<>(expectedTimetables));
         
         headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -307,7 +310,10 @@ public class SearchTimetableResourceTest {
     @Test
     void shouldReturnStatusNotFoundIfNoTeacherWithGivenIdentifierForDailyRequest() throws Exception {
         LocalDate targetDate = LocalDate.now();
-        when(timetableServiceMock.findDailyTimetablesForTeacher(TEACHER_ID, targetDate))
+        when(timetableServiceMock.findDailyTimetablesForTeacher(
+                eq(TEACHER_ID),
+                eq(targetDate),
+                any(Pageable.class)))
                 .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", TEACHER_ID));
         
         headers.add(ACCEPT, APPLICATION_JSON_VALUE);
