@@ -175,8 +175,10 @@ public class SearchTimetableResourceTest {
     void shouldReturnMonthlyTimetablesForTeacher() throws Exception {
         Month targetMonth = Month.MAY;
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
-        when(timetableServiceMock.findMonthlyTimetablesForTeacher(TEACHER_ID, targetMonth))
-                .thenReturn(expectedTimetables);
+        when(timetableServiceMock.findMonthlyTimetablesForTeacher(
+                eq(TEACHER_ID),
+                eq(targetMonth),
+                any(Pageable.class))).thenReturn(new PageImpl<>(expectedTimetables));
         
         headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -422,7 +424,10 @@ public class SearchTimetableResourceTest {
     @Test
     void shouldReturnStatusNotFoundIfNoTeacherWithGivenIdentifierForMonthlyRequest() throws Exception {
         Month targetMonth = Month.MAY;
-        when(timetableServiceMock.findMonthlyTimetablesForTeacher(TEACHER_ID, targetMonth))
+        when(timetableServiceMock.findMonthlyTimetablesForTeacher(
+                eq(TEACHER_ID),
+                eq(targetMonth),
+                any(Pageable.class)))
                 .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", TEACHER_ID));
         
         headers.add(ACCEPT, APPLICATION_JSON_VALUE);
