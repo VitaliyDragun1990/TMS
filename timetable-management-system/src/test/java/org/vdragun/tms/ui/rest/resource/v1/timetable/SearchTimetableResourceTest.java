@@ -153,7 +153,10 @@ public class SearchTimetableResourceTest {
     void shouldReturnDailyTimetablesForStudent() throws Exception {
         LocalDate targetDate = LocalDate.now();
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
-        when(timetableServiceMock.findDailyTimetablesForStudent(STUDENT_ID, targetDate)).thenReturn(expectedTimetables);
+        when(timetableServiceMock.findDailyTimetablesForStudent(
+                eq(STUDENT_ID),
+                eq(targetDate),
+                any(Pageable.class))).thenReturn(new PageImpl<>(expectedTimetables));
         
         headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
