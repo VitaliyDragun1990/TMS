@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.vdragun.tms.core.application.service.course.CourseData;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
@@ -94,7 +93,7 @@ public class CourseResource {
                 pageRequest, getFullRequestUri());
 
         Page<Course> page = courseService.findCourses(pageRequest);
-        Link selfLink = new Link(ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString());
+        Link selfLink = new Link(getFullRequestUri());
 
         return pagedAssembler.toModel(page, courseModelAssembler, selfLink);
     }

@@ -1,11 +1,7 @@
 package org.vdragun.tms.ui.rest.resource.v1.teacher;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
 import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
-
-import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -13,8 +9,12 @@ import javax.validation.constraints.Positive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.MediaType;
@@ -83,14 +83,18 @@ public class TeacherResource {
             })
     @GetMapping
     @ResponseStatus(OK)
-    public CollectionModel<TeacherModel> getAllTeachers() {
-        LOG.trace("Received GET request to retrieve all teachers, URI={}", getFullRequestUri());
+    public CollectionModel<TeacherModel> getTeachers(
+            @Parameter(
+                    required = false,
+                    example = "{\"page\": 1, \"size\": 10}") Pageable pageRequest,
+            @Parameter(hidden = true) PagedResourcesAssembler<Teacher> pagedAssembler) {
+        LOG.trace("Received GET request to retrieve teachers, page request:{}, URI={}",
+                pageRequest, getFullRequestUri());
 
-        List<Teacher> teachers = teacherService.findAllTeachers();
-        CollectionModel<TeacherModel> result = teacherModelAssembler.toCollectionModel(teachers);
-        result.add(linkTo(methodOn(TeacherResource.class).getAllTeachers()).withSelfRel());
+        Page<Teacher> page = teacherService.findTeachers(pageRequest);
+        Link selfLink = new Link(getFullRequestUri());
 
-        return result;
+        return pagedAssembler.toModel(page, teacherModelAssembler, selfLink);
     }
 
     @Operation(
