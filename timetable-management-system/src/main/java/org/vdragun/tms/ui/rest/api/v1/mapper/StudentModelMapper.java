@@ -32,6 +32,6 @@ public interface StudentModelMapper extends RepresentationModelMapper<Student, S
     default void addLinks(@MappingTarget StudentModel model, Student student) {
         model.add(
                 linkTo(methodOn(StudentResource.class).getStudentById(model.getId())).withSelfRel(),
-                linkTo(methodOn(StudentResource.class).getAllStudents()).withRel("students"));
+                linkTo(StudentResource.class).withRel("students"));
     }
 }
