@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
@@ -26,6 +27,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -84,7 +87,7 @@ public class SearchTimetableResourceTest {
     @Test
     void shouldReturnAllAvailableTimetables() throws Exception {
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
-        when(timetableServiceMock.findAllTimetables()).thenReturn(expectedTimetables);
+        when(timetableServiceMock.findTimetables(any(Pageable.class))).thenReturn(new PageImpl<>(expectedTimetables));
 
         headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);

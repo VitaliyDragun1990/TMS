@@ -1,7 +1,6 @@
 package org.vdragun.tms.ui.rest.resource.v1.timetable;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
 import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
 
@@ -16,8 +15,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.MediaType;
@@ -92,15 +95,19 @@ public class TimetableResource {
             })
     @GetMapping
     @ResponseStatus(OK)
-    public CollectionModel<TimetableModel> getAllTimetables() {
+    public CollectionModel<TimetableModel> getTimetables(
+            @Parameter(
+                    required = false,
+                    example = "{\"page\": 1, \"size\": 10}") Pageable pageRequest,
+            @Parameter(hidden = true) PagedResourcesAssembler<Timetable> pagedAssembler) {
 
-        LOG.trace("Received GET request to retrieve all timetables, URI={}", getFullRequestUri());
-        
-        List<Timetable> timetables = timetableService.findAllTimetables();
-        CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
-        result.add(linkTo(methodOn(TimetableResource.class).getAllTimetables()).withSelfRel());
+        LOG.trace("Received GET request to retrieve timetables, page request:{}, URI={}",
+                pageRequest, getFullRequestUri());
 
-        return result;
+        Page<Timetable> page = timetableService.findTimetables(pageRequest);
+        Link selfLink = new Link(getFullRequestUri());
+
+        return pagedAssembler.toModel(page, timetableModelAssembler, selfLink);
     }
 
     @Operation(

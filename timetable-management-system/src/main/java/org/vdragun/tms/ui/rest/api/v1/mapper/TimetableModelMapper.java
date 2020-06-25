@@ -41,6 +41,6 @@ public interface TimetableModelMapper extends RepresentationModelMapper<Timetabl
                 linkTo(methodOn(TeacherResource.class).getTeacherById(
                         timetable.getCourse().getTeacher().getId()))
                     .withRel("teacher"),
-                linkTo(methodOn(TimetableResource.class).getAllTimetables()).withRel("timetables"));
+                linkTo(TimetableResource.class).withRel("timetables"));
     }
 }
