@@ -1,5 +1,7 @@
 package org.vdragun.tms.ui.web.controller.timetable;
 
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -49,9 +51,11 @@ public class UpdateTimetableController extends AbstractController {
     }
 
     @GetMapping("/{timetableId}/update")
-    public String showUpdateForm(@PathVariable("timetableId") Integer timetableId, Model model) {
+    public String showUpdateForm(
+            @PathVariable("timetableId") Integer timetableId,
+            Model model) {
         log.trace("Received GET request to show timetable update form for timetable with id={}, URI={}",
-                timetableId, getRequestUri());
+                timetableId, getFullRequestUri());
         model.addAttribute(
                 Attribute.TIMETABLE,
                 conversionService.convert(timetableService.findTimetableById(timetableId), UpdateTimetableData.class));
@@ -67,7 +71,7 @@ public class UpdateTimetableController extends AbstractController {
             Model model,
             RedirectAttributes redirectAttributes) {
         log.trace("Received POST request to update timetable with id={}, data={}, URI={}",
-                timetableId, timetableData, getRequestUri());
+                timetableId, timetableData, getFullRequestUri());
 
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(error -> log.trace("Validation error: {}", error));

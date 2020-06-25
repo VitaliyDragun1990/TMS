@@ -3,16 +3,21 @@ package org.vdragun.tms.ui.rest.resource.v1.student;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
 
 import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,10 +33,8 @@ import org.vdragun.tms.core.application.service.student.CreateStudentData;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 import org.vdragun.tms.core.domain.Student;
-import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.exception.ApiError;
-import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 import org.vdragun.tms.util.Constants.Message;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,19 +52,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  *
  */
 @RestController
-@RequestMapping(path = StudentResource.BASE_URL, produces = AbstractResource.APPLICATION_HAL_JSON)
+@RequestMapping(
+        path = StudentResource.BASE_URL,
+        produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @Validated
 @Tag(name = "student", description = "the Student API")
-public class StudentResource extends AbstractResource {
+public class StudentResource {
+
+    private static final Logger LOG = LoggerFactory.getLogger(StudentResource.class);
 
     public static final String BASE_URL = "/api/v1/students";
 
     @Autowired
     private StudentService studentService;
 
-    public StudentResource(ModelConverter converter) {
-        super(converter);
-    }
+    @Autowired
+    private RepresentationModelAssembler<Student, StudentModel> studentModelAssembler;
 
     @Operation(
             summary = "Find all students available",
@@ -69,18 +75,24 @@ public class StudentResource extends AbstractResource {
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
-            content = @Content(
-                    mediaType = APPLICATION_HAL_JSON,
-                    array = @ArraySchema(schema = @Schema(implementation = StudentModel.class))))
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = StudentModel.class))),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = StudentModel.class)))
+            })
     @GetMapping
     @ResponseStatus(OK)
     public CollectionModel<StudentModel> getAllStudents() {
-        log.trace("Received GET request to retrieve all students, URI={}", getRequestUri());
-        List<StudentModel> list = convertList(studentService.findAllStudents(), Student.class, StudentModel.class);
+        LOG.trace("Received GET request to retrieve all students, URI={}", getFullRequestUri());
 
-        return new CollectionModel<>(
-                list,
-                linkTo(methodOn(StudentResource.class).getAllStudents()).withSelfRel());
+        List<Student> students = studentService.findAllStudents();
+        CollectionModel<StudentModel> result = studentModelAssembler.toCollectionModel(students);
+        result.add(linkTo(methodOn(StudentResource.class).getAllStudents()).withSelfRel());
+
+        return result;
     }
 
     @Operation(
@@ -90,20 +102,25 @@ public class StudentResource extends AbstractResource {
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
-            content = @Content(
-                    mediaType = APPLICATION_HAL_JSON,
-                    schema = @Schema(implementation = StudentModel.class)))
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            schema = @Schema(implementation = StudentModel.class)),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = StudentModel.class)),
+            })
     @ApiResponse(
             responseCode = "404",
             description = "Student not found",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/{studentId}")
     @ResponseStatus(OK)
@@ -111,8 +128,9 @@ public class StudentResource extends AbstractResource {
             @Parameter(description = "Identifier of the student to be obtained. Cannot be null or empty.",
                     example = "1")
             @PathVariable("studentId") @Positive(message = Message.POSITIVE_ID) Integer studentId) {
-        log.trace("Received GET request to retrieve student with id={}, URI={}", studentId, getRequestUri());
-        return convert(studentService.findStudentById(studentId), StudentModel.class);
+        LOG.trace("Received GET request to retrieve student with id={}, URI={}", studentId, getFullRequestUri());
+
+        return studentModelAssembler.toModel(studentService.findStudentById(studentId));
     }
 
     @Operation(
@@ -121,14 +139,19 @@ public class StudentResource extends AbstractResource {
     @ApiResponse(
             responseCode = "201",
             description = "Student registered",
-            content = @Content(
-                    mediaType = APPLICATION_HAL_JSON,
-                    schema = @Schema(implementation = StudentModel.class)))
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            schema = @Schema(implementation = StudentModel.class)),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = StudentModel.class)),
+            })
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @PostMapping
     public ResponseEntity<StudentModel> registerNewStudent(
@@ -137,10 +160,10 @@ public class StudentResource extends AbstractResource {
                     required = true,
                     schema = @Schema(implementation = CreateStudentData.class))
             @RequestBody @Valid CreateStudentData studentData) {
-        log.trace("Received POST request to register new student, data={}, URI={}", studentData, getRequestUri());
+        LOG.trace("Received POST request to register new student, data={}, URI={}", studentData, getFullRequestUri());
 
         Student student = studentService.registerNewStudent(studentData);
-        StudentModel studentModel = convert(student, StudentModel.class);
+        StudentModel studentModel = studentModelAssembler.toModel(student);
 
         return ResponseEntity
                 .created(studentModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -153,20 +176,25 @@ public class StudentResource extends AbstractResource {
     @ApiResponse(
             responseCode = "200",
             description = "Student updated",
-            content = @Content(
-                    mediaType = APPLICATION_HAL_JSON,
-                    schema = @Schema(implementation = StudentModel.class)))
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            schema = @Schema(implementation = StudentModel.class)),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = StudentModel.class)),
+            })
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Student record to update not found",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @PutMapping(path = "/{studentId}")
     @ResponseStatus(OK)
@@ -179,11 +207,12 @@ public class StudentResource extends AbstractResource {
                     required = true,
                     schema = @Schema(implementation = UpdateStudentData.class))
             @RequestBody @Valid UpdateStudentData studentData) {
-        log.trace("Received PUT request to update student with id={}, data={} URI={}",
-                studentId, studentData, getRequestUri());
+        LOG.trace(
+                "Received PUT request to update student with id={}, data={} URI={}",
+                studentId, studentData, getFullRequestUri());
 
         Student student = studentService.updateExistingStudent(studentData);
-        return convert(student, StudentModel.class);
+        return studentModelAssembler.toModel(student);
     }
 
     @Operation(
@@ -196,13 +225,13 @@ public class StudentResource extends AbstractResource {
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Student record to delete not found",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @DeleteMapping("/{studentId}")
     @ResponseStatus(OK)
@@ -210,7 +239,7 @@ public class StudentResource extends AbstractResource {
             @Parameter(description = "Identifier of the student to be deleted. Cannot be null or empty.",
                     example = "1")
             @PathVariable("studentId") @Positive(message = "Positive.id") Integer studentId) {
-        log.trace("Received DELETE request to delete student with id={}, URI={}", studentId, getRequestUri());
+        LOG.trace("Received DELETE request to delete student with id={}, URI={}", studentId, getFullRequestUri());
         studentService.deleteStudentById(studentId);
     }
 

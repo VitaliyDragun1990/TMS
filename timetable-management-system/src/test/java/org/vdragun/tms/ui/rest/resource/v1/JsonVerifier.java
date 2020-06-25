@@ -16,8 +16,11 @@ import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
+import org.vdragun.tms.ui.rest.api.v1.mapper.CourseModelMapper;
+import org.vdragun.tms.ui.rest.api.v1.mapper.StudentModelMapper;
+import org.vdragun.tms.ui.rest.api.v1.mapper.TeacherModelMapper;
+import org.vdragun.tms.ui.rest.api.v1.mapper.TimetableModelMapper;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
-import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.StudentModel;
 import org.vdragun.tms.ui.rest.api.v1.model.TeacherModel;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
@@ -32,11 +35,9 @@ import org.vdragun.tms.util.localizer.MessageLocalizer;
  */
 public class JsonVerifier {
 
-    private ModelConverter modelConverter;
     private MessageLocalizer messageLocalizer;
 
-    public JsonVerifier(ModelConverter modelConverter, MessageLocalizer messageLocalizer) {
-        this.modelConverter = modelConverter;
+    public JsonVerifier(MessageLocalizer messageLocalizer) {
         this.messageLocalizer = messageLocalizer;
     }
 
@@ -64,8 +65,7 @@ public class JsonVerifier {
     }
 
     public void verifyTimetableJson(String json, List<Timetable> expectedContent) throws Exception {
-        List<TimetableModel> expected = modelConverter.convertList(expectedContent, Timetable.class,
-                TimetableModel.class);
+        List<TimetableModel> expected = TimetableModelMapper.INSTANCE.map(expectedContent);
         for (int i = 0; i < expected.size(); i++) {
             TimetableModel expectedStudent = expected.get(i);
 
@@ -98,7 +98,7 @@ public class JsonVerifier {
     }
 
     public void verifyTimetableJson(String json, Timetable expectedContent) throws Exception {
-        TimetableModel expected = modelConverter.convert(expectedContent, TimetableModel.class);
+        TimetableModel expected = TimetableModelMapper.INSTANCE.map(expectedContent);
         jPath("$.id").assertValue(json, equalTo(expected.getId()));
         jPath("$.startTime").assertValue(json, equalTo(expected.getStartTime()));
         jPath("$.duration").assertValue(json, equalTo(expected.getDuration()));
@@ -116,7 +116,7 @@ public class JsonVerifier {
     }
 
     public void verifyCourseJson(String json, List<Course> expectedContent) {
-        List<CourseModel> expected = modelConverter.convertList(expectedContent, Course.class, CourseModel.class);
+        List<CourseModel> expected = CourseModelMapper.INSTANCE.map(expectedContent);
         for (int i = 0; i < expected.size(); i++) {
             CourseModel model = expected.get(i);
             jPath(format("$._embedded.courses[%d].id", i))
@@ -135,7 +135,7 @@ public class JsonVerifier {
     }
 
     public void verifyCourseJson(String json, Course expectedContent) throws Exception {
-        CourseModel expected = modelConverter.convert(expectedContent, CourseModel.class);
+        CourseModel expected = CourseModelMapper.INSTANCE.map(expectedContent);
         jPath("$.id").assertValue(json, equalTo(expected.getId()));
         jPath("$.name").assertValue(json, equalTo(expected.getName()));
         jPath("$.description").assertValue(json, equalTo(expected.getDescription()));
@@ -145,7 +145,7 @@ public class JsonVerifier {
     }
 
     public void verifyStudentJson(String json, List<Student> expectedContent) throws Exception {
-        List<StudentModel> expected = modelConverter.convertList(expectedContent, Student.class, StudentModel.class);
+        List<StudentModel> expected = StudentModelMapper.INSTANCE.map(expectedContent);
         for (int i = 0; i < expected.size(); i++) {
             StudentModel expectedStudent = expected.get(i);
 
@@ -155,8 +155,10 @@ public class JsonVerifier {
                     .assertValue(json, equalTo(expectedStudent.getFirstName()));
             jPath(format("$._embedded.students[%d].lastName", i))
                     .assertValue(json, equalTo(expectedStudent.getLastName()));
-            jPath(format("$._embedded.students[%d].group", i))
-                    .assertValue(json, equalTo(expectedStudent.getGroup()));
+            if (expectedStudent.getGroup() != null) {
+                jPath(format("$._embedded.students[%d].group", i))
+                        .assertValue(json, equalTo(expectedStudent.getGroup()));
+            }
             jPath(format("$._embedded.students[%d].enrollmentDate", i))
                     .assertValue(json, equalTo(expectedStudent.getEnrollmentDate()));
 
@@ -179,13 +181,15 @@ public class JsonVerifier {
         }
     }
 
-    public void verifyStudentJson(String json, Student expectedContent) throws Exception {
-        StudentModel expectedStudent = modelConverter.convert(expectedContent, StudentModel.class);
+    public void verifyStudentJson(String json, Student expected) throws Exception {
+        StudentModel expectedStudent = StudentModelMapper.INSTANCE.map(expected);
 
         jPath("$.id").assertValue(json, equalTo(expectedStudent.getId()));
         jPath("$.firstName").assertValue(json, equalTo(expectedStudent.getFirstName()));
         jPath("$.lastName").assertValue(json, equalTo(expectedStudent.getLastName()));
-        jPath("$.group").assertValue(json, equalTo(expectedStudent.getGroup()));
+        if (expected.getGroup() != null) {
+            jPath("$.group").assertValue(json, equalTo(expectedStudent.getGroup()));
+        }
         jPath("$.enrollmentDate").assertValue(json, equalTo(expectedStudent.getEnrollmentDate()));
 
         for (int j = 0; j < expectedStudent.getCourses().size(); j++) {
@@ -205,7 +209,7 @@ public class JsonVerifier {
     }
     
     public void verifyTeacherJson(String json, List<Teacher> expectedContent) throws Exception {
-        List<TeacherModel> expected = modelConverter.convertList(expectedContent, Teacher.class, TeacherModel.class);
+        List<TeacherModel> expected = TeacherModelMapper.INSTANCE.map(expectedContent);
         for (int i = 0; i < expected.size(); i++) {
             TeacherModel expectedTeacher = expected.get(i);
 
@@ -240,7 +244,7 @@ public class JsonVerifier {
     }
     
     public void verifyTeacherJson(String json, Teacher expectedContent) throws Exception {
-        TeacherModel expectedTeacher = modelConverter.convert(expectedContent, TeacherModel.class);
+        TeacherModel expectedTeacher = TeacherModelMapper.INSTANCE.map(expectedContent);
 
         jPath("$.id").assertValue(json, equalTo(expectedTeacher.getId()));
         jPath("$.firstName").assertValue(json, equalTo(expectedTeacher.getFirstName()));

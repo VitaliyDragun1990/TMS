@@ -2,6 +2,7 @@ package org.vdragun.tms.system;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -84,6 +85,7 @@ public class CourseResourceSystemTest {
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         headers.add(AUTHORIZATION, BEARER + authToken);
+        headers.add(HttpHeaders.ACCEPT, HAL_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(registerData), headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(
@@ -100,7 +102,9 @@ public class CourseResourceSystemTest {
     @DataSet(value = { "two-courses.yml", "three-users.yml" }, cleanAfter = true, disableConstraints = true)
     void shouldReturnAllAvailableCoursesFromDatabase() throws Exception {
         headers.add(AUTHORIZATION, BEARER + authToken);
+        headers.add(HttpHeaders.ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
+
         ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL,
                 HttpMethod.GET,
@@ -119,6 +123,8 @@ public class CourseResourceSystemTest {
         int courseId = 1;
 
         headers.add(AUTHORIZATION, BEARER + authToken);
+        headers.add(HttpHeaders.ACCEPT, HAL_JSON_VALUE);
+
         HttpEntity<?> request = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/{courseId}",

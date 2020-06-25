@@ -2,6 +2,8 @@ package org.vdragun.tms.config.thymeleaf;
 
 import static java.lang.String.format;
 
+import org.vdragun.tms.util.WebUtil;
+
 /**
  * @author Vitaliy Dragun
  *
@@ -15,19 +17,19 @@ public class ThymeleafUtil {
     private static final String PAGE_TMP = "page=%d";
 
     /**
-     * Updates pagination info in provided URI. If given URI doesn't contain page
-     * query parameter, it will be added, if page query parameter already present,
-     * it will be updated with specified value. Also sets provided sorted keys using
-     * next algorithm: if no such sort key present (as query parameter) then new
-     * query parameter will be added with value: 'sort=sortKey,asc'. If such sort
-     * key query parameter already present, its value will be updated using next
-     * algorithm: asc -> desc/desc -> asc.
+     * Updates pagination info in current request URI. If such URI doesn't contain
+     * page query parameter, it will be added, if page query parameter already
+     * present, it will be updated with specified value. Also sets provided sorted
+     * keys using next algorithm: if no such sort key present (as query parameter)
+     * then new query parameter will be added with value: 'sort=sortKey,asc'. If
+     * such sort key query parameter already present, its value will be updated
+     * using next algorithm: asc -> desc/desc -> asc.
      * 
-     * @param uri      request URI to update
      * @param pageNum  page number to set
      * @param sortKeys optional sort keys to set
      */
-    public String updatePagingInfo(String uri, int pageNum, String... sortKeys) {
+    public String updatePagingInfo(int pageNum, String... sortKeys) {
+        String uri = WebUtil.getRequestUri();
         String result = prepareToUpdate(uri);
 
         result = updatePageParam(pageNum, result);

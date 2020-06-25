@@ -6,7 +6,6 @@ import java.time.Month;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
 import org.vdragun.tms.util.localizer.TemporalLocalizer;
 
@@ -36,11 +35,6 @@ public abstract class AbstractController {
 
     protected String formatMonth(Month month) {
         return temporalLocalizer.localizeMonth(month);
-    }
-
-    protected String getRequestUri() {
-        ServletUriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromCurrentRequest();
-        return uriBuilder.toUriString();
     }
 
     protected String redirectTo(String targetURI) {

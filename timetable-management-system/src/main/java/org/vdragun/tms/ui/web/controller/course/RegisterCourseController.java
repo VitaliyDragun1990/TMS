@@ -1,5 +1,7 @@
 package org.vdragun.tms.ui.web.controller.course;
 
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +62,7 @@ public class RegisterCourseController extends AbstractController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        log.trace("Received GET request to show course registration from, URI={}", getRequestUri());
+        log.trace("Received GET request to show course registration from, URI={}", getFullRequestUri());
         model.addAttribute(Attribute.COURSE, new CourseData());
 
         return View.COURSE_FORM;
@@ -72,7 +74,7 @@ public class RegisterCourseController extends AbstractController {
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes) {
-        log.trace("Received POST request to register new course, data={}, URI={}", courseData, getRequestUri());
+        log.trace("Received POST request to register new course, data={}, URI={}", courseData, getFullRequestUri());
 
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(error -> log.trace("Validation error: {}", error));

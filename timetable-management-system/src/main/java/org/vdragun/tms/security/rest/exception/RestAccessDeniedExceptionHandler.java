@@ -2,6 +2,7 @@ package org.vdragun.tms.security.rest.exception;
 
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.vdragun.tms.util.WebUtil.getRequestUri;
 
 import java.io.IOException;
 
@@ -50,7 +51,7 @@ public class RestAccessDeniedExceptionHandler implements AccessDeniedHandler {
 
         if (auth != null) {
             LOG.warn("IN handle - User '{}' attempted to access the protected URL: {}",
-                    auth.getName(), getRequestUrl(request));
+                    auth.getName(), getRequestUri());
         }
 
         String errorMsg = messageLocalizer.getLocalizedMessage(Message.ACCESS_DENIED);
@@ -63,12 +64,6 @@ public class RestAccessDeniedExceptionHandler implements AccessDeniedHandler {
         ServletOutputStream out = response.getOutputStream();
         mapper.writeValue(out, error);
         out.flush();
-    }
-
-    private String getRequestUrl(HttpServletRequest req) {
-        String requestUri = req.getRequestURI();
-        String queryString = req.getQueryString();
-        return requestUri + (queryString != null ? "?" + queryString : "");
     }
 
 }

@@ -1,5 +1,7 @@
 package org.vdragun.tms.security.web.exception;
 
+import static org.vdragun.tms.util.WebUtil.getRequestUri;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -39,24 +41,18 @@ public class WebAccessDeniedExceptionHandler implements AccessDeniedHandler {
 
         if (auth != null) {
             LOG.warn("IN handle - User '{}' attempted to access the protected URL: {}",
-                    auth.getName(), getRequestUrl(request));
+                    auth.getName(), getRequestUri());
         }
 
         request.getSession().setAttribute(
                 Attribute.ACCESS_DENIED_MSG,
-                getMessage(Message.REQUESTED_RESOURCE, getRequestUrl(request)));
+                getMessage(Message.REQUESTED_RESOURCE, getRequestUri()));
 
         response.sendRedirect(request.getContextPath() + "/403");
     }
 
     private String getMessage(String code, Object... args) {
         return messageLocalizer.getLocalizedMessage(code, args);
-    }
-
-    private String getRequestUrl(HttpServletRequest req) {
-        String requestUri = req.getRequestURI();
-        String queryString = req.getQueryString();
-        return requestUri + (queryString != null ? "?" + queryString : "");
     }
 
 }

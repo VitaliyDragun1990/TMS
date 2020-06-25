@@ -6,10 +6,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
+import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
-import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.vdragun.tms.ui.rest.resource.v1.student.StudentResource.BASE_URL;
 
 import java.util.List;
@@ -22,6 +24,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
@@ -49,7 +54,6 @@ import org.vdragun.tms.util.Constants.Message;
 @DisplayName("Student Resource Search Functionality Integration Test")
 public class SearchStudentResourceTest {
 
-    private static final String CONTENT_TYPE_JSON = "application/json";
     private static final int NUMBER_OF_STUDENTS = 2;
     private static final int NUMBER_OF_COURSES_PER_STUDENT = 2;
 
@@ -67,17 +71,25 @@ public class SearchStudentResourceTest {
 
     private EntityGenerator generator = new EntityGenerator();
 
+    private HttpHeaders headers = new HttpHeaders();
+
     @Test
     void shouldReturnAllAvailableStudents() throws Exception {
         List<Student> expectedStudents =
                 generator.generateStudentsWithCourses(NUMBER_OF_STUDENTS, NUMBER_OF_COURSES_PER_STUDENT);
         when(studentServiceMock.findAllStudents()).thenReturn(expectedStudents);
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL, String.class);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL,
+                HttpMethod.GET,
+                request,
+                String.class);
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyJson(response.getBody(),
                 "$._embedded.students", hasSize(NUMBER_OF_STUDENTS));
         jsonVerifier.verifyJson(response.getBody(),
@@ -90,12 +102,19 @@ public class SearchStudentResourceTest {
         Student expectedStudent = generator.generateStudentsWithCourses(1, NUMBER_OF_COURSES_PER_STUDENT).get(0);
         when(studentServiceMock.findStudentById(expectedStudent.getId())).thenReturn(expectedStudent);
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{studentId}", String.class,
+        headers.add(ACCEPT, HAL_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{studentId}",
+                HttpMethod.GET,
+                request,
+                String.class,
                 expectedStudent.getId());
+
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyStudentJson(response.getBody(), expectedStudent);
     }
 
@@ -103,12 +122,18 @@ public class SearchStudentResourceTest {
     void shouldReturnStatusBadRequestIfGivenStudentIdentifierIsNotNumber() throws Exception {
         String invalidId = "id";
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{studentId}", String.class,
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{studentId}",
+                HttpMethod.GET,
+                request,
+                String.class,
                 invalidId);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.ARGUMENT_TYPE_MISSMATCH,
@@ -121,12 +146,18 @@ public class SearchStudentResourceTest {
         when(studentServiceMock.findStudentById(eq(studentId)))
                 .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", studentId));
         
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{studentId}", String.class,
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{studentId}",
+                HttpMethod.GET,
+                request,
+                String.class,
                 studentId);
 
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND, Student.class.getSimpleName());
     }
 
@@ -134,12 +165,18 @@ public class SearchStudentResourceTest {
     void shouldReturnStatuBadRequestIfGivenIdentifierIsNotValid() throws Exception {
         Integer negativeId = -1;
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{studentId}", String.class,
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{studentId}",
+                HttpMethod.GET,
+                request,
+                String.class,
                 negativeId);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "studentId", Message.POSITIVE_ID);
     }

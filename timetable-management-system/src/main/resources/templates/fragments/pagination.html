@@ -7,7 +7,8 @@
   <title>Pagination fragments</title>
   
     <!-- Pagination  -->
-    <nav aria-label="Page navigation" th:fragment="pagination (page, url)" th:if="${page.totalPages > 1}">
+    <nav aria-label="Page navigation" th:fragment="pagination (page)" th:if="${page.totalPages > 1}"
+         th:with="url=${T(org.vdragun.tms.util.WebUtil).getRequestUri()}">
       <ul class="pagination justify-content-center">
       
         <!-- First  -->
@@ -80,7 +81,7 @@
     </nav>
     
     <!-- Sort icon  -->
-    <th:block th:fragment="sortIcon (uri, sortKey)">
+    <th:block th:fragment="sortIcon (sortKey)" th:with="uri=${T(org.vdragun.tms.util.WebUtil).getRequestUri()}">
       <i th:if="${#strings.contains(uri, sortKey+',asc')}" class="fi-xwsuxl-sort-up-solid"></i>
       <i th:if="${#strings.contains(uri, sortKey+',desc')}" class="fi-xwsdxl-sort-up-solid"></i>
       <i th:unless="${#strings.contains(uri, sortKey)}" class="fi-xwluxl-sort-wide"></i>

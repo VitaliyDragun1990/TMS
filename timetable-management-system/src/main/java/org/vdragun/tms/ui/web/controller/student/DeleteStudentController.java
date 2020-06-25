@@ -1,5 +1,7 @@
 package org.vdragun.tms.ui.web.controller.student;
 
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,8 +27,10 @@ public class DeleteStudentController extends AbstractController {
     private StudentService studentService;
 
     @PostMapping("/delete")
-    public String deleteStudent(@RequestParam("id") Integer studentId, RedirectAttributes redirectAttributes) {
-        log.trace("Received POST request to delete student with id={}, URI={}", studentId, getRequestUri());
+    public String deleteStudent(
+            @RequestParam("id") Integer studentId,
+            RedirectAttributes redirectAttributes) {
+        log.trace("Received POST request to delete student with id={}, URI={}", studentId, getFullRequestUri());
         studentService.deleteStudentById(studentId);
 
         redirectAttributes.addFlashAttribute(

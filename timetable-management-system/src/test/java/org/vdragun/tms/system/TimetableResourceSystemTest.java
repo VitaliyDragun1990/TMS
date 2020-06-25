@@ -3,6 +3,8 @@ package org.vdragun.tms.system;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
+import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
@@ -120,6 +122,7 @@ public class TimetableResourceSystemTest {
                 CLASSROOM_ID_ONE);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
         headers.add(AUTHORIZATION, BEARER + authToken);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(registerData), headers);
 
@@ -137,7 +140,9 @@ public class TimetableResourceSystemTest {
     @DataSet(value = { "two-timetables.yml", "three-users.yml" }, cleanAfter = true, disableConstraints = true)
     void shouldReturnAllAvailableTimetablesFromDatabase() throws Exception {
         headers.add(AUTHORIZATION, BEARER + authToken);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
+
         ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL,
                 HttpMethod.GET,
@@ -154,7 +159,9 @@ public class TimetableResourceSystemTest {
     @DataSet(value = { "one-timetable.yml", "three-users.yml" }, cleanAfter = true, disableConstraints = true)
     void shouldReturnTimetableByGivenIdentifierFromDatabase() throws Exception {
         headers.add(AUTHORIZATION, BEARER + authToken);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
+
         ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/{timetableId}",
                 HttpMethod.GET,
@@ -172,7 +179,9 @@ public class TimetableResourceSystemTest {
         LocalDate targetDate = LocalDate.now().plusDays(1);
 
         headers.add(AUTHORIZATION, BEARER + authToken);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
+
         ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
                 HttpMethod.GET,
@@ -194,7 +203,9 @@ public class TimetableResourceSystemTest {
         LocalDate targetDate = LocalDate.now().plusDays(1);
 
         headers.add(AUTHORIZATION, BEARER + authToken);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
+
         ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/student/{studentId}/day?targetDate=" + temporalLocalizer.localizeDateDefault(targetDate),
                 HttpMethod.GET,
@@ -213,7 +224,9 @@ public class TimetableResourceSystemTest {
         Month targetMonth = LocalDate.now().plusDays(1).getMonth();
 
         headers.add(AUTHORIZATION, BEARER + authToken);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
+
         ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/teacher/{teacherId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
                 HttpMethod.GET,
@@ -235,7 +248,9 @@ public class TimetableResourceSystemTest {
         Month targetMonth = LocalDate.now().plusDays(1).getMonth();
 
         headers.add(AUTHORIZATION, BEARER + authToken);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
+
         ResponseEntity<String> response = restTemplate.exchange(
                 BASE_URL + "/student/{studentId}/month?targetMonth=" + temporalLocalizer.localizeMonth(targetMonth),
                 HttpMethod.GET,
@@ -259,6 +274,7 @@ public class TimetableResourceSystemTest {
                 CLASSROOM_ID_TWO);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
         headers.add(AUTHORIZATION, BEARER + authToken);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
 
@@ -280,6 +296,7 @@ public class TimetableResourceSystemTest {
         assertThat(timetableDao.findAll(), hasSize(1));
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
         headers.add(AUTHORIZATION, BEARER + authToken);
         HttpEntity<String> request = new HttpEntity<>(headers);
 

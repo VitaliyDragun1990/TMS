@@ -1,4 +1,4 @@
-package org.vdragun.tms.security.rest.jwt;
+package org.vdragun.tms.security.rest.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

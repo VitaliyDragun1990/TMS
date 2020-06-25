@@ -25,7 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.security.rest.exception.RestAccessDeniedExceptionHandler;
 import org.vdragun.tms.security.rest.exception.RestAuthenticationEntryPoint;
-import org.vdragun.tms.security.rest.jwt.JwtAuthenticationTokenFilter;
+import org.vdragun.tms.security.rest.filter.JwtAuthenticationTokenFilter;
 import org.vdragun.tms.security.rest.jwt.JwtConfigurer;
 import org.vdragun.tms.security.rest.jwt.JwtTokenProvider;
 import org.vdragun.tms.security.service.AuthenticatedUserDetailsService;

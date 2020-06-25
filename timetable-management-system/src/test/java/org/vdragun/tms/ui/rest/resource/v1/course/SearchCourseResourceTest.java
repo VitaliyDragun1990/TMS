@@ -6,10 +6,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
-import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL;
 
 import java.util.List;
@@ -22,6 +23,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.vdragun.tms.EmbeddedDataSourceConfig;
@@ -49,8 +53,6 @@ import org.vdragun.tms.util.Constants.Message;
 @DisplayName("Course Resource Search Functionality Integration Test")
 public class SearchCourseResourceTest {
 
-    private static final String CONTENT_TYPE_JSON = "application/json";
-
     @Autowired
     private JsonVerifier jsonVerifier;
 
@@ -65,16 +67,24 @@ public class SearchCourseResourceTest {
 
     private EntityGenerator generator = new EntityGenerator();
 
+    private HttpHeaders headers = new HttpHeaders();
+
     @Test
     void shouldReturnAllAvailableCourses() throws Exception {
         List<Course> courses = generator.generateCourses(2);
         when(courseServiceMock.findAllCourses()).thenReturn(courses);
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL, String.class);
+        headers.add(HttpHeaders.ACCEPT, HAL_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL,
+                HttpMethod.GET,
+                request,
+                String.class);
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyJson(response.getBody(), "$._embedded.courses", hasSize(2));
         jsonVerifier.verifyCourseJson(response.getBody(), courses);
     }
@@ -84,12 +94,18 @@ public class SearchCourseResourceTest {
         Course course = generator.generateCourse();
         when(courseServiceMock.findCourseById(course.getId())).thenReturn(course);
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{courseId}", String.class,
+        headers.add(HttpHeaders.ACCEPT, HAL_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{courseId}",
+                HttpMethod.GET,
+                request,
+                String.class,
                 course.getId());
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyCourseJson(response.getBody(), course);
     }
 
@@ -97,12 +113,18 @@ public class SearchCourseResourceTest {
     void shouldReturnStatusBadRequestIfGivenCourseIdentifierIsNotNumber() throws Exception {
         String invalidId = "id";
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{courseId}", String.class,
+        headers.add(HttpHeaders.ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{courseId}",
+                HttpMethod.GET,
+                request,
+                String.class,
                 invalidId);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.ARGUMENT_TYPE_MISSMATCH,
@@ -115,12 +137,18 @@ public class SearchCourseResourceTest {
         when(courseServiceMock.findCourseById(eq(courseId)))
                 .thenThrow(new ResourceNotFoundException(Course.class, "Course with id=%d not found", courseId));
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{courseId}", String.class,
+        headers.add(HttpHeaders.ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{courseId}",
+                HttpMethod.GET,
+                request,
+                String.class,
                 courseId);
 
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND, Course.class.getSimpleName());
     }
 
@@ -128,12 +156,18 @@ public class SearchCourseResourceTest {
     void shouldReturnStatusBadRequestIfGivenIdentifierIsNotInvalid() throws Exception {
         Integer negativeId = -1;
 
-        ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/{courseId}", String.class,
+        headers.add(HttpHeaders.ACCEPT, APPLICATION_JSON_VALUE);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                BASE_URL + "/{courseId}",
+                HttpMethod.GET,
+                request,
+                String.class,
                 negativeId);
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "courseId", Message.POSITIVE_ID);
     }

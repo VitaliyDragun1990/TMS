@@ -1,5 +1,7 @@
 package org.vdragun.tms.ui.web.controller.timetable;
 
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -56,7 +58,7 @@ public class RegisterTimetableController extends AbstractController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        log.trace("Received GET request to show timetable registration form, URI={}", getRequestUri());
+        log.trace("Received GET request to show timetable registration form, URI={}", getFullRequestUri());
         model.addAttribute(Attribute.TIMETABLE, new CreateTimetableData());
 
         return View.TIMETABLE_REG_FORM;
@@ -68,7 +70,8 @@ public class RegisterTimetableController extends AbstractController {
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes) {
-        log.trace("Received POST request to register new timetable, data={}, URI={}", timetableData, getRequestUri());
+        log.trace("Received POST request to register new timetable, data={}, URI={}", timetableData,
+                getFullRequestUri());
 
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(error -> log.trace("Validation error: {}", error));

@@ -9,13 +9,14 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
+import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
 import static org.vdragun.tms.ui.rest.resource.v1.student.StudentResource.BASE_URL;
 
 import java.util.List;
@@ -62,7 +63,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Student Resource Update Functionality Integration Test")
 public class UpdateStudentResourceTest {
 
-    private static final String CONTENT_TYPE_JSON = "application/json";
     private static final int GROUP_ID = 2;
     private static final int STUDENT_ID = 1;
 
@@ -96,6 +96,7 @@ public class UpdateStudentResourceTest {
         when(studentServiceMock.updateExistingStudent(any(UpdateStudentData.class))).thenReturn(expectedStudent);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -107,7 +108,7 @@ public class UpdateStudentResourceTest {
         
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyStudentJson(response.getBody(), expectedStudent);
         
         verify(studentServiceMock, times(1)).updateExistingStudent(captor.capture());
@@ -120,6 +121,7 @@ public class UpdateStudentResourceTest {
                 .thenThrow(new ResourceNotFoundException(Student.class, "Student with id=%d not found", STUDENT_ID));
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -131,7 +133,7 @@ public class UpdateStudentResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(NOT_FOUND));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.RESOURCE_NOT_FOUND, Student.class.getSimpleName());
     }
 
@@ -141,6 +143,7 @@ public class UpdateStudentResourceTest {
         UpdateStudentData updateData = new UpdateStudentData(STUDENT_ID, GROUP_ID, "Jack", "Smith", asList(3, 4));
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -152,7 +155,7 @@ public class UpdateStudentResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(
                 response.getBody(),
                 Message.ARGUMENT_TYPE_MISSMATCH,
@@ -167,6 +170,7 @@ public class UpdateStudentResourceTest {
         UpdateStudentData updateData = new UpdateStudentData(STUDENT_ID, GROUP_ID, "Jack", "Smith", asList(3, 4));
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(updateData), headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -178,7 +182,7 @@ public class UpdateStudentResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "studentId", Message.POSITIVE_ID);
 
@@ -200,6 +204,7 @@ public class UpdateStudentResourceTest {
                 invalidCourseIds);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(invalidData), headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -211,7 +216,7 @@ public class UpdateStudentResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "studentId", "Positive.studentId");
         jsonVerifier.verifyValidationError(response.getBody(), "groupId", "Positive.groupId");
@@ -226,6 +231,7 @@ public class UpdateStudentResourceTest {
     @Test
     void shouldReturnStatusBadRequestIfUpdateDataIsMissing() throws Exception {
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
@@ -237,7 +243,7 @@ public class UpdateStudentResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.MALFORMED_JSON_REQUEST);
 
         verify(studentServiceMock, never()).updateExistingStudent(any(UpdateStudentData.class));

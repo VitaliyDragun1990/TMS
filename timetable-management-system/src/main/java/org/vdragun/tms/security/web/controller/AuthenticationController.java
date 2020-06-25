@@ -1,5 +1,7 @@
 package org.vdragun.tms.security.web.controller;
 
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.vdragun.tms.security.model.Role;
 import org.vdragun.tms.security.validation.SignupFormPasswordsMatchValidator;
 import org.vdragun.tms.security.web.service.SignupForm;
@@ -65,7 +66,7 @@ public class AuthenticationController {
 
     @GetMapping("/signup")
     public String showSignupForm(Model model) {
-        LOG.trace("Received GET request to show user sign up form, URI: {}", getRequestUri());
+        LOG.trace("Received GET request to show user sign up form, URI: {}", getFullRequestUri());
 
         model.addAttribute(Attribute.SIGN_UP_FORM, new SignupForm());
 
@@ -77,7 +78,7 @@ public class AuthenticationController {
             @Valid @ModelAttribute(Attribute.SIGN_UP_FORM) SignupForm form,
             BindingResult bindingResult,
             Model model) {
-        LOG.trace("Received POST request to register new user, data: {}, URI: {}", form, getRequestUri());
+        LOG.trace("Received POST request to register new user, data: {}, URI: {}", form, getFullRequestUri());
 
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(error -> LOG.trace("Validation error: {}", error));
@@ -90,11 +91,6 @@ public class AuthenticationController {
         authService.processSignUp(form);
 
         return redirectTo("/auth/signin");
-    }
-
-    protected String getRequestUri() {
-        ServletUriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromCurrentRequest();
-        return uriBuilder.toUriString();
     }
 
     protected String redirectTo(String targetURI) {

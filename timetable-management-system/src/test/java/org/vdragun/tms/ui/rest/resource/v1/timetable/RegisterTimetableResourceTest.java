@@ -10,11 +10,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
+import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.vdragun.tms.ui.rest.resource.v1.AbstractResource.APPLICATION_HAL_JSON;
 import static org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource.BASE_URL;
 
 import java.time.LocalDateTime;
@@ -60,7 +61,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @DisplayName("Timetable Resource Register Functionality Integration Test")
 public class RegisterTimetableResourceTest {
 
-    private static final String CONTENT_TYPE_JSON = "application/json";
     private static final LocalDateTime TIMETABLE_START_TIME = LocalDateTime.now().plusDays(3).truncatedTo(MINUTES);
     private static final int CLASSROOM_ID = 2;
     private static final int COURSE_ID = 1;
@@ -96,6 +96,7 @@ public class RegisterTimetableResourceTest {
         when(timetableServiceMock.registerNewTimetable(any(CreateTimetableData.class))).thenReturn(expectedTimetable);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(registerData), headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(
@@ -105,7 +106,7 @@ public class RegisterTimetableResourceTest {
         
         assertThat(response.getStatusCode(), equalTo(CREATED));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(APPLICATION_HAL_JSON));
+        assertThat(contentType, containsString(HAL_JSON_VALUE));
         jsonVerifier.verifyTimetableJson(response.getBody(), expectedTimetable);
 
         verify(timetableServiceMock, times(1)).registerNewTimetable(captor.capture());
@@ -121,6 +122,7 @@ public class RegisterTimetableResourceTest {
                 new CreateTimetableData(startTimeInthePast, tooShortDuration, invalidCourseId, null);
 
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(mapper.writeValueAsString(invalidData), headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(
@@ -130,7 +132,7 @@ public class RegisterTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.VALIDATION_ERROR);
         jsonVerifier.verifyValidationError(response.getBody(), "startTime", "Future.startTime");
         jsonVerifier.verifyValidationError(response.getBody(), "duration", "TimetableDuration");
@@ -143,6 +145,7 @@ public class RegisterTimetableResourceTest {
     @Test
     void shouldReturnStatusBadRequestIfRegistrationDataIsMissing() throws Exception {
         headers.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, APPLICATION_JSON_VALUE);
         HttpEntity<String> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(
@@ -152,7 +155,7 @@ public class RegisterTimetableResourceTest {
 
         assertThat(response.getStatusCode(), equalTo(BAD_REQUEST));
         String contentType = response.getHeaders().getContentType().toString();
-        assertThat(contentType, containsString(CONTENT_TYPE_JSON));
+        assertThat(contentType, containsString(APPLICATION_JSON_VALUE));
         jsonVerifier.verifyErrorMessage(response.getBody(), Message.MALFORMED_JSON_REQUEST);
 
         verify(timetableServiceMock, never()).registerNewTimetable(any(CreateTimetableData.class));

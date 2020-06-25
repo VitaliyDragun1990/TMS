@@ -1,5 +1,7 @@
 package org.vdragun.tms.ui.web.controller.student;
 
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,9 +31,11 @@ public class SearchStudentController extends AbstractController {
     private StudentService studentService;
 
     @GetMapping
-    public String showAllStudents(Model model, Pageable pageable) {
+    public String showAllStudents(
+            Model model,
+            Pageable pageable) {
         log.trace("Received GET request to show all students, page number: {}, URI={}",
-                pageable.getPageNumber(), getRequestUri());
+                pageable.getPageNumber(), getFullRequestUri());
         Page<Student> page = studentService.findStudents(pageable);
 
         model.addAttribute(Attribute.STUDENTS, page);
@@ -41,8 +45,10 @@ public class SearchStudentController extends AbstractController {
     }
 
     @GetMapping("/{studentId}")
-    public String showStudentInfo(@PathVariable("studentId") Integer studentId, Model model) {
-        log.trace("Received GET request to show data for student with id={}, URI={}", studentId, getRequestUri());
+    public String showStudentInfo(
+            @PathVariable("studentId") Integer studentId,
+            Model model) {
+        log.trace("Received GET request to show data for student with id={}, URI={}", studentId, getFullRequestUri());
         model.addAttribute(Attribute.STUDENT, studentService.findStudentById(studentId));
 
         return View.STUDENT_INFO;

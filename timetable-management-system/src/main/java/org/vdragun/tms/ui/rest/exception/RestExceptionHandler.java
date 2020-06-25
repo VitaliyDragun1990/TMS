@@ -74,7 +74,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest request) {
         LOG.warn("Handling missing request parameter exception for parameter: [{}]", ex.getParameterName());
 
-        String errorMsg = messageLocalizer.getLocalizedMessage(Message.MISSING_REQUIRED_PARAMETER,
+        String errorMsg = messageLocalizer.getLocalizedMessage(
+                Message.MISSING_REQUIRED_PARAMETER,
                 ex.getParameterName());
         return buildResponseEntity(new ApiError(BAD_REQUEST, errorMsg, ex));
     }

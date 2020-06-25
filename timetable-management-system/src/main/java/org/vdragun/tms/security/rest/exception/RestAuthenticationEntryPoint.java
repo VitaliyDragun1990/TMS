@@ -2,6 +2,7 @@ package org.vdragun.tms.security.rest.exception;
 
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.vdragun.tms.util.WebUtil.getRequestUri;
 
 import java.io.IOException;
 
@@ -10,9 +11,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.vdragun.tms.security.rest.jwt.JwtAuthenticationException;
 import org.vdragun.tms.ui.rest.exception.ApiError;
 import org.vdragun.tms.util.Constants.Message;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
@@ -28,6 +30,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
+
     private ObjectMapper mapper;
     private MessageLocalizer messageLocalizer;
 
@@ -41,6 +45,9 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
             HttpServletRequest request,
             HttpServletResponse response,
             AuthenticationException ex) throws IOException, ServletException {
+        LOG.warn("IN commence - Failed to authenticate user reuqest, request URI:[{}]",
+                getRequestUri());
+
         String errorMsg = getMessage(ex);
         ApiError error = new ApiError(UNAUTHORIZED);
         error.setMessage(errorMsg);

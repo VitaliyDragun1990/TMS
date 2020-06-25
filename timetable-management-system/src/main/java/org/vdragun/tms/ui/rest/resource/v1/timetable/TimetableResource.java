@@ -3,7 +3,7 @@ package org.vdragun.tms.ui.rest.resource.v1.timetable;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -12,9 +12,15 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,10 +37,8 @@ import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Timetable;
-import org.vdragun.tms.ui.rest.api.v1.model.ModelConverter;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.exception.ApiError;
-import org.vdragun.tms.ui.rest.resource.v1.AbstractResource;
 import org.vdragun.tms.util.Constants.Message;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,19 +56,25 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  *
  */
 @RestController
-@RequestMapping(path = TimetableResource.BASE_URL, produces = AbstractResource.APPLICATION_HAL_JSON)
+@RequestMapping(
+        path = TimetableResource.BASE_URL,
+        produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @Validated
 @Tag(name = "timetable", description = "the Timetable API")
-public class TimetableResource extends AbstractResource {
+public class TimetableResource {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TimetableResource.class);
 
     public static final String BASE_URL = "/api/v1/timetables";
 
     @Autowired
     private TimetableService timetableService;
 
-    public TimetableResource(ModelConverter converter) {
-        super(converter);
-    }
+    @Autowired
+    private RepresentationModelAssembler<Timetable, TimetableModel> timetableModelAssembler;
+    
+    @Autowired
+    private ConversionService conversionService;
 
     @Operation(
             summary = "Find all timetables available",
@@ -72,21 +82,25 @@ public class TimetableResource extends AbstractResource {
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
-            content = @Content(
-                    mediaType = APPLICATION_HAL_JSON,
-                    array = @ArraySchema(schema = @Schema(implementation = TimetableModel.class))))
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = TimetableModel.class))),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = TimetableModel.class)))
+            })
     @GetMapping
     @ResponseStatus(OK)
     public CollectionModel<TimetableModel> getAllTimetables() {
-        log.trace("Received GET request to retrieve all timetables, URI={}", getRequestUri());
-        List<TimetableModel> list = convertList(
-                timetableService.findAllTimetables(),
-                Timetable.class,
-                TimetableModel.class);
+
+        LOG.trace("Received GET request to retrieve all timetables, URI={}", getFullRequestUri());
         
-        return new CollectionModel<>(
-                list,
-                linkTo(methodOn(TimetableResource.class).getAllTimetables()).withSelfRel());
+        List<Timetable> timetables = timetableService.findAllTimetables();
+        CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
+        result.add(linkTo(methodOn(TimetableResource.class).getAllTimetables()).withSelfRel());
+
+        return result;
     }
 
     @Operation(
@@ -96,20 +110,25 @@ public class TimetableResource extends AbstractResource {
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
-            content = @Content(
-                    mediaType = APPLICATION_HAL_JSON,
-                    schema = @Schema(implementation = TimetableModel.class)))
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            schema = @Schema(implementation = TimetableModel.class)),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = TimetableModel.class)),
+            })
     @ApiResponse(
             responseCode = "404",
             description = "Timetable not found",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/{timetableId}")
     @ResponseStatus(OK)
@@ -117,8 +136,11 @@ public class TimetableResource extends AbstractResource {
             @Parameter(description = "Identifier of the timetable to be obtained. Cannot be null or empty.",
                     example = "1")
             @PathVariable("timetableId") @Positive(message = Message.POSITIVE_ID) Integer timetableId) {
-        log.trace("Received GET request to retrieve timetable with id={}, URI={}", timetableId, getRequestUri());
-        return convert(timetableService.findTimetableById(timetableId), TimetableModel.class);
+
+        LOG.trace("Received GET request to retrieve timetable with id={}, URI={}",
+                timetableId, getFullRequestUri());
+
+        return timetableModelAssembler.toModel(timetableService.findTimetableById(timetableId));
     }
 
     @Operation(
@@ -128,20 +150,25 @@ public class TimetableResource extends AbstractResource {
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
-            content = @Content(
-                    mediaType = APPLICATION_HAL_JSON,
-                    schema = @Schema(implementation = TimetableModel.class)))
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = TimetableModel.class))),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = TimetableModel.class)))
+            })
     @ApiResponse(
             responseCode = "404",
             description = "Teacher with provided ID not found",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/teacher/{teacherId}/day")
     @ResponseStatus(OK)
@@ -154,21 +181,20 @@ public class TimetableResource extends AbstractResource {
                     description = "Target date for which timetables to be obtained. Cannot be null or empty.",
                     example = "2020-05-22")
             @RequestParam("targetDate") LocalDate targetDate) {
-        log.trace("Received GET request to retrieve daily timetables for teacher with id={} for date={}, URI={}",
-                teacherId, targetDate, getRequestUri());
 
-        List<TimetableModel> list = convertList(
-                timetableService.findDailyTimetablesForTeacher(teacherId, targetDate),
-                Timetable.class,
-                TimetableModel.class);
+        LOG.trace("Received GET request to retrieve daily timetables for teacher with id={} for date={}, URI={}",
+                teacherId, targetDate, getFullRequestUri());
 
-        return new CollectionModel<>(
-                list,
-                linkTo(TimetableResource.class)
+        List<Timetable> timetables = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate);
+        CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
+        result.add(linkTo(
+                TimetableResource.class)
                         .slash("teacher")
                         .slash(teacherId)
-                        .slash("day?targetDate=" + convert(targetDate, String.class))
+                        .slash("day?targetDate=" + conversionService.convert(targetDate, String.class))
                         .withSelfRel());
+
+        return result;
     }
 
     @Operation(
@@ -178,20 +204,25 @@ public class TimetableResource extends AbstractResource {
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
-            content = @Content(
-                    mediaType = APPLICATION_HAL_JSON,
-                    schema = @Schema(implementation = TimetableModel.class)))
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = TimetableModel.class))),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = TimetableModel.class)))
+            })
     @ApiResponse(
             responseCode = "404",
             description = "Teacher with provided ID not found",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/teacher/{teacherId}/month")
     @ResponseStatus(OK)
@@ -204,21 +235,20 @@ public class TimetableResource extends AbstractResource {
                     description = "Target month for which timetables to be obtained. Cannot be null or empty.",
                     example = "May")
             @RequestParam("targetMonth") Month targetMonth) {
-        log.trace("Received GET request to retrieve monthly timetables for teacher with id={} for month={}, URI={}",
-                teacherId, targetMonth, getRequestUri());
 
-        List<TimetableModel> list = convertList(
-                timetableService.findMonthlyTimetablesForTeacher(teacherId, targetMonth),
-                Timetable.class,
-                TimetableModel.class);
+        LOG.trace("Received GET request to retrieve monthly timetables for teacher with id={} for month={}, URI={}",
+                teacherId, targetMonth, getFullRequestUri());
 
-        return new CollectionModel<>(
-                list,
-                linkTo(TimetableResource.class)
+        List<Timetable> timetables = timetableService.findMonthlyTimetablesForTeacher(teacherId, targetMonth);
+        CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
+        result.add(linkTo(
+                TimetableResource.class)
                         .slash("teacher")
                         .slash(teacherId)
-                        .slash("month?targetMonth=" + convert(targetMonth, String.class))
+                        .slash("month?targetMonth=" + conversionService.convert(targetMonth, String.class))
                         .withSelfRel());
+
+        return result;
     }
 
     @Operation(
@@ -228,20 +258,25 @@ public class TimetableResource extends AbstractResource {
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
-            content = @Content(
-                    mediaType = APPLICATION_HAL_JSON,
-                    schema = @Schema(implementation = TimetableModel.class)))
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = TimetableModel.class))),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = TimetableModel.class)))
+            })
     @ApiResponse(
             responseCode = "404",
             description = "Student with provided ID not found",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/student/{studentId}/day")
     @ResponseStatus(OK)
@@ -254,21 +289,20 @@ public class TimetableResource extends AbstractResource {
                     description = "Target date for which timetables to be obtained. Cannot be null or empty.",
                     example = "2020-05-22")
             @RequestParam("targetDate") LocalDate targetDate) {
-        log.trace("Received GET request to retrieve daily timetables for student with id={} for date={}, URI={}",
-                studentId, targetDate, getRequestUri());
 
-        List<TimetableModel> list = convertList(
-                timetableService.findDailyTimetablesForStudent(studentId, targetDate),
-                Timetable.class,
-                TimetableModel.class);
+        LOG.trace("Received GET request to retrieve daily timetables for student with id={} for date={}, URI={}",
+                studentId, targetDate, getFullRequestUri());
 
-        return new CollectionModel<>(
-                list,
-                linkTo(TimetableResource.class)
+        List<Timetable> timetables = timetableService.findDailyTimetablesForStudent(studentId, targetDate);
+        CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
+        result.add(linkTo(
+                TimetableResource.class)
                         .slash("student")
                         .slash(studentId)
-                        .slash("day?targetDate=" + convert(targetDate, String.class))
+                        .slash("day?targetDate=" + conversionService.convert(targetDate, String.class))
                         .withSelfRel());
+
+        return result;
     }
 
     @Operation(
@@ -278,20 +312,25 @@ public class TimetableResource extends AbstractResource {
     @ApiResponse(
             responseCode = "200",
             description = "successful operation",
-            content = @Content(
-                    mediaType = APPLICATION_HAL_JSON,
-                    schema = @Schema(implementation = TimetableModel.class)))
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = TimetableModel.class))),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = TimetableModel.class)))
+            })
     @ApiResponse(
             responseCode = "404",
             description = "Student with provided ID not found",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @GetMapping("/student/{studentId}/month")
     @ResponseStatus(OK)
@@ -304,21 +343,20 @@ public class TimetableResource extends AbstractResource {
                     description = "Target month for which timetables to be obtained. Cannot be null or empty.",
                     example = "May")
             @RequestParam("targetMonth") Month targetMonth) {
-        log.trace("Received GET request to retrieve monthly timetables for student with id={} for month={}, URI={}",
-                studentId, targetMonth, getRequestUri());
 
-        List<TimetableModel> list = convertList(
-                timetableService.findMonthlyTimetablesForStudent(studentId, targetMonth),
-                Timetable.class,
-                TimetableModel.class);
+        LOG.trace("Received GET request to retrieve monthly timetables for student with id={} for month={}, URI={}",
+                studentId, targetMonth, getFullRequestUri());
 
-        return new CollectionModel<>(
-                list,
-                linkTo(TimetableResource.class)
+        List<Timetable> timetables = timetableService.findMonthlyTimetablesForStudent(studentId, targetMonth);
+        CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
+        result.add(linkTo(
+                TimetableResource.class)
                         .slash("student")
                         .slash(studentId)
-                        .slash("month?targetMonth=" + convert(targetMonth, String.class))
+                        .slash("month?targetMonth=" + conversionService.convert(targetMonth, String.class))
                         .withSelfRel());
+
+        return result;
     }
 
     @Operation(
@@ -327,14 +365,19 @@ public class TimetableResource extends AbstractResource {
     @ApiResponse(
             responseCode = "201",
             description = "Timetable registered",
-            content = @Content(
-                    mediaType = APPLICATION_HAL_JSON,
-                    schema = @Schema(implementation = TimetableModel.class)))
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            schema = @Schema(implementation = TimetableModel.class)),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = TimetableModel.class))
+            })
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @PostMapping
     public ResponseEntity<TimetableModel> registerNewTimetable(
@@ -343,10 +386,12 @@ public class TimetableResource extends AbstractResource {
                     required = true,
                     schema = @Schema(implementation = CreateTimetableData.class))
             @RequestBody @Valid CreateTimetableData timetableData) {
-        log.trace("Received POST request to register new timetable, data={}, URI={}", timetableData, getRequestUri());
+
+        LOG.trace("Received POST request to register new timetable, data={}, URI={}",
+                timetableData, getFullRequestUri());
 
         Timetable timetable = timetableService.registerNewTimetable(timetableData);
-        TimetableModel timetableModel = convert(timetable, TimetableModel.class);
+        TimetableModel timetableModel = timetableModelAssembler.toModel(timetable);
 
         return ResponseEntity
                 .created(timetableModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -359,20 +404,25 @@ public class TimetableResource extends AbstractResource {
     @ApiResponse(
             responseCode = "200",
             description = "Timetable updated",
-            content = @Content(
-                    mediaType = APPLICATION_HAL_JSON,
-                    schema = @Schema(implementation = TimetableModel.class)))
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            schema = @Schema(implementation = TimetableModel.class)),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = TimetableModel.class))
+            })
     @ApiResponse(
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Timetable record to update not found",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @PutMapping(path = "/{timetableId}")
     @ResponseStatus(OK)
@@ -385,11 +435,12 @@ public class TimetableResource extends AbstractResource {
                     required = true,
                     schema = @Schema(implementation = UpdateTimetableData.class))
             @RequestBody @Valid UpdateTimetableData timetableData) {
-        log.trace("Received PUT request to update timetable with id={}, data={}, URI={}",
-                timetableId, timetableData, getRequestUri());
 
+        LOG.trace("Received PUT request to update timetable with id={}, data={}, URI={}",
+                timetableId, timetableData, getFullRequestUri());
         Timetable timetable = timetableService.updateExistingTimetable(timetableData);
-        return convert(timetable, TimetableModel.class);
+
+        return timetableModelAssembler.toModel(timetable);
     }
 
     @Operation(
@@ -402,13 +453,13 @@ public class TimetableResource extends AbstractResource {
             responseCode = "400",
             description = "Invalid input",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @ApiResponse(
             responseCode = "404",
             description = "Timetable record to delete not found",
             content = @Content(
-                    mediaType = APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ApiError.class)))
     @DeleteMapping("/{timetableId}")
     @ResponseStatus(OK)
@@ -416,7 +467,8 @@ public class TimetableResource extends AbstractResource {
             @Parameter(description = "Identifier of the timetable to be deleted. Cannot be null or empty.",
                     example = "1")
             @PathVariable("timetableId") @Positive(message = "Positive.id") Integer timetableId) {
-        log.trace("Received POST reuqest to delete timetable with id={}, URI={}", timetableId, getRequestUri());
+
+        LOG.trace("Received POST reuqest to delete timetable with id={}, URI={}", timetableId, getFullRequestUri());
         timetableService.deleteTimetableById(timetableId);
     }
 
