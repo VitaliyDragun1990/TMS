@@ -1,13 +1,10 @@
 package org.vdragun.tms.ui.rest.resource.v1.timetable;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpStatus.OK;
 import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -15,9 +12,12 @@ import javax.validation.constraints.Positive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.MediaType;
@@ -72,9 +72,6 @@ public class TimetableResource {
 
     @Autowired
     private RepresentationModelAssembler<Timetable, TimetableModel> timetableModelAssembler;
-    
-    @Autowired
-    private ConversionService conversionService;
 
     @Operation(
             summary = "Find all timetables available",
@@ -92,15 +89,19 @@ public class TimetableResource {
             })
     @GetMapping
     @ResponseStatus(OK)
-    public CollectionModel<TimetableModel> getAllTimetables() {
+    public CollectionModel<TimetableModel> getTimetables(
+            @Parameter(
+                    required = false,
+                    example = "{\"page\": 1, \"size\": 10}") Pageable pageRequest,
+            @Parameter(hidden = true) PagedResourcesAssembler<Timetable> pagedAssembler) {
 
-        LOG.trace("Received GET request to retrieve all timetables, URI={}", getFullRequestUri());
-        
-        List<Timetable> timetables = timetableService.findAllTimetables();
-        CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
-        result.add(linkTo(methodOn(TimetableResource.class).getAllTimetables()).withSelfRel());
+        LOG.trace("Received GET request to retrieve timetables, page request:{}, URI={}",
+                pageRequest, getFullRequestUri());
 
-        return result;
+        Page<Timetable> page = timetableService.findTimetables(pageRequest);
+        Link selfLink = new Link(getFullRequestUri());
+
+        return pagedAssembler.toModel(page, timetableModelAssembler, selfLink);
     }
 
     @Operation(
@@ -180,21 +181,20 @@ public class TimetableResource {
             @Parameter(
                     description = "Target date for which timetables to be obtained. Cannot be null or empty.",
                     example = "2020-05-22")
-            @RequestParam("targetDate") LocalDate targetDate) {
+            @RequestParam("targetDate") LocalDate targetDate,
+            @Parameter(
+                    required = false,
+                    example = "{\"page\": 1, \"size\": 10}") Pageable pageRequest,
+            @Parameter(hidden = true) PagedResourcesAssembler<Timetable> pagedAssembler) {
 
-        LOG.trace("Received GET request to retrieve daily timetables for teacher with id={} for date={}, URI={}",
-                teacherId, targetDate, getFullRequestUri());
+        LOG.trace(
+                "Received GET request to retrieve daily timetables for teacher with id={} for date={}, page request:{}, URI={}",
+                teacherId, targetDate, pageRequest, getFullRequestUri());
 
-        List<Timetable> timetables = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate);
-        CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
-        result.add(linkTo(
-                TimetableResource.class)
-                        .slash("teacher")
-                        .slash(teacherId)
-                        .slash("day?targetDate=" + conversionService.convert(targetDate, String.class))
-                        .withSelfRel());
+        Page<Timetable> page = timetableService.findDailyTimetablesForTeacher(teacherId, targetDate, pageRequest);
+        Link selfLink = new Link(getFullRequestUri());
 
-        return result;
+        return pagedAssembler.toModel(page, timetableModelAssembler, selfLink);
     }
 
     @Operation(
@@ -234,21 +234,20 @@ public class TimetableResource {
             @Parameter(
                     description = "Target month for which timetables to be obtained. Cannot be null or empty.",
                     example = "May")
-            @RequestParam("targetMonth") Month targetMonth) {
+            @RequestParam("targetMonth") Month targetMonth,
+            @Parameter(
+                    required = false,
+                    example = "{\"page\": 1, \"size\": 10}") Pageable pageRequest,
+            @Parameter(hidden = true) PagedResourcesAssembler<Timetable> pagedAssembler) {
 
-        LOG.trace("Received GET request to retrieve monthly timetables for teacher with id={} for month={}, URI={}",
-                teacherId, targetMonth, getFullRequestUri());
+        LOG.trace(
+                "Received GET request to retrieve monthly timetables for teacher with id={} for month={}, page request:{}, URI={}",
+                teacherId, targetMonth, pageRequest, getFullRequestUri());
 
-        List<Timetable> timetables = timetableService.findMonthlyTimetablesForTeacher(teacherId, targetMonth);
-        CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
-        result.add(linkTo(
-                TimetableResource.class)
-                        .slash("teacher")
-                        .slash(teacherId)
-                        .slash("month?targetMonth=" + conversionService.convert(targetMonth, String.class))
-                        .withSelfRel());
+        Page<Timetable> page = timetableService.findMonthlyTimetablesForTeacher(teacherId, targetMonth, pageRequest);
+        Link selfLink = new Link(getFullRequestUri());
 
-        return result;
+        return pagedAssembler.toModel(page, timetableModelAssembler, selfLink);
     }
 
     @Operation(
@@ -288,21 +287,20 @@ public class TimetableResource {
             @Parameter(
                     description = "Target date for which timetables to be obtained. Cannot be null or empty.",
                     example = "2020-05-22")
-            @RequestParam("targetDate") LocalDate targetDate) {
+            @RequestParam("targetDate") LocalDate targetDate,
+            @Parameter(
+                    required = false,
+                    example = "{\"page\": 1, \"size\": 10}") Pageable pageRequest,
+            @Parameter(hidden = true) PagedResourcesAssembler<Timetable> pagedAssembler) {
 
-        LOG.trace("Received GET request to retrieve daily timetables for student with id={} for date={}, URI={}",
-                studentId, targetDate, getFullRequestUri());
+        LOG.trace(
+                "Received GET request to retrieve daily timetables for student with id={} for date={}, page request:{}, URI={}",
+                studentId, targetDate, pageRequest, getFullRequestUri());
 
-        List<Timetable> timetables = timetableService.findDailyTimetablesForStudent(studentId, targetDate);
-        CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
-        result.add(linkTo(
-                TimetableResource.class)
-                        .slash("student")
-                        .slash(studentId)
-                        .slash("day?targetDate=" + conversionService.convert(targetDate, String.class))
-                        .withSelfRel());
+        Page<Timetable> page = timetableService.findDailyTimetablesForStudent(studentId, targetDate, pageRequest);
+        Link selfLink = new Link(getFullRequestUri());
 
-        return result;
+        return pagedAssembler.toModel(page, timetableModelAssembler, selfLink);
     }
 
     @Operation(
@@ -342,21 +340,20 @@ public class TimetableResource {
             @Parameter(
                     description = "Target month for which timetables to be obtained. Cannot be null or empty.",
                     example = "May")
-            @RequestParam("targetMonth") Month targetMonth) {
+            @RequestParam("targetMonth") Month targetMonth,
+            @Parameter(
+                    required = false,
+                    example = "{\"page\": 1, \"size\": 10}") Pageable pageRequest,
+            @Parameter(hidden = true) PagedResourcesAssembler<Timetable> pagedAssembler) {
 
-        LOG.trace("Received GET request to retrieve monthly timetables for student with id={} for month={}, URI={}",
-                studentId, targetMonth, getFullRequestUri());
+        LOG.trace(
+                "Received GET request to retrieve monthly timetables for student with id={} for month={}, page request:{}, URI={}",
+                studentId, targetMonth, pageRequest, getFullRequestUri());
 
-        List<Timetable> timetables = timetableService.findMonthlyTimetablesForStudent(studentId, targetMonth);
-        CollectionModel<TimetableModel> result = timetableModelAssembler.toCollectionModel(timetables);
-        result.add(linkTo(
-                TimetableResource.class)
-                        .slash("student")
-                        .slash(studentId)
-                        .slash("month?targetMonth=" + conversionService.convert(targetMonth, String.class))
-                        .withSelfRel());
+        Page<Timetable> page = timetableService.findMonthlyTimetablesForStudent(studentId, targetMonth, pageRequest);
+        Link selfLink = new Link(getFullRequestUri());
 
-        return result;
+        return pagedAssembler.toModel(page, timetableModelAssembler, selfLink);
     }
 
     @Operation(

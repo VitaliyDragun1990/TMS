@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
@@ -23,6 +24,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -70,9 +73,9 @@ public class SearchCourseResourceTest {
     private HttpHeaders headers = new HttpHeaders();
 
     @Test
-    void shouldReturnAllAvailableCourses() throws Exception {
+    void shouldReturnPageWithCourses() throws Exception {
         List<Course> courses = generator.generateCourses(2);
-        when(courseServiceMock.findAllCourses()).thenReturn(courses);
+        when(courseServiceMock.findCourses(any(Pageable.class))).thenReturn(new PageImpl<>(courses));
 
         headers.add(HttpHeaders.ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);

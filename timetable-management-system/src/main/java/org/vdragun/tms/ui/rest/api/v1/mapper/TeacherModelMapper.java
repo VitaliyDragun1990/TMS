@@ -31,6 +31,6 @@ public interface TeacherModelMapper extends RepresentationModelMapper<Teacher, T
     default void addLinks(@MappingTarget TeacherModel model, Teacher teacher) {
         model.add(
                 linkTo(methodOn(TeacherResource.class).getTeacherById(model.getId())).withSelfRel(),
-                linkTo(methodOn(TeacherResource.class).getAllTeachers()).withRel("teachers"));
+                linkTo(TeacherResource.class).withRel("teachers"));
     }
 }

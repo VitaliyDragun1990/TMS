@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
@@ -26,6 +27,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -84,7 +87,7 @@ public class SearchTimetableResourceTest {
     @Test
     void shouldReturnAllAvailableTimetables() throws Exception {
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
-        when(timetableServiceMock.findAllTimetables()).thenReturn(expectedTimetables);
+        when(timetableServiceMock.findTimetables(any(Pageable.class))).thenReturn(new PageImpl<>(expectedTimetables));
 
         headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -125,7 +128,10 @@ public class SearchTimetableResourceTest {
     void shouldReturnDailyTimetablesForTeacher() throws Exception {
         LocalDate targetDate = LocalDate.now();
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
-        when(timetableServiceMock.findDailyTimetablesForTeacher(TEACHER_ID, targetDate)).thenReturn(expectedTimetables);
+        when(timetableServiceMock.findDailyTimetablesForTeacher(
+                eq(TEACHER_ID),
+                eq(targetDate),
+                any(Pageable.class))).thenReturn(new PageImpl<>(expectedTimetables));
         
         headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -147,7 +153,10 @@ public class SearchTimetableResourceTest {
     void shouldReturnDailyTimetablesForStudent() throws Exception {
         LocalDate targetDate = LocalDate.now();
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
-        when(timetableServiceMock.findDailyTimetablesForStudent(STUDENT_ID, targetDate)).thenReturn(expectedTimetables);
+        when(timetableServiceMock.findDailyTimetablesForStudent(
+                eq(STUDENT_ID),
+                eq(targetDate),
+                any(Pageable.class))).thenReturn(new PageImpl<>(expectedTimetables));
         
         headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -169,8 +178,10 @@ public class SearchTimetableResourceTest {
     void shouldReturnMonthlyTimetablesForTeacher() throws Exception {
         Month targetMonth = Month.MAY;
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
-        when(timetableServiceMock.findMonthlyTimetablesForTeacher(TEACHER_ID, targetMonth))
-                .thenReturn(expectedTimetables);
+        when(timetableServiceMock.findMonthlyTimetablesForTeacher(
+                eq(TEACHER_ID),
+                eq(targetMonth),
+                any(Pageable.class))).thenReturn(new PageImpl<>(expectedTimetables));
         
         headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -192,8 +203,10 @@ public class SearchTimetableResourceTest {
     void shouldReturnMonthlyTimetablesForStudent() throws Exception {
         Month targetMonth = Month.MAY;
         List<Timetable> expectedTimetables = generator.generateTimetables(NUMBER_OF_TIMETABLES);
-        when(timetableServiceMock.findMonthlyTimetablesForStudent(STUDENT_ID, targetMonth))
-                .thenReturn(expectedTimetables);
+        when(timetableServiceMock.findMonthlyTimetablesForStudent(
+                eq(STUDENT_ID),
+                eq(targetMonth),
+                any(Pageable.class))).thenReturn(new PageImpl<>(expectedTimetables));
         
         headers.add(ACCEPT, HAL_JSON_VALUE);
         HttpEntity<?> request = new HttpEntity<>(headers);
@@ -304,7 +317,10 @@ public class SearchTimetableResourceTest {
     @Test
     void shouldReturnStatusNotFoundIfNoTeacherWithGivenIdentifierForDailyRequest() throws Exception {
         LocalDate targetDate = LocalDate.now();
-        when(timetableServiceMock.findDailyTimetablesForTeacher(TEACHER_ID, targetDate))
+        when(timetableServiceMock.findDailyTimetablesForTeacher(
+                eq(TEACHER_ID),
+                eq(targetDate),
+                any(Pageable.class)))
                 .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", TEACHER_ID));
         
         headers.add(ACCEPT, APPLICATION_JSON_VALUE);
@@ -413,7 +429,10 @@ public class SearchTimetableResourceTest {
     @Test
     void shouldReturnStatusNotFoundIfNoTeacherWithGivenIdentifierForMonthlyRequest() throws Exception {
         Month targetMonth = Month.MAY;
-        when(timetableServiceMock.findMonthlyTimetablesForTeacher(TEACHER_ID, targetMonth))
+        when(timetableServiceMock.findMonthlyTimetablesForTeacher(
+                eq(TEACHER_ID),
+                eq(targetMonth),
+                any(Pageable.class)))
                 .thenThrow(new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", TEACHER_ID));
         
         headers.add(ACCEPT, APPLICATION_JSON_VALUE);
