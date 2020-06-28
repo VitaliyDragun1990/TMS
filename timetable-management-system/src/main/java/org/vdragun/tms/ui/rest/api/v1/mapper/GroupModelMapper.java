@@ -20,8 +20,6 @@ public interface GroupModelMapper extends RepresentationModelMapper<Group, Group
 
     GroupModelMapper INSTANCE = Mappers.getMapper(GroupModelMapper.class);
 
-    GroupModel map(Group group);
-
     @AfterMapping
     default void addLinks(@MappingTarget GroupModel model) {
         model.add(linkTo(DictionaryResource.class).slash("groups").withRel("groups"));

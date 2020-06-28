@@ -17,12 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.category.CategoryService;
+import org.vdragun.tms.core.application.service.classroom.ClassroomService;
 import org.vdragun.tms.core.application.service.group.GroupService;
 import org.vdragun.tms.core.domain.Category;
+import org.vdragun.tms.core.domain.Classroom;
 import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.ui.rest.api.v1.mapper.CategoryModelMapper;
+import org.vdragun.tms.ui.rest.api.v1.mapper.ClassroomModelMapper;
 import org.vdragun.tms.ui.rest.api.v1.mapper.GroupModelMapper;
 import org.vdragun.tms.ui.rest.api.v1.model.CategoryModel;
+import org.vdragun.tms.ui.rest.api.v1.model.ClassroomModel;
 import org.vdragun.tms.ui.rest.api.v1.model.GroupModel;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,6 +59,9 @@ public class DictionaryResource {
 
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private ClassroomService classroomService;
 
     @SecurityRequirements
     @Operation(
@@ -106,6 +113,32 @@ public class DictionaryResource {
         Link selfLink = new Link(getFullRequestUri());
 
         return new CollectionModel<>(GroupModelMapper.INSTANCE.map(groups), selfLink);
+    }
+
+    @SecurityRequirements
+    @Operation(
+            summary = "Find all classrooms available",
+            tags = { "dictionary" })
+    @ApiResponse(
+            responseCode = "200",
+            description = "successful operation",
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = ClassroomModel.class))),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = ClassroomModel.class)))
+            })
+    @GetMapping("/classrooms")
+    @ResponseStatus(OK)
+    public CollectionModel<ClassroomModel> getAllClassrooms() {
+        LOG.trace("Received GET request to retrieve all groups, URI={}", getFullRequestUri());
+
+        List<Classroom> classrooms = classroomService.findAllClassrooms();
+        Link selfLink = new Link(getFullRequestUri());
+
+        return new CollectionModel<>(ClassroomModelMapper.INSTANCE.map(classrooms), selfLink);
     }
 
 }
