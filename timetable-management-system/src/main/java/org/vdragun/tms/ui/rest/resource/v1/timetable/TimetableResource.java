@@ -74,7 +74,7 @@ public class TimetableResource {
     private RepresentationModelAssembler<Timetable, TimetableModel> timetableModelAssembler;
 
     @Operation(
-            summary = "Find all timetables available",
+            summary = "Find page with timetables available",
             tags = { "timetable" })
     @ApiResponse(
             responseCode = "200",
@@ -145,7 +145,7 @@ public class TimetableResource {
     }
 
     @Operation(
-            summary = "Find daily timetables for teacher",
+            summary = "Find page with daily timetables for teacher",
             description = "Returns 0 or more timetables",
             tags = { "timetable" })
     @ApiResponse(
@@ -198,7 +198,7 @@ public class TimetableResource {
     }
 
     @Operation(
-            summary = "Find monthly timetables for teacher",
+            summary = "Find page with monthly timetables for teacher",
             description = "Returns 0 or more timetables",
             tags = { "timetable" })
     @ApiResponse(
@@ -251,7 +251,7 @@ public class TimetableResource {
     }
 
     @Operation(
-            summary = "Find daily timetables for student",
+            summary = "Find page with daily timetables for student",
             description = "Returns 0 or more timetables",
             tags = { "timetable" })
     @ApiResponse(
@@ -304,7 +304,7 @@ public class TimetableResource {
     }
 
     @Operation(
-            summary = "Find monthly timetables for student",
+            summary = "Find page with monthly timetables for student",
             description = "Returns 0 or more timetables",
             tags = { "timetable" })
     @ApiResponse(

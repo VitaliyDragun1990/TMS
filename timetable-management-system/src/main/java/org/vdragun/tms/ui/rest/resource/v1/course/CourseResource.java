@@ -69,7 +69,7 @@ public class CourseResource {
 
     @SecurityRequirements
     @Operation(
-            summary = "Find all courses available",
+            summary = "Find page with courses available",
             tags = { "course" })
     @ApiResponse(
             responseCode = "200",
