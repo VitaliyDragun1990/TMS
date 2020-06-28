@@ -17,9 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.category.CategoryService;
+import org.vdragun.tms.core.application.service.group.GroupService;
 import org.vdragun.tms.core.domain.Category;
+import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.ui.rest.api.v1.mapper.CategoryModelMapper;
+import org.vdragun.tms.ui.rest.api.v1.mapper.GroupModelMapper;
 import org.vdragun.tms.ui.rest.api.v1.model.CategoryModel;
+import org.vdragun.tms.ui.rest.api.v1.model.GroupModel;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -49,6 +53,9 @@ public class DictionaryResource {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private GroupService groupService;
+
     @SecurityRequirements
     @Operation(
             summary = "Find all categories available",
@@ -73,6 +80,32 @@ public class DictionaryResource {
         Link selfLink = new Link(getFullRequestUri());
 
         return new CollectionModel<>(CategoryModelMapper.INSTANCE.map(categories), selfLink);
+    }
+
+    @SecurityRequirements
+    @Operation(
+            summary = "Find all groups available",
+            tags = { "dictionary" })
+    @ApiResponse(
+            responseCode = "200",
+            description = "successful operation",
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = GroupModel.class))),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = GroupModel.class)))
+            })
+    @GetMapping("/groups")
+    @ResponseStatus(OK)
+    public CollectionModel<GroupModel> getAllGroups() {
+        LOG.trace("Received GET request to retrieve all groups, URI={}", getFullRequestUri());
+
+        List<Group> groups = groupService.findAllGroups();
+        Link selfLink = new Link(getFullRequestUri());
+
+        return new CollectionModel<>(GroupModelMapper.INSTANCE.map(groups), selfLink);
     }
 
 }
