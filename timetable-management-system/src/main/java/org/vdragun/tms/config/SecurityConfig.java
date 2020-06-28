@@ -105,6 +105,8 @@ public class SecurityConfig {
                     // courses
                     .antMatchers(GET, "/api/v1/courses", "/api/v1/courses/**")
                     .permitAll()
+                    // dictionary resources
+                    .antMatchers(GET, "/api/v1/dictionary/*").permitAll()
                     .antMatchers(POST, "/api/v1/courses").hasAuthority(ADMIN)
                     // students
                     .antMatchers(GET, "/api/v1/students", "/api/v1/students/**")
