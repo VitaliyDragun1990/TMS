@@ -90,4 +90,22 @@ public class JwtAuthenticationService implements RestAuthenticationService {
         return new SignupResponse(username, token);
     }
 
+    @Override
+    public EmailCheckResponse checkEmail(EmailCheckRequest request) {
+        boolean available = userService.findByEmail(request.getEmail()) == null;
+
+        LOG.debug("IN checkEmail - Specified email address: {} is {}",
+                request.getEmail(), available ? "available" : "taken");
+        return new EmailCheckResponse(request.getEmail(), available);
+    }
+
+    @Override
+    public UsernameCheckResponse checkUsername(UsernameCheckRequest request) {
+        boolean available = userService.findByUsername(request.getUsername()) == null;
+
+        LOG.debug("IN checkUsername - Specified username: {} is {}",
+                request.getUsername(), available ? "available" : "taken");
+        return new UsernameCheckResponse(request.getUsername(), available);
+    }
+
 }

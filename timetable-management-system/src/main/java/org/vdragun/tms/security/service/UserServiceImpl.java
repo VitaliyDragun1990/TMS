@@ -59,6 +59,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findByEmail(String email) {
+        User user = userDao.findByEmail(email);
+
+        if (user == null) {
+            LOG.debug("IN findByEmail - No user found by email: {}", email);
+        } else {
+            LOG.debug("IN findByEmail - Found user: {} by email: {}", user, email);
+        }
+        return user;
+    }
+
+    @Override
     public User findById(Integer id) {
         User user = userDao.findById(id).orElse(null);
 
