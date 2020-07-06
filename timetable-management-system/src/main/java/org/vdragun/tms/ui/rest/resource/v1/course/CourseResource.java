@@ -3,6 +3,8 @@ package org.vdragun.tms.ui.rest.resource.v1.course;
 import static org.springframework.http.HttpStatus.OK;
 import static org.vdragun.tms.util.WebUtil.getFullRequestUri;
 
+import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.vdragun.tms.core.application.service.course.CourseData;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
+import org.vdragun.tms.ui.rest.api.v1.mapper.CourseModelMapper;
 import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.exception.ApiError;
 import org.vdragun.tms.util.Constants.Message;
@@ -96,6 +99,32 @@ public class CourseResource {
         Link selfLink = new Link(getFullRequestUri());
 
         return pagedAssembler.toModel(page, courseModelAssembler, selfLink);
+    }
+
+    @SecurityRequirements
+    @Operation(
+            summary = "Find all courses available",
+            tags = { "course" })
+    @ApiResponse(
+            responseCode = "200",
+            description = "successful operation",
+            content = {
+                    @Content(
+                            mediaType = MediaTypes.HAL_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = CourseModel.class))),
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = CourseModel.class)))
+            })
+    @GetMapping("/all")
+    @ResponseStatus(OK)
+    public CollectionModel<CourseModel> getAllCourses() {
+        LOG.trace("Received GET request to retrieve all courses, URI={}", getFullRequestUri());
+
+        List<Course> courses = courseService.findAllCourses();
+        Link selfLink = new Link(getFullRequestUri());
+
+        return new CollectionModel<>(CourseModelMapper.INSTANCE.map(courses), selfLink);
     }
 
     @SecurityRequirements
