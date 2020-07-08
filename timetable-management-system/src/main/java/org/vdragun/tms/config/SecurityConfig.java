@@ -137,6 +137,8 @@ public class SecurityConfig {
                     .and()
                         .sessionManagement().sessionCreationPolicy(STATELESS)
                     .and()
+                        .cors()
+                    .and()
                         .apply(new JwtConfigurer(new JwtAuthenticationTokenFilter(jwtTokenProvider, authEntryPoint)));
         }
     }
