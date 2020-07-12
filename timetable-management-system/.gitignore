@@ -3,3 +3,8 @@
 .project
 .classpath
 .factorypath
+
+#Gradle
+/build/
+/.gradle/
+.gradletasknamecache
