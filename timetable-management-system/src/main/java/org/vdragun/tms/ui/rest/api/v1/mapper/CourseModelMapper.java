@@ -40,7 +40,8 @@ public interface CourseModelMapper extends RepresentationModelMapper<Course, Cou
         model.add(
                 linkTo(methodOn(CourseResource.class).getCourseById(model.getId())).withSelfRel(),
                 linkTo(methodOn(TeacherResource.class).getTeacherById(model.getTeacherId())).withRel("teacher"),
-                linkTo(CourseResource.class).withRel("courses")
+                linkTo(CourseResource.class).withRel("courses"),
+                linkTo(CourseResource.class).slash("/all").withRel("allCourses")
                 );
     }
 }

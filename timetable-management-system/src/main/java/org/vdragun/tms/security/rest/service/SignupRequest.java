@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import org.vdragun.tms.core.application.validation.PersonName;
 import org.vdragun.tms.security.validation.Password;
+import org.vdragun.tms.security.validation.UniqueEmail;
 import org.vdragun.tms.security.validation.UniqueUsername;
 import org.vdragun.tms.security.validation.Username;
 import org.vdragun.tms.security.validation.ValidRole;
@@ -65,6 +66,7 @@ public class SignupRequest {
 
     @NotNull
     @Email
+    @UniqueEmail
     @Schema(
             description = "User's email address",
             example = "john125@gmail.com",

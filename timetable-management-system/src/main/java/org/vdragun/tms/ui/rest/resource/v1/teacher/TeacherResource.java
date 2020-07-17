@@ -67,7 +67,7 @@ public class TeacherResource {
     private RepresentationModelAssembler<Teacher, TeacherModel> teacherModelAssembler;
 
     @Operation(
-            summary = "Find all teachers available",
+            summary = "Find page with teachers available",
             tags = { "teacher" })
     @ApiResponse(
             responseCode = "200",

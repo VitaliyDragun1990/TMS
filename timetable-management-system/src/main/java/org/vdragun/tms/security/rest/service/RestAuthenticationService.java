@@ -17,4 +17,16 @@ public interface RestAuthenticationService {
      * Sign up new user using specified {@link SignupRequest} request
      */
     SignupResponse processSignUpRequest(SignupRequest request);
+
+    /**
+     * Determines whether email address specified in the request is available for
+     * registration
+     */
+    EmailCheckResponse checkEmail(EmailCheckRequest request);
+
+    /**
+     * Determines whether username specified in the request is available for
+     * registration
+     */
+    UsernameCheckResponse checkUsername(UsernameCheckRequest request);
 }

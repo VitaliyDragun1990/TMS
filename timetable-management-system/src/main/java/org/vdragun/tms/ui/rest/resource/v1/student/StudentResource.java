@@ -70,7 +70,7 @@ public class StudentResource {
     private RepresentationModelAssembler<Student, StudentModel> studentModelAssembler;
 
     @Operation(
-            summary = "Find all students available",
+            summary = "Find page with students available",
             tags = { "student" })
     @ApiResponse(
             responseCode = "200",

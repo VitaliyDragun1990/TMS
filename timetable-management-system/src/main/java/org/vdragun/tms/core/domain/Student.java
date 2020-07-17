@@ -93,6 +93,7 @@ public class Student extends Person {
     }
 
     public void setCourses(Set<Course> courses) {
+        removeAllCourses();
         courses.forEach(this::addCourse);
     }
 

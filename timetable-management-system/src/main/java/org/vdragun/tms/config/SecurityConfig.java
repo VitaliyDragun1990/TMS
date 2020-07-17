@@ -64,6 +64,7 @@ public class SecurityConfig {
 
         private static final String LOGIN_ENDPOINT = "/api/v1/auth/signin";
         private static final String REGISTER_ENDPOINT = "/api/v1/auth/signup";
+        private static final String CHECK_ENDPOINTS = "/api/v1/auth/check/*";
 
         @Autowired
         private JwtTokenProvider jwtTokenProvider;
@@ -101,10 +102,12 @@ public class SecurityConfig {
                     .httpBasic().disable()
                     .csrf().disable()
                     .authorizeRequests()
-                    .antMatchers(REGISTER_ENDPOINT, LOGIN_ENDPOINT).permitAll()
+                    .antMatchers(REGISTER_ENDPOINT, LOGIN_ENDPOINT, CHECK_ENDPOINTS).permitAll()
                     // courses
                     .antMatchers(GET, "/api/v1/courses", "/api/v1/courses/**")
                     .permitAll()
+                    // dictionary resources
+                    .antMatchers(GET, "/api/v1/dictionary/*").permitAll()
                     .antMatchers(POST, "/api/v1/courses").hasAuthority(ADMIN)
                     // students
                     .antMatchers(GET, "/api/v1/students", "/api/v1/students/**")
@@ -133,6 +136,8 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authEntryPoint)
                     .and()
                         .sessionManagement().sessionCreationPolicy(STATELESS)
+                    .and()
+                        .cors()
                     .and()
                         .apply(new JwtConfigurer(new JwtAuthenticationTokenFilter(jwtTokenProvider, authEntryPoint)));
         }
