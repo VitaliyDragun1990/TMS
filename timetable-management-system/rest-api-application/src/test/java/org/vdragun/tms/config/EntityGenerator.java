@@ -31,14 +31,19 @@ public class EntityGenerator {
     private static List<String> UPPER_CASE_LETTERS = Arrays.stream("abcdefghijklmnopqrstuvwxyz".split(""))
             .map(String::toUpperCase)
             .collect(toList());
+
     private static List<String> LOWER_CASE_LETTERS = UPPER_CASE_LETTERS.stream()
             .map(String::toLowerCase)
             .collect(toList());
 
     private static final String FIRST_NAME = "Jack";
+
     private static final String LAST_NAME = "Smith";
+
     private static final String COURSE = "Course ";
+
     private static final String DESCRIPTION = "Description";
+
     private static final String GROUP = "ps-";
 
     public Course generateCourse() {

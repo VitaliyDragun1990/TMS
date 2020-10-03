@@ -63,9 +63,7 @@ public class StartupDataInitializerTest {
 
     }
 
-
     @SpringBootApplication
     static class TestConfig {
     }
-
 }

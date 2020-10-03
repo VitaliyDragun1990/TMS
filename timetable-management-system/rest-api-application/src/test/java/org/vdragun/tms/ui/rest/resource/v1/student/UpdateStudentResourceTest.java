@@ -63,6 +63,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class UpdateStudentResourceTest {
 
     private static final int GROUP_ID = 2;
+
     private static final int STUDENT_ID = 1;
 
     @Autowired
@@ -82,7 +83,6 @@ public class UpdateStudentResourceTest {
 
     @Captor
     private ArgumentCaptor<UpdateStudentData> captor;
-
 
     private EntityGenerator generator = new EntityGenerator();
 

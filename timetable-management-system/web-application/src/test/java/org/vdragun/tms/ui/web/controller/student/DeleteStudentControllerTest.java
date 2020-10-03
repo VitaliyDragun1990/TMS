@@ -7,18 +7,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.Constants.Message;
+import org.vdragun.tms.config.MessageProvider;
 import org.vdragun.tms.config.SecurityConfig;
 import org.vdragun.tms.config.WebConfig;
+import org.vdragun.tms.config.WebConstants.Attribute;
+import org.vdragun.tms.config.WebConstants.View;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.config.WithMockAuthenticatedUser;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.security.dao.UserDao;
-import org.vdragun.tms.config.MessageProvider;
-import org.vdragun.tms.config.WebConstants.Attribute;
-import org.vdragun.tms.config.Constants.Message;
-import org.vdragun.tms.config.WebConstants.View;
 
 import java.util.Locale;
 
@@ -26,10 +26,17 @@ import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
  * @author Vitaliy Dragun

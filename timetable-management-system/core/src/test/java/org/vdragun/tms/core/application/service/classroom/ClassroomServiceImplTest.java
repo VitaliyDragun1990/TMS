@@ -31,6 +31,7 @@ import org.vdragun.tms.dao.ClassroomDao;
 public class ClassroomServiceImplTest {
 
     private static final int ID = 1;
+
     private static final int CAPACITY = 25;
 
     @Mock

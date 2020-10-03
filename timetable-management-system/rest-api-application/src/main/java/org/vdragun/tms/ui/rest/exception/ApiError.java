@@ -104,6 +104,10 @@ public class ApiError {
         return message;
     }
 
+    private String getMessage(MessageSourceResolvable resolvable, MessageSource messageSource) {
+        return messageSource.getMessage(resolvable, getLocale());
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }
@@ -138,12 +142,15 @@ public class ApiError {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         ApiError other = (ApiError) obj;
         return Objects.equals(debugMessage, other.debugMessage) && Objects.equals(message, other.message)
                 && status == other.status && Objects.equals(subErrors, other.subErrors)
@@ -172,7 +179,6 @@ public class ApiError {
                 getMessage(fieldError, messageSource));
     }
 
-
     private void addValidationError(ObjectError objectError, MessageSource messageSource) {
         addValidationError(
                 objectError.getObjectName(),
@@ -189,10 +195,6 @@ public class ApiError {
                 ((PathImpl) violation.getPropertyPath()).getLeafNode().asString(),
                 violation.getInvalidValue(),
                 messageSource.getMessage(violation.getMessage(), null, getLocale()));
-    }
-
-    private String getMessage(MessageSourceResolvable resolvable, MessageSource messageSource) {
-        return messageSource.getMessage(resolvable, getLocale());
     }
 
     private Locale getLocale() {

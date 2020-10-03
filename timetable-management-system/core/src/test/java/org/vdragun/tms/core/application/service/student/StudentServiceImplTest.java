@@ -47,17 +47,27 @@ import org.vdragun.tms.dao.StudentDao;
 public class StudentServiceImplTest {
 
     private static final LocalDate ENROLLMENT_DATE = LocalDate.now();
+
     private static final String JACK = "Jack";
+
     private static final String ANNA = "Anna";
+
     private static final String SMITH = "Smith";
+
     private static final String PORTER = "Porter";
+
     private static final Integer STUDENT_ID = 1;
+
     private static final Integer COURSE_ID = 2;
+
     private static final Integer GROUP_ID = 3;
+
     @Mock
     private CourseDao courseDaoMock;
+
     @Mock
     private GroupDao groupDaoMock;
+
     @Mock
     private StudentDao studentDaoMock;
 

@@ -21,7 +21,9 @@ import org.vdragun.tms.core.domain.Title;
 public class TeacherDataValidationTest extends AbstractValidationTest {
 
     private static final String VALID_FIRST_NAME = "Jack";
+
     private static final String VALID_LAST_NAME = "Smith";
+
     private static final LocalDate VALID_DATE_HIRED = LocalDate.now().minusDays(5);
 
     @Autowired

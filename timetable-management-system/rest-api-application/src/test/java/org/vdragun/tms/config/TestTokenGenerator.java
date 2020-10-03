@@ -1,20 +1,19 @@
 package org.vdragun.tms.config;
 
-import static java.util.stream.Collectors.toList;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.vdragun.tms.security.rest.jwt.JwtTokenProvider;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.vdragun.tms.security.rest.jwt.JwtTokenProvider;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Responsible for generating JWT tokens for testing purposes
- * 
- * @author Vitaliy Dragun
  *
+ * @author Vitaliy Dragun
  */
 public class TestTokenGenerator {
 
@@ -28,8 +27,8 @@ public class TestTokenGenerator {
 
     public String generateToken(String username, String... userRoles) {
         return tokenCache.computeIfAbsent(
-                username,
-                k -> tokenProvider.generateToken(username, toAuthorities(userRoles)));
+                username, k ->
+                        tokenProvider.generateToken(username, toAuthorities(userRoles)));
     }
 
     private List<SimpleGrantedAuthority> toAuthorities(String... userRoles) {

@@ -56,6 +56,7 @@ import org.vdragun.tms.config.Constants.Message;
 public class SearchTeacherResourceTest {
 
     private static final int NUMBER_OF_TEACHERS = 2;
+
     private static final int NUMBER_OF_COURSES_PER_TEACHER = 2;
 
     @Autowired

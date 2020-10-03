@@ -12,6 +12,7 @@ import javax.persistence.MappedSuperclass;
 abstract class Person {
 
     protected String firstName;
+
     protected String lastName;
 
     public Person(String firstName, String lastName) {

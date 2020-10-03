@@ -20,7 +20,9 @@ import org.vdragun.tms.core.application.service.student.CreateStudentData;
 public class CreateStudentDataValidationTest extends AbstractValidationTest {
 
     private static final String VALID_FIRST_NAME = "Jack";
+
     private static final String VALID_LAST_NAME = "Smith";
+
     private static final LocalDate VALID_ENROLLMENT_DATE = LocalDate.now().minusDays(5);
 
     @Autowired

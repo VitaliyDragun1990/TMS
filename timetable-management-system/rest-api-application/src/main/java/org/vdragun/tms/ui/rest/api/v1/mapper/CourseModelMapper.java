@@ -1,8 +1,5 @@
 package org.vdragun.tms.ui.rest.api.v1.mapper;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,9 +12,11 @@ import org.vdragun.tms.ui.rest.api.v1.model.CourseModel;
 import org.vdragun.tms.ui.rest.resource.v1.course.CourseResource;
 import org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 /**
  * @author Vitaliy Dragun
- *
  */
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CourseModelMapper extends RepresentationModelMapper<Course, CourseModel> {
@@ -42,6 +41,6 @@ public interface CourseModelMapper extends RepresentationModelMapper<Course, Cou
                 linkTo(methodOn(TeacherResource.class).getTeacherById(model.getTeacherId())).withRel("teacher"),
                 linkTo(CourseResource.class).withRel("courses"),
                 linkTo(CourseResource.class).slash("/all").withRel("allCourses")
-                );
+        );
     }
 }

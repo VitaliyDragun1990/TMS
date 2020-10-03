@@ -35,6 +35,7 @@ public class RestAccessDeniedExceptionHandler implements AccessDeniedHandler {
     private static final Logger LOG = LoggerFactory.getLogger(RestAccessDeniedExceptionHandler.class);
 
     private ObjectMapper mapper;
+
     private MessageLocalizer messageLocalizer;
 
     public RestAccessDeniedExceptionHandler(ObjectMapper mapper, MessageLocalizer messageLocalizer) {

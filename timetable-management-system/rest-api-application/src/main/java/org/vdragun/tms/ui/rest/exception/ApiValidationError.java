@@ -15,8 +15,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class ApiValidationError implements ApiSubError {
 
     private String object;
+
     private String field;
+
     private Object rejectedValue;
+
     private String message;
 
     public ApiValidationError(String object, String field, Object rejectedValue, String message) {
@@ -70,13 +73,18 @@ public class ApiValidationError implements ApiSubError {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
+
         ApiValidationError other = (ApiValidationError) obj;
+
         return Objects.equals(field, other.field) && Objects.equals(message, other.message)
                 && Objects.equals(object, other.object) && Objects.equals(rejectedValue, other.rejectedValue);
     }

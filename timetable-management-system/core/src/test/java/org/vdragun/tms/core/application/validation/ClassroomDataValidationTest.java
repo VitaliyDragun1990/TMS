@@ -17,6 +17,7 @@ import org.vdragun.tms.core.application.service.classroom.ClassroomData;
 public class ClassroomDataValidationTest extends AbstractValidationTest {
 
     private static final int CAPACITY_INNER_BOUND = 30;
+
     private static final int CAPACITY_UPPER_BOUND = 60;
 
     @Autowired

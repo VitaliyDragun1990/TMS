@@ -120,13 +120,18 @@ public class CourseModel extends RepresentationModel<CourseModel> {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
+
         CourseModel other = (CourseModel) obj;
+
         return Objects.equals(id, other.id);
     }
 

@@ -19,13 +19,21 @@ public class AuthenticatedUser implements UserDetails {
     private static final long serialVersionUID = -3048837644418237013L;
 
     private final Integer id;
+
     private final String username;
+
     private final String firstName;
+
     private final String lastName;
+
     private final String password;
+
     private final String email;
+
     private final boolean enabled;
+
     private final LocalDateTime lastPasswordResetDate;
+
     private final Collection<? extends GrantedAuthority> authorities;
 
     public AuthenticatedUser(

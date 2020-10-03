@@ -43,10 +43,15 @@ public abstract class PersonGenerator<T> {
     }
 
     public static class PersonGeneratorData {
+
         private int numberOfPeople;
+
         private List<String> firstNames;
+
         private List<String> lastNames;
+
         private LocalDate baseDate;
+
         private int dateDeviationInDays;
 
         public PersonGeneratorData(

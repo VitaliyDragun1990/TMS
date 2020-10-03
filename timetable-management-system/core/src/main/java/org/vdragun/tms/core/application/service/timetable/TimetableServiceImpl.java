@@ -1,9 +1,5 @@
 package org.vdragun.tms.core.application.service.timetable;
 
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -23,11 +19,14 @@ import org.vdragun.tms.dao.StudentDao;
 import org.vdragun.tms.dao.TeacherDao;
 import org.vdragun.tms.dao.TimetableDao;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.List;
+
 /**
  * Default implementation of {@link TimetableService}
- * 
- * @author Vitaliy Dragun
  *
+ * @author Vitaliy Dragun
  */
 @Service
 @Transactional
@@ -36,13 +35,17 @@ public class TimetableServiceImpl implements TimetableService {
     private static final Logger LOG = LoggerFactory.getLogger(TimetableServiceImpl.class);
 
     private TimetableDao timetableDao;
+
     private CourseDao courseDao;
+
     private TeacherDao teacherDao;
+
     private ClassroomDao classroomDao;
+
     private StudentDao studentDao;
 
     public TimetableServiceImpl(TimetableDao timetableDao, CourseDao courseDao, TeacherDao teacherDao,
-            ClassroomDao classroomDao, StudentDao studentDao) {
+                                ClassroomDao classroomDao, StudentDao studentDao) {
         this.timetableDao = timetableDao;
         this.courseDao = courseDao;
         this.teacherDao = teacherDao;
@@ -116,7 +119,6 @@ public class TimetableServiceImpl implements TimetableService {
 
         return page;
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -225,7 +227,7 @@ public class TimetableServiceImpl implements TimetableService {
     @Override
     public void deleteTimetableById(Integer timetableId) {
         LOG.debug("Deleting timetable with id={}", timetableId);
-        
+
         if (timetableDao.existsById(timetableId)) {
             timetableDao.deleteById(timetableId);
         } else {
@@ -256,27 +258,24 @@ public class TimetableServiceImpl implements TimetableService {
         }
     }
 
-
     private Classroom getClassroom(Integer classroomId) {
         return classroomDao.findById(classroomId)
-                .orElseThrow(
-                        () -> 
+                .orElseThrow(() ->
                         new ResourceNotFoundException(Classroom.class,
                                 "Classroom with id=%d does not exist", classroomId));
     }
 
     private Timetable getTimetable(Integer timetableId) {
         return timetableDao.findById(timetableId)
-                .orElseThrow(
-                        () -> 
+                .orElseThrow(() ->
                         new ResourceNotFoundException(Timetable.class,
                                 "Timetable with id=%d does not exist", timetableId));
     }
-    
+
     private Course getCourse(Integer courseId) {
         return courseDao.findById(courseId)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(Course.class,
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(Course.class,
                                 "Course with id=%d does not exist", courseId));
     }
 

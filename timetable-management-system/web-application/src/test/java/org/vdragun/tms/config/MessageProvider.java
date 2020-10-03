@@ -1,9 +1,8 @@
 package org.vdragun.tms.config;
 
-import java.util.Locale;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+
+import java.util.Locale;
 
 /**
  * Component that provides messages to facilitate testing

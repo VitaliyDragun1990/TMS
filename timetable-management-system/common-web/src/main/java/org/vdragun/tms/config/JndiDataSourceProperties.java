@@ -12,15 +12,25 @@ import org.springframework.stereotype.Component;
 public class JndiDataSourceProperties {
 
     private String implicitCachingEnabled;
+
     private String password;
+
     private String user;
+
     private String driverClassName;
+
     private String factory;
+
     private String jdbcUrl;
+
     private String idleTimeout;
+
     private String maximumPoolSize;
+
     private String minimumIdle;
+
     private String resourceName;
+
     private String resourceType;
 
     public String getImplicitCachingEnabled() {

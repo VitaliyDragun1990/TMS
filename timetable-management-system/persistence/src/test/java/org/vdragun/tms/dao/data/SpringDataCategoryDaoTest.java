@@ -29,7 +29,6 @@ import org.vdragun.tms.config.DaoTestConfig;
 import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.dao.CategoryDao;
 
-
 @DataJpaTest
 @Import({DaoTestConfig.class})
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -37,9 +36,13 @@ import org.vdragun.tms.dao.CategoryDao;
 public class SpringDataCategoryDaoTest {
 
     private static final String CODE_ART = "ART";
+
     private static final String CODE_BIO = "BIO";
+
     private static final String CODE_HIS = "HIS";
+
     private static final String DESC_ART = "Art";
+
     private static final String DESC_BIO = "Biology";
 
     @Autowired

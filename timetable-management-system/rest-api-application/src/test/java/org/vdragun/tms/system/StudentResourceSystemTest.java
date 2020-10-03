@@ -56,14 +56,21 @@ import static org.vdragun.tms.ui.rest.resource.v1.student.StudentResource.BASE_U
 public class StudentResourceSystemTest {
 
     private static final String BEARER = "Bearer_";
+
     private static final String ADMIN = "admin";
 
     private static final int NUMBER_OF_STUDENTS = 2;
+
     private static final int NUMBER_OF_COURSES_PER_STUDENT = 1;
+
     private static final Integer STUDENT_ID = 1;
+
     private static final Integer ID_STUDENT_TO_DELETE = 1;
+
     private static final Integer GROUP_ID = 1;
+
     private static final Integer COURSE_A_ID = 1;
+
     private static final Integer COURSE_B_ID = 2;
 
     private String authToken;

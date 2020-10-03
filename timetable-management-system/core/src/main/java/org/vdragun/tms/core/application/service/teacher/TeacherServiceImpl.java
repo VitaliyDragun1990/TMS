@@ -1,7 +1,5 @@
 package org.vdragun.tms.core.application.service.teacher;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,11 +11,12 @@ import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.dao.TeacherDao;
 
+import java.util.List;
+
 /**
  * Default implementation of {@link TeacherService}
- * 
- * @author Vitaliy Dragun
  *
+ * @author Vitaliy Dragun
  */
 @Service
 @Transactional
@@ -52,8 +51,8 @@ public class TeacherServiceImpl implements TeacherService {
         LOG.debug("Searching for teacher with id={}", teacherId);
 
         return dao.findById(teacherId)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", teacherId));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(Teacher.class, "Teacher with id=%d not found", teacherId));
     }
 
     @Override

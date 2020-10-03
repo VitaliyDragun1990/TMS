@@ -43,7 +43,7 @@ public class JsonVerifier {
 
     public void verifyErrorMessage(String json, String msgCode, Object... msgArgs) throws Exception {
         String expectedMessage = messageLocalizer.getLocalizedMessage(msgCode, msgArgs);
-        jPath("$.apierror.message").assertValue(json, equalTo(expectedMessage));
+        jsonPath("$.apierror.message").assertValue(json, equalTo(expectedMessage));
     }
 
     public void verifyValidationError(
@@ -52,7 +52,7 @@ public class JsonVerifier {
             String msgCode,
             Object... msgArgs) throws Exception {
         String expectedMessage = messageLocalizer.getLocalizedMessage(msgCode, msgArgs);
-        jPath("$.apierror.subErrors").assertValue(json, hasItem(
+        jsonPath("$.apierror.subErrors").assertValue(json, hasItem(
                 allOf(
                         hasEntry("field", propertyName),
                         hasEntry("message", expectedMessage))));
@@ -61,7 +61,7 @@ public class JsonVerifier {
     public void verifyValidationErrorsCount(
             String json,
             int expectedCount) throws Exception {
-        jPath("$.apierror.subErrors").assertValue(json, hasSize(expectedCount));
+        jsonPath("$.apierror.subErrors").assertValue(json, hasSize(expectedCount));
     }
 
     public void verifyTimetableJson(String json, List<Timetable> expectedContent) throws Exception {
@@ -69,79 +69,79 @@ public class JsonVerifier {
         for (int i = 0; i < expected.size(); i++) {
             TimetableModel expectedStudent = expected.get(i);
 
-            jPath(format("$._embedded.timetables[%d].id", i))
+            jsonPath(format("$._embedded.timetables[%d].id", i))
                     .assertValue(json, equalTo(expectedStudent.getId()));
-            jPath(format("$._embedded.timetables[%d].startTime", i))
+            jsonPath(format("$._embedded.timetables[%d].startTime", i))
                     .assertValue(json, equalTo(expectedStudent.getStartTime()));
-            jPath(format("$._embedded.timetables[%d].duration", i))
+            jsonPath(format("$._embedded.timetables[%d].duration", i))
                     .assertValue(json, equalTo(expectedStudent.getDuration()));
-            jPath(format("$._embedded.timetables[%d].classroomId", i))
+            jsonPath(format("$._embedded.timetables[%d].classroomId", i))
                     .assertValue(json, equalTo(expectedStudent.getClassroomId()));
-            jPath(format("$._embedded.timetables[%d].classroomCapacity", i))
+            jsonPath(format("$._embedded.timetables[%d].classroomCapacity", i))
                     .assertValue(json, equalTo(expectedStudent.getClassroomCapacity()));
 
             CourseModel expectedCourse = expectedStudent.getCourse();
 
-            jPath(format("$._embedded.timetables[%d].course.id", i))
+            jsonPath(format("$._embedded.timetables[%d].course.id", i))
                     .assertValue(json, equalTo(expectedCourse.getId()));
-            jPath(format("$._embedded.timetables[%d].course.name", i))
+            jsonPath(format("$._embedded.timetables[%d].course.name", i))
                     .assertValue(json, equalTo(expectedCourse.getName()));
-            jPath(format("$._embedded.timetables[%d].course.description", i))
+            jsonPath(format("$._embedded.timetables[%d].course.description", i))
                     .assertValue(json, equalTo(expectedCourse.getDescription()));
-            jPath(format("$._embedded.timetables[%d].course.categoryCode", i))
+            jsonPath(format("$._embedded.timetables[%d].course.categoryCode", i))
                     .assertValue(json, equalTo(expectedCourse.getCategoryCode()));
-            jPath(format("$._embedded.timetables[%d].course.teacherId", i))
+            jsonPath(format("$._embedded.timetables[%d].course.teacherId", i))
                     .assertValue(json, equalTo(expectedCourse.getTeacherId()));
-            jPath(format("$._embedded.timetables[%d].course.teacherFullName", i))
+            jsonPath(format("$._embedded.timetables[%d].course.teacherFullName", i))
                     .assertValue(json, equalTo(expectedCourse.getTeacherFullName()));
         }
     }
 
     public void verifyTimetableJson(String json, Timetable expectedContent) throws Exception {
         TimetableModel expected = TimetableModelMapper.INSTANCE.map(expectedContent);
-        jPath("$.id").assertValue(json, equalTo(expected.getId()));
-        jPath("$.startTime").assertValue(json, equalTo(expected.getStartTime()));
-        jPath("$.duration").assertValue(json, equalTo(expected.getDuration()));
-        jPath("$.classroomId").assertValue(json, equalTo(expected.getClassroomId()));
-        jPath("$.classroomCapacity").assertValue(json, equalTo(expected.getClassroomCapacity()));
+        jsonPath("$.id").assertValue(json, equalTo(expected.getId()));
+        jsonPath("$.startTime").assertValue(json, equalTo(expected.getStartTime()));
+        jsonPath("$.duration").assertValue(json, equalTo(expected.getDuration()));
+        jsonPath("$.classroomId").assertValue(json, equalTo(expected.getClassroomId()));
+        jsonPath("$.classroomCapacity").assertValue(json, equalTo(expected.getClassroomCapacity()));
 
         CourseModel expectedCourse = expected.getCourse();
 
-        jPath("$.course.id").assertValue(json, equalTo(expectedCourse.getId()));
-        jPath("$.course.name").assertValue(json, equalTo(expectedCourse.getName()));
-        jPath("$.course.description").assertValue(json, equalTo(expectedCourse.getDescription()));
-        jPath("$.course.categoryCode").assertValue(json, equalTo(expectedCourse.getCategoryCode()));
-        jPath("$.course.teacherId").assertValue(json, equalTo(expectedCourse.getTeacherId()));
-        jPath("$.course.teacherFullName").assertValue(json, equalTo(expectedCourse.getTeacherFullName()));
+        jsonPath("$.course.id").assertValue(json, equalTo(expectedCourse.getId()));
+        jsonPath("$.course.name").assertValue(json, equalTo(expectedCourse.getName()));
+        jsonPath("$.course.description").assertValue(json, equalTo(expectedCourse.getDescription()));
+        jsonPath("$.course.categoryCode").assertValue(json, equalTo(expectedCourse.getCategoryCode()));
+        jsonPath("$.course.teacherId").assertValue(json, equalTo(expectedCourse.getTeacherId()));
+        jsonPath("$.course.teacherFullName").assertValue(json, equalTo(expectedCourse.getTeacherFullName()));
     }
 
     public void verifyCourseJson(String json, List<Course> expectedContent) {
         List<CourseModel> expected = CourseModelMapper.INSTANCE.map(expectedContent);
         for (int i = 0; i < expected.size(); i++) {
             CourseModel model = expected.get(i);
-            jPath(format("$._embedded.courses[%d].id", i))
+            jsonPath(format("$._embedded.courses[%d].id", i))
                     .assertValue(json, equalTo(model.getId()));
-            jPath(format("$._embedded.courses[%d].name", i))
+            jsonPath(format("$._embedded.courses[%d].name", i))
                     .assertValue(json, equalTo(model.getName()));
-            jPath(format("$._embedded.courses[%d].description", i))
+            jsonPath(format("$._embedded.courses[%d].description", i))
                     .assertValue(json, equalTo(model.getDescription()));
-            jPath(format("$._embedded.courses[%d].categoryCode", i))
+            jsonPath(format("$._embedded.courses[%d].categoryCode", i))
                     .assertValue(json, equalTo(model.getCategoryCode()));
-            jPath(format("$._embedded.courses[%d].teacherId", i))
+            jsonPath(format("$._embedded.courses[%d].teacherId", i))
                     .assertValue(json, equalTo(model.getTeacherId()));
-            jPath(format("$._embedded.courses[%d].teacherFullName", i))
+            jsonPath(format("$._embedded.courses[%d].teacherFullName", i))
                     .assertValue(json, equalTo(model.getTeacherFullName()));
         }
     }
 
     public void verifyCourseJson(String json, Course expectedContent) throws Exception {
         CourseModel expected = CourseModelMapper.INSTANCE.map(expectedContent);
-        jPath("$.id").assertValue(json, equalTo(expected.getId()));
-        jPath("$.name").assertValue(json, equalTo(expected.getName()));
-        jPath("$.description").assertValue(json, equalTo(expected.getDescription()));
-        jPath("$.categoryCode").assertValue(json, equalTo(expected.getCategoryCode()));
-        jPath("$.teacherId").assertValue(json, equalTo(expected.getTeacherId()));
-        jPath("$.teacherFullName").assertValue(json, equalTo(expected.getTeacherFullName()));
+        jsonPath("$.id").assertValue(json, equalTo(expected.getId()));
+        jsonPath("$.name").assertValue(json, equalTo(expected.getName()));
+        jsonPath("$.description").assertValue(json, equalTo(expected.getDescription()));
+        jsonPath("$.categoryCode").assertValue(json, equalTo(expected.getCategoryCode()));
+        jsonPath("$.teacherId").assertValue(json, equalTo(expected.getTeacherId()));
+        jsonPath("$.teacherFullName").assertValue(json, equalTo(expected.getTeacherFullName()));
     }
 
     public void verifyStudentJson(String json, List<Student> expectedContent) throws Exception {
@@ -149,33 +149,33 @@ public class JsonVerifier {
         for (int i = 0; i < expected.size(); i++) {
             StudentModel expectedStudent = expected.get(i);
 
-            jPath(format("$._embedded.students[%d].id", i))
+            jsonPath(format("$._embedded.students[%d].id", i))
                     .assertValue(json, equalTo(expectedStudent.getId()));
-            jPath(format("$._embedded.students[%d].firstName", i))
+            jsonPath(format("$._embedded.students[%d].firstName", i))
                     .assertValue(json, equalTo(expectedStudent.getFirstName()));
-            jPath(format("$._embedded.students[%d].lastName", i))
+            jsonPath(format("$._embedded.students[%d].lastName", i))
                     .assertValue(json, equalTo(expectedStudent.getLastName()));
             if (expectedStudent.getGroup() != null) {
-                jPath(format("$._embedded.students[%d].group", i))
+                jsonPath(format("$._embedded.students[%d].group", i))
                         .assertValue(json, equalTo(expectedStudent.getGroup()));
             }
-            jPath(format("$._embedded.students[%d].enrollmentDate", i))
+            jsonPath(format("$._embedded.students[%d].enrollmentDate", i))
                     .assertValue(json, equalTo(expectedStudent.getEnrollmentDate()));
 
             for (int j = 0; j < expectedStudent.getCourses().size(); j++) {
                 CourseModel expectedCourse = expectedStudent.getCourses().get(j);
 
-                jPath(format("$._embedded.students[%d].courses[%d].id", i, j))
+                jsonPath(format("$._embedded.students[%d].courses[%d].id", i, j))
                         .assertValue(json, equalTo(expectedCourse.getId()));
-                jPath(format("$._embedded.students[%d].courses[%d].name", i, j))
+                jsonPath(format("$._embedded.students[%d].courses[%d].name", i, j))
                         .assertValue(json, equalTo(expectedCourse.getName()));
-                jPath(format("$._embedded.students[%d].courses[%d].description", i, j))
+                jsonPath(format("$._embedded.students[%d].courses[%d].description", i, j))
                         .assertValue(json, equalTo(expectedCourse.getDescription()));
-                jPath(format("$._embedded.students[%d].courses[%d].categoryCode", i, j))
+                jsonPath(format("$._embedded.students[%d].courses[%d].categoryCode", i, j))
                         .assertValue(json, equalTo(expectedCourse.getCategoryCode()));
-                jPath(format("$._embedded.students[%d].courses[%d].teacherId", i, j))
+                jsonPath(format("$._embedded.students[%d].courses[%d].teacherId", i, j))
                         .assertValue(json, equalTo(expectedCourse.getTeacherId()));
-                jPath(format("$._embedded.students[%d].courses[%d].teacherFullName", i, j))
+                jsonPath(format("$._embedded.students[%d].courses[%d].teacherFullName", i, j))
                         .assertValue(json, equalTo(expectedCourse.getTeacherFullName()));
             }
         }
@@ -184,26 +184,26 @@ public class JsonVerifier {
     public void verifyStudentJson(String json, Student expected) throws Exception {
         StudentModel expectedStudent = StudentModelMapper.INSTANCE.map(expected);
 
-        jPath("$.id").assertValue(json, equalTo(expectedStudent.getId()));
-        jPath("$.firstName").assertValue(json, equalTo(expectedStudent.getFirstName()));
-        jPath("$.lastName").assertValue(json, equalTo(expectedStudent.getLastName()));
+        jsonPath("$.id").assertValue(json, equalTo(expectedStudent.getId()));
+        jsonPath("$.firstName").assertValue(json, equalTo(expectedStudent.getFirstName()));
+        jsonPath("$.lastName").assertValue(json, equalTo(expectedStudent.getLastName()));
         if (expected.getGroup() != null) {
-            jPath("$.group").assertValue(json, equalTo(expectedStudent.getGroup()));
+            jsonPath("$.group").assertValue(json, equalTo(expectedStudent.getGroup()));
         }
-        jPath("$.enrollmentDate").assertValue(json, equalTo(expectedStudent.getEnrollmentDate()));
+        jsonPath("$.enrollmentDate").assertValue(json, equalTo(expectedStudent.getEnrollmentDate()));
 
         for (int j = 0; j < expectedStudent.getCourses().size(); j++) {
             CourseModel expectedCourse = expectedStudent.getCourses().get(j);
 
-            jPath(format("$.courses[%d].id", j)).assertValue(json, equalTo(expectedCourse.getId()));
-            jPath(format("$.courses[%d].name", j)).assertValue(json, equalTo(expectedCourse.getName()));
-            jPath(format("$.courses[%d].description", j))
+            jsonPath(format("$.courses[%d].id", j)).assertValue(json, equalTo(expectedCourse.getId()));
+            jsonPath(format("$.courses[%d].name", j)).assertValue(json, equalTo(expectedCourse.getName()));
+            jsonPath(format("$.courses[%d].description", j))
                     .assertValue(json, equalTo(expectedCourse.getDescription()));
-            jPath(format("$.courses[%d].categoryCode", j))
+            jsonPath(format("$.courses[%d].categoryCode", j))
                     .assertValue(json, equalTo(expectedCourse.getCategoryCode()));
-            jPath(format("$.courses[%d].teacherId", j))
+            jsonPath(format("$.courses[%d].teacherId", j))
                     .assertValue(json, equalTo(expectedCourse.getTeacherId()));
-            jPath(format("$.courses[%d].teacherFullName", j))
+            jsonPath(format("$.courses[%d].teacherFullName", j))
                     .assertValue(json, equalTo(expectedCourse.getTeacherFullName()));
         }
     }
@@ -213,31 +213,31 @@ public class JsonVerifier {
         for (int i = 0; i < expected.size(); i++) {
             TeacherModel expectedTeacher = expected.get(i);
 
-            jPath(format("$._embedded.teachers[%d].id", i))
+            jsonPath(format("$._embedded.teachers[%d].id", i))
                     .assertValue(json, equalTo(expectedTeacher.getId()));
-            jPath(format("$._embedded.teachers[%d].firstName", i))
+            jsonPath(format("$._embedded.teachers[%d].firstName", i))
                     .assertValue(json, equalTo(expectedTeacher.getFirstName()));
-            jPath(format("$._embedded.teachers[%d].lastName", i))
+            jsonPath(format("$._embedded.teachers[%d].lastName", i))
                     .assertValue(json, equalTo(expectedTeacher.getLastName()));
-            jPath(format("$._embedded.teachers[%d].title", i))
+            jsonPath(format("$._embedded.teachers[%d].title", i))
                     .assertValue(json, equalTo(expectedTeacher.getTitle()));
-            jPath(format("$._embedded.teachers[%d].dateHired", i))
+            jsonPath(format("$._embedded.teachers[%d].dateHired", i))
                     .assertValue(json, equalTo(expectedTeacher.getDateHired()));
 
             for (int j = 0; j < expectedTeacher.getCourses().size(); j++) {
                 CourseModel expectedCourse = expectedTeacher.getCourses().get(j);
 
-                jPath(format("$._embedded.teachers[%d].courses[%d].id", i, j))
+                jsonPath(format("$._embedded.teachers[%d].courses[%d].id", i, j))
                         .assertValue(json, equalTo(expectedCourse.getId()));
-                jPath(format("$._embedded.teachers[%d].courses[%d].name", i, j))
+                jsonPath(format("$._embedded.teachers[%d].courses[%d].name", i, j))
                         .assertValue(json, equalTo(expectedCourse.getName()));
-                jPath(format("$._embedded.teachers[%d].courses[%d].description", i, j))
+                jsonPath(format("$._embedded.teachers[%d].courses[%d].description", i, j))
                         .assertValue(json, equalTo(expectedCourse.getDescription()));
-                jPath(format("$._embedded.teachers[%d].courses[%d].categoryCode", i, j))
+                jsonPath(format("$._embedded.teachers[%d].courses[%d].categoryCode", i, j))
                         .assertValue(json, equalTo(expectedCourse.getCategoryCode()));
-                jPath(format("$._embedded.teachers[%d].courses[%d].teacherId", i, j))
+                jsonPath(format("$._embedded.teachers[%d].courses[%d].teacherId", i, j))
                         .assertValue(json, equalTo(expectedCourse.getTeacherId()));
-                jPath(format("$._embedded.teachers[%d].courses[%d].teacherFullName", i, j))
+                jsonPath(format("$._embedded.teachers[%d].courses[%d].teacherFullName", i, j))
                         .assertValue(json, equalTo(expectedCourse.getTeacherFullName()));
             }
         }
@@ -246,37 +246,37 @@ public class JsonVerifier {
     public void verifyTeacherJson(String json, Teacher expectedContent) throws Exception {
         TeacherModel expectedTeacher = TeacherModelMapper.INSTANCE.map(expectedContent);
 
-        jPath("$.id").assertValue(json, equalTo(expectedTeacher.getId()));
-        jPath("$.firstName").assertValue(json, equalTo(expectedTeacher.getFirstName()));
-        jPath("$.lastName").assertValue(json, equalTo(expectedTeacher.getLastName()));
-        jPath("$.title").assertValue(json, equalTo(expectedTeacher.getTitle()));
-        jPath("$.dateHired").assertValue(json, equalTo(expectedTeacher.getDateHired()));
+        jsonPath("$.id").assertValue(json, equalTo(expectedTeacher.getId()));
+        jsonPath("$.firstName").assertValue(json, equalTo(expectedTeacher.getFirstName()));
+        jsonPath("$.lastName").assertValue(json, equalTo(expectedTeacher.getLastName()));
+        jsonPath("$.title").assertValue(json, equalTo(expectedTeacher.getTitle()));
+        jsonPath("$.dateHired").assertValue(json, equalTo(expectedTeacher.getDateHired()));
 
         for (int j = 0; j < expectedTeacher.getCourses().size(); j++) {
             CourseModel expectedCourse = expectedTeacher.getCourses().get(j);
 
-            jPath(format("$.courses[%d].id", j)).assertValue(json, equalTo(expectedCourse.getId()));
-            jPath(format("$.courses[%d].name", j)).assertValue(json, equalTo(expectedCourse.getName()));
-            jPath(format("$.courses[%d].description", j))
+            jsonPath(format("$.courses[%d].id", j)).assertValue(json, equalTo(expectedCourse.getId()));
+            jsonPath(format("$.courses[%d].name", j)).assertValue(json, equalTo(expectedCourse.getName()));
+            jsonPath(format("$.courses[%d].description", j))
                     .assertValue(json, equalTo(expectedCourse.getDescription()));
-            jPath(format("$.courses[%d].categoryCode", j))
+            jsonPath(format("$.courses[%d].categoryCode", j))
                     .assertValue(json, equalTo(expectedCourse.getCategoryCode()));
-            jPath(format("$.courses[%d].teacherId", j))
+            jsonPath(format("$.courses[%d].teacherId", j))
                     .assertValue(json, equalTo(expectedCourse.getTeacherId()));
-            jPath(format("$.courses[%d].teacherFullName", j))
+            jsonPath(format("$.courses[%d].teacherFullName", j))
                     .assertValue(json, equalTo(expectedCourse.getTeacherFullName()));
         }
     }
 
     public void verifyJson(String body, String expression, Matcher<?> matcher) {
-        jPath(expression).assertValue(body, matcher);
+        jsonPath(expression).assertValue(body, matcher);
     }
 
     public String getValueByExpression(String body, String expression) {
-        return String.valueOf(jPath(expression).evaluateJsonPath(body));
+        return String.valueOf(jsonPath(expression).evaluateJsonPath(body));
     }
 
-    private JsonPathExpectationsHelper jPath(String expression) {
+    private JsonPathExpectationsHelper jsonPath(String expression) {
         return new JsonPathExpectationsHelper(expression);
     }
 }

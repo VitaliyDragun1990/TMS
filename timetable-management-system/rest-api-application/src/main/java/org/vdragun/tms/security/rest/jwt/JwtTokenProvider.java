@@ -37,7 +37,9 @@ public class JwtTokenProvider {
     private static final Logger LOG = LoggerFactory.getLogger(JwtTokenProvider.class);
 
     private String secret;
+
     private long tokenDurationInMillis;
+
     private UserDetailsService userDetailsService;
 
     public JwtTokenProvider(

@@ -33,6 +33,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private static final Logger LOG = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
 
     private ObjectMapper mapper;
+
     private MessageLocalizer messageLocalizer;
 
     public RestAuthenticationEntryPoint(ObjectMapper mapper, MessageLocalizer messageLocalizer) {

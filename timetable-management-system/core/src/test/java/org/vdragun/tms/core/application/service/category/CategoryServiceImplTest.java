@@ -32,9 +32,13 @@ import org.vdragun.tms.dao.CategoryDao;
 public class CategoryServiceImplTest {
 
     private static final Integer ID = 1;
+
     private static final String CODE_BIO = "BIO";
+
     private static final String CODE_ART = "ART";
+
     private static final String DESC_BIO = "Biology";
+
     private static final String DESC_ART = "Art";
 
     @Captor

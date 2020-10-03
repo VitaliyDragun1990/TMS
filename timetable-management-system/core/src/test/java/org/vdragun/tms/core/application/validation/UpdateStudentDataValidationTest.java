@@ -22,9 +22,13 @@ import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 public class UpdateStudentDataValidationTest extends AbstractValidationTest {
 
     private static final Integer VALID_STUDENT_ID = 1;
+
     private static final Integer VALID_GROUP_ID = 1;
+
     private static final List<Integer> VALID_COURSE_IDS = Arrays.asList(1, 2);
+
     private static final String VALID_FIRST_NAME = "Jack";
+
     private static final String VALID_LAST_NAME = "Smith";
 
     @Autowired

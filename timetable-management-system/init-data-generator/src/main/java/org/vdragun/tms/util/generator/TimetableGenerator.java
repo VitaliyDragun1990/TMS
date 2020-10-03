@@ -38,10 +38,15 @@ public class TimetableGenerator {
     );
 
     private LocalTime timetableStartTime;
+
     private LocalTime timetableEndTime;
+
     private int classDurationMinutes;
+
     private int maxClassesPerWeek;
+
     private LocalDate fromDate;
+
     private LocalDate toDate;
 
     public TimetableGenerator(
@@ -152,9 +157,13 @@ public class TimetableGenerator {
     private static class ClassroomReservation {
         // Interval between two consecutive classes
         private static final int INTERVAL_MINUTES = 10;
+
         private Classroom classroom;
+
         private LocalTime fromTime;
+
         private LocalTime toTime;
+
         private int reservedMinutes;
 
         public ClassroomReservation(Classroom classroom, LocalTime fromTime, LocalTime toTime) {

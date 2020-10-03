@@ -10,7 +10,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 import org.vdragun.tms.config.DBTestHelper;
 import org.vdragun.tms.config.DaoTestConfig;
-import org.vdragun.tms.core.domain.*;
+import org.vdragun.tms.core.domain.Classroom;
+import org.vdragun.tms.core.domain.Course;
+import org.vdragun.tms.core.domain.Student;
+import org.vdragun.tms.core.domain.Teacher;
+import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.TimetableDao;
 
 import java.time.LocalDate;
@@ -21,7 +25,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
@@ -35,24 +44,35 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SpringDataTimetableDaoTest {
 
     private static final LocalDate MARCH_TEN = LocalDate.of(2020, 3, 10);
+
     private static final LocalDate MARCH_TWENTY_FIFTH = LocalDate.of(2020, 3, 25);
 
     private static final LocalDateTime MARCH_TEN_NINE_THIRTY = LocalDateTime.of(2020, 3, 10, 9, 30);
+
     private static final LocalDateTime MARCH_TEN_TWELVE_THIRTY = LocalDateTime.of(2020, 3, 10, 12, 30);
+
     private static final LocalDateTime MARCH_TWENTY_FIFTH_NINE_THIRTY = LocalDateTime.of(2020, 3, 25, 9, 30);
 
     private static final LocalDateTime APRIL_FIFTH_NINE_THIRTY = LocalDateTime.of(2020, 4, 5, 9, 30);
+
     private static final LocalDateTime APRIL_TEN_NINE_THIRTY = LocalDateTime.of(2020, 4, 10, 9, 30);
 
     private static final int DURATION_NINETY = 90;
+
     private static final int CAPACITY_SIXTY = 60;
 
     private static final String MARY = "Mary";
+
     private static final String AMANDA = "Amanda";
+
     private static final String BIRKIN = "Birkin";
+
     private static final String JACK = "Jack";
+
     private static final String JOHN = "John";
+
     private static final String SMITH = "Smith";
+
     private static final String PORTER = "Porter";
 
     private static final String ADVANCED_BIOLOGY = "Advanced Biology";

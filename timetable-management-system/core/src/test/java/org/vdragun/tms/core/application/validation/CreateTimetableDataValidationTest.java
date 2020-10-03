@@ -16,13 +16,15 @@ import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
 import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 
-
 @SpringJUnitConfig(classes = ValidationConfig.class)
 public class CreateTimetableDataValidationTest extends AbstractValidationTest {
 
     private static final LocalDateTime VALID_START_TIME = LocalDateTime.now().withHour(9).plusDays(5);
+
     private static final Integer VALID_DURATION = 60;
+
     private static final Integer VALID_COURSE_ID = 1;
+
     private static final Integer VALID_CLASSROOM_ID = 3;
 
     @Autowired

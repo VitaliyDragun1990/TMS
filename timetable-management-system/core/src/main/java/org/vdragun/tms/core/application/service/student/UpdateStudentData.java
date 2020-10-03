@@ -82,8 +82,7 @@ public class UpdateStudentData {
         this.lastName = lastName;
         this.courseIds = courseIds;
     }
-
-
+    
     public Integer getStudentId() {
         return studentId;
     }

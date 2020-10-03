@@ -62,7 +62,6 @@ public class CourseData {
         this.teacherId = teacherId;
     }
 
-
     public String getName() {
         return name;
     }

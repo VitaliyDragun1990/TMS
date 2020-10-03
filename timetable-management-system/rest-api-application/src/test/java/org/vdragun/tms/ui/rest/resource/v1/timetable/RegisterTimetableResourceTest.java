@@ -61,8 +61,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class RegisterTimetableResourceTest {
 
     private static final LocalDateTime TIMETABLE_START_TIME = LocalDateTime.now().plusDays(3).truncatedTo(MINUTES);
+
     private static final int CLASSROOM_ID = 2;
+
     private static final int COURSE_ID = 1;
+
     private static final int DURATION = 60;
 
     @Autowired

@@ -14,13 +14,22 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.vdragun.tms.config.EmbeddedDataSourceConfig;
-import org.vdragun.tms.system.page.*;
+import org.vdragun.tms.system.page.HomePage;
+import org.vdragun.tms.system.page.SignInPage;
+import org.vdragun.tms.system.page.StudentInfoPage;
+import org.vdragun.tms.system.page.StudentRegistrationPage;
+import org.vdragun.tms.system.page.StudentUpdatePage;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import static com.codeborne.selenide.Configuration.*;
+import static com.codeborne.selenide.Configuration.baseUrl;
+import static com.codeborne.selenide.Configuration.browser;
+import static com.codeborne.selenide.Configuration.fastSetValue;
+import static com.codeborne.selenide.Configuration.headless;
+import static com.codeborne.selenide.Configuration.reportsFolder;
+import static com.codeborne.selenide.Configuration.timeout;
 import static java.lang.String.format;
 
 @SpringBootTest(

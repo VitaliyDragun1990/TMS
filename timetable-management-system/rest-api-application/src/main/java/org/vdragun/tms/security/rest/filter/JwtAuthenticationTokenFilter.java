@@ -1,14 +1,5 @@
 package org.vdragun.tms.security.rest.filter;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -18,18 +9,26 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.filter.GenericFilterBean;
 import org.vdragun.tms.security.rest.jwt.JwtTokenProvider;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 /**
  * Checks each incoming request for JWT token. If specified token is found and
  * valid, authenticates appropriate user.
- * 
- * @author Vitaliy Dragun
  *
+ * @author Vitaliy Dragun
  */
 public class JwtAuthenticationTokenFilter extends GenericFilterBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(JwtAuthenticationTokenFilter.class);
 
     private JwtTokenProvider jwtTokenProvider;
+
     private AuthenticationEntryPoint authEntryPoint;
 
     public JwtAuthenticationTokenFilter(JwtTokenProvider jwtTokenProvider, AuthenticationEntryPoint authEntryPoint) {
@@ -51,7 +50,7 @@ public class JwtAuthenticationTokenFilter extends GenericFilterBean {
                 LOG.debug("IN doFilter - JWT token found: successfully authenticated user with username: {}",
                         authentication.getName());
             } else {
-              LOG.debug("IN doFilter - Current request does not contain JWT token");  
+                LOG.debug("IN doFilter - Current request does not contain JWT token");
             }
             chain.doFilter(request, response);
         } catch (AuthenticationException ex) {
