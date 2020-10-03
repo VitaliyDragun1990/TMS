@@ -1,0 +1,3 @@
+CREATE USER vdragun WITH PASSWORD 'password';
+CREATE DATABASE university;
+GRANT ALL PRIVILEGES ON DATABASE university TO vdragun;

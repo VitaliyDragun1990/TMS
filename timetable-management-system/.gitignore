@@ -3,6 +3,8 @@
 .project
 .classpath
 .factorypath
+.idea
+build
 
 #Gradle
 /build/

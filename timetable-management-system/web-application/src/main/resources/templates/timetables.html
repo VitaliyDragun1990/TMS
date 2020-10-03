@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/main-layout}">
+  <head>
+  <meta charset="UTF-8" />
+  <title th:text="#{title.timetables}">Timetables</title>
+</head>
+<body>
+  <div layout:fragment="content">
+  
+    <div th:replace="fragments/info-message :: message (${infoMsg})">
+    </div>
+    
+    <h4 th:text="${msg}" class="mb-3" id="headerMsg">Timetables</h4>
+    
+    <table id="timetablesTable" class="table table-striped" th:if="${timetables.hasContent()}">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(timetables.number+1,'startTime')}|}"
+               th:text="#{label.date}">
+              Date
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon ('startTime')"></th:block>
+          </th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(timetables.number+1,'durationInMinutes')}|}"
+               th:text="#{label.duration}">
+              Duration (mins)
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon ('durationInMinutes')"></th:block>                  
+          </th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(timetables.number+1,'course.name')}|}"
+               th:text="#{label.course}">
+              Course
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon ('course.name')"></th:block>                 
+          </th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(timetables.number+1,'classroom.id')}|}"
+               th:text="#{label.classroom}">
+              Classroom
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon ('classroom.id')"></th:block>                      
+          </th>
+          <th scope="col">
+            <a href="#" th:href="@{|${#myutil.updatePagingInfo(timetables.number+1,'course.teacher.firstName','course.teacher.lastName')}|}"
+               th:text="#{label.teacher}">
+              Teacher
+            </a>
+            <th:block th:replace="fragments/pagination :: sortIcon ('course.teacher.firstName')"></th:block>            
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="tmtable,iterStat : ${timetables}" th:object="${tmtable}">
+          <th scope="row" th:text="${iterStat.count}">1</th>
+          
+          <!-- Timetable date -->             
+          <td>
+            <!-- Show link if user has authority -->               
+            <a th:if="${#authorization.url('GET','/timetables/*')}"
+               class="btn btn-link" href="#" th:href="@{/timetables/{timetableId}(timetableId=*{id})}"
+               th:text="*{{startTime}}">
+              25/10/2017 12:30
+            </a>
+           <!-- Otherwise show plain text -->
+           <span th:unless="${#authorization.url('GET','/timetables/*')}" th:text="*{{startTime}}">
+             25/10/2017 12:30
+           </span>                              
+          </td>
+          
+          <!-- Timetable duration -->             
+          <td th:text="*{durationInMinutes}">60</td>
+          
+          <!-- Timetable course -->             
+          <td>
+            <!-- Show link if user has authority -->             
+            <a th:if="${#authorization.url('GET','/courses/*')}"
+               class="btn btn-link" href="#" th:href="@{/courses/{courseId}(courseId=*{course.id})}"
+               th:text="*{course.name}">
+              History
+            </a>
+           <!-- Otherwise show plain text -->
+           <span th:unless="${#authorization.url('GET','/courses/*')}" th:text="*{course.name}">
+             History
+           </span>                      
+          </td>
+          
+          <!-- Timetable classroom -->             
+          <td th:text="*{classroom.id}">1</td>
+          
+          <!-- Course teacher -->             
+          <td>
+            <!-- Show link if user has authority -->            
+            <a th:if="${#authorization.url('GET','/teachers/*')}"
+               class="btn btn-link" href="#" th:href="@{/teachers/{teacherId}(teacherId=*{course.teacher.id})}"
+               th:text="|*{course.teacher.firstName} *{course.teacher.lastName}|">
+               Jack Smith
+           </a>
+           <!-- Otherwise show plain text -->
+           <span th:unless="${#authorization.url('GET','/teachers/*')}" th:text="|*{course.teacher.firstName} *{course.teacher.lastName}|">
+             Jack Smith
+           </span>                       
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <!-- Pagination  -->
+    <div th:replace="fragments/pagination :: pagination (${timetables})">
+    </div>    
+    
+  </div>
+</body>
+</html>
