@@ -50,7 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         SecurityConfig.class,
         MessageProvider.class})
 @DisplayName("Search Course Controller")
-public class SearchCourseControllerTest {
+class SearchCourseControllerTest {
 
     private static final int MAX_VALID_PAGE_NUMBER = 5;
 

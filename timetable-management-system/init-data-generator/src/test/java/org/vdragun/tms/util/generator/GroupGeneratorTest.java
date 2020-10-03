@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.vdragun.tms.core.domain.Group;
 
 @DisplayName("Group Data Generator")
-public class GroupGeneratorTest {
+class GroupGeneratorTest {
 
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-z]{2}-[0-9]{2}$");
 
@@ -36,8 +36,8 @@ public class GroupGeneratorTest {
         List<Group> result = generator.generate(5);
 
         result.stream()
-                .map(g -> g.getName())
-                .forEach(name -> assertNameIsValid(name));
+                .map(Group::getName)
+                .forEach(this::assertNameIsValid);
     }
 
     private void assertNameIsValid(String name) {

@@ -61,7 +61,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
         JsonVerifier.class,
         TestSecurityConfig.class })
 @DisplayName("Timetable Resource Update Functionality Integration Test")
-public class UpdateTimetableResourceTest {
+class UpdateTimetableResourceTest {
 
     private static final LocalDateTime TIMETABLE_START_TIME = LocalDateTime.now().plusDays(3).truncatedTo(MINUTES);
 

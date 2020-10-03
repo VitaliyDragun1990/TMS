@@ -17,7 +17,7 @@ import org.springframework.validation.Validator;
 import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 
 @SpringJUnitConfig(classes = ValidationConfig.class)
-public class CreateTimetableDataValidationTest extends AbstractValidationTest {
+class CreateTimetableDataValidationTest extends AbstractValidationTest {
 
     private static final LocalDateTime VALID_START_TIME = LocalDateTime.now().withHour(9).plusDays(5);
 

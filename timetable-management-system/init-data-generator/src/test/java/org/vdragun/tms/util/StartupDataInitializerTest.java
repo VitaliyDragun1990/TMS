@@ -27,7 +27,7 @@ import org.vdragun.tms.util.initializer.GeneratorProperties;
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @Import({ DaoTestConfig.class, StartupDataConfig.class })
 @DisplayName("Startup Data Initializer")
-public class StartupDataInitializerTest {
+class StartupDataInitializerTest {
 
     @Autowired
     private DBTestHelper dbHelper;

@@ -61,7 +61,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         MessageProvider.class})
 @WithMockAuthenticatedUser
 @DisplayName("Search Timetable Controller")
-public class SearchTimetableControllerTest {
+class SearchTimetableControllerTest {
 
     private static final int MAX_VALID_PAGE_NUMBER = 5;
 

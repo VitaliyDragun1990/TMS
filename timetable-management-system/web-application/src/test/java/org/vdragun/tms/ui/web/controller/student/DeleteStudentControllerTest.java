@@ -49,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         MessageProvider.class})
 @WithMockAuthenticatedUser
 @DisplayName("Delete Student Controller")
-public class DeleteStudentControllerTest {
+class DeleteStudentControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -64,7 +64,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         MessageProvider.class})
 @WithMockAuthenticatedUser
 @DisplayName("Update Timetable Controller")
-public class UpdateTimetableControllerTest {
+class UpdateTimetableControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

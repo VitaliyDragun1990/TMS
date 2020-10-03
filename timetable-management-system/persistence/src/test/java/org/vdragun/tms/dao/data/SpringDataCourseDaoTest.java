@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Import({DaoTestConfig.class})
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DisplayName("Spring Data Course DAO")
-public class SpringDataCourseDaoTest {
+class SpringDataCourseDaoTest {
 
     private static final String CODE_BIO = "BIO";
 

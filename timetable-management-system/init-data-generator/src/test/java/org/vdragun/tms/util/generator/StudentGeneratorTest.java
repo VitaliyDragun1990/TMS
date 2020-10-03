@@ -21,7 +21,7 @@ import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.util.generator.PersonGenerator.PersonGeneratorData;
 
 @DisplayName("Student Generator")
-public class StudentGeneratorTest {
+class StudentGeneratorTest {
 
     private static final List<String> FIRST_NAMES = Arrays.asList("Jack", "Maggy", "Mary");
 
@@ -64,7 +64,7 @@ public class StudentGeneratorTest {
         return new ValidStudentMatcher();
     }
 
-    private class ValidStudentMatcher extends TypeSafeMatcher<Student> {
+    private static class ValidStudentMatcher extends TypeSafeMatcher<Student> {
 
         @Override
         protected boolean matchesSafely(Student student) {

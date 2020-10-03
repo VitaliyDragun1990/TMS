@@ -16,7 +16,7 @@ import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Student;
 
 @DisplayName("Students to courses random distributor")
-public class StudentsToCoursesRandomDistributorTest {
+class StudentsToCoursesRandomDistributorTest {
 
     private static final int MAX_COURSES_PER_STUDENT = 3;
 

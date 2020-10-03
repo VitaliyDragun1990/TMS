@@ -27,7 +27,7 @@ import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.core.domain.Title;
 
 @DisplayName("Timetable Generator")
-public class TimetableGeneratorTest {
+class TimetableGeneratorTest {
 
     private static final int NUMBER_OF_MONTH = 1;
 

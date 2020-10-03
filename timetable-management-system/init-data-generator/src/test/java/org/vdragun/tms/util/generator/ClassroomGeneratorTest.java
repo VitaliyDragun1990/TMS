@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.vdragun.tms.core.domain.Classroom;
 
 @DisplayName("Classroom generator")
-public class ClassroomGeneratorTest {
+class ClassroomGeneratorTest {
 
     private static final int NUMBER_OF_CLASSROOMS = 30;
 

@@ -47,7 +47,7 @@ import static org.vdragun.tms.security.rest.resource.v1.AuthenticationResource.B
         JsonVerifier.class
 })
 @DisplayName("Authentication Resource System Test")
-public class AuthenticationResourceSystemTest {
+class AuthenticationResourceSystemTest {
 
     private static final String CONTENT_TYPE_JSON = "application/json";
 

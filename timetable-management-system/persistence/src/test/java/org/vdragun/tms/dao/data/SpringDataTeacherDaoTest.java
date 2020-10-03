@@ -40,7 +40,7 @@ import org.vdragun.tms.dao.TeacherDao;
 @Import({ DaoTestConfig.class })
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DisplayName("Spring Data Teacher DAO")
-public class SpringDataTeacherDaoTest {
+class SpringDataTeacherDaoTest {
 
     private static final String SMITH = "Smith";
 

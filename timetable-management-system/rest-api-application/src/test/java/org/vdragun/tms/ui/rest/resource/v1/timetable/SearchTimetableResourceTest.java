@@ -58,7 +58,7 @@ import org.vdragun.tms.util.localizer.TemporalLocalizer;
         JsonVerifier.class,
         TestSecurityConfig.class })
 @DisplayName("Timetable Resource Search Functionality Integration Test")
-public class SearchTimetableResourceTest {
+class SearchTimetableResourceTest {
 
     private static final int NUMBER_OF_TIMETABLES = 2;
 

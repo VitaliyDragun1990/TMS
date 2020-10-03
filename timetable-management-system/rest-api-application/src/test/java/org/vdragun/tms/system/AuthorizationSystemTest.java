@@ -36,7 +36,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
         TestTokenGenerator.class
 })
 @TestPropertySource("/system-test.properties")
-public class AuthorizationSystemTest {
+class AuthorizationSystemTest {
 
     private static final String BEARER = "Bearer_";
 

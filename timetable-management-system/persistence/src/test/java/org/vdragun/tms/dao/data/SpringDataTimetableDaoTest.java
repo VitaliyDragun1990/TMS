@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Import({DaoTestConfig.class})
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DisplayName("Spring Data Timetable DAO")
-public class SpringDataTimetableDaoTest {
+class SpringDataTimetableDaoTest {
 
     private static final LocalDate MARCH_TEN = LocalDate.of(2020, 3, 10);
 

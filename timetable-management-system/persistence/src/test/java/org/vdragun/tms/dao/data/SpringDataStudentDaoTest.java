@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Import({DaoTestConfig.class})
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DisplayName("Spring Data Student DAO")
-public class SpringDataStudentDaoTest {
+class SpringDataStudentDaoTest {
 
     private static final LocalDate ENROLLMENT_DATE = LocalDate.now();
 

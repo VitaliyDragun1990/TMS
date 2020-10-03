@@ -57,7 +57,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
         JsonVerifier.class,
         TestSecurityConfig.class })
 @DisplayName("Student Resource Register Functionality Integration Test")
-public class RegisterStudentResourceTest {
+class RegisterStudentResourceTest {
 
     @Autowired
     private ObjectMapper mapper;

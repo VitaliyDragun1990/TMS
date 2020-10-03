@@ -53,7 +53,7 @@ import org.vdragun.tms.config.Constants.Message;
         JsonVerifier.class,
         TestSecurityConfig.class })
 @DisplayName("Teacher Resource Search Functionality Integration Test")
-public class SearchTeacherResourceTest {
+class SearchTeacherResourceTest {
 
     private static final int NUMBER_OF_TEACHERS = 2;
 

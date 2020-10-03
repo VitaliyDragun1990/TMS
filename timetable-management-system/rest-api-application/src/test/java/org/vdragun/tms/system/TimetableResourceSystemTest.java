@@ -57,7 +57,7 @@ import static org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource.BA
         TestTokenGenerator.class
 })
 @DisplayName("Timetable Resource System Test")
-public class TimetableResourceSystemTest {
+class TimetableResourceSystemTest {
 
     private static final String BEARER = "Bearer_";
 

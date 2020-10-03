@@ -17,7 +17,7 @@ import org.springframework.validation.Validator;
 import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 
 @SpringJUnitConfig(classes = ValidationConfig.class)
-public class UpdateTimetableDataValidationTest extends AbstractValidationTest {
+class UpdateTimetableDataValidationTest extends AbstractValidationTest {
 
     private static final Integer VALID_TIMETABLE_ID = 1;
 

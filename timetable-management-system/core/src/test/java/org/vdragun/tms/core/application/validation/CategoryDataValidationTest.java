@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringJUnitConfig(classes = ValidationConfig.class)
-public class CategoryDataValidationTest extends AbstractValidationTest {
+class CategoryDataValidationTest extends AbstractValidationTest {
 
     private static final String VALID_CODE = "ENG";
 

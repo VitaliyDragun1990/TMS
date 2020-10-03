@@ -49,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         MessageProvider.class})
 @WithMockAuthenticatedUser
 @DisplayName("Delete Timetable Controller")
-public class DeleteTimetableControllerTest {
+class DeleteTimetableControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

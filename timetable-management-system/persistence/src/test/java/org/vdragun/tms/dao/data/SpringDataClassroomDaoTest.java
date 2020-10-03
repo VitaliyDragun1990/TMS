@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Import({DaoTestConfig.class})
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DisplayName("Spring Data Classroom DAO")
-public class SpringDataClassroomDaoTest {
+class SpringDataClassroomDaoTest {
 
     private static final int CAPACITY_TEN = 10;
 

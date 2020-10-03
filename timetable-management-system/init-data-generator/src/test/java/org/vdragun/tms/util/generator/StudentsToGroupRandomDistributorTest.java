@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Students to group random distributor")
-public class StudentsToGroupRandomDistributorTest {
+class StudentsToGroupRandomDistributorTest {
 
     private static final int MAX_STUDENTS_PER_GROUP = 30;
 

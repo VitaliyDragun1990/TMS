@@ -57,7 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         MessageProvider.class})
 @WithMockAuthenticatedUser
 @DisplayName("Register Course Controller")
-public class RegisterCourseControllerTest {
+class RegisterCourseControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

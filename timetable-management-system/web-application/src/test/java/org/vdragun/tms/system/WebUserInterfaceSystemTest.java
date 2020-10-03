@@ -42,7 +42,7 @@ import static java.lang.String.format;
 })
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @DisplayName("Web User Interface System Test")
-public class WebUserInterfaceSystemTest {
+class WebUserInterfaceSystemTest {
 
     @LocalServerPort
     private int port;

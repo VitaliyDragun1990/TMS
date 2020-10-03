@@ -36,7 +36,7 @@ import org.vdragun.tms.config.WebConstants.View;
         EmbeddedDataSourceConfig.class
 })
 @DisplayName("Web sign in process System Test")
-public class WebSignInProcessSystemTest {
+class WebSignInProcessSystemTest {
 
     @Autowired
     private WebApplicationContext context;

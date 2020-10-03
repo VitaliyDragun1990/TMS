@@ -53,7 +53,7 @@ import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL
         JsonVerifier.class,
         TestSecurityConfig.class})
 @DisplayName("Course Resource Register Functionality Integration Test")
-public class RegisterCourseResourceTest {
+class RegisterCourseResourceTest {
 
     @Autowired
     private ObjectMapper mapper;

@@ -33,7 +33,7 @@ import org.vdragun.tms.dao.CategoryDao;
 @Import({DaoTestConfig.class})
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DisplayName("Spring Data Category DAO")
-public class SpringDataCategoryDaoTest {
+class SpringDataCategoryDaoTest {
 
     private static final String CODE_ART = "ART";
 

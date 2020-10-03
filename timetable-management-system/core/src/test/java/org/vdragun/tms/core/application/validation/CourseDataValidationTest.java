@@ -15,7 +15,7 @@ import org.springframework.validation.Validator;
 import org.vdragun.tms.core.application.service.course.CourseData;
 
 @SpringJUnitConfig(classes = ValidationConfig.class)
-public class CourseDataValidationTest extends AbstractValidationTest {
+class CourseDataValidationTest extends AbstractValidationTest {
 
     private static final String VALID_NAME = "Adcanced English";
 

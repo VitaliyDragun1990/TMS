@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Import({DaoTestConfig.class})
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DisplayName("Spring Data Group DAO")
-public class SpringDataGroupDaoTest {
+class SpringDataGroupDaoTest {
 
     private static final String MH_TEN = "mh-10";
 

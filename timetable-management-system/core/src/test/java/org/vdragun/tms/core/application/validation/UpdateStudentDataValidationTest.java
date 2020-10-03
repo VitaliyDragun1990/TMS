@@ -19,7 +19,7 @@ import org.springframework.validation.Validator;
 import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 
 @SpringJUnitConfig(classes = ValidationConfig.class)
-public class UpdateStudentDataValidationTest extends AbstractValidationTest {
+class UpdateStudentDataValidationTest extends AbstractValidationTest {
 
     private static final Integer VALID_STUDENT_ID = 1;
 

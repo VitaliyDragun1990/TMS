@@ -17,7 +17,7 @@ import org.springframework.validation.Validator;
 import org.vdragun.tms.core.application.service.student.CreateStudentData;
 
 @SpringJUnitConfig(classes = ValidationConfig.class)
-public class CreateStudentDataValidationTest extends AbstractValidationTest {
+class CreateStudentDataValidationTest extends AbstractValidationTest {
 
     private static final String VALID_FIRST_NAME = "Jack";
 

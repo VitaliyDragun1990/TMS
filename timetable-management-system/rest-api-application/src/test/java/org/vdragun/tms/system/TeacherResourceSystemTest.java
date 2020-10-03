@@ -50,7 +50,7 @@ import static org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource.BASE_U
         TestTokenGenerator.class
 })
 @DisplayName("Teacher Resource System Test")
-public class TeacherResourceSystemTest {
+class TeacherResourceSystemTest {
 
     private static final String BEARER = "Bearer_";
 

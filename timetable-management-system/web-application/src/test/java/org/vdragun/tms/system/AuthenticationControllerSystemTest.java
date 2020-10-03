@@ -47,7 +47,7 @@ import org.vdragun.tms.config.Constants.Role;
         EmbeddedDataSourceConfig.class
 })
 @DisplayName("Authentication Controller System Test")
-public class AuthenticationControllerSystemTest {
+class AuthenticationControllerSystemTest {
 
     @Autowired
     private WebApplicationContext context;

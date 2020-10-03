@@ -62,7 +62,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         MessageProvider.class})
 @WithMockAuthenticatedUser
 @DisplayName("Register Timetable Controller")
-public class RegisterTimetableControllerTest {
+class RegisterTimetableControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
