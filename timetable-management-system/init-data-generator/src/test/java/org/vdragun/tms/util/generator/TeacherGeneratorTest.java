@@ -21,12 +21,16 @@ import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.util.generator.PersonGenerator.PersonGeneratorData;
 
 @DisplayName("Teacher Generator")
-public class TeacherGeneratorTest {
+class TeacherGeneratorTest {
 
     private static final List<String> FIRST_NAMES = Arrays.asList("Jack", "Maggy", "Mary");
+
     private static final List<String> LAST_NAMES = Arrays.asList("Porter", "Smith", "Harris");
+
     private static final LocalDate BASE_DATE = LocalDate.of(2020, 03, 25);
+
     private static final int DEVIATION_DAYS = 180;
+
     private static final int NUMBER_OF_TEACHERS = 500;
 
     private TeacherGenerator generator;

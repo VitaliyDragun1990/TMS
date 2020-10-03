@@ -31,14 +31,20 @@ import org.vdragun.tms.dao.TeacherDao;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Teacher service")
-public class TeacherServiceImplTest {
+class TeacherServiceImplTest {
 
     private static final int ID = 1;
+
     private static final int COURSE_ID = 5;
+
     private static final String JACK = "Jack";
+
     private static final String ANNA = "Anna";
+
     private static final String SMITH = "Smith";
+
     private static final String PORTER = "Porter";
+
     private static final LocalDate DATE_HIRED = LocalDate.now();
 
     @Mock

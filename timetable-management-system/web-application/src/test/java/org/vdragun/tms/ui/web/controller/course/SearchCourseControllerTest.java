@@ -10,20 +10,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.Constants.Message;
+import org.vdragun.tms.config.EntityGenerator;
+import org.vdragun.tms.config.MessageProvider;
 import org.vdragun.tms.config.SecurityConfig;
 import org.vdragun.tms.config.ThymeleafConfig;
 import org.vdragun.tms.config.WebConfig;
+import org.vdragun.tms.config.WebConstants.Attribute;
+import org.vdragun.tms.config.WebConstants.View;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.core.application.exception.InvalidPageNumberException;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.security.dao.UserDao;
-import org.vdragun.tms.config.EntityGenerator;
-import org.vdragun.tms.config.MessageProvider;
-import org.vdragun.tms.config.WebConstants.Attribute;
-import org.vdragun.tms.config.Constants.Message;
-import org.vdragun.tms.config.WebConstants.View;
 
 import java.util.List;
 import java.util.Locale;
@@ -35,7 +35,9 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
  * @author Vitaliy Dragun
@@ -48,10 +50,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         SecurityConfig.class,
         MessageProvider.class})
 @DisplayName("Search Course Controller")
-public class SearchCourseControllerTest {
+class SearchCourseControllerTest {
 
     private static final int MAX_VALID_PAGE_NUMBER = 5;
+
     private static final int PAGE_SIZE = 20;
+
     private static final int INVALID_PAGE_NUMBER = 10;
 
     @Autowired
@@ -104,7 +108,6 @@ public class SearchCourseControllerTest {
                         equalTo(getMessage(Message.REQUESTED_RESOURCE, "/courses?page=" + INVALID_PAGE_NUMBER))))
                 .andExpect(view().name(View.NOT_FOUND));
     }
-
 
     @Test
     void shouldShowCoursePageForExitingCourse() throws Exception {

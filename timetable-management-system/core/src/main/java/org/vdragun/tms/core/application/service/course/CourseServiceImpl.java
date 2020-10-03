@@ -31,7 +31,9 @@ public class CourseServiceImpl implements CourseService {
     private static final Logger LOG = LoggerFactory.getLogger(CourseServiceImpl.class);
 
     private CourseDao courseDao;
+
     private CategoryDao categoryDao;
+
     private TeacherDao teacherDao;
 
     public CourseServiceImpl(CourseDao courseDao, CategoryDao categoryDao, TeacherDao teacherDao) {
@@ -59,9 +61,8 @@ public class CourseServiceImpl implements CourseService {
     public Course findCourseById(Integer courseId) {
         LOG.debug("Searching for course with id={}", courseId);
 
-        return courseDao.findById(courseId)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(Course.class, "Course with id=%d not found", courseId));
+        return courseDao.findById(courseId).orElseThrow(() ->
+                new ResourceNotFoundException(Course.class, "Course with id=%d not found", courseId));
     }
 
     @Override

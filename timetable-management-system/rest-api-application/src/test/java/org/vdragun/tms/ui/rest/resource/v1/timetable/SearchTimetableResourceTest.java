@@ -58,10 +58,12 @@ import org.vdragun.tms.util.localizer.TemporalLocalizer;
         JsonVerifier.class,
         TestSecurityConfig.class })
 @DisplayName("Timetable Resource Search Functionality Integration Test")
-public class SearchTimetableResourceTest {
+class SearchTimetableResourceTest {
 
     private static final int NUMBER_OF_TIMETABLES = 2;
+
     private static final Integer TEACHER_ID = 1;
+
     private static final Integer STUDENT_ID = 1;
 
     @Autowired
@@ -402,6 +404,7 @@ public class SearchTimetableResourceTest {
                 Message.ARGUMENT_TYPE_MISSMATCH,
                 "targetDate", targetDate, LocalDate.class);
     }
+
     @Test
     void shouldReturnStatusBadRequestIfGivenTeacherIdentifierIsNotNumberForMonthlyRequest() throws Exception {
         String invalidId = "id";

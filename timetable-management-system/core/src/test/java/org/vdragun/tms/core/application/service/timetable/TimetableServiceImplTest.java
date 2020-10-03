@@ -45,26 +45,38 @@ import org.vdragun.tms.dao.TimetableDao;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @DisplayName("Timetable servce")
-public class TimetableServiceImplTest {
+class TimetableServiceImplTest {
 
     private static final int NINETY_MINUTES = 90;
+
     private static final Integer TIMETABLE_ID = 1;
+
     private static final Integer STUDENT_ID = 2;
+
     private static final Integer TEACHER_ID = 3;
+
     private static final Integer CLASSROOM_ID = 4;
+
     private static final Integer COURSE_ID = 5;
+
     private static final LocalDateTime MARCH_TEN_NINE_THIRTY = LocalDateTime.of(2020, 3, 10, 9, 30);
+
     private static final LocalDateTime MARCH_THIRTEEN_NINE_THIRTY = LocalDateTime.of(2020, 3, 13, 9, 30);
+
     private static final LocalDate MARCH_TEN = LocalDate.of(2020, 3, 10);
 
     @Mock
     private StudentDao studentDaoMock;
+
     @Mock
     private ClassroomDao classroomDaoMock;
+
     @Mock
     private TeacherDao teacherDaoMock;
+
     @Mock
     private CourseDao courseDaoMock;
+
     @Mock
     private TimetableDao timetableDaoMock;
 
@@ -156,8 +168,8 @@ public class TimetableServiceImplTest {
     void shouldThrowExceptionWhenFindDailyTimetablesForNonExistingStudent() {
         when(studentDaoMock.existsById(any(Integer.class))).thenReturn(false);
 
-        assertThrows(ResourceNotFoundException.class,
-                () -> service.findDailyTimetablesForStudent(STUDENT_ID, MARCH_TEN));
+        assertThrows(ResourceNotFoundException.class, () ->
+                service.findDailyTimetablesForStudent(STUDENT_ID, MARCH_TEN));
     }
 
     @Test
@@ -176,8 +188,8 @@ public class TimetableServiceImplTest {
     void shouldThrowExceptionWhenFindMonthlyTimetablesForNonExistingStudent() {
         when(studentDaoMock.existsById(any(Integer.class))).thenReturn(false);
 
-        assertThrows(ResourceNotFoundException.class,
-                () -> service.findMonthlyTimetablesForStudent(STUDENT_ID, Month.MARCH));
+        assertThrows(ResourceNotFoundException.class, () ->
+                service.findMonthlyTimetablesForStudent(STUDENT_ID, Month.MARCH));
     }
     
     @Test
@@ -198,8 +210,8 @@ public class TimetableServiceImplTest {
     void shouldThrowExceptionWhenFindDailyTimetablesForNonExistingTeacher() {
         when(teacherDaoMock.existsById(any(Integer.class))).thenReturn(false);
 
-        assertThrows(ResourceNotFoundException.class,
-                () -> service.findDailyTimetablesForTeacher(TEACHER_ID, MARCH_TEN));
+        assertThrows(ResourceNotFoundException.class, () ->
+                service.findDailyTimetablesForTeacher(TEACHER_ID, MARCH_TEN));
     }
 
     @Test
@@ -218,8 +230,8 @@ public class TimetableServiceImplTest {
     void shouldThrowExceptionWhenFindMonthlyTimetablesForNonExistingTeacher() {
         when(teacherDaoMock.existsById(any(Integer.class))).thenReturn(false);
 
-        assertThrows(ResourceNotFoundException.class,
-                () -> service.findMonthlyTimetablesForTeacher(TEACHER_ID, Month.MARCH));
+        assertThrows(ResourceNotFoundException.class, () ->
+                service.findMonthlyTimetablesForTeacher(TEACHER_ID, Month.MARCH));
     }
 
     @Test

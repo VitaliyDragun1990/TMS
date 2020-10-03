@@ -9,6 +9,7 @@ package org.vdragun.tms.dao;
 public class FullName {
 
     private String firstName;
+
     private String lastName;
 
     public FullName(String firstName, String lastName) {

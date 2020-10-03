@@ -17,7 +17,9 @@ import org.vdragun.tms.core.domain.Teacher;
  *
  */
 public class CourseGenerator {
+
     private static final int MAX_ATTEMPTS = 1000;
+
     private static final String COURSE_DESCRIPTION_TEMPLATE = "Awesome %s course";
 
     /**
@@ -76,9 +78,13 @@ public class CourseGenerator {
     }
 
     public static class CourseGeneratorData {
+
         private int number;
+
         private List<String> prefixes;
+
         private List<Category> categories;
+
         private List<Teacher> teachers;
 
         public CourseGeneratorData(int number, List<String> prefixes, List<Category> categories,

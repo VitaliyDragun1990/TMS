@@ -17,11 +17,13 @@ import org.vdragun.tms.core.domain.Group;
 public class GroupGenerator {
 
     private static final List<Integer> NUMBERS = IntStream.rangeClosed(1, 9)
-            .mapToObj(Integer::valueOf)
+            .boxed()
             .collect(toList());
+
     private static final List<Character> LETTERS = IntStream.rangeClosed('a', 'z')
             .mapToObj(c -> (char) c)
             .collect(toList());
+
     private static final String HYPHEN = "-";
 
     /**

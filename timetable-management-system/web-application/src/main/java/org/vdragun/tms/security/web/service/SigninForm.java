@@ -9,6 +9,7 @@ package org.vdragun.tms.security.web.service;
 public class SigninForm {
 
     private String username;
+
     private String password;
 
     public SigninForm() {

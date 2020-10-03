@@ -28,9 +28,10 @@ import org.vdragun.tms.dao.ClassroomDao;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Classroom service")
-public class ClassroomServiceImplTest {
+class ClassroomServiceImplTest {
 
     private static final int ID = 1;
+
     private static final int CAPACITY = 25;
 
     @Mock

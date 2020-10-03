@@ -40,6 +40,7 @@ public class AuthenticationController {
     public static final String BASE_URL = "/auth";
 
     private WebAuthenticationService authService;
+
     private SignupFormPasswordsMatchValidator formValidator;
 
     public AuthenticationController(

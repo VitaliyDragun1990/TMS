@@ -15,21 +15,24 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.vdragun.tms.config.Constants.Message;
 import org.vdragun.tms.config.EmbeddedDataSourceConfig;
 import org.vdragun.tms.config.EntityGenerator;
+import org.vdragun.tms.config.JsonVerifier;
 import org.vdragun.tms.config.TestSecurityConfig;
 import org.vdragun.tms.core.application.service.course.CourseData;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
-import org.vdragun.tms.config.JsonVerifier;
-import org.vdragun.tms.config.Constants.Message;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -50,7 +53,7 @@ import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL
         JsonVerifier.class,
         TestSecurityConfig.class})
 @DisplayName("Course Resource Register Functionality Integration Test")
-public class RegisterCourseResourceTest {
+class RegisterCourseResourceTest {
 
     @Autowired
     private ObjectMapper mapper;

@@ -23,7 +23,9 @@ public class WebAuthenticationServiceImpl implements WebAuthenticationService {
     private static final Logger LOG = LoggerFactory.getLogger(WebAuthenticationServiceImpl.class);
 
     private RoleDao roleDao;
+
     private UserService userService;
+
     private PasswordEncoder passwordEncoder;
 
     public WebAuthenticationServiceImpl(

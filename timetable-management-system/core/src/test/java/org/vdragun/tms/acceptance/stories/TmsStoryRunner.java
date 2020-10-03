@@ -38,7 +38,6 @@ public class TmsStoryRunner {
     @Autowired
     private ApplicationContext applicationContext;
 
-
     @Test
     void runClasspathLoadedStories() {
         Embedder embedder = new TmsEmbedder(applicationContext);
@@ -50,7 +49,6 @@ public class TmsStoryRunner {
             embedder.generateSurefireReport();
         }
     }
-
 
     private List<String> findStoriesFromClasspath() {
         URL location = codeLocationFromClass(this.getClass());

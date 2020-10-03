@@ -17,14 +17,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.vdragun.tms.config.Constants.Role;
 import org.vdragun.tms.config.EmbeddedDataSourceConfig;
+import org.vdragun.tms.config.JsonVerifier;
+import org.vdragun.tms.config.TestTokenGenerator;
 import org.vdragun.tms.core.application.service.timetable.CreateTimetableData;
 import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.TimetableDao;
-import org.vdragun.tms.config.JsonVerifier;
-import org.vdragun.tms.config.TestTokenGenerator;
-import org.vdragun.tms.config.Constants.Role;
 import org.vdragun.tms.util.localizer.TemporalLocalizer;
 
 import java.time.LocalDate;
@@ -36,7 +36,9 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
-import static org.springframework.http.HttpHeaders.*;
+import static org.springframework.http.HttpHeaders.ACCEPT;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -55,9 +57,10 @@ import static org.vdragun.tms.ui.rest.resource.v1.timetable.TimetableResource.BA
         TestTokenGenerator.class
 })
 @DisplayName("Timetable Resource System Test")
-public class TimetableResourceSystemTest {
+class TimetableResourceSystemTest {
 
     private static final String BEARER = "Bearer_";
+
     private static final String ADMIN = "admin";
 
     private static final LocalDateTime REGISTER_TIMETABLE_START_TIME = LocalDateTime.now()
@@ -65,18 +68,27 @@ public class TimetableResourceSystemTest {
             .withHour(10)
             .withMinute(0)
             .truncatedTo(MINUTES);
+
     private static final LocalDateTime UPDATE_TIMETABLE_START_TIME = LocalDateTime.now()
             .plusDays(2)
             .withHour(11)
             .withMinute(0)
             .truncatedTo(MINUTES);
+
     private static final Integer TIMETABLE_ID = 1;
+
     private static final Integer STUDENT_ID = 1;
+
     private static final Integer TEACHER_ID = 1;
+
     private static final Integer CLASSROOM_ID_ONE = 1;
+
     private static final Integer CLASSROOM_ID_TWO = 2;
+
     private static final Integer COURSE_ID = 1;
+
     private static final int DURATION_SIXTY = 60;
+
     private static final int DURATION_SEVENTY = 70;
 
     private String authToken;

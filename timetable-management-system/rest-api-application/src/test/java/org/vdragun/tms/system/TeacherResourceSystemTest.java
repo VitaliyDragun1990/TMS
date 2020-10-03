@@ -50,12 +50,14 @@ import static org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource.BASE_U
         TestTokenGenerator.class
 })
 @DisplayName("Teacher Resource System Test")
-public class TeacherResourceSystemTest {
+class TeacherResourceSystemTest {
 
     private static final String BEARER = "Bearer_";
+
     private static final String ADMIN = "admin";
 
     private static final int NUMBER_OF_TEACHERS = 2;
+
     private static final int NUMBER_OF_COURSES_PER_TEACHER = 1;
 
     private String authToken;
@@ -142,7 +144,6 @@ public class TeacherResourceSystemTest {
                 request,
                 String.class,
                 teacherId);
-
 
         Teacher expectedTeacher = teacherDao.findAll().get(0);
         jsonVerifier.verifyTeacherJson(response.getBody(), expectedTeacher);

@@ -29,11 +29,14 @@ public class JwtAuthenticationService implements RestAuthenticationService {
     private static final Logger LOG = LoggerFactory.getLogger(JwtAuthenticationService.class);
 
     private AuthenticationManager authenticationManager;
-    private JwtTokenProvider jwtTokenProvider;
-    private UserService userService;
-    private RoleDao roleDao;
-    private PasswordEncoder passwordEncoder;
 
+    private JwtTokenProvider jwtTokenProvider;
+
+    private UserService userService;
+
+    private RoleDao roleDao;
+
+    private PasswordEncoder passwordEncoder;
 
     public JwtAuthenticationService(
             AuthenticationManager authenticationManager,

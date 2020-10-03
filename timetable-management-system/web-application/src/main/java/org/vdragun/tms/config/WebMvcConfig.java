@@ -2,15 +2,14 @@ package org.vdragun.tms.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.vdragun.tms.config.WebConstants.View;
 import org.vdragun.tms.ui.web.converter.StudentToUpdateStudentDataConverter;
 import org.vdragun.tms.ui.web.converter.TimetableToUpdateTimetableDataConverter;
 import org.vdragun.tms.ui.web.converter.TitleCustomFormatter;
-import org.vdragun.tms.config.WebConstants.View;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {

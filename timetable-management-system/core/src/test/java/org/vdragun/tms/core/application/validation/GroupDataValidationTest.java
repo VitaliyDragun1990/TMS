@@ -15,7 +15,7 @@ import org.springframework.validation.Validator;
 import org.vdragun.tms.core.application.service.group.GroupData;
 
 @SpringJUnitConfig(classes = ValidationConfig.class)
-public class GroupDataValidationTest extends AbstractValidationTest {
+class GroupDataValidationTest extends AbstractValidationTest {
 
     @Autowired
     private Validator validator;

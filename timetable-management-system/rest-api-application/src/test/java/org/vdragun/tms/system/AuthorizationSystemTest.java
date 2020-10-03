@@ -7,15 +7,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
+import org.vdragun.tms.config.Constants.Message;
 import org.vdragun.tms.config.EmbeddedDataSourceConfig;
 import org.vdragun.tms.config.JsonVerifier;
 import org.vdragun.tms.config.TestTokenGenerator;
 import org.vdragun.tms.ui.rest.resource.v1.student.StudentResource;
 import org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource;
-import org.vdragun.tms.config.Constants.Message;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,7 +36,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
         TestTokenGenerator.class
 })
 @TestPropertySource("/system-test.properties")
-public class AuthorizationSystemTest {
+class AuthorizationSystemTest {
 
     private static final String BEARER = "Bearer_";
 

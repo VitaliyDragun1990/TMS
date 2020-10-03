@@ -50,7 +50,7 @@ import org.vdragun.tms.config.Constants.Message;
         JsonVerifier.class,
         TestSecurityConfig.class })
 @DisplayName("Timetable Resource Delete Functionality Integration Test")
-public class DeleteTimetableResourceTest {
+class DeleteTimetableResourceTest {
 
     private static final Integer TIMETABLE_ID = 1;
     

@@ -15,7 +15,9 @@ import org.vdragun.tms.security.web.service.SignupForm;
 public class SignupFormPasswordsMatchValidator implements Validator {
 
     private static final String ERROR_CODE = "PasswordsMatch";
+
     private static final String FIELD_CONFIRM_PASSWORD = "confirmPassword";
+
     private static final String FIELD_PASSWORD = "password";
 
     @Override
@@ -37,8 +39,8 @@ public class SignupFormPasswordsMatchValidator implements Validator {
     }
 
     private boolean passwordsDontMatch(String password, String confirmPassword) {
-        return (password != null && !password.equals(confirmPassword)) ||
-                (confirmPassword != null && !confirmPassword.equals(password));
+        return (password != null && !password.equals(confirmPassword))
+                || (confirmPassword != null && !confirmPassword.equals(password));
     }
 
 }

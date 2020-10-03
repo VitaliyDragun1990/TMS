@@ -50,7 +50,7 @@ import org.vdragun.tms.config.Constants.Message;
         JsonVerifier.class,
         TestSecurityConfig.class })
 @DisplayName("Student Resource Delete Functionality Integration Test")
-public class DeleteStudentResourceTest {
+class DeleteStudentResourceTest {
 
     @Autowired
     private JsonVerifier jsonVerifier;

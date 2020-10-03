@@ -8,8 +8,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vdragun.tms.config.Constants.Message;
+import org.vdragun.tms.config.EntityGenerator;
+import org.vdragun.tms.config.MessageProvider;
 import org.vdragun.tms.config.SecurityConfig;
 import org.vdragun.tms.config.WebConfig;
+import org.vdragun.tms.config.WebConstants.Attribute;
+import org.vdragun.tms.config.WebConstants.View;
 import org.vdragun.tms.config.WebMvcConfig;
 import org.vdragun.tms.config.WithMockAuthenticatedUser;
 import org.vdragun.tms.core.application.service.category.CategoryService;
@@ -20,11 +25,6 @@ import org.vdragun.tms.core.domain.Category;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.security.dao.UserDao;
-import org.vdragun.tms.config.EntityGenerator;
-import org.vdragun.tms.config.MessageProvider;
-import org.vdragun.tms.config.WebConstants.Attribute;
-import org.vdragun.tms.config.Constants.Message;
-import org.vdragun.tms.config.WebConstants.View;
 
 import java.util.List;
 import java.util.Locale;
@@ -34,10 +34,17 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlTemplate;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
  * @author Vitaliy Dragun
@@ -50,7 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         MessageProvider.class})
 @WithMockAuthenticatedUser
 @DisplayName("Register Course Controller")
-public class RegisterCourseControllerTest {
+class RegisterCourseControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

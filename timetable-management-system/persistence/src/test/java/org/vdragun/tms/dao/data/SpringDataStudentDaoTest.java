@@ -17,7 +17,11 @@ import org.vdragun.tms.dao.FullName;
 import org.vdragun.tms.dao.StudentDao;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.allOf;
@@ -28,29 +32,42 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Import({DaoTestConfig.class})
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DisplayName("Spring Data Student DAO")
-public class SpringDataStudentDaoTest {
+class SpringDataStudentDaoTest {
 
     private static final LocalDate ENROLLMENT_DATE = LocalDate.now();
 
     private static final String MARY = "Mary";
+
     private static final String AMANDA = "Amanda";
+
     private static final String WILLIAM = "William";
+
     private static final String JOHN = "JOHN";
+
     private static final String BIRKIN = "Birkin";
+
     private static final String SMITH = "Smith";
 
     private static final String CORE_HISTORY = "Core History";
+
     private static final String CORE_BIOLOGY = "Core Biology";
+
     private static final String ADVANCED_BIOLOGY = "Advanced Biology";
 
     private static final String PS_TWENTY = "ps-20";
+
     private static final String MH_TEN = "mh-10";
 
     @Autowired

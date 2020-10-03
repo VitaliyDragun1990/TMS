@@ -48,18 +48,6 @@ public class GlobalErrorController extends AbstractErrorController {
         return showErrorPage(request, model, status);
     }
 
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> provideResponse(HttpServletRequest request) {
-        HttpStatus status = getStatus(request);
-        log.warn("Handling '{}' request for URI:{} with status code:{}",
-                status.getReasonPhrase(), getRequestUrl(request), status.value());
-        if (status == HttpStatus.NO_CONTENT) {
-            return new ResponseEntity<>(status);
-        }
-        Map<String, Object> body = getErrorAttributes(request, false);
-        return new ResponseEntity<>(body, status);
-    }
-
     private String showErrorPage(HttpServletRequest request, Model model, HttpStatus status) {
         if (status == HttpStatus.NOT_FOUND) {
             log.warn("Handling not found resource, URI:{}", getRequestUrl(request));
@@ -72,6 +60,18 @@ public class GlobalErrorController extends AbstractErrorController {
 
             return View.SERVER_ERROR;
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> provideResponse(HttpServletRequest request) {
+        HttpStatus status = getStatus(request);
+        log.warn("Handling '{}' request for URI:{} with status code:{}",
+                status.getReasonPhrase(), getRequestUrl(request), status.value());
+        if (status == HttpStatus.NO_CONTENT) {
+            return new ResponseEntity<>(status);
+        }
+        Map<String, Object> body = getErrorAttributes(request, false);
+        return new ResponseEntity<>(body, status);
     }
 
     @Override

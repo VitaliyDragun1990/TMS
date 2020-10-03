@@ -38,19 +38,26 @@ import org.vdragun.tms.dao.TeacherDao;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @DisplayName("Course service")
-public class CourseServiceImplTest {
+class CourseServiceImplTest {
 
     private static final String DESC_BIOLOGY = "Awesome biology course";
+
     private static final String NAME_CORE_BIOLOGY = "Core Biology";
+
     private static final String NAME_ADV_BIOLOGY = "Advanced Biology";
+
     private static final Integer CATEGORY_ID = 2;
+
     private static final Integer TEACHER_ID = 1;
+
     private static final Integer COURSE_ID = 3;
 
     @Mock
     private CategoryDao categoryDaoMock;
+
     @Mock
     private TeacherDao teacherDaoMock;
+
     @Mock
     private CourseDao courseDaoMock;
 

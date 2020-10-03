@@ -15,11 +15,14 @@ import org.springframework.validation.Validator;
 import org.vdragun.tms.core.application.service.course.CourseData;
 
 @SpringJUnitConfig(classes = ValidationConfig.class)
-public class CourseDataValidationTest extends AbstractValidationTest {
+class CourseDataValidationTest extends AbstractValidationTest {
 
     private static final String VALID_NAME = "Adcanced English";
+
     private static final String VALID_DESCRIPTION = "New English course";
+
     private static final Integer VALID_CATEGORY_ID = 1;
+
     private static final Integer VALID_TEACHER_ID = 1;
 
     @Autowired

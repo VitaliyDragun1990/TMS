@@ -21,7 +21,10 @@ import org.vdragun.tms.security.service.UserService;
 import org.vdragun.tms.security.service.UserServiceImpl;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
 
-import static org.springframework.http.HttpMethod.*;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 import static org.vdragun.tms.config.Constants.Role.ADMIN;
 import static org.vdragun.tms.config.Constants.Role.TEACHER;
@@ -53,7 +56,9 @@ public class SecurityConfig {
     public static class RestWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         private static final String LOGIN_ENDPOINT = "/api/v1/auth/signin";
+
         private static final String REGISTER_ENDPOINT = "/api/v1/auth/signup";
+
         private static final String CHECK_ENDPOINTS = "/api/v1/auth/check/*";
 
         @Autowired
@@ -61,7 +66,7 @@ public class SecurityConfig {
 
         @Autowired
         private RestAccessDeniedExceptionHandler accessDeniedHandler;
-        
+
         @Autowired
         private RestAuthenticationEntryPoint authEntryPoint;
 
@@ -118,18 +123,18 @@ public class SecurityConfig {
                     .antMatchers(POST, "/api/v1/timetables").hasAuthority(ADMIN)
                     .antMatchers(PUT, "/api/v1/timetables/**").hasAuthority(ADMIN)
                     .antMatchers(DELETE, "/api/v1/timetables/**").hasAuthority(ADMIN)
-                     // other
+                    // other
                     .anyRequest().authenticated()
                     .and()
-                        .exceptionHandling()
-                        .accessDeniedHandler(accessDeniedHandler)
-                        .authenticationEntryPoint(authEntryPoint)
+                    .exceptionHandling()
+                    .accessDeniedHandler(accessDeniedHandler)
+                    .authenticationEntryPoint(authEntryPoint)
                     .and()
-                        .sessionManagement().sessionCreationPolicy(STATELESS)
+                    .sessionManagement().sessionCreationPolicy(STATELESS)
                     .and()
-                        .cors()
+                    .cors()
                     .and()
-                        .apply(new JwtConfigurer(new JwtAuthenticationTokenFilter(jwtTokenProvider, authEntryPoint)));
+                    .apply(new JwtConfigurer(new JwtAuthenticationTokenFilter(jwtTokenProvider, authEntryPoint)));
         }
     }
 

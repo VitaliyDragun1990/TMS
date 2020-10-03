@@ -15,14 +15,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.vdragun.tms.config.Constants.Message;
 import org.vdragun.tms.config.EmbeddedDataSourceConfig;
 import org.vdragun.tms.config.EntityGenerator;
+import org.vdragun.tms.config.JsonVerifier;
 import org.vdragun.tms.config.TestSecurityConfig;
 import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
-import org.vdragun.tms.config.JsonVerifier;
-import org.vdragun.tms.config.Constants.Message;
 
 import java.util.List;
 
@@ -34,7 +34,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL;
 
@@ -51,7 +53,7 @@ import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL
         JsonVerifier.class,
         TestSecurityConfig.class})
 @DisplayName("Course Resource Search Functionality Integration Test")
-public class SearchCourseResourceTest {
+class SearchCourseResourceTest {
 
     @Autowired
     private JsonVerifier jsonVerifier;

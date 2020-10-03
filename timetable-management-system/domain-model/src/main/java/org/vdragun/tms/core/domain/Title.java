@@ -2,9 +2,8 @@ package org.vdragun.tms.core.domain;
 
 /**
  * Represents title {@link Teacher} can have.
- * 
- * @author Vitaliy Dragun
  *
+ * @author Vitaliy Dragun
  */
 public enum Title {
     PROFESSOR,
@@ -13,14 +12,14 @@ public enum Title {
 
     public String asString() {
         switch (this) {
-        case PROFESSOR:
-            return "Professor";
-        case INSTRUCTOR:
-            return "Instructor";
-        case ASSOCIATE_PROFESSOR:
-            return "Associate Professor";
-        default:
-            throw new IllegalStateException();
+            case PROFESSOR:
+                return "Professor";
+            case INSTRUCTOR:
+                return "Instructor";
+            case ASSOCIATE_PROFESSOR:
+                return "Associate Professor";
+            default:
+                throw new IllegalStateException();
         }
     }
 

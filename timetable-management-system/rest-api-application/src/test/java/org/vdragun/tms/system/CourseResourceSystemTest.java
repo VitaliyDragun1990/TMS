@@ -46,9 +46,10 @@ import static org.vdragun.tms.ui.rest.resource.v1.course.CourseResource.BASE_URL
         TestTokenGenerator.class
 })
 @DisplayName("Course Resource System Test")
-public class CourseResourceSystemTest {
+class CourseResourceSystemTest {
 
     private static final String BEARER = "Bearer_";
+
     private static final String ADMIN = "admin";
 
     private String authToken;

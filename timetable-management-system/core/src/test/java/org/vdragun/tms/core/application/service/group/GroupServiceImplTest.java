@@ -29,9 +29,10 @@ import org.vdragun.tms.dao.GroupDao;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Group Service")
-public class GroupServiceImplTest {
+class GroupServiceImplTest {
 
     private static final int ID = 1;
+
     private static final String NAME = "ph-25";
 
     @Mock

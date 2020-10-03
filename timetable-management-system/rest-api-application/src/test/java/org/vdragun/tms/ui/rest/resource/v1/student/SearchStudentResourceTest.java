@@ -54,9 +54,10 @@ import org.vdragun.tms.config.Constants.Message;
         JsonVerifier.class,
         TestSecurityConfig.class })
 @DisplayName("Student Resource Search Functionality Integration Test")
-public class SearchStudentResourceTest {
+class SearchStudentResourceTest {
 
     private static final int NUMBER_OF_STUDENTS = 2;
+
     private static final int NUMBER_OF_COURSES_PER_STUDENT = 2;
 
     @Autowired
@@ -112,7 +113,6 @@ public class SearchStudentResourceTest {
                 request,
                 String.class,
                 expectedStudent.getId());
-
 
         assertThat(response.getStatusCode(), equalTo(OK));
         String contentType = response.getHeaders().getContentType().toString();

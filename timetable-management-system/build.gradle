@@ -40,6 +40,7 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'org.springframework.boot'
+    apply plugin: 'checkstyle'
 
     if (!name.endsWith('application')) {
         bootJar {
@@ -78,4 +79,21 @@ subprojects {
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
     }
+
+    checkstyle {
+        configFile file("../checkstyle-config/checkstyle.xml")
+        toolVersion = "8.10.1"
+        showViolations = true
+        ignoreFailures = false
+    }
+
+    checkstyleMain {
+        source = 'src/main/java'
+    }
+
+    checkstyleTest {
+        source = 'src/test/java'
+    }
+
+    test.mustRunAfter checkstyleMain, checkstyleTest
 }

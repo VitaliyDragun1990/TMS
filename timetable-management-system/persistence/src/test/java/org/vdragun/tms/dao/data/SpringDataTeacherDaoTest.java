@@ -40,18 +40,26 @@ import org.vdragun.tms.dao.TeacherDao;
 @Import({ DaoTestConfig.class })
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 @DisplayName("Spring Data Teacher DAO")
-public class SpringDataTeacherDaoTest {
+class SpringDataTeacherDaoTest {
+
     private static final String SMITH = "Smith";
+
     private static final String SNOW = "Snow";
+
     private static final String JACK = "Jack";
+
     private static final String ANNA = "Anna";
+
     private static final String MIKE = "Mike";
+
     private static final String JOHN = "John";
+
     private static final String PORTER = "Porter";
 
     private static final LocalDate DATE_HIRED = LocalDate.now();
 
     private static final String ADVANCED_BIOLOGY = "Advanced Biology";
+
     private static final String INTERMEDIATE_BIOLOGY = "Intermediate Biology";
 
     @Autowired

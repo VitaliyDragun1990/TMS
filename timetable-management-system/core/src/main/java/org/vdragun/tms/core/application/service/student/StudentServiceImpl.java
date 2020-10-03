@@ -32,7 +32,9 @@ public class StudentServiceImpl implements StudentService {
     private static final Logger LOG = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     private StudentDao studentDao;
+
     private GroupDao groupDao;
+
     private CourseDao courseDao;
 
     public StudentServiceImpl(StudentDao studentDao, GroupDao groupDao, CourseDao courseDao) {
@@ -77,8 +79,8 @@ public class StudentServiceImpl implements StudentService {
         LOG.debug("Searching for student with id={}", studentId);
 
         return studentDao.findById(studentId)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(Student.class, "Student with id=%d not found", studentId));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(Student.class, "Student with id=%d not found", studentId));
     }
 
     @Override

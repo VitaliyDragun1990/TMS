@@ -12,25 +12,45 @@ import org.springframework.stereotype.Component;
 public class GeneratorProperties {
 
     private List<String> categories;
+
     private List<String> firstNames;
+
     private List<String> lastNames;
+
     private LocalDate baseDate;
+
     private int deviationDays;
+
     private int numberOfStudents;
+
     private int numberOfTeachers;
+
     private int numberOfClassrooms;
+
     private int classroomMinCapacity;
+
     private int classroomMaxCapacity;
+
     private List<String> coursePrefixes;
+
     private int numberOfCourses;
+
     private int numberOfGroups;
+
     private int minStudentsPerGroup;
+
     private int maxStudentsPerGroup;
+
     private int maxCoursesPerStudent;
+
     private LocalTime timetableStartTime;
+
     private LocalTime timetableEndTime;
+
     private int timetablePeriodOfMonths;
+
     private int timetableDurationInMinutes;
+
     private int timetableMaxClassesPerWeek;
 
     public List<String> getCategories() {

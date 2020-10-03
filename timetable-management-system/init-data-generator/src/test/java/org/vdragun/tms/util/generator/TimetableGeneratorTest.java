@@ -27,15 +27,20 @@ import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.core.domain.Title;
 
 @DisplayName("Timetable Generator")
-public class TimetableGeneratorTest {
+class TimetableGeneratorTest {
 
     private static final int NUMBER_OF_MONTH = 1;
+
     private static final LocalTime TIMETABLE_START_TIME = LocalTime.of(9, 30);
+
     private static final LocalTime TIMETABLE_END_TIME = LocalTime.of(19, 30);
+
     private static final int CLASS_DURATION_MINUTES = 60;
+
     private static final int MAX_CLASSES_PER_WEEK = 3;
 
     private static final Teacher TEACHER = new Teacher(1, "John", "Doe", Title.PROFESSOR, LocalDate.now());
+
     private static final Category CATEGORY = new Category(1, "ART", "Art");
 
     private static final List<Classroom> CLASSROOMS = Arrays.asList(

@@ -1,24 +1,7 @@
 package org.vdragun.tms.config;
 
-import static java.util.stream.Collectors.toList;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.springdoc.core.customizers.OpenApiCustomiser;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.vdragun.tms.core.application.exception.ConfigurationException;
-import org.vdragun.tms.ui.rest.exception.ApiError;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
@@ -29,6 +12,21 @@ import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.vdragun.tms.core.application.exception.ConfigurationException;
+import org.vdragun.tms.ui.rest.exception.ApiError;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Configuration
 public class OpenApiConfig {
@@ -49,7 +47,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("bearer-jwt",
                         new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
-                        .in(SecurityScheme.In.HEADER).name("Authorization")))
+                                .in(SecurityScheme.In.HEADER).name("Authorization")))
                 .info(new Info()
                         .title("TMS API")
                         .description("Timetable Management Application")
@@ -66,7 +64,7 @@ public class OpenApiConfig {
                     .values()
                     .stream().flatMap(pathItem -> pathItem.readOperations().stream())
                     .collect(toList());
-            
+
             addDefaultResponsesToEachOperation(operations);
             addAuthResponsesToProtectedOperations(operations);
         };
@@ -76,12 +74,12 @@ public class OpenApiConfig {
         operations.stream()
                 .filter(operation -> !operation.getTags().contains("user"))
                 .forEach(operation -> {
-          ApiResponse unauthorized = buildUnauthorizedResponse();
-          ApiResponse forbidden = buildForbiddenResponse();
-            
-          operation.getResponses().addApiResponse("401", unauthorized);
-          operation.getResponses().addApiResponse("403", forbidden);
-        });
+                    ApiResponse unauthorized = buildUnauthorizedResponse();
+                    ApiResponse forbidden = buildForbiddenResponse();
+
+                    operation.getResponses().addApiResponse("401", unauthorized);
+                    operation.getResponses().addApiResponse("403", forbidden);
+                });
     }
 
     private void addDefaultResponsesToEachOperation(List<Operation> operations) {
@@ -90,7 +88,7 @@ public class OpenApiConfig {
             operation.getResponses().addApiResponse("500", internalServerError);
         });
     }
-    
+
     private ApiResponse buildInternalServerErrorResponse() {
         MediaType mediaType = new MediaType();
         mediaType.example(buildExample(INTERNAL_SERVER_ERROR, INTERNAL_ERROR));
@@ -117,7 +115,7 @@ public class OpenApiConfig {
                 .description("Authorization required")
                 .content(new Content().addMediaType(APPLICATION_JSON, mediaType));
     }
-    
+
     private Object buildExample(HttpStatus status, String msg) {
         ApiError error = new ApiError(status);
         error.setMessage(msg);

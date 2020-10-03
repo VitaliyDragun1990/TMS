@@ -11,9 +11,11 @@ import org.vdragun.tms.util.WebUtil;
 public class ThymeleafUtil {
 
     private static final String ASC = "asc";
+
     private static final String DESC = "desc";
 
     private static final String SORT_TMP = "sort=%s,%s";
+
     private static final String PAGE_TMP = "page=%d";
 
     /**

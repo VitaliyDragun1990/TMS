@@ -38,7 +38,7 @@ import org.vdragun.tms.config.WebConstants.View;
         MessageProvider.class
 })
 @DisplayName("Web authorixation System Test")
-public class WebAuthorizationSystemTest {
+class WebAuthorizationSystemTest {
 
     @Autowired
     private WebApplicationContext context;

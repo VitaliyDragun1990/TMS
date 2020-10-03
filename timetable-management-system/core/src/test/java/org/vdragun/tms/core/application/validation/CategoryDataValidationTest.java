@@ -1,9 +1,5 @@
 package org.vdragun.tms.core.application.validation;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -14,9 +10,12 @@ import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
 import org.vdragun.tms.core.application.service.category.CategoryData;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringJUnitConfig(classes = ValidationConfig.class)
-public class CategoryDataValidationTest extends AbstractValidationTest {
+class CategoryDataValidationTest extends AbstractValidationTest {
 
     private static final String VALID_CODE = "ENG";
 

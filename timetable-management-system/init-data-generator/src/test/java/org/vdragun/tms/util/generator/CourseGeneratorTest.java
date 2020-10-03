@@ -29,15 +29,18 @@ import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.util.generator.CourseGenerator.CourseGeneratorData;
 
 @DisplayName("Course Generator")
-public class CourseGeneratorTest {
+class CourseGeneratorTest {
 
     private static final int NUMBER_OF_COURSES = 10;
+
     private static final List<String> PREFIXES = asList("Beginner", "Intermediate", "Basic", "Advanced");
+
     private static final List<Category> CATEGORIES = asList(
             new Category("ART", "Art"),
             new Category("BIO", "Biology"),
             new Category("HIS", "History"),
             new Category("ENG", "English"));
+
     private static final List<Teacher> TEACHERS = asList(
             new Teacher("Jack", "Smith", ASSOCIATE_PROFESSOR, LocalDate.now()),
             new Teacher("Anna", "Snow", PROFESSOR, LocalDate.now()),
