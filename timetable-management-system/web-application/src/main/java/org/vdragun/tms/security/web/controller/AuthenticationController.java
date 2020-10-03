@@ -22,8 +22,8 @@ import org.vdragun.tms.security.model.Role;
 import org.vdragun.tms.security.web.service.SignupForm;
 import org.vdragun.tms.security.web.service.WebAuthenticationService;
 import org.vdragun.tms.security.web.validation.SignupFormPasswordsMatchValidator;
-import org.vdragun.tms.util.Constants.Attribute;
-import org.vdragun.tms.util.Constants.View;
+import org.vdragun.tms.config.WebConstants.Attribute;
+import org.vdragun.tms.config.WebConstants.View;
 
 /**
  * Processes student registration requests

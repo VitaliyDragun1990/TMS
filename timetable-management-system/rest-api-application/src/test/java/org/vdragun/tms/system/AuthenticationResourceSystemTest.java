@@ -20,7 +20,7 @@ import org.vdragun.tms.security.rest.jwt.JwtTokenProvider;
 import org.vdragun.tms.security.rest.service.SigninRequest;
 import org.vdragun.tms.security.rest.service.SignupRequest;
 import org.vdragun.tms.config.JsonVerifier;
-import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.config.Constants.Message;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.*;

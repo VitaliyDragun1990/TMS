@@ -22,7 +22,7 @@ import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.config.JsonVerifier;
-import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.config.Constants.Message;
 
 import java.util.List;
 

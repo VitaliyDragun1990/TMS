@@ -14,8 +14,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.vdragun.tms.util.Constants.Attribute;
-import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.config.WebConstants.Attribute;
+import org.vdragun.tms.config.Constants.Message;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 /**

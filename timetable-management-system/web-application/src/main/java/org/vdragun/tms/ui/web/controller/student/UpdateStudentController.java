@@ -27,9 +27,9 @@ import org.vdragun.tms.core.application.service.student.UpdateStudentData;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.core.domain.Group;
 import org.vdragun.tms.ui.web.controller.AbstractController;
-import org.vdragun.tms.util.Constants.Attribute;
-import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.View;
+import org.vdragun.tms.config.WebConstants.Attribute;
+import org.vdragun.tms.config.Constants.Message;
+import org.vdragun.tms.config.WebConstants.View;
 
 /**
  * Processes student update requests

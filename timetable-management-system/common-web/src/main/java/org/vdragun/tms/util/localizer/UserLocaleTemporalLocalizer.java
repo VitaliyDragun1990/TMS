@@ -2,7 +2,7 @@ package org.vdragun.tms.util.localizer;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.config.Constants.Message;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

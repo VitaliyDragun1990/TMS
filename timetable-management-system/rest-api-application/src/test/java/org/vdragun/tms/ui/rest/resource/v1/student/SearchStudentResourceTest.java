@@ -39,7 +39,7 @@ import org.vdragun.tms.core.application.exception.ResourceNotFoundException;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.config.JsonVerifier;
-import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.config.Constants.Message;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,

@@ -22,7 +22,7 @@ import org.vdragun.tms.core.application.service.course.CourseData;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.config.JsonVerifier;
-import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.config.Constants.Message;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;

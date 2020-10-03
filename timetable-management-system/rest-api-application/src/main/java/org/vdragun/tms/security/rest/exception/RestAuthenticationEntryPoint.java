@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.vdragun.tms.ui.rest.exception.ApiError;
-import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.config.Constants.Message;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

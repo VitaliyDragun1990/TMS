@@ -24,9 +24,9 @@ import org.springframework.web.context.WebApplicationContext;
 import org.vdragun.tms.config.EmbeddedDataSourceConfig;
 import org.vdragun.tms.config.WithMockAuthenticatedUser;
 import org.vdragun.tms.config.MessageProvider;
-import org.vdragun.tms.util.Constants.Attribute;
-import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.View;
+import org.vdragun.tms.config.WebConstants.Attribute;
+import org.vdragun.tms.config.Constants.Message;
+import org.vdragun.tms.config.WebConstants.View;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,

@@ -24,7 +24,7 @@ import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.dao.StudentDao;
 import org.vdragun.tms.config.JsonVerifier;
 import org.vdragun.tms.config.TestTokenGenerator;
-import org.vdragun.tms.util.Constants.Role;
+import org.vdragun.tms.config.Constants.Role;
 
 import java.time.LocalDate;
 import java.util.List;

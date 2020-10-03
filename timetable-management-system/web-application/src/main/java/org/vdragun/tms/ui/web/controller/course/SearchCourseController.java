@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.vdragun.tms.core.application.service.course.CourseService;
 import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.ui.web.controller.AbstractController;
-import org.vdragun.tms.util.Constants.Attribute;
-import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.View;
+import org.vdragun.tms.config.WebConstants.Attribute;
+import org.vdragun.tms.config.Constants.Message;
+import org.vdragun.tms.config.WebConstants.View;
 
 /**
  * Processes course-related search requests

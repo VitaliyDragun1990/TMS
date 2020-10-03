@@ -18,9 +18,9 @@ import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.config.EntityGenerator;
 import org.vdragun.tms.config.MessageProvider;
-import org.vdragun.tms.util.Constants.Attribute;
-import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.View;
+import org.vdragun.tms.config.WebConstants.Attribute;
+import org.vdragun.tms.config.Constants.Message;
+import org.vdragun.tms.config.WebConstants.View;
 
 import java.util.List;
 import java.util.Locale;

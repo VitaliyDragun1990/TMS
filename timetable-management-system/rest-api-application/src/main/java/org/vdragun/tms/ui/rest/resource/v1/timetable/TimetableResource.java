@@ -39,7 +39,7 @@ import org.vdragun.tms.core.application.service.timetable.UpdateTimetableData;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.ui.rest.api.v1.model.TimetableModel;
 import org.vdragun.tms.ui.rest.exception.ApiError;
-import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.config.Constants.Message;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

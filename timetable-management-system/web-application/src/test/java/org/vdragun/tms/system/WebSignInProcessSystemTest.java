@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.vdragun.tms.config.EmbeddedDataSourceConfig;
 import org.vdragun.tms.config.WithMockAuthenticatedUser;
-import org.vdragun.tms.util.Constants.View;
+import org.vdragun.tms.config.WebConstants.View;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,

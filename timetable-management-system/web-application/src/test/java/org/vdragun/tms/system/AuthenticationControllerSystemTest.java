@@ -34,9 +34,9 @@ import org.vdragun.tms.security.dao.UserDao;
 import org.vdragun.tms.security.model.User;
 import org.vdragun.tms.security.web.service.SignupForm;
 import org.vdragun.tms.security.web.service.WebAuthenticationService;
-import org.vdragun.tms.util.Constants.Attribute;
-import org.vdragun.tms.util.Constants.View;
-import org.vdragun.tms.util.Constants.Role;
+import org.vdragun.tms.config.WebConstants.Attribute;
+import org.vdragun.tms.config.WebConstants.View;
+import org.vdragun.tms.config.Constants.Role;
 
 @SpringBootTest(
         webEnvironment = WebEnvironment.RANDOM_PORT,

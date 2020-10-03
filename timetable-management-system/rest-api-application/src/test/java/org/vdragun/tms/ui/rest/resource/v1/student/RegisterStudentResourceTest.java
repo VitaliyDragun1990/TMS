@@ -40,7 +40,7 @@ import org.vdragun.tms.core.application.service.student.CreateStudentData;
 import org.vdragun.tms.core.application.service.student.StudentService;
 import org.vdragun.tms.core.domain.Student;
 import org.vdragun.tms.config.JsonVerifier;
-import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.config.Constants.Message;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

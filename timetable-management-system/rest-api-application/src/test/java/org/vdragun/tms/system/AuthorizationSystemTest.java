@@ -15,7 +15,7 @@ import org.vdragun.tms.config.JsonVerifier;
 import org.vdragun.tms.config.TestTokenGenerator;
 import org.vdragun.tms.ui.rest.resource.v1.student.StudentResource;
 import org.vdragun.tms.ui.rest.resource.v1.teacher.TeacherResource;
-import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.config.Constants.Message;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;

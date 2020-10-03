@@ -24,7 +24,7 @@ import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.dao.TimetableDao;
 import org.vdragun.tms.config.JsonVerifier;
 import org.vdragun.tms.config.TestTokenGenerator;
-import org.vdragun.tms.util.Constants.Role;
+import org.vdragun.tms.config.Constants.Role;
 import org.vdragun.tms.util.localizer.TemporalLocalizer;
 
 import java.time.LocalDate;

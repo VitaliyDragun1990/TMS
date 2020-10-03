@@ -42,7 +42,7 @@ import org.vdragun.tms.core.application.service.timetable.TimetableService;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Timetable;
 import org.vdragun.tms.config.JsonVerifier;
-import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.config.Constants.Message;
 import org.vdragun.tms.util.localizer.TemporalLocalizer;
 
 @SpringBootTest(

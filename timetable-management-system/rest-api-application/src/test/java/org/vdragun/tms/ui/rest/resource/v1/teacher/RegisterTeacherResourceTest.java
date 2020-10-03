@@ -40,7 +40,7 @@ import org.vdragun.tms.core.application.service.teacher.TeacherService;
 import org.vdragun.tms.core.domain.Teacher;
 import org.vdragun.tms.core.domain.Title;
 import org.vdragun.tms.config.JsonVerifier;
-import org.vdragun.tms.util.Constants.Message;
+import org.vdragun.tms.config.Constants.Message;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

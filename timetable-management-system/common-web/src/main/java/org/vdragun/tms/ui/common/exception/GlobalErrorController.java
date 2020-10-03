@@ -19,9 +19,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.vdragun.tms.util.Constants.Attribute;
-import org.vdragun.tms.util.Constants.Message;
-import org.vdragun.tms.util.Constants.View;
+import org.vdragun.tms.config.Constants.Attribute;
+import org.vdragun.tms.config.Constants.Message;
+import org.vdragun.tms.config.Constants.View;
 import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 /**

@@ -22,7 +22,7 @@ import org.vdragun.tms.core.domain.Course;
 import org.vdragun.tms.dao.CourseDao;
 import org.vdragun.tms.config.JsonVerifier;
 import org.vdragun.tms.config.TestTokenGenerator;
-import org.vdragun.tms.util.Constants.Role;
+import org.vdragun.tms.config.Constants.Role;
 
 import java.util.List;
 

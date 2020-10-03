@@ -10,7 +10,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.vdragun.tms.ui.web.converter.StudentToUpdateStudentDataConverter;
 import org.vdragun.tms.ui.web.converter.TimetableToUpdateTimetableDataConverter;
 import org.vdragun.tms.ui.web.converter.TitleCustomFormatter;
-import org.vdragun.tms.util.Constants.View;
+import org.vdragun.tms.config.WebConstants.View;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {

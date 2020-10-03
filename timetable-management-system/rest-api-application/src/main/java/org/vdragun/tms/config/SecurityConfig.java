@@ -23,8 +23,8 @@ import org.vdragun.tms.util.localizer.MessageLocalizer;
 
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-import static org.vdragun.tms.util.Constants.Role.ADMIN;
-import static org.vdragun.tms.util.Constants.Role.TEACHER;
+import static org.vdragun.tms.config.Constants.Role.ADMIN;
+import static org.vdragun.tms.config.Constants.Role.TEACHER;
 
 @Configuration
 public class SecurityConfig {
