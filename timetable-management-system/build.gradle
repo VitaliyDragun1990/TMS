@@ -1,39 +1,57 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.7.RELEASE'	
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-	id 'java'	
+    id 'org.springframework.boot' version '2.2.7.RELEASE' apply false
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE' apply false
 }
 
-group = 'org.vdragun'
-version = '1.0'
-sourceCompatibility = '1.8'
+allprojects {
+    group = 'org.vdragun.tms'
+    version = '1.0'
 
-ext {
-	// UI
-	webjarsLocatorVersion = '0.40'
-	webjarsMomentjsVersion = '2.24.0'
-	webjarsBootstrapVersion = '4.4.1-1'
-	webjarsJQueryVersion = '3.5.1'
-	webjarsPopperJsVersion = '2.0.2'
-	webjarsFontAwesomeVersion = '5.13.0'
-	springDocVersion = '1.3.9'
-	
-	// Security
-	jjwtVersion = '0.9.1'
-	
-	// General
-	mapStructVersion = '1.3.1.Final'
-	
-	// Test
-	springMvcTestUtilsVersion = '2.2.1'
-	riderJUnitVersion = '1.13.1'
-	dbUnitVersion = '2.7.0'
-	selenideVersion = '5.12.2'
-	jBehaveVersion = '4.6.3'
-	jUnitPionerVersion = '0.5.3'
+    ext {
+        // UI
+        webjarsLocatorVersion = '0.40'
+        webjarsMomentjsVersion = '2.24.0'
+        webjarsBootstrapVersion = '4.4.1-1'
+        webjarsJQueryVersion = '3.5.1'
+        webjarsPopperJsVersion = '2.0.2'
+        webjarsFontAwesomeVersion = '5.13.0'
+        springDocVersion = '1.3.9'
+
+        // Misc
+        swaggerCoreVersion = '2.1.2'
+
+        // Security
+        jjwtVersion = '0.9.1'
+
+        // General
+        mapStructVersion = '1.3.1.Final'
+
+        // Test
+        springMvcTestUtilsVersion = '2.2.1'
+        riderJUnitVersion = '1.13.1'
+        dbUnitVersion = '2.7.0'
+        selenideVersion = '5.12.2'
+        jBehaveVersion = '4.6.3'
+        jUnitPionerVersion = '0.5.3'
+    }
 }
 
-repositories {
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
+
+    if (!name.endsWith('application')) {
+        bootJar {
+            enabled = false
+        }
+
+        jar {
+            enabled = true
+        }
+    }
+
+    repositories {
         mavenLocal()
         maven {
             url = 'https://repo.maven.apache.org/maven2'
@@ -41,59 +59,23 @@ repositories {
         maven {
             url = "https://plugins.gradle.org/m2/"
         }
-}
+    }
 
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-devtools'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-configuration-processor'
-	
-	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
-	implementation "org.springdoc:springdoc-openapi-ui:$springDocVersion"
-	implementation "org.springdoc:springdoc-openapi-security:$springDocVersion"
-	implementation "org.springdoc:springdoc-openapi-data-rest:$springDocVersion"
-	implementation "io.jsonwebtoken:jjwt:$jjwtVersion"
-	implementation "org.mapstruct:mapstruct:$mapStructVersion"
-	
-	runtimeOnly "org.webjars:webjars-locator:$webjarsLocatorVersion"
-	runtimeOnly "org.webjars:momentjs:$webjarsMomentjsVersion"
-	runtimeOnly "org.webjars:bootstrap:$webjarsBootstrapVersion"
-	runtimeOnly "org.webjars:jquery:$webjarsJQueryVersion"
-	runtimeOnly "org.webjars:popper.js:$webjarsPopperJsVersion"
-	runtimeOnly "org.webjars:font-awesome:$webjarsFontAwesomeVersion"
-	runtimeOnly 'org.postgresql:postgresql'
-	runtimeOnly 'ch.qos.logback:logback-classic'
-	
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-		exclude group: 'junit', module: 'junit'
-	}
-	testImplementation 'org.springframework.security:spring-security-test'
-	testImplementation "io.florianlopes:spring-mvc-test-utils:$springMvcTestUtilsVersion"
-	testImplementation("com.github.database-rider:rider-junit5:$riderJUnitVersion") {
-		exclude group: 'org.dbunit', module: 'dbunit'
-		exclude group: 'org.junit.jupiter', module: 'junit-jupiter-api'
-		exclude group: 'org.junit.jupiter', module: 'junit-jupiter-engine'
-		exclude group: 'org.junit.platform', module: 'junit-platform-commons'
-		exclude group: 'junit', module: 'junit'
-	}
-	testImplementation "org.dbunit:dbunit:$dbUnitVersion"
-	testImplementation "com.codeborne:selenide:$selenideVersion"
-	testImplementation "org.jbehave:jbehave-core:$jBehaveVersion"
-	testImplementation "org.jbehave:jbehave-spring:$jBehaveVersion"
-	testImplementation "org.apache.httpcomponents:httpclient"
-	
-	testRuntimeOnly 'com.h2database:h2'
-	
-	annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
-}
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+            exclude group: 'junit', module: 'junit'
+        }
+    }
 
-test {
-	useJUnitPlatform()
+    sourceCompatibility = '1.8'
+
+    test {
+        useJUnitPlatform()
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
 }

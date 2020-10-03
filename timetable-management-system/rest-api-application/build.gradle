@@ -1,0 +1,36 @@
+dependencies {
+    implementation project(':core')
+    implementation project(':common-web')
+    implementation project(':common-security')
+    implementation project(':init-data-generator')
+
+    implementation 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+
+    implementation "org.springdoc:springdoc-openapi-ui:$springDocVersion"
+    implementation "org.springdoc:springdoc-openapi-security:$springDocVersion"
+    implementation "org.springdoc:springdoc-openapi-data-rest:$springDocVersion"
+    implementation "io.jsonwebtoken:jjwt:$jjwtVersion"
+    implementation "org.mapstruct:mapstruct:$mapStructVersion"
+
+    runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'ch.qos.logback:logback-classic'
+
+    testImplementation project(':persistence')
+    testImplementation("org.dbunit:dbunit:$dbUnitVersion") {
+        exclude group: 'junit', module: 'junit'
+    }
+    testImplementation("com.github.database-rider:rider-junit5:$riderJUnitVersion") {
+        exclude group: 'org.dbunit', module: 'dbunit'
+        exclude group: 'org.junit.jupiter', module: 'junit-jupiter-api'
+        exclude group: 'org.junit.jupiter', module: 'junit-jupiter-engine'
+        exclude group: 'org.junit.platform', module: 'junit-platform-commons'
+        exclude group: 'junit', module: 'junit'
+    }
+    testImplementation "org.apache.httpcomponents:httpclient"
+    testRuntimeOnly 'com.h2database:h2'
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
+}

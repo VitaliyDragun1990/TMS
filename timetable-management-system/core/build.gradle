@@ -1,0 +1,14 @@
+dependencies {
+    api project(':domain-model')
+    implementation project(':persistence')
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+    api "io.swagger.core.v3:swagger-annotations:$swaggerCoreVersion"
+    implementation 'jakarta.validation:jakarta.validation-api'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations'
+    implementation 'org.springframework:spring-tx'
+
+    testImplementation "org.jbehave:jbehave-core:$jBehaveVersion"
+    testImplementation "org.jbehave:jbehave-spring:$jBehaveVersion"
+    testImplementation 'org.springframework.boot:spring-boot-starter-validation'
+    testRuntimeOnly 'com.h2database:h2'
+}
