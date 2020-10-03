@@ -72,7 +72,7 @@ public class SearchTimetableController extends AbstractController {
     }
 
     @GetMapping("/teacher/{teacherId}/day")
-    public String showlDailyTimetablesForTeacher(
+    public String showDailyTimetablesForTeacher(
             @PathVariable("teacherId") Integer teacherId,
             @RequestParam("targetDate") LocalDate targetDate,
             Model model,
@@ -122,7 +122,7 @@ public class SearchTimetableController extends AbstractController {
     }
 
     @GetMapping("/student/{studentId}/day")
-    public String showlDailyTimetablesForStudent(
+    public String showDailyTimetablesForStudent(
             @PathVariable("studentId") Integer studentId,
             @RequestParam("targetDate") LocalDate targetDate,
             Model model,

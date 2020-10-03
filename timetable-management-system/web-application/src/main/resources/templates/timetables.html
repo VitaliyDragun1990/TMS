@@ -13,7 +13,7 @@
     
     <h4 th:text="${msg}" class="mb-3" id="headerMsg">Timetables</h4>
     
-    <table id="timetablesTable" class="table table-striped" th:unless="${#lists.isEmpty(timetables)}">
+    <table id="timetablesTable" class="table table-striped" th:if="${timetables.hasContent()}">
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>

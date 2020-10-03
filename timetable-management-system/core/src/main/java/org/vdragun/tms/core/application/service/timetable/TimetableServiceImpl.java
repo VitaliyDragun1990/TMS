@@ -237,7 +237,7 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
     private void assertValidPageNumber(Page<Timetable> page) {
-        if (page.getNumber() >= page.getTotalPages()) {
+        if (page.getNumber() > page.getTotalPages()) {
             throw new InvalidPageNumberException(
                     Timetable.class,
                     page.getNumber() + 1, page.getSize(), page.getTotalPages() - 1);
